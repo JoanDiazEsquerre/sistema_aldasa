@@ -1,0 +1,218 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	locale="#{localeBean.usedLocale}"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<f:view contentType="text/html">
+	<h:head>
+		<!--             <link href="./recursos/css/principal.css" rel="stylesheet" type="text/css" /> -->
+		<!--             <script language="javascript" type="text/javascript" src="./recursos/js/j18n.js"></script> -->
+		<!--             <link rel="shortcut icon" href="./recursos/images/logito.ico"/> -->
+		<title>..:: SISTEMA ALDASA::..</title>
+		<p:growl autoUpdate="true" id="growl1" showDetail="true" sticky="true" />
+	</h:head>
+	<h:body style="font-size: 11px;  ">
+		<h:form id="form">
+			<pe:layout id="fullPage" stateCookie="true"
+				widgetVar="fpLayoutWidget">
+
+				<pe:layoutPane position="north" size="40" closable="false">
+					<div style="width: 100%">
+						<h:outputText value="SISTEMA ALDASA v.2.0"
+							style="font-weight: bold; font-size: 18px;  color: #666666;  " />
+						<div style="float: right;">
+							<p:linkButton value="Salir" href="#{request.contextPath}/logout"
+								style="margin-right:10px;" />
+						</div>
+					</div>
+				</pe:layoutPane>
+				<pe:layoutPane position="center">
+					<p:tabView id="tabView">
+
+						<p:tab title="Proyectos">
+							<p:selectOneButton value="#{proyectoBean.estado}">
+								<f:selectItem itemLabel="Activos" itemValue="ACT" />
+								<f:selectItem itemLabel="Inactivos" itemValue="INC" />
+								<p:ajax update=":form:tabView:idTableProy" listener="#{proyectoBean.listarProyectos()}" />
+							</p:selectOneButton>
+
+							<p:dataTable var="proy" id="idTableProy" value="#{proyectoBean.listProyecto}" widgetVar="customersTable" rowIndexVar="row" paginator="true" rows="15" size="small"
+								emptyMessage="No se encontraron proyectos." paginatorPosition="bottom" rowKey="#{proy.id}" selection="#{proyectoBean.proyectoSelected}" selectionMode="single">
+								<f:facet name="header">
+									<div class="p-d-flex p-ai-center p-jc-between">
+										<span>Lista de Proyectos</span>
+									</div>
+								</f:facet>
+<!-- 								<p:ajax event="rowSelect" update=":formProyecto :dialogProyecto" listener="#{proyectoBean.newProyecto()}" oncomplete="PF('proyectoNewDialog').show();" /> -->
+
+								<p:column style="width:19px;text-align: left">
+									<f:facet name="header">
+										<p:commandLink action="#{proyectoBean.newProyecto}"
+											update=":formProyecto :dialogProyecto"
+											oncomplete="PF('proyectoNewDialog').show();"
+											title="NUEVO PROYECTO">
+											<p:graphicImage width="27"
+												value="/recursos/images/anadir.png" />
+
+										</p:commandLink>
+									</f:facet>
+								</p:column>
+
+
+								<p:column style="width:19px;">
+                            		#{row +1}
+                       			</p:column>
+
+								<p:column headerText="Proyecto" sortBy="#{proy.name}"
+									filterBy="#{proy.codigo},#{proy.name}"
+									filterMatchMode="contains">
+									<h:outputText
+										value="#{proy.name}" />
+								</p:column>
+								
+							</p:dataTable>
+						</p:tab>
+						<p:tab title="Asignar/Desasignar">
+							<p class="p-m-0">Sed ut perspiciatis unde omnis iste natus
+								error sit voluptatem accusantium doloremque laudantium, totam
+								rem aperiam, eaque ipsa quae ab illo inventore veritatis et
+								quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+								ipsam voluptatem quia voluptas sit aspernatur aut odit aut
+								fugit, sed quia consequuntur magni dolores eos qui ratione
+								voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia
+								non numquam eius modi.</p>
+						</p:tab>
+
+					</p:tabView>
+				</pe:layoutPane>
+				<pe:layoutPane position="west">
+					<p:menu>
+						<p:submenu label="Procesos">
+							<p:menuitem value="Registro de horas" ajax="false"
+								icon="pi pi-save" />
+							<p:menuitem value="Registro proyeccion" icon="pi pi-refresh" />
+							<p:menuitem value="Registro aprobacion de horas"
+								icon="pi pi-times" />
+						</p:submenu>
+						<p:submenu label="Mantenimientos">
+							<p:menuitem value="Proyectos" url="http://www.primefaces.org"
+								icon="pi pi-external-link" />
+							<p:menuitem value="Cartera" icon="pi pi-upload" />
+						</p:submenu>
+						<p:submenu label="Reportes">
+							<p:menuitem value="Rap/Int" url="http://www.primefaces.org"
+								icon="pi pi-external-link" />
+							<p:menuitem value="Proyeccion" icon="pi pi-upload" />
+						</p:submenu>
+					</p:menu>
+				</pe:layoutPane>
+
+				<!--         <pe:layoutPane position="south"> -->
+				<!--             South -->
+				<!--         </pe:layoutPane> -->
+			</pe:layout>
+
+		</h:form>
+		<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogProyecto" header="NUEVO PROYECTO" 
+			widgetVar="proyectoNewDialog" resizable="false" closable="true" appendTo="@(body)" style="width:auto">
+			<h:form id="formProyecto">
+			
+				<p:panelGrid columns="4"
+	                 columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+	                 layout="grid"
+	                 styleClass="ui-panelgrid-blank ui-fluid"
+	                 style="border:0px none; background-color:transparent;">
+	
+			        <p:outputLabel value="Nombre:"/>
+			        <p:inputText value="#{proyectoBean.proyectoSelected.name}" style="width:230px" />	        
+			    </p:panelGrid>
+
+
+				<p:dataTable id="products1" widgetVar="products1" var="product"
+					value="#{dtAddRowView.products1}" editable="true">
+					<f:facet name="header">
+               			Vista de Estimaciones
+            		</f:facet>
+
+					<p:ajax event="rowEdit" listener="#{dtAddRowView.onRowEdit}"
+						update=":form:msgs" />
+					<p:ajax event="rowEditCancel"
+						listener="#{dtAddRowView.onRowCancel}" update=":form:msgs" />
+
+					<p:column headerText="Code">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{product.code}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText id="modelInput" value="#{product.code}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Name">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{product.name}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{product.name}" style="width:100%"
+									label="Name" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Status">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{product.inventoryStatus}" />
+							</f:facet>
+							<f:facet name="input">
+								<h:selectOneMenu value="#{product.inventoryStatus}"
+									style="width:100%">
+									<f:selectItems value="#{dtEditView.inventoryStatusList}"
+										var="status" itemLabel="#{status}" itemValue="#{status}" />
+								</h:selectOneMenu>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Price">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{product.price}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{product.price}" style="width:100%"
+									label="Price" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+
+					<p:column style="width:6rem">
+						<p:rowEditor />
+					</p:column>
+				</p:dataTable>
+
+				<div class="p-grid p-mt-3">
+					<div class="p-col-12">
+						<p:commandButton value="Add new row" process="@this"
+							update=":form:msgs" action="#{dtAddRowView.onAddNew()}"
+							oncomplete="PF('products1').addRow();" />
+					</div>
+				</div>
+
+			</h:form>
+		</p:dialog>
+
+	</h:body>
+
+</f:view>
+</html>

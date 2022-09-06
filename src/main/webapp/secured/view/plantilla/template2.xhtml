@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      locale="#{localeBean.usedLocale}"
+      xmlns:f="http://java.sun.com/jsf/core">
+ 
+    <f:view contentType="text/html">
+        <h:head>
+<!--             <link href="./recursos/css/principal.css" rel="stylesheet" type="text/css" /> -->
+            <script language="javascript" type="text/javascript" src="./recursos/js/j18n.js"></script>
+            <link rel="shortcut icon" href="./recursos/images/logito.ico"/>
+            <title>..:: SISTEMA PAVITA 2.0:..</title>                       
+            <p:growl autoUpdate="true"  id="growl1" showDetail="true" sticky="true"/>                  
+        </h:head>
+        <h:body style="font-size: 11px;  " >            
+            <p:layout  fullPage="true">
+                <!--INCLUIR CABECERA -->
+                <p:layoutUnit style="border: 0px; height: 36px;  padding-bottom: 0px; margin-bottom: 0px; margin-top: 0px; padding-top: 0px;" position="north">
+                    SISTEMA PAVITA
+                </p:layoutUnit>  
+                   
+                <!--INCLUIR CONTENIDO-->
+                <p:layoutUnit  style="border: 0px; padding-top: 0px; margin-top: 0px;"  position="center" >      
+                      <h:panelGrid width="100%" id="contenedor" cellpadding="0"
+                                   cellspacing="0" style="margin: 0px; padding: 0px; margin-bottom: 10px;">
+                          <ui:insert name="contenido"></ui:insert>
+                      </h:panelGrid>
+                </p:layoutUnit>                            
+            </p:layout>
+        </h:body>
+     
+    </f:view>
+</html>
