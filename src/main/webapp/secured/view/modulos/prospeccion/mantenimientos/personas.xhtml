@@ -1,0 +1,122 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	locale="#{localeBean.usedLocale}"
+	xmlns:f="http://java.sun.com/jsf/core">
+<!-- 				<p:growl autoUpdate="true" id="growl1" showDetail="true" sticky="true" /> -->
+
+		<h:form id="form">
+
+					<p:tabView id="tabView">
+
+						<p:tab title="Personas">
+							<p:selectOneButton value="#{proyectoBean.estado}">
+								<f:selectItem itemLabel="Activos" itemValue="ACT" />
+								<f:selectItem itemLabel="Inactivos" itemValue="INC" />
+								<p:ajax update=":form:tabView:idTableProy" listener="#{proyectoBean.listarProyectos()}" />
+							</p:selectOneButton>
+
+							<p:dataTable var="proy" id="idTableProy" value="#{proyectoBean.listProyecto}" widgetVar="customersTable" rowIndexVar="row" paginator="true" rows="15" size="small"
+								emptyMessage="No se encontraron proyectos." paginatorPosition="bottom" rowKey="#{proy.id}" selection="#{proyectoBean.proyectoSelected}" selectionMode="single">
+								<f:facet name="header">
+									<div class="p-d-flex p-ai-center p-jc-between">
+										<span>Lista de Proyectos</span>
+									</div>
+								</f:facet>
+<!-- 								<p:ajax event="rowSelect" update=":formProyecto :dialogProyecto" listener="#{proyectoBean.newProyecto()}" oncomplete="PF('proyectoNewDialog').show();" /> -->
+
+								<p:column style="width:19px;text-align: left">
+									<f:facet name="header">
+										<p:commandLink action="#{proyectoBean.newProyecto}"
+											update=":formProyecto :dialogProyecto"
+											oncomplete="PF('proyectoNewDialog').show();"
+											title="NUEVO PROYECTO">
+											<p:graphicImage width="27"
+												value="/recursos/images/anadir.png" />
+
+										</p:commandLink>
+									</f:facet>
+								</p:column>
+
+
+								<p:column style="width:19px;">
+                            		#{row +1}
+                       			</p:column>
+
+								<p:column headerText="Proyecto" sortBy="#{proy.codigo}"
+									filterBy="#{proy.codigo},#{proy.nombre},#{proy.cartera.categoria.nomcorto}"
+									filterMatchMode="contains">
+									<h:outputText
+										value="#{proy.codigo}-#{proy.nombre}-#{proy.cartera.categoria.nomcorto}" />
+								</p:column>
+								<p:column headerText="Cliente"
+									sortBy="#{proy.cartera.cliente.nombre}"
+									filterBy="#{proy.cartera.cliente.nombre}"
+									filterMatchMode="contains">
+									<h:outputText value="#{proy.cartera.cliente.nombre}" />
+								</p:column>
+								<p:column headerText="Cartera" sortBy="#{proy.cartera.codEngmt}"
+									filterBy="#{proy.cartera.codEngmt},#{proy.cartera.nomEngmt}"
+									filterMatchMode="contains">
+									<h:outputText
+										value="#{proy.cartera.codEngmt}-#{proy.cartera.nomEngmt}" />
+								</p:column>
+
+								<p:column headerText="Categoría"
+									sortBy="#{proy.cartera.categoria.nombre}"
+									filterBy="#{proy.cartera.categoria.nombre}"
+									filterMatchMode="contains">
+									<h:outputText value="#{proy.cartera.categoria.nombre}" />
+								</p:column>
+								<p:column headerText="Jefe Proy."
+									sortBy="#{proy.usuarioJp.nombre}"
+									filterBy="#{proy.usuarioJp.nombre}" filterMatchMode="contains">
+									<h:outputText value="#{proy.usuarioJp.nombre}" />
+								</p:column>
+								<p:column headerText="Dueño Solución"
+									sortBy="#{proy.usuarioGp.nombre}"
+									filterBy="#{proy.usuarioGp.nombre}" filterMatchMode="contains">
+									<h:outputText value="#{proy.usuarioGp.nombre}" />
+								</p:column>
+
+							</p:dataTable>
+						</p:tab>
+						<p:tab title="Asignar/Desasignar">
+							<p class="p-m-0">Sed ut perspiciatis unde omnis iste natus
+								error sit voluptatem accusantium doloremque laudantium, totam
+								rem aperiam, eaque ipsa quae ab illo inventore veritatis et
+								quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+								ipsam voluptatem quia voluptas sit aspernatur aut odit aut
+								fugit, sed quia consequuntur magni dolores eos qui ratione
+								voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia
+								non numquam eius modi.</p>
+						</p:tab>
+
+					</p:tabView>
+				
+
+
+		</h:form>
+		<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogProyecto" header="NUEVO PROYECTO" 
+			widgetVar="proyectoNewDialog" resizable="false" closable="true" appendTo="@(body)" style="width:auto">
+			<h:form id="formProyecto">
+			
+				<p:panelGrid columns="4"
+	                 columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+	                 layout="grid"
+	                 styleClass="ui-panelgrid-blank ui-fluid"
+	                 style="border:0px none; background-color:transparent;">
+	
+			    
+			        
+			    </p:panelGrid>
+
+
+			
+
+			</h:form>
+		</p:dialog>
+
+</ui:composition>

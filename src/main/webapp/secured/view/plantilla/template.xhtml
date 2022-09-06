@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' ?> 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      locale="#{localeBean.usedLocale}"
-      xmlns:f="http://java.sun.com/jsf/core">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:f="http://java.sun.com/jsf/core">
  
     <f:view contentType="text/html">
         <h:head>
@@ -16,20 +16,51 @@
             <p:growl autoUpdate="true"  id="growl1" showDetail="true" sticky="true"/>                  
         </h:head>
         <h:body style="font-size: 11px;  " >            
-            <p:layout  fullPage="true">
-                <!--INCLUIR CABECERA -->
-                <p:layoutUnit style="border: 0px; height: 36px;  padding-bottom: 0px; margin-bottom: 0px; margin-top: 0px; padding-top: 0px;" position="north">
-                    SISTEMA PAVITA
-                </p:layoutUnit>  
-                   
-                <!--INCLUIR CONTENIDO-->
-                <p:layoutUnit  style="border: 0px; padding-top: 0px; margin-top: 0px;"  position="center" >      
-                      <h:panelGrid width="100%" id="contenedor" cellpadding="0"
-                                   cellspacing="0" style="margin: 0px; padding: 0px; margin-bottom: 10px;">
-                          <ui:insert name="contenido"></ui:insert>
-                      </h:panelGrid>
-                </p:layoutUnit>                            
-            </p:layout>
+        
+        	<pe:layout id="fullPage" stateCookie="true"
+				widgetVar="fpLayoutWidget">
+
+				<pe:layoutPane position="north" size="40" closable="false">
+					<div style="width: 100%">
+						<h:outputText value="SISTEMA PAVITA v.2.0"
+							style="font-weight: bold; font-size: 18px;  color: #666666;  " />
+						<div style="float: right;">
+							<p:linkButton value="Salir" href="#{request.contextPath}/logout"
+								style="margin-right:10px;" />
+						</div>
+					</div>
+				</pe:layoutPane>
+				<pe:layoutPane position="center">
+				                                      <ui:insert name="contenido"></ui:insert>
+				
+				</pe:layoutPane>
+				<pe:layoutPane position="west">
+				<h:form id="formMenu">
+					<p:menu>
+						<p:submenu label="Procesos">
+							<p:menuitem value="Prospeccion" ajax="false"
+								icon="pi pi-save"  update=":contenedor" actionListener="#{navegacionBean.getProcesoProspeccionPage()}"  />
+							<p:menuitem value="Registro proyeccion" icon="pi pi-refresh" />
+							<p:menuitem value="Registro aprobacion de horas"
+								icon="pi pi-times" />
+						</p:submenu>
+						<p:submenu label="Mantenimientos">
+							<p:menuitem value="Personas" ajax="false"
+								icon="pi pi-save"  update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPersonasPage()}"  />
+							<p:menuitem value="Proyectos" url="http://www.primefaces.org"
+								icon="pi pi-external-link" />
+							<p:menuitem value="Cartera" icon="pi pi-upload" />
+						</p:submenu>
+						<p:submenu label="Reportes">
+							<p:menuitem value="Rap/Int" url="http://www.primefaces.org"
+								icon="pi pi-external-link" />
+							<p:menuitem value="Proyeccion" icon="pi pi-upload" />
+						</p:submenu>
+					</p:menu>
+					</h:form>
+				</pe:layoutPane>
+			</pe:layout>
+
         </h:body>
      
     </f:view>
