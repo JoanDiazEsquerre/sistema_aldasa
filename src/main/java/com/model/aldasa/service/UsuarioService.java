@@ -1,8 +1,8 @@
-package com.model.pavita.service;
+package com.model.aldasa.service;
 
 import java.util.List;
 
-import com.model.pavita.entity.Usuario;
+import com.model.aldasa.entity.Usuario;
 
 public interface UsuarioService {
 	

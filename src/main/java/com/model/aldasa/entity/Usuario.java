@@ -1,4 +1,4 @@
-package com.model.pavita.entity;
+package com.model.aldasa.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

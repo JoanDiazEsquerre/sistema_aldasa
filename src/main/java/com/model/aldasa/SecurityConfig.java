@@ -1,4 +1,4 @@
-package com.model.pavita;
+package com.model.aldasa;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-import com.model.pavita.service.impl.UserDetailService;
+import com.model.aldasa.service.impl.UserDetailService;
 
 @Configuration
 @EnableWebSecurity

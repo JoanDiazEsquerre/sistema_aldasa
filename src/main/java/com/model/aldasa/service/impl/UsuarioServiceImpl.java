@@ -1,13 +1,13 @@
-package com.model.pavita.service.impl;
+package com.model.aldasa.service.impl;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.model.pavita.entity.Usuario;
-import com.model.pavita.repository.UsuarioRepository;
-import com.model.pavita.service.UsuarioService;
+import com.model.aldasa.entity.Usuario;
+import com.model.aldasa.repository.UsuarioRepository;
+import com.model.aldasa.service.UsuarioService;
 
 @Service("usuarioService")
 public class UsuarioServiceImpl implements UsuarioService {

@@ -1,4 +1,4 @@
-package com.model.pavita.general.bean;
+package com.model.aldasa.general.bean;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @SessionScoped
 public class NavegacionBean {
 	
-	private String ruta;;
+	private String ruta;
 	
 
 	@PostConstruct

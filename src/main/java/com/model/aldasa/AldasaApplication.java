@@ -1,4 +1,4 @@
-package com.model.pavita;
+package com.model.aldasa;
 
 import java.util.Arrays;
 
@@ -15,14 +15,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Import({SecurityConfig.class})
-@EnableJpaRepositories("com.model.pavita.repository")
-@EntityScan("com.model.pavita.entity")
-@ComponentScan("com.model.pavita")
+@EnableJpaRepositories("com.model.aldasa.repository")
+@EntityScan("com.model.aldasa.entity")
+@ComponentScan("com.model.aldasa")
 @SpringBootApplication
-public class PavitaApplication {
+public class AldasaApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PavitaApplication.class, args);
+		SpringApplication.run(AldasaApplication.class, args);
 	}
 	
 	@Bean

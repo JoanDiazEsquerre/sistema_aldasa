@@ -12,7 +12,7 @@
 <!--             <link href="./recursos/css/principal.css" rel="stylesheet" type="text/css" /> -->
             <script language="javascript" type="text/javascript" src="./recursos/js/j18n.js"></script>
             <link rel="shortcut icon" href="./recursos/images/logito.ico"/>
-            <title>..:: SISTEMA PAVITA 2.0:..</title>                       
+            <title>..:: SISTEMA ALDASA :..</title>                       
             <p:growl autoUpdate="true"  id="growl1" showDetail="true" sticky="true"/>                  
         </h:head>
         <h:body style="font-size: 11px;  " >            
@@ -22,10 +22,10 @@
 
 				<pe:layoutPane position="north" size="40" closable="false">
 					<div style="width: 100%">
-						<h:outputText value="SISTEMA PAVITA v.2.0"
+						<h:outputText value="SISTEMA ALDASA v.1.0"
 							style="font-weight: bold; font-size: 18px;  color: #666666;  " />
 						<div style="float: right;">
-							<p:linkButton value="Salir" href="#{request.contextPath}/logout"
+							<p:linkButton value="Salir" href="#{request.contextPath}/login"
 								style="margin-right:10px;" />
 						</div>
 					</div>
@@ -40,21 +40,21 @@
 						<p:submenu label="Procesos">
 							<p:menuitem value="Prospeccion" ajax="false"
 								icon="pi pi-save"  update=":contenedor" actionListener="#{navegacionBean.getProcesoProspeccionPage()}"  />
-							<p:menuitem value="Registro proyeccion" icon="pi pi-refresh" />
-							<p:menuitem value="Registro aprobacion de horas"
+							<p:menuitem value="Menu en proceso..." icon="pi pi-refresh" />
+							<p:menuitem value="Menu en proceso..."
 								icon="pi pi-times" />
 						</p:submenu>
 						<p:submenu label="Mantenimientos">
 							<p:menuitem value="Personas" ajax="false"
 								icon="pi pi-save"  update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPersonasPage()}"  />
-							<p:menuitem value="Proyectos" url="http://www.primefaces.org"
+							<p:menuitem value="Menu en proceso..." url="http://www.primefaces.org"
 								icon="pi pi-external-link" />
-							<p:menuitem value="Cartera" icon="pi pi-upload" />
+							<p:menuitem value="Menu en proceso..." icon="pi pi-upload" />
 						</p:submenu>
 						<p:submenu label="Reportes">
-							<p:menuitem value="Rap/Int" url="http://www.primefaces.org"
+							<p:menuitem value="Menu en proceso..." url="http://www.primefaces.org"
 								icon="pi pi-external-link" />
-							<p:menuitem value="Proyeccion" icon="pi pi-upload" />
+							<p:menuitem value="Menu en proceso..." icon="pi pi-upload" />
 						</p:submenu>
 					</p:menu>
 					</h:form>

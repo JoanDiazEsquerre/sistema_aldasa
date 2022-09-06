@@ -1,9 +1,9 @@
-package com.model.pavita.service;
+package com.model.aldasa.service;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.model.pavita.entity.Project;
+import com.model.aldasa.entity.Project;
 
 public interface ProyectoService {
 	

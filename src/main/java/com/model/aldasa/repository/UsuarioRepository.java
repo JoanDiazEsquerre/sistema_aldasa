@@ -1,4 +1,4 @@
-package com.model.pavita.repository;
+package com.model.aldasa.repository;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.model.pavita.entity.Usuario;
+import com.model.aldasa.entity.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
 	

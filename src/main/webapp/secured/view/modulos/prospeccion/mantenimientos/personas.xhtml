@@ -45,41 +45,7 @@
                             		#{row +1}
                        			</p:column>
 
-								<p:column headerText="Proyecto" sortBy="#{proy.codigo}"
-									filterBy="#{proy.codigo},#{proy.nombre},#{proy.cartera.categoria.nomcorto}"
-									filterMatchMode="contains">
-									<h:outputText
-										value="#{proy.codigo}-#{proy.nombre}-#{proy.cartera.categoria.nomcorto}" />
-								</p:column>
-								<p:column headerText="Cliente"
-									sortBy="#{proy.cartera.cliente.nombre}"
-									filterBy="#{proy.cartera.cliente.nombre}"
-									filterMatchMode="contains">
-									<h:outputText value="#{proy.cartera.cliente.nombre}" />
-								</p:column>
-								<p:column headerText="Cartera" sortBy="#{proy.cartera.codEngmt}"
-									filterBy="#{proy.cartera.codEngmt},#{proy.cartera.nomEngmt}"
-									filterMatchMode="contains">
-									<h:outputText
-										value="#{proy.cartera.codEngmt}-#{proy.cartera.nomEngmt}" />
-								</p:column>
-
-								<p:column headerText="Categoría"
-									sortBy="#{proy.cartera.categoria.nombre}"
-									filterBy="#{proy.cartera.categoria.nombre}"
-									filterMatchMode="contains">
-									<h:outputText value="#{proy.cartera.categoria.nombre}" />
-								</p:column>
-								<p:column headerText="Jefe Proy."
-									sortBy="#{proy.usuarioJp.nombre}"
-									filterBy="#{proy.usuarioJp.nombre}" filterMatchMode="contains">
-									<h:outputText value="#{proy.usuarioJp.nombre}" />
-								</p:column>
-								<p:column headerText="Dueño Solución"
-									sortBy="#{proy.usuarioGp.nombre}"
-									filterBy="#{proy.usuarioGp.nombre}" filterMatchMode="contains">
-									<h:outputText value="#{proy.usuarioGp.nombre}" />
-								</p:column>
+							
 
 							</p:dataTable>
 						</p:tab>

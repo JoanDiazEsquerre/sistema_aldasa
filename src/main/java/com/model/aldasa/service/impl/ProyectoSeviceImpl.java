@@ -1,4 +1,4 @@
-package com.model.pavita.service.impl;
+package com.model.aldasa.service.impl;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.model.pavita.entity.Project;
-import com.model.pavita.repository.ProyectoRepository;
-import com.model.pavita.service.ProyectoService;
+import com.model.aldasa.entity.Project;
+import com.model.aldasa.repository.ProyectoRepository;
+import com.model.aldasa.service.ProyectoService;
 
 @Service("proyectoService")
 public class ProyectoSeviceImpl implements ProyectoService{

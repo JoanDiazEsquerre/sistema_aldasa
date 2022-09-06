@@ -1,4 +1,4 @@
-package com.model.pavita.service.impl;
+package com.model.aldasa.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.model.pavita.entity.Usuario;
-import com.model.pavita.repository.UsuarioRepository;
+import com.model.aldasa.entity.Usuario;
+import com.model.aldasa.repository.UsuarioRepository;
 
 @Service
 public class UserDetailService implements UserDetailsService {

@@ -1,4 +1,4 @@
-package com.model.pavita.bean;
+package com.model.aldasa.bean;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
-import com.model.pavita.entity.Project;
-import com.model.pavita.entity.Usuario;
-import com.model.pavita.service.ProyectoService;
+import com.model.aldasa.entity.Project;
+import com.model.aldasa.entity.Usuario;
+import com.model.aldasa.service.ProyectoService;
 
 import javax.faces.convert.Converter;
 
