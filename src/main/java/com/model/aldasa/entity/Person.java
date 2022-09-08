@@ -1,5 +1,6 @@
 package com.model.aldasa.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,15 +8,20 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "client")
-public class Client {
+@Table(name = "person")
+public class Person {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	Integer id;
 	
+	@Column(name="civilstatus")
+	String civilStatus;
+	
 	int dni;
-	String names, surname, address, phone, status;
+	String names, surnames, address, phone, status;
+	
+	
 	public Integer getId() {
 		return id;
 	}
@@ -34,11 +40,11 @@ public class Client {
 	public void setNames(String names) {
 		this.names = names;
 	}
-	public String getSurname() {
-		return surname;
+	public String getSurnames() {
+		return surnames;
 	}
-	public void setSurname(String surname) {
-		this.surname = surname;
+	public void setSurnames(String surnames) {
+		this.surnames = surnames;
 	}
 	public String getAddress() {
 		return address;
@@ -58,7 +64,11 @@ public class Client {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	
+	public String getCivilStatus() {
+		return civilStatus;
+	}
+	public void setCivilStatus(String civilStatus) {
+		this.civilStatus = civilStatus;
+	}
 
 }

@@ -36,7 +36,7 @@
 				</pe:layoutPane>
 				<pe:layoutPane position="west">
 				<h:form id="formMenu">
-					<p:menu>
+					<p:menu toggleable="true">
 						<p:submenu label="Procesos">
 							<p:menuitem value="Prospeccion" ajax="false"
 								icon="pi pi-save"  update=":contenedor" actionListener="#{navegacionBean.getProcesoProspeccionPage()}"  />
@@ -45,15 +45,12 @@
 								icon="pi pi-times" />
 						</p:submenu>
 						<p:submenu label="Mantenimientos">
-							<p:menuitem value="Personas" ajax="false"
-								icon="pi pi-save"  update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPersonasPage()}"  />
-							<p:menuitem value="Menu en proceso..." url="http://www.primefaces.org"
-								icon="pi pi-external-link" />
+							<p:menuitem value="Personas" ajax="false" icon="pi pi-save"  update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPersonasPage()}"  />						
+							<p:menuitem value="Usuarios" icon="pi pi-external-link" />
 							<p:menuitem value="Menu en proceso..." icon="pi pi-upload" />
 						</p:submenu>
 						<p:submenu label="Reportes">
-							<p:menuitem value="Menu en proceso..." url="http://www.primefaces.org"
-								icon="pi pi-external-link" />
+							<p:menuitem value="Menu en proceso..." icon="pi pi-external-link" />
 							<p:menuitem value="Menu en proceso..." icon="pi pi-upload" />
 						</p:submenu>
 					</p:menu>

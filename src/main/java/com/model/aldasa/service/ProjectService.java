@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import com.model.aldasa.entity.Project;
 
-public interface ProyectoService {
+public interface ProjectService {
 	
 	Optional<Project> findById(Integer id);
 	Project save(Project proyecto) ;

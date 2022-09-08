@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.repository.ProyectoRepository;
-import com.model.aldasa.service.ProyectoService;
+import com.model.aldasa.service.ProjectService;
 
-@Service("proyectoService")
-public class ProyectoSeviceImpl implements ProyectoService{
+@Service("projectService")
+public class ProyectoSeviceImpl implements ProjectService{
 	
 	@Autowired
 	private ProyectoRepository proyectoRepository;

@@ -12,14 +12,14 @@
 					<p:tabView id="tabView">
 
 						<p:tab title="Proyectos">
-							<p:selectOneButton value="#{proyectoBean.estado}">
+							<p:selectOneButton value="#{clientBean.estado}">
 								<f:selectItem itemLabel="Activos" itemValue="ACT" />
 								<f:selectItem itemLabel="Inactivos" itemValue="INC" />
-								<p:ajax update=":form:tabView:idTableProy" listener="#{proyectoBean.listarProyectos()}" />
+								<p:ajax update=":form:tabView:idTableProy" listener="#{clientBean.listarCliente()}" />
 							</p:selectOneButton>
 
-							<p:dataTable var="proy" id="idTableProy" value="#{proyectoBean.listProyecto}" widgetVar="customersTable" rowIndexVar="row" paginator="true" rows="15" size="small"
-								emptyMessage="No se encontraron proyectos." paginatorPosition="bottom" rowKey="#{proy.id}" selection="#{proyectoBean.proyectoSelected}" selectionMode="single">
+							<p:dataTable var="proy" id="idTableProy" value="#{clientBean.lstClients}" widgetVar="customersTable" rowIndexVar="row" paginator="true" rows="15" size="small"
+								emptyMessage="No se encontraron proyectos." paginatorPosition="bottom" rowKey="#{proy.id}" selection="#{clientBean.clientSelected}" selectionMode="single">
 								<f:facet name="header">
 									<div class="p-d-flex p-ai-center p-jc-between">
 										<span>Lista de Prospectos</span>
@@ -44,8 +44,20 @@
 								<p:column style="width:19px;">
                             		#{row +1}
                        			</p:column>
-								<p:column headerText="Nombre" sortBy="proy.name" filterBy="#{proy.name}" filterMatchMode="contains">
-									<h:outputText value="#{proy.name}"/>
+                       			<p:column headerText="DNI" sortBy="#{proy.dni}" filterBy="#{proy.dni}" filterMatchMode="contains">
+									<h:outputText value="#{proy.dni}"/>
+								</p:column>
+								<p:column headerText="Nombre" sortBy="#{proy.names}" filterBy="#{proy.names}" filterMatchMode="contains">
+									<h:outputText value="#{proy.names}"/>
+								</p:column>
+								<p:column headerText="Apellidos" sortBy="#{proy.surnames}" filterBy="#{proy.surnames}" filterMatchMode="contains">
+									<h:outputText value="#{proy.surnames}"/>
+								</p:column>
+								<p:column headerText="Dirección" sortBy="#{proy.address}" filterBy="#{proy.address}" filterMatchMode="contains">
+									<h:outputText value="#{proy.address}"/>
+								</p:column>
+								<p:column headerText="Teléfono" sortBy="#{proy.phone}" filterBy="#{proy.phone}" filterMatchMode="contains">
+									<h:outputText value="#{proy.phone}"/>
 								</p:column>
 								
 

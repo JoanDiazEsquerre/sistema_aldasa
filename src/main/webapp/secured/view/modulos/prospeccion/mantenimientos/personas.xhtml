@@ -5,84 +5,115 @@
 	xmlns:pe="http://primefaces.org/ui/extensions"
 	locale="#{localeBean.usedLocale}"
 	xmlns:f="http://java.sun.com/jsf/core">
-<!-- 				<p:growl autoUpdate="true" id="growl1" showDetail="true" sticky="true" /> -->
+	<!-- 				<p:growl autoUpdate="true" id="growl1" showDetail="true" sticky="true" /> -->
 
-		<h:form id="form">
+	<h:form id="form">
 
-					<p:tabView id="tabView">
+		<p:tabView id="tabView">
 
-						<p:tab title="Personas">
-							<p:selectOneButton value="#{proyectoBean.estado}">
-								<f:selectItem itemLabel="Activos" itemValue="ACT" />
-								<f:selectItem itemLabel="Inactivos" itemValue="INC" />
-								<p:ajax update=":form:tabView:idTableProy" listener="#{proyectoBean.listarProyectos()}" />
-							</p:selectOneButton>
+			<p:tab title="Personas">
+				<p:selectOneButton value="#{personBean.estado}">
+					<f:selectItem itemLabel="Activos" itemValue="ACT" />
+					<f:selectItem itemLabel="Inactivos" itemValue="INC" />
+					<p:ajax update=":form:tabView:idTableProy"
+						listener="#{personBean.listarCliente()}" />
+				</p:selectOneButton>
 
-							<p:dataTable var="proy" id="idTableProy" value="#{proyectoBean.listProyecto}" widgetVar="customersTable" rowIndexVar="row" paginator="true" rows="15" size="small"
-								emptyMessage="No se encontraron proyectos." paginatorPosition="bottom" rowKey="#{proy.id}" selection="#{proyectoBean.proyectoSelected}" selectionMode="single">
-								<f:facet name="header">
-									<div class="p-d-flex p-ai-center p-jc-between">
-										<span>Lista de Proyectos</span>
-									</div>
-								</f:facet>
-<!-- 								<p:ajax event="rowSelect" update=":formProyecto :dialogProyecto" listener="#{proyectoBean.newProyecto()}" oncomplete="PF('proyectoNewDialog').show();" /> -->
+				<p:dataTable var="person" id="idTableProy" value="#{personBean.lstPersons}" widgetVar="customersTable" rowIndexVar="row" paginator="true" rows="15" size="small"
+					emptyMessage="No se encontraron proyectos."	paginatorPosition="bottom" rowKey="#{person.id}" selection="#{personBean.personSelected}" selectionMode="single">
+					<f:facet name="header">
+						<div class="p-d-flex p-ai-center p-jc-between">
+							<span>Lista de Personas</span>
+						</div>
+					</f:facet>
+					<p:ajax event="rowSelect" update=":formProyecto :dialogProyecto" listener="#{personBean.updatePerson()}" oncomplete="PF('proyectoNewDialog').show();" /> 
 
-								<p:column style="width:19px;text-align: left">
-									<f:facet name="header">
-										<p:commandLink action="#{proyectoBean.newProyecto}"
-											update=":formProyecto :dialogProyecto"
-											oncomplete="PF('proyectoNewDialog').show();"
-											title="NUEVO PROYECTO">
-											<p:graphicImage width="27"
-												value="/recursos/images/anadir.png" />
+					<p:column style="width:42px;text-align: left">
+						<f:facet name="header">
+							<p:commandLink action="#{personBean.newPerson()}"
+								update=":formProyecto :dialogProyecto"
+								oncomplete="PF('proyectoNewDialog').show();"
+								title="NUEVA PERSONA">
+								<p:graphicImage width="50" value="/recursos/images/anadir.png" />
 
-										</p:commandLink>
-									</f:facet>
-								</p:column>
+							</p:commandLink>
+						</f:facet>
+					</p:column>
+
+					<p:column width="25px">
+                         #{row +1}
+                    </p:column>
+					<p:column headerText="DNI" sortBy="#{person.dni}"
+						filterBy="#{person.dni}" filterMatchMode="contains">
+						<h:outputText value="#{person.dni}" />
+					</p:column>
+					<p:column headerText="Apellidos y Nombres"
+						sortBy="#{person.surnames}"
+						filterBy="#{person.surnames},#{person.names}"
+						filterMatchMode="contains">
+						<h:outputText value="#{person.surnames} #{person.names}" />
+					</p:column>
+					<p:column headerText="Dirección" sortBy="#{person.address}"
+						filterBy="#{person.address}" filterMatchMode="contains">
+						<h:outputText value="#{person.address}" />
+					</p:column>
+					<p:column headerText="Teléfono" sortBy="#{person.phone}"
+						filterBy="#{person.phone}" filterMatchMode="contains">
+						<h:outputText value="#{person.phone}" />
+					</p:column>
+					<p:column headerText="Estado Civil" sortBy="#{person.civilStatus}"
+						filterBy="#{person.civilStatus}" filterMatchMode="contains">
+						<h:outputText value="#{person.civilStatus}" />
+					</p:column>
+				</p:dataTable>
+			</p:tab>
+			<p:tab title="Asignar/Desasignar">
+				<p class="p-m-0">Sed ut perspiciatis unde omnis iste natus error
+					sit voluptatem accusantium doloremque laudantium, totam rem
+					aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
+					architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam
+					voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed
+					quia consequuntur magni dolores eos qui ratione voluptatem sequi
+					nesciunt. Consectetur, adipisci velit, sed quia non numquam eius
+					modi.</p>
+			</p:tab>
+
+		</p:tabView>
 
 
-								<p:column style="width:19px;">
-                            		#{row +1}
-                       			</p:column>
 
-							
+	</h:form>
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogProyecto" header="#{personBean.tituloDialog}" widgetVar="proyectoNewDialog" resizable="false" closable="true"
+		appendTo="@(body)" style="width:auto">
+		<h:form id="formProyecto">
 
-							</p:dataTable>
-						</p:tab>
-						<p:tab title="Asignar/Desasignar">
-							<p class="p-m-0">Sed ut perspiciatis unde omnis iste natus
-								error sit voluptatem accusantium doloremque laudantium, totam
-								rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-								quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
-								ipsam voluptatem quia voluptas sit aspernatur aut odit aut
-								fugit, sed quia consequuntur magni dolores eos qui ratione
-								voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia
-								non numquam eius modi.</p>
-						</p:tab>
-
-					</p:tabView>
-				
-
+		<h:panelGrid id="grid" columns="4">
+			<h:outputLabel for="dni" value="DNI:"/>
+            <p:inputText id="dni" value="#{personBean.personSelected.dni}" style="margin:10px"/>
+            
+            <h:outputLabel for="surname" value="Apellidos:"/>
+            <p:inputText id="surname" value="#{personBean.personSelected.surnames}" style="margin:10px"/>
+            
+            <h:outputLabel for="name" value="Nombres:"/>
+            <p:inputText id="name" value="#{personBean.personSelected.names}" style="margin:10px"/>
+            
+            <h:outputLabel for="address" value="Dirección:"/>
+            <p:inputText id="address" value="#{personBean.personSelected.address}" style="margin:10px"/>
+            
+            <h:outputLabel for="phone" value="Teléfono:"/>
+            <p:inputText id="phone" value="#{personBean.personSelected.phone}" style="margin:10px"/>
+            
+            <h:outputLabel for="option" value="Estado civil:" />
+				<p:selectOneMenu id="option" value="#{personBean.personSelected.civilStatus}" style="margin:10px">
+					<f:selectItem itemLabel="Soltero(a)" itemValue="Soltero" />
+					<f:selectItem itemLabel="Casado(a)" itemValue="Casado" />
+					<f:selectItem itemLabel="Viudo(a)" itemValue="Viudo" />
+					<f:selectItem itemLabel="Divorciado(a)" itemValue="Divorciado" />
+				</p:selectOneMenu>
+			</h:panelGrid>
+			<p:commandButton value="Guardar" actionListener="#{personBean.addUpdatePerson()}" /><h:outputLabel value="#{personBean.mensaje}"/>
 
 		</h:form>
-		<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogProyecto" header="NUEVO PROYECTO" 
-			widgetVar="proyectoNewDialog" resizable="false" closable="true" appendTo="@(body)" style="width:auto">
-			<h:form id="formProyecto">
-			
-				<p:panelGrid columns="4"
-	                 columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
-	                 layout="grid"
-	                 styleClass="ui-panelgrid-blank ui-fluid"
-	                 style="border:0px none; background-color:transparent;">
-	
-			    
-			        
-			    </p:panelGrid>
-
-
-			
-
-			</h:form>
-		</p:dialog>
+	</p:dialog>
 
 </ui:composition>

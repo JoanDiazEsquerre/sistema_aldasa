@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Usuario;
-import com.model.aldasa.service.ProyectoService;
+import com.model.aldasa.service.ProjectService;
 
 import javax.faces.convert.Converter;
 
@@ -25,18 +25,17 @@ import javax.faces.convert.Converter;
 public class ProyectoBean {
 	
 	@Autowired
-	private ProyectoService proyectoService;
+	private ProjectService proyectoService;
 
 	private List<Project> listProyecto;
 	
-	private Project proyectoSelected;
+	private Project projectSelected;
 
 	private String estado = "ACT";
 	
 
 	@PostConstruct
 	public void init() {
-
 		listarProyectos();
 	}
 
@@ -50,17 +49,15 @@ public class ProyectoBean {
 	}
 	
 	public void newProyecto() {
-		
-		
-		proyectoSelected = new Project();
+		projectSelected = new Project();
 		
 	}
 
-	public ProyectoService getProyectoService() {
+	public ProjectService getProyectoService() {
 		return proyectoService;
 	}
 
-	public void setProyectoService(ProyectoService proyectoService) {
+	public void setProyectoService(ProjectService proyectoService) {
 		this.proyectoService = proyectoService;
 	}
 
@@ -72,12 +69,12 @@ public class ProyectoBean {
 		this.listProyecto = listProyecto;
 	}
 
-	public Project getProyectoSelected() {
-		return proyectoSelected;
+	public Project getProjectSelected() {
+		return projectSelected;
 	}
 
-	public void setProyectoSelected(Project proyectoSelected) {
-		this.proyectoSelected = proyectoSelected;
+	public void setProjectSelected(Project projectSelected) {
+		this.projectSelected = projectSelected;
 	}
 
 	public String getEstado() {
