@@ -6,6 +6,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.PrimeFaces;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,8 @@ public class PersonBean {
 	private Person personSelected;
 
 	private String estado = "ACT";
-	private String tituloDialog,mensaje;
+	private String tituloDialog;
+	private String mensaje;
 
 	@PostConstruct
 	public void init() {
@@ -43,6 +45,7 @@ public class PersonBean {
 		tituloDialog = "NUEVA PERSONA";
 		mensaje="";
 		personSelected = new Person();
+		personSelected.setStatus("ACT");
 	}
 	
 	public void updatePerson() {
@@ -50,10 +53,10 @@ public class PersonBean {
 		mensaje="";
 	}
 	
-	public void addUpdatePerson() {
-		personSelected.getSurnames();
+	public void savePerson() {
+		
 	    personService.save(personSelected);
-	  
+	    lstPersons = personService.findByStatus(estado);
 	}
 	
 
@@ -107,4 +110,9 @@ public class PersonBean {
 	
 	
 
+	/**/
+	public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
+        FacesContext.getCurrentInstance().
+                addMessage(null, new FacesMessage(severity, summary, detail));
+    }
 }
