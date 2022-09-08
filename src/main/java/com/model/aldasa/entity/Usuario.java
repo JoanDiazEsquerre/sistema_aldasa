@@ -2,6 +2,8 @@ package com.model.aldasa.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -13,6 +15,11 @@ public class Usuario {
 	String username;
 	String password;
 	boolean status;
+	
+	@ManyToOne
+	@JoinColumn(name="idperson")
+	Person person;
+	
 	
 	
 	public int getId() {
@@ -39,12 +46,10 @@ public class Usuario {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-	
-	
-	
-
-	
-	
-	
-
+	public Person getPerson() {
+		return person;
+	}
+	public void setPerson(Person person) {
+		this.person = person;
+	}
 }

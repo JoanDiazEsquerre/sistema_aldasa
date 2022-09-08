@@ -42,12 +42,11 @@
 							<p:menuitem value="Prospeccion" ajax="false"
 								icon="pi pi-save"  update=":contenedor" actionListener="#{navegacionBean.getProcesoProspeccionPage()}"  />
 							<p:menuitem value="Menu en proceso..." icon="pi pi-refresh" />
-							<p:menuitem value="Menu en proceso..."
-								icon="pi pi-times" />
+							<p:menuitem value="Menu en proceso..." icon="pi pi-times" />
 						</p:submenu>
 						<p:submenu label="Mantenimientos">
-							<p:menuitem value="Personas" ajax="false" icon="pi pi-save"  update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPersonasPage()}"  />						
-							<p:menuitem value="Usuarios" icon="pi pi-external-link" />
+							<p:menuitem value="Personas" ajax="false" icon="pi pi-user-plus"  update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPersonasPage()}"  />						
+							<p:menuitem value="Usuarios" ajax="false" icon="pi pi-users" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoUsersPage()}" />
 							<p:menuitem value="Menu en proceso..." icon="pi pi-upload" />
 						</p:submenu>
 						<p:submenu label="Reportes">

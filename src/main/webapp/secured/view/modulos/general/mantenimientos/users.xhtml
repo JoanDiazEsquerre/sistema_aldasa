@@ -1,0 +1,94 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	locale="#{localeBean.usedLocale}"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+	<h:form id="form">
+
+		
+	<p:selectOneButton value="#{userBean.estado}">
+		<f:selectItem itemLabel="Activos" itemValue="#{true}" />
+		<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
+		<p:ajax update=":form:idTableProy"
+			listener="#{userBean.listarUsuarios()}" />
+	</p:selectOneButton>
+
+	<p:dataTable var="user" id="idTableProy" value="#{userBean.lstUsers}" widgetVar="usersTable" rowIndexVar="row" paginator="true" rows="15" size="small"
+		emptyMessage="No se encontraron usuarios."	paginatorPosition="bottom" rowKey="#{person.id}" selection="#{personBean.personSelected}" selectionMode="single">
+		<f:facet name="header">
+			<div class="p-d-flex p-ai-center p-jc-between">
+				<span>Lista de Usuarios</span>
+			</div>
+		</f:facet>
+		<!--<p:ajax event="rowSelect" update=":formProyecto :dialogProyecto" listener="#{personBean.updatePerson()}" oncomplete="PF('proyectoNewDialog').show();" />--> 
+
+		<p:column style="width:42px;text-align: left">
+			<f:facet name="header">
+				<p:commandLink action="#{personBean.newPerson()}"
+					update=":formProyecto :dialogProyecto"
+					oncomplete="PF('proyectoNewDialog').show();"
+					title="NUEVA PERSONA">
+					<p:graphicImage width="50" value="/recursos/images/anadir.png" />
+
+				</p:commandLink>
+			</f:facet>
+		</p:column>
+
+		<p:column width="25px">
+                      #{row +1}
+        </p:column>
+        
+		<p:column headerText="Nombre de Usuario" sortBy="#{user.username}"
+			filterBy="#{user.username}" filterMatchMode="contains">
+			<h:outputText value="#{user.username}" />
+		</p:column>
+		<p:column headerText="Contraseña" sortBy="#{user.password}" filterBy="#{user.password}"	filterMatchMode="contains">
+			<h:outputText value="#{user.password}" />
+		</p:column>
+		<p:column headerText="Teléfono" sortBy="#{user.person.phone}" filterBy="#{user.person.phone}"	filterMatchMode="contains">
+			<h:outputText value="#{user.person.phone}" />
+		</p:column>
+	</p:dataTable>
+			
+
+	</h:form>
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogProyecto" header="#{personBean.tituloDialog}" widgetVar="proyectoNewDialog" resizable="false" closable="true"
+		appendTo="@(body)" style="width:auto">
+		<h:form id="formProyecto">
+
+		<h:panelGrid id="grid" columns="4">
+			<h:outputLabel for="dni" value="DNI:"/>
+            <p:inputText id="dni" value="#{personBean.personSelected.dni}" style="margin:10px"/>
+            
+            <h:outputLabel for="surname" value="Apellidos:"/>
+            <p:inputText id="surname" value="#{personBean.personSelected.surnames}" style="margin:10px"/>
+            
+            <h:outputLabel for="name" value="Nombres:"/>
+            <p:inputText id="name" value="#{personBean.personSelected.names}" style="margin:10px"/>
+            
+            <h:outputLabel for="address" value="Dirección:"/>
+            <p:inputText id="address" value="#{personBean.personSelected.address}" style="margin:10px"/>
+            
+            <h:outputLabel for="phone" value="Teléfono:"/>
+            <p:inputText id="phone" value="#{personBean.personSelected.phone}" style="margin:10px"/>
+            
+            <h:outputLabel for="option" value="Estado civil:" />
+				<p:selectOneMenu id="option" value="#{personBean.personSelected.civilStatus}" style="margin:10px">
+					<f:selectItem itemLabel="Soltero(a)" itemValue="Soltero" />
+					<f:selectItem itemLabel="Casado(a)" itemValue="Casado" />
+					<f:selectItem itemLabel="Viudo(a)" itemValue="Viudo" />
+					<f:selectItem itemLabel="Divorciado(a)" itemValue="Divorciado" />
+				</p:selectOneMenu>
+			</h:panelGrid>
+			<p:commandButton value="Guardar" actionListener="#{personBean.savePerson()}" 
+						oncomplete="PF('proyectoNewDialog').hide()"  update=":form:idTableProy"
+			/><h:outputLabel value="#{personBean.mensaje}"/>
+
+		</h:form>
+	</p:dialog>
+
+</ui:composition>

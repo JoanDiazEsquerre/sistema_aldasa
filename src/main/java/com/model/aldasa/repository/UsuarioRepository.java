@@ -12,7 +12,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
 	
 	Usuario findByUsername(String username);
 	Usuario findById(String id);
-	List<Usuario> findByStatus(int status);
+	List<Usuario> findByStatus(boolean status);
 	
 	//@Query(value = "select p from user p WHERE p.estado=:estado order by p.nombre")
 	//List<Usuario> findByRolJP(@Param(value = "estado") String estado);

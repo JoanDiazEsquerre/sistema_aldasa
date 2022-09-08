@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ManagedBean
 @SessionScoped
-public class NavegacionBean {
+public class NavegacionBean { 
 	
 	private String ruta;
 	
@@ -17,7 +17,7 @@ public class NavegacionBean {
 	@PostConstruct
 	public void init() {
 
-		ruta="modulos/prospeccion/procesos/prospeccion.xhtml";
+		ruta = "modulos/prospeccion/mantenimientos/personas.xhtml";
 	}
 	
 	public void getProcesoProspeccionPage() {
@@ -26,6 +26,10 @@ public class NavegacionBean {
 	
 	public void getMantenimientoPersonasPage() {
         ruta = "modulos/prospeccion/mantenimientos/personas.xhtml";
+    }
+	
+	public void getMantenimientoUsersPage() {
+        ruta = "modulos/general/mantenimientos/users.xhtml";
     }
 
 

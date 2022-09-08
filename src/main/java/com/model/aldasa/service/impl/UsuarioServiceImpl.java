@@ -16,7 +16,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	private UsuarioRepository usuarioRepository;
 	
 	@Override
-	public List<Usuario> findByStatus(int status) {
+	public List<Usuario> findByStatus(boolean status) {
 		return usuarioRepository.findByStatus(status);
 	}
 	
