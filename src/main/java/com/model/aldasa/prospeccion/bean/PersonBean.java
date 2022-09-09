@@ -24,7 +24,7 @@ public class PersonBean {
 
 	private List<Person> lstPersons;
 
-	private Person personSelected;
+	private Person personSelected; 
 
 	private String estado = "ACT";
 	private String tituloDialog;

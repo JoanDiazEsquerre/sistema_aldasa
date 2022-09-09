@@ -18,7 +18,7 @@ import com.model.aldasa.service.UsuarioService;
 public class UserBean {
 	
 	@Autowired
-	private UsuarioService usuarioService;
+	private UsuarioService usuarioService; 
 	
 	private List<Usuario> lstUsers;
 	private Usuario userSelected;
@@ -27,6 +27,7 @@ public class UserBean {
 	@PostConstruct
 	public void init() {
 		listarUsuarios();
+		
 	}
 	
 	public void listarUsuarios() {
