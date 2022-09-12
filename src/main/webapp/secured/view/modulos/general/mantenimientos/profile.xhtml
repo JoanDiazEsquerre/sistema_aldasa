@@ -8,38 +8,42 @@
 
 
 	<h:form id="form">
-      
-      <p:commandButton value="Nuevo Perfil" oncomplete="PF('profileDialog').show();"/>
-      
-      <p:dataTable id="profileTable" value="#{profileBean.listProfile}" var="profile"  widgetVar="profileTable" rowIndexVar="row" paginator="true" rows="15" size="small" 
-      emptyMessage="No se encontraron perfiles." paginatorPosition="bottom" rowKey="#(profile.id)">
-        <f:facet name="header">
-          <div class="p-d-flex p-ai-center p-jc-between">
-            <span>Lista de Perfiles</span>
-            </div>
-        </f:facet>
-        <p:column width="25px">
-					#{row+1}
-			</p:column>
-			<p:column  headerText="Descripcion" sortBy="#{profile.name}"
-			filterBy="#{profile.name}" filterMatchModde="contains"
-					 >
-			       #{profile.name}
-			</p:column>
-                   
-      </p:dataTable>
-		
+      <p:commandButton action="#{profileBean.newProfile()}" value="Nuevo Perfil" oncomplete="PF('profileDialog').show();"/>
+		<p:dataTable id="profileTable" value="#{profileBean.listProfile}" 
+			var="profile" widgetVar="profileTable" rowIndexvar="row"
+			paginator="true" rows="15" size="small"
+			emptyMessage="No se encontraron perfiles." paginatorPosition="bottom"
+			rowKey="#(profile.id)">
+			<f:facet name="header">
+				<div class="p-d-flex p-ai-center p-jc-between">
+					<span>Lista de Perfiles</span>
+				</div>
+			</f:facet>
+			<p:ajax event="rowSelect" update=":formProfileDialog :dialogProfile" listener="#{profileBean.newProfile()}"
+				oncomplete="PF('profileDialog').show();" />
+
+			<p:column width="25px">
+                      #{row +1}
+        </p:column>
+			<p:column headerText="Descripcion" sortBy="#{profile.name}"
+				filterBy="#{profile.name}" filterMatchMode="contains">
+      			#{profile.name}
+      		</p:column>
+		</p:dataTable>
+
 	</h:form>
-	
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogProfile" header="NUEVO PERFIL" widgetVar="profileDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
-			<h:form id="formProyecto">
-			
-				<h:outputLabel for="nombre" value="Descripcion:"/>
-	            <p:inputText id="nombre" />
-	        	<br/>    
-	            <p:commandButton value="Guardar" />
-			</h:form>
+		<h:form id="formProfileDialog">
+			<h:panelGrid id="grid" columns="2">
+				<h:outputLabel value="Nombre de Perfil: " for="nombrePerfil" />
+				<p:inputText value="#{profileBean.profileSelected.name}"
+					id="nombrePerfil" />
+				<p:commandButton value="Guardar" action="#{profileBean.saveProfile()}" oncomplete="PF('profileDialog').hide();"
+					update=":form:profileTable"/>
+			</h:panelGrid>
+		</h:form>
 	</p:dialog>
-
+		
+	
 </ui:composition>
