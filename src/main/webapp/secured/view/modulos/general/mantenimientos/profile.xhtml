@@ -1,0 +1,45 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	locale="#{localeBean.usedLocale}"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+	<h:form id="form">
+      
+      <p:commandButton value="Nuevo Perfil" oncomplete="PF('profileDialog').show();"/>
+      
+      <p:dataTable id="profileTable" value="#{profileBean.listProfile}" var="profile"  widgetVar="profileTable" rowIndexVar="row" paginator="true" rows="15" size="small" 
+      emptyMessage="No se encontraron perfiles." paginatorPosition="bottom" rowKey="#(profile.id)">
+        <f:facet name="header">
+          <div class="p-d-flex p-ai-center p-jc-between">
+            <span>Lista de Perfiles</span>
+            </div>
+        </f:facet>
+        <p:column width="25px">
+					#{row+1}
+			</p:column>
+			<p:column  headerText="Descripcion" sortBy="#{profile.name}"
+			filterBy="#{profile.name}" filterMatchModde="contains"
+					 >
+			       #{profile.name}
+			</p:column>
+                   
+      </p:dataTable>
+		
+	</h:form>
+	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogProfile" header="NUEVO PERFIL" widgetVar="profileDialog" resizable="false" closable="true"
+		appendTo="@(body)" style="width:auto">
+			<h:form id="formProyecto">
+			
+				<h:outputLabel for="nombre" value="Descripcion:"/>
+	            <p:inputText id="nombre" />
+	        	<br/>    
+	            <p:commandButton value="Guardar" />
+			</h:form>
+	</p:dialog>
+
+</ui:composition>
