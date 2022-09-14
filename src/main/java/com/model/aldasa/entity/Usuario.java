@@ -20,6 +20,10 @@ public class Usuario {
 	@JoinColumn(name="idperson")
 	Person person;
 	
+	@ManyToOne
+	@JoinColumn(name="idprofile")
+	Profile profile;
+	
 	
 	
 	public int getId() {
@@ -51,5 +55,11 @@ public class Usuario {
 	}
 	public void setPerson(Person person) {
 		this.person = person;
+	}
+	public Profile getProfile() {
+		return profile;
+	}
+	public void setProfile(Profile profile) {
+		this.profile = profile;
 	}
 }

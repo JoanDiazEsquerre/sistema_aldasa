@@ -18,8 +18,8 @@ public class Person {
 	@Column(name="civilstatus")
 	String civilStatus;
 	
-	int dni;
-	String names, surnames, address, phone, status;
+	String dni,names, surnames, address, phone;
+	boolean status;
 	
 	
 	public Integer getId() {
@@ -28,10 +28,10 @@ public class Person {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public int getDni() {
+	public String getDni() {
 		return dni;
 	}
-	public void setDni(int dni) {
+	public void setDni(String dni) {
 		this.dni = dni;
 	}
 	public String getNames() {
@@ -58,17 +58,17 @@ public class Person {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
+	
 	public String getCivilStatus() {
 		return civilStatus;
 	}
 	public void setCivilStatus(String civilStatus) {
 		this.civilStatus = civilStatus;
 	}
-
+	public boolean isStatus() {
+		return status;
+	}
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
 }

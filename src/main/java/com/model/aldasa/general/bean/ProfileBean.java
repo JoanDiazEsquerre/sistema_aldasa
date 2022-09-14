@@ -23,12 +23,12 @@ public class ProfileBean {
 	@Autowired
 	private ProfileService profileService;
 	
-	private List<Profile> ListProfile;
+	private List<Profile> listProfile;
 	private Profile profileSelected;
 	
 	@PostConstruct
 	public void init() {
-		ListProfile=profileService.findByStatus(true);
+		listProfile=profileService.findByStatus(true);
 	}
 	public void newProfile() {
 		profileSelected=new Profile();
@@ -38,7 +38,7 @@ public class ProfileBean {
 	
 	public void saveProfile() {
 		profileService.save(profileSelected);
-		ListProfile=profileService.findByStatus(true);
+		listProfile=profileService.findByStatus(true);
 	}
 	
 	public ProfileService getProfileService() {
@@ -49,19 +49,20 @@ public class ProfileBean {
 		this.profileService = profileService;
 	}
 	
+	
+	
 	public List<Profile> getListProfile() {
-		return ListProfile;
+		return listProfile;
 	}
-	
 	public void setListProfile(List<Profile> listProfile) {
-		ListProfile = listProfile;
+		this.listProfile = listProfile;
 	}
-	
 	public Profile getProfileSelected() {
 		return profileSelected;
 	}
 	public void setProfileSelected(Profile profileSelected) {
 		this.profileSelected = profileSelected;
 	}
+	
 	
 }

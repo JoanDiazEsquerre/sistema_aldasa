@@ -9,11 +9,9 @@
 
 	<h:form id="form">
       <p:commandButton action="#{profileBean.newProfile()}" value="Nuevo Perfil" oncomplete="PF('profileDialog').show();"/>
-		<p:dataTable id="profileTable" value="#{profileBean.listProfile}" 
-			var="profile" widgetVar="profileTable" rowIndexvar="row"
-			paginator="true" rows="15" size="small"
-			emptyMessage="No se encontraron perfiles." paginatorPosition="bottom"
-			rowKey="#(profile.id)">
+      
+		<p:dataTable var="profile" id="profileTable" value="#{profileBean.listProfile}" widgetVar="profileTable" rowIndexvar="row" paginator="true" rows="15" size="small" 
+			emptyMessage="No se encontraron perfiles." paginatorPosition="bottom" selection="#{profileBean.profileSelected}" rowKey="#(profile.id)" selectionMode="single">
 			<f:facet name="header">
 				<div class="p-d-flex p-ai-center p-jc-between">
 					<span>Lista de Perfiles</span>

@@ -29,11 +29,10 @@ public class PersonServiceImpl implements PersonService {
 	@Override
 	public void delete(Person entity) {
 		clientRepository.delete(entity);
-		
 	}
 
 	@Override
-	public List<Person> findByStatus(String status) {
+	public List<Person> findByStatus(Boolean status) {
 		return clientRepository.findByStatus(status);
 	}
 
