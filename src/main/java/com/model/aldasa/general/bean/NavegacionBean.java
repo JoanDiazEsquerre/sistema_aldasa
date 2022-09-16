@@ -17,7 +17,7 @@ public class NavegacionBean {
 	@PostConstruct
 	public void init() {
 
-		ruta = "modulos/prospeccion/mantenimientos/personas.xhtml";
+		ruta = "modulos/general/mantenimientos/inicio.xhtml";
 	}
 	
 	public void getProcesoProspeccionPage() {

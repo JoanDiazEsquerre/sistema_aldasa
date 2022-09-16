@@ -13,5 +13,7 @@ public interface PersonService {
 	Person save(Person client);
 	void delete(Person client);
 	List<Person> findByStatus(Boolean status);
+	Person findByDni(String dni);
+	Person findByDniException(String dni, int idUser);
 
 }

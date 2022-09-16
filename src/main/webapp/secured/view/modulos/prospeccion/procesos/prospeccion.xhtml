@@ -5,98 +5,314 @@
 	xmlns:pe="http://primefaces.org/ui/extensions"
 	locale="#{localeBean.usedLocale}"
 	xmlns:f="http://java.sun.com/jsf/core">
-<!-- 				<p:growl autoUpdate="true" id="growl1" showDetail="true" sticky="true" /> -->
+	<!-- 				<p:growl autoUpdate="true" id="growl1" showDetail="true" sticky="true" /> -->
 
-		<h:form id="form">
+	<h:form id="form">
+		<p:tabView id="tabView">
+			<p:tab title="Lista de Prospecciones">
+				<p:selectOneButton>
+					<f:selectItem itemLabel="En proceso"/>
+					<f:selectItem itemLabel="Concluido"/>
+					<p:ajax update=":form:tabView:idTableProy"
+						listener="#{clientBean.listarCliente()}" />
+				</p:selectOneButton>
 
-					<p:tabView id="tabView">
+				<p:dataTable var="proy" id="idTableProy" value="#{personBean.lstPersons}" widgetVar="personsTable" rowIndexVar="row" paginator="true" rows="15" size="small" 
+					emptyMessage="No se encontraron Personas." paginatorPosition="bottom" rowKey="#{per.id}" selection="#{personBean.personSelected}" selectionMode="single">
+					<f:facet name="header">
+						<div class="p-d-flex p-ai-center p-jc-between">
+							<span>Lista de Prospectos</span>
+						</div>
+					</f:facet>
+					<p:ajax event="rowSelect" oncomplete="PF('dialogProspecto').show();" />
 
-						<p:tab title="Proyectos">
-							<p:selectOneButton value="#{clientBean.estado}">
-								<f:selectItem itemLabel="Activos" itemValue="ACT" />
-								<f:selectItem itemLabel="Inactivos" itemValue="INC" />
-								<p:ajax update=":form:tabView:idTableProy" listener="#{clientBean.listarCliente()}" />
-							</p:selectOneButton>
-
-							<p:dataTable var="proy" id="idTableProy" value="#{clientBean.lstClients}" widgetVar="customersTable" rowIndexVar="row" paginator="true" rows="15" size="small"
-								emptyMessage="No se encontraron proyectos." paginatorPosition="bottom" rowKey="#{proy.id}" selection="#{clientBean.clientSelected}" selectionMode="single">
-								<f:facet name="header">
-									<div class="p-d-flex p-ai-center p-jc-between">
-										<span>Lista de Prospectos</span>
-									</div>
-								</f:facet>
-<!-- 								<p:ajax event="rowSelect" update=":formProyecto :dialogProyecto" listener="#{proyectoBean.newProyecto()}" oncomplete="PF('proyectoNewDialog').show();" /> -->
-
-								<p:column style="width:19px;text-align: left">
-									<f:facet name="header">
-										<p:commandLink action="#{proyectoBean.newProyecto}"
-											update=":formProyecto :dialogProyecto"
-											oncomplete="PF('proyectoNewDialog').show();"
-											title="NUEVO PROYECTO">
-											<p:graphicImage width="27"
-												value="/recursos/images/anadir.png" />
-
-										</p:commandLink>
-									</f:facet>
-								</p:column>
+					<p:column style="width:19px;text-align: left">
+						<f:facet name="header">
+							<p:commandLink oncomplete="PF('proyectoNewDialog').show();"
+								title="NUEVO PROYECTO">
+								<p:graphicImage width="27" value="/recursos/images/anadir.png" />
+							</p:commandLink>
+						</f:facet>
+					</p:column>
 
 
-								<p:column style="width:19px;">
+					<p:column style="width:19px;">
                             		#{row +1}
                        			</p:column>
-                       			<p:column headerText="DNI" sortBy="#{proy.dni}" filterBy="#{proy.dni}" filterMatchMode="contains">
-									<h:outputText value="#{proy.dni}"/>
-								</p:column>
-								<p:column headerText="Nombre" sortBy="#{proy.names}" filterBy="#{proy.names}" filterMatchMode="contains">
-									<h:outputText value="#{proy.names}"/>
-								</p:column>
-								<p:column headerText="Apellidos" sortBy="#{proy.surnames}" filterBy="#{proy.surnames}" filterMatchMode="contains">
-									<h:outputText value="#{proy.surnames}"/>
-								</p:column>
-								<p:column headerText="Dirección" sortBy="#{proy.address}" filterBy="#{proy.address}" filterMatchMode="contains">
-									<h:outputText value="#{proy.address}"/>
-								</p:column>
-								<p:column headerText="Teléfono" sortBy="#{proy.phone}" filterBy="#{proy.phone}" filterMatchMode="contains">
-									<h:outputText value="#{proy.phone}"/>
-								</p:column>
-								
-
-							</p:dataTable>
-						</p:tab>
-						<p:tab title="Asignar/Desasignar">
-							<p class="p-m-0">Sed ut perspiciatis unde omnis iste natus
-								error sit voluptatem accusantium doloremque laudantium, totam
-								rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-								quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
-								ipsam voluptatem quia voluptas sit aspernatur aut odit aut
-								fugit, sed quia consequuntur magni dolores eos qui ratione
-								voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia
-								non numquam eius modi.</p>
-						</p:tab>
-
-					</p:tabView>
+					<p:column headerText="DNI" sortBy="#{proy.dni}"
+						filterBy="#{proy.dni}" filterMatchMode="contains">
+						<h:outputText value="#{proy.dni}" />
+					</p:column>
+					<p:column headerText="Apellidos y Nombres" sortBy="#{proy.names}"
+						filterBy="#{proy.names}" filterMatchMode="contains">
+						<h:outputText value="#{proy.surnames} #{proy.names}" />
+					</p:column>
+					<p:column headerText="Fecha de inicio" sortBy="#{proy.surnames}"
+						filterBy="#{proy.surnames}" filterMatchMode="contains">
+						<h:outputText value="16/09/2022" />
+					</p:column>
+					<p:column headerText="Origen de contacto" sortBy="#{proy.address}"
+						filterBy="#{proy.address}" filterMatchMode="contains">
+						<h:outputText value="Campo" />
+					</p:column>
+					<p:column headerText="Proyecto" sortBy="#{proy.address}"
+						filterBy="#{proy.address}" filterMatchMode="contains">
+						<h:outputText value="Proyecto 1" />
+					</p:column>
+				</p:dataTable>
+			</p:tab>
+			<p:tab title="Nueva Prospección">
+				<h:panelGrid id="grid" columns="3"> 
+					<h:outputLabel for="username" value="Nombre de Prospecto: " />
+					<p:inputText id="username" style="margin:5px" />
+					<p:commandLink oncomplete="PF('personNewDialog').show();" title="NUEVO PROSPECTO">
+						<p:graphicImage width="30" value="/recursos/images/anadir.png" />
+					</p:commandLink>
+					
+					<h:outputLabel for="basic" value="Fecha de inicio: " />
+					<p:datePicker id="basic" style="margin:5px"/>
+					<p:spacer></p:spacer>
+					
+					<h:outputLabel for="basic" value="Origen de contacto: " />
+					<p:selectOneMenu style="margin:5px" >
+						<f:selectItem itemLabel="Campo" itemValue="1"/>
+						<f:selectItem itemLabel="Redes sociales" itemValue="2"/>
+						<f:selectItem itemLabel="Sitio web oficial" itemValue="3"/>
+						<f:selectItem itemLabel="Referido" itemValue="4"/>
+					</p:selectOneMenu>
+					<p:spacer></p:spacer>
+					
+					<h:outputLabel for="basic" value="Proyecto: " />
+					<p:selectOneMenu style="margin:5px" >
+						<f:selectItem itemLabel="Proyecto 1" itemValue="1"/>
+						<f:selectItem itemLabel="Proyecto 2" itemValue="2"/>
+						<f:selectItem itemLabel="proyecto 3" itemValue="3"/>
+						<f:selectItem itemLabel="Proyecto 4" itemValue="4"/>
+					</p:selectOneMenu>
+					<p:spacer></p:spacer>
 				
-
-
-		</h:form>
-		<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogProyecto" header="NUEVO PROYECTO" 
-			widgetVar="proyectoNewDialog" resizable="false" closable="true" appendTo="@(body)" style="width:auto">
-			<h:form id="formProyecto">
-			
-				<p:panelGrid columns="4"
-	                 columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
-	                 layout="grid"
-	                 styleClass="ui-panelgrid-blank ui-fluid"
-	                 style="border:0px none; background-color:transparent;">
+					<p:commandButton value="Iniciar prospección" />
+				
+				</h:panelGrid>
+				
+			</p:tab>
+		</p:tabView>
+	</h:form>
 	
-			    
-			        
-			    </p:panelGrid>
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogProspecto" header="PROSPECTO:" widgetVar="dialogProspecto" resizable="false" closable="true"
+		appendTo="@(body)" width="90%" >
+		<h:form >
+			<p:tabView> 
+				<p:tab title="Eventos">
+					<h:panelGrid columns="2"> 
+						<h:outputLabel for="username" value="Acción: " />
+						<p:selectOneMenu style="margin:5px" >
+							<f:selectItem itemLabel="Llamada" itemValue="1"/>
+							<f:selectItem itemLabel="Envio de mensaje" itemValue="2"/>
+							<f:selectItem itemLabel="Visita a domicilio" itemValue="3"/>
+							<f:selectItem itemLabel="Visita del proyecto" itemValue="4"/>
+						</p:selectOneMenu>
+						
+						
+						<h:outputLabel for="time" value="Fecha y Hora: " />
+						<p:datePicker id="time" showTime="true" style="margin:5px" pattern="dd/MM/yyyy HH:mm a"/>
+						
+						<h:outputLabel value="Comentario: " />
+						<p:inputTextarea rows="2" cols="33" style="margin:5px"/>
+											
+					</h:panelGrid>
+					<p:fileUpload value="#{fileUploadView.file}" mode="simple" skinSimple="true"/><br></br>
+					<p:commandButton value="Guardar" style="margin-top:10px"/>
+					
+					 
 
+					<p:dataTable var="user"	 widgetVar="usersTable"	rowIndexVar="row" paginator="true" rows="5" size="small"
+						emptyMessage="No se registraron eventos." paginatorPosition="bottom" rowKey="#{user.id}"	selection="#{userBean.userSelected}" selectionMode="single">
+						<f:facet name="header">
+							<div class="p-d-flex p-ai-center p-jc-between">
+								<span>Lista de Eventos</span>
+							</div>
+						</f:facet>
+						
 
-			
+						<p:column style="width:42px;text-align: left">
+							<f:facet name="header">
+							#
+							</f:facet>
+						</p:column>
 
-			</h:form>
-		</p:dialog>
+						<p:column width="25px">
+                      		#{row +1}
+        				</p:column>
+
+						<p:column headerText="Acción" sortBy="#{user.username}"
+							filterBy="#{user.username}" filterMatchMode="contains">
+							<h:outputText value="Llamada" />
+						</p:column>
+						<p:column headerText="Fecha y Hora" sortBy="#{user.password}"
+							filterBy="#{user.password}" filterMatchMode="contains">
+							<h:outputText value="12/12/2022 12:34" />
+						</p:column>
+						
+						<p:column headerText="Eliminar" >
+							<h:outputText value="#{user.profile.name}" />
+						</p:column>
+					</p:dataTable>
+
+				</p:tab>
+				<p:tab title="Agendar">
+					<h:panelGrid columns="2"> 
+						<h:outputLabel value="Acción: " />
+						<p:selectOneMenu style="margin:5px" >
+							<f:selectItem itemLabel="Llamada" itemValue="1"/>
+							<f:selectItem itemLabel="Envio de mensaje" itemValue="2"/>
+							<f:selectItem itemLabel="Visita a domicilio" itemValue="3"/>
+							<f:selectItem itemLabel="Visita del proyecto" itemValue="4"/>
+						</p:selectOneMenu>
+						
+						<h:outputLabel  value="Programar Fecha y Hora: " />
+						<p:datePicker showTime="true"  style="margin:5px"/>
+						
+						<h:outputLabel value="Comentario: " />
+						<p:inputTextarea rows="2" cols="33" style="margin:5px"/>
+						
+						<p:commandButton value="Guardar" />
+					
+					</h:panelGrid>
+
+					<p:dataTable var="user"	 widgetVar="usersTable"	rowIndexVar="row" paginator="true" rows="5" size="small"
+						emptyMessage="No se registraron Agendas." paginatorPosition="bottom" rowKey="#{user.id}"	selection="#{userBean.userSelected}" selectionMode="single">
+						<f:facet name="header">
+							<div class="p-d-flex p-ai-center p-jc-between">
+								<span>Lista de Agenda</span>
+							</div>
+						</f:facet>
+						
+
+						<p:column style="width:42px;text-align: left">
+							<f:facet name="header">
+							#
+							</f:facet>
+						</p:column>
+
+						<p:column width="25px">
+                      		#{row +1}
+        				</p:column>
+
+						<p:column headerText="Acción" sortBy="#{user.username}"
+							filterBy="#{user.username}" filterMatchMode="contains">
+							<h:outputText value="Llamada" />
+						</p:column>
+						<p:column headerText="Fecha y Hora" sortBy="#{user.password}"
+							filterBy="#{user.password}" filterMatchMode="contains">
+							<h:outputText value="12/12/2022 12:34" />
+						</p:column>
+						
+						<p:column headerText="Eliminar" >
+							<h:outputText value="#{user.profile.name}" />
+						</p:column>
+					</p:dataTable>
+				
+				</p:tab>
+			</p:tabView> 
+		</h:form>
+	</p:dialog>
+	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPerson" header="NUEVO PROSPECTO" widgetVar="personNewDialog" resizable="false" closable="true"
+		appendTo="@(body)" style="width:auto">
+		<h:form id="formDialog">
+			<p:messages id="messages" showDetail="true" closable="true">
+	            <p:autoUpdate/>
+	        </p:messages>
+			<h:panelGrid id="grid" columns="4">
+				<h:outputLabel for="dni" value="DNI:" />
+				<p:inputText id="dni" value="#{personBean.personSelected.dni}" style="margin:10px"	/>
+
+				<h:outputLabel for="surname" value="Apellidos:" />
+				<p:inputText id="surname" value="#{personBean.personSelected.surnames}" style="margin:10px" />
+
+				<h:outputLabel for="name" value="Nombres:" />
+				<p:inputText id="name" value="#{personBean.personSelected.names}" style="margin:10px"  />
+
+				<h:outputLabel for="address" value="Dirección:" />
+				<p:inputText id="address" value="#{personBean.personSelected.address}" style="margin:10px"  />
+
+				<h:outputLabel for="phone" value="Teléfono:" />
+				<p:inputText id="phone" value="#{personBean.personSelected.phone}" style="margin:10px" />
+
+				<h:outputLabel for="option" value="Estado civil:" />
+				<p:selectOneMenu id="option" value="#{personBean.personSelected.civilStatus}" style="margin:10px">
+					<f:selectItem itemLabel="Soltero(a)" itemValue="Soltero" />
+					<f:selectItem itemLabel="Casado(a)" itemValue="Casado" />
+					<f:selectItem itemLabel="Viudo(a)" itemValue="Viudo" />
+					<f:selectItem itemLabel="Divorciado(a)" itemValue="Divorciado" />
+				</p:selectOneMenu>
+				
+			</h:panelGrid>
+			<p:commandButton value="Guardar" />
+ 
+		</h:form>
+	</p:dialog>
+	
+	<script>
+    PrimeFaces.locales['es'] = {
+        closeText: 'Cerrar',
+        prevText: 'Anterior',
+        nextText: 'Siguiente',
+        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+        dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+        weekHeader: 'Semana',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: '',
+        timeOnlyTitle: 'Sólo hora',
+        timeText: 'Tiempo',
+        hourText: 'Hora',
+        minuteText: 'Minuto',
+        secondText: 'Segundo',
+        millisecondText: 'Milisegundo',
+        currentText: 'Fecha actual',
+        ampm: false,
+        month: 'Mes',
+        week: 'Semana',
+        day: 'Día',
+        allDayText: 'Todo el día',
+        today: 'Hoy',
+        clear: 'Claro'
+    };
+    PrimeFaces.locales ['de'] = {
+        closeText: 'Schließen',
+        prevText: 'Zurück',
+        nextText: 'Weiter',
+        monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+        monthNamesShort: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+        dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+        dayNamesShort: ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam'],
+        dayNamesMin: ['S', 'M', 'D', 'M ', 'D', 'F ', 'S'],
+        weekHeader: 'Woche',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: '',
+        timeOnlyTitle: 'Nur Zeit',
+        timeText: 'Zeit',
+        hourText: 'Stunde',
+        minuteText: 'Minute',
+        secondText: 'Sekunde',
+        millisecondText: 'Millisekunde',
+        currentText: 'Aktuelles Datum',
+        ampm: false,
+        month: 'Monat',
+        week: 'Woche',
+        day: 'Tag',
+        allDayText: 'Ganzer Tag',
+        today: 'Heute',
+        clear: 'Löschen'
+    };
+</script>
 
 </ui:composition>

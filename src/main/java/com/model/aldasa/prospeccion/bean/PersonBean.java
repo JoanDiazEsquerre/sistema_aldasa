@@ -85,22 +85,44 @@ public class PersonBean{
 		
 		if(person.getDni().equals("") || person.getDni()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar DNI."));
+			listarPersonas();
 			return false ;
+		}else {
+			if(tituloDialog.equals("NUEVA PERSONA")) {
+				Person buscarPorDni = personService.findByDni(person.getDni());
+				if(buscarPorDni!=null) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El DNI ya existe."));
+					listarPersonas();
+					return false;
+				}
+			}else {
+				Person buscarPorDni = personService.findByDniException(person.getDni(),person.getId());
+				if(buscarPorDni!=null) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El DNI ya existe."));
+					listarPersonas();
+					return false;
+				}
+			}
+			
 		}
 		if(person.getSurnames().equals("") || person.getSurnames()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Apellidos."));
+			listarPersonas();
 			return false ;
 		}
 		if(person.getNames().equals("") || person.getNames()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Nombres."));
+			listarPersonas();
 			return false ;
 		}
 		if(person.getAddress().equals("") || person.getAddress()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar dirección."));
+			listarPersonas();
 			return false ;
 		}
 		if(person.getPhone().equals("") || person.getPhone()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Teléfono."));
+			listarPersonas();
 			return false ;
 		}
 		

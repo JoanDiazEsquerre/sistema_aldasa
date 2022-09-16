@@ -14,5 +14,7 @@ public interface UsuarioService {
 	List<Usuario> findByStatus(boolean estado);
 	Usuario findByPerson(Person person);
 	Usuario findByUsername(String username);
+	Usuario findByUsernameException(String username, int idUser);
+	Usuario findByByPersonException(int idPersona, int idUser);
 
 }

@@ -88,34 +88,60 @@ public class UserBean{
 		
 		if(user.getUsername().equals("") || user.getUsername()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Nombre de usuario."));
+			listarUsuarios();
 			return false ;
 		}else {
-			Usuario buscaUsername = usuarioService.findByUsername(user.getUsername());
-			if(buscaUsername!=null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya existe el nombre de usuario."));
-				return false ;
+			if(tituloDialog.equals("NUEVO USUARIO")) {
+				Usuario buscaUsername = usuarioService.findByUsername(user.getUsername());
+				if(buscaUsername!=null ) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya existe el nombre de usuario."));
+					listarUsuarios();
+					return false ;
+				}
+			}else {
+				Usuario buscaUsername = usuarioService.findByUsernameException(user.getUsername(), userSelected.getId());
+				if(buscaUsername!=null ) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya existe el nombre de usuario."));
+					listarUsuarios();
+					return false ;
+				}
 			}
+			
 		}
 		
 		if(user.getPassword().equals("") || user.getPassword()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar contraseña."));
+			listarUsuarios();
 			return false ;
 		}
 		
 		if(user.getPerson()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta asignar una persona."));
+			listarUsuarios();
 			return false ;
 		}else {
-			Usuario buscarPorPersona =usuarioService.findByPerson(userSelected.getPerson());
-			if(buscarPorPersona!=null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La persona esta asignada en otro Usuario."));
-				return false;
+			if(tituloDialog.equals("NUEVO USUARIO")) {
+				Usuario buscarPorPersona =usuarioService.findByPerson(user.getPerson());
+				if(buscarPorPersona!=null) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La persona esta asignada en otro Usuario."));
+					listarUsuarios();
+					return false;
+				}
+			}else {
+				Usuario buscaUsername = usuarioService.findByByPersonException(user.getPerson().getId(), user.getId());
+				if(buscaUsername!=null ) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La persona esta asignada en otro Usuario.."));
+					listarUsuarios();
+					return false ;
+				}
 			}
+			
 			
 		}
 		
 		if(user.getProfile()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta asignar Perfil."));
+			listarUsuarios();
 			return false ;
 		}
 		

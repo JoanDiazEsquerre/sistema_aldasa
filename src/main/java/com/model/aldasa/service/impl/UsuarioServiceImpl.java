@@ -47,5 +47,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 		return usuarioRepository.findByUsername(username);
 	}
 	
+	@Override
+	public Usuario findByUsernameException(String username, int idUser){
+		return usuarioRepository.findByUsernameException(username, idUser);
+	}
+	
+	@Override
+	public Usuario findByByPersonException(int idPersona, int idUser) {
+		return usuarioRepository.findByByPersonException(idPersona, idUser);
+	}
+	
 
 }

@@ -14,26 +14,36 @@ import com.model.aldasa.service.PersonService;
 public class PersonServiceImpl implements PersonService {
 	
 	@Autowired
-	private PersonRepository clientRepository;
+	private PersonRepository personRepository;
 	
 	@Override
 	public Optional<Person> findById(Integer id) {
-		return clientRepository.findById(id);
+		return personRepository.findById(id);
 	}
 
 	@Override
 	public Person save(Person entity) {
-		return clientRepository.save(entity);
+		return personRepository.save(entity);
 	}
 
 	@Override
 	public void delete(Person entity) {
-		clientRepository.delete(entity);
+		personRepository.delete(entity);
 	}
 
 	@Override
 	public List<Person> findByStatus(Boolean status) {
-		return clientRepository.findByStatus(status);
+		return personRepository.findByStatus(status);
+	}
+	
+	@Override
+	public Person findByDni(String dni) {
+		return personRepository.findByDni(dni);
+	}
+	
+	@Override
+	public Person findByDniException(String dni, int idUser) {
+		return personRepository.findByDniException(dni, idUser);
 	}
 
 }
