@@ -26,17 +26,10 @@
 					</f:facet>
 					<p:ajax event="rowSelect" oncomplete="PF('dialogProspecto').show();" />
 
-					<p:column style="width:19px;text-align: left">
-						<f:facet name="header">
-							<p:commandLink oncomplete="PF('proyectoNewDialog').show();"
-								title="NUEVO PROYECTO">
-								<p:graphicImage width="27" value="/recursos/images/anadir.png" />
-							</p:commandLink>
-						</f:facet>
-					</p:column>
+			
 
 
-					<p:column style="width:19px;">
+					<p:column headerText="Nro." style="width:25px;">
                             		#{row +1}
                        			</p:column>
 					<p:column headerText="DNI" sortBy="#{proy.dni}"
@@ -46,6 +39,10 @@
 					<p:column headerText="Apellidos y Nombres" sortBy="#{proy.names}"
 						filterBy="#{proy.names}" filterMatchMode="contains">
 						<h:outputText value="#{proy.surnames} #{proy.names}" />
+					</p:column>
+					<p:column headerText="Teléfono" sortBy="#{proy.phone}"
+						filterBy="#{proy.phone}" filterMatchMode="contains">
+						<h:outputText value="#{proy.phone}" />
 					</p:column>
 					<p:column headerText="Fecha de inicio" sortBy="#{proy.surnames}"
 						filterBy="#{proy.surnames}" filterMatchMode="contains">
