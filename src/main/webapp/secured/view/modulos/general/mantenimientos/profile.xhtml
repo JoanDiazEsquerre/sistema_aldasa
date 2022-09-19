@@ -8,37 +8,61 @@
 
 
 	<h:form id="form">
-      <p:commandButton action="#{profileBean.newProfile()}" value="Nuevo Perfil" oncomplete="PF('profileDialog').show();"/>
-      
-		<p:dataTable var="profile" id="profileTable" value="#{profileBean.listProfile}" widgetVar="profileTable" rowIndexvar="row" paginator="true" rows="15" size="small" 
-			emptyMessage="No se encontraron perfiles." paginatorPosition="bottom" selection="#{profileBean.profileSelected}" rowKey="#(profile.id)" selectionMode="single">
-			<f:facet name="header">
-				<div class="p-d-flex p-ai-center p-jc-between">
-					<span>Lista de Perfiles</span>
-				</div>
-			</f:facet>
-			<p:ajax event="rowSelect" update=":formProfileDialog :dialogProfile" listener="#{profileBean.newProfile()}"
-				oncomplete="PF('profileDialog').show();" />
+	<p:selectOneButton value="#{profileBean.estado}">
+		<f:selectItem itemLabel="Activos" itemValue="#{true}" />
+		<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
+		<p:ajax update=":form:idTableProfile"
+			listener="#{profileBean.listarProfiles()}" />
+	</p:selectOneButton>      
+		<p:dataTable var="profile" id="idTableProfile" value="#{profileBean.listProfile}" widgetVar="profileTable" rowIndexVar="row" paginator="true" rows="15" size="small"
+		emptyMessage="No se encontraron perfiles."	paginatorPosition="bottom" rowKey="#{profile.id}" selection="#{profileBean.profileSelected}" selectionMode="single">
+		<f:facet name="header">
+			<div class="p-d-flex p-ai-center p-jc-between">
+				<span>Lista de Perfiles</span>
+			</div>
+		</f:facet>
+		<p:ajax event="rowSelect" listener="#{profileBean.modifyProfile()}" update=":formProfileDialog :dialogProfile" oncomplete="PF('profileDialog').show();" />
 
-			<p:column width="25px">
+		<p:column style="width:42px;text-align: left">
+			<f:facet name="header">
+				<p:commandLink action="#{profileBean.newProfile()}"
+					update=":formProfileDialog :dialogProfile"
+					oncomplete="PF('profileDialog').show();"
+					title="NUEVO PERFIL">
+					<p:graphicImage width="50" value="/recursos/images/anadir.png" />
+
+				</p:commandLink>
+			</f:facet>
+		</p:column>
+
+		<p:column width="25px">
                       #{row +1}
         </p:column>
-			<p:column headerText="Descripcion" sortBy="#{profile.name}"
-				filterBy="#{profile.name}" filterMatchMode="contains">
-      			#{profile.name}
-      		</p:column>
-		</p:dataTable>
+        
+		<p:column headerText="Nombre de Perfil" sortBy="#{profile.name}"
+			filterBy="#{profile.name}" filterMatchMode="contains">
+			<h:outputText value="#{profile.name}" />
+		</p:column>
+	</p:dataTable>
 
 	</h:form>
-	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogProfile" header="NUEVO PERFIL" widgetVar="profileDialog" resizable="false" closable="true"
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogProfile" header="#{profileBean.tituloDialog}" widgetVar="profileDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formProfileDialog">
+		    <p:messages id="messages" showDetail="true" closable="true">
+	            <p:autoUpdate/>
+	        </p:messages>
 			<h:panelGrid id="grid" columns="2">
 				<h:outputLabel value="Nombre de Perfil: " for="nombrePerfil" />
 				<p:inputText value="#{profileBean.profileSelected.name}"
 					id="nombrePerfil" />
-				<p:commandButton value="Guardar" action="#{profileBean.saveProfile()}" oncomplete="PF('profileDialog').hide();"
-					update=":form:profileTable"/>
+				<h:outputLabel for="option" value="Estado:" />
+				<p:selectOneMenu id="option" value="#{profileBean.profileSelected.status}" style="margin:5px">
+					<f:selectItem itemLabel="ACTIVO" itemValue="#{true}" />
+					<f:selectItem itemLabel="INACTIVO" itemValue="#{false}" />
+				</p:selectOneMenu>	
+				<p:commandButton value="Guardar" action="#{profileBean.saveProfile()}" 
+					update=":form:idTableProfile"/>
 			</h:panelGrid>
 		</h:form>
 	</p:dialog>

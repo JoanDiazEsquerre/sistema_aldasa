@@ -69,16 +69,16 @@
 				<p:inputText id="dni" value="#{personBean.personSelected.dni}" style="margin:10px" maxlength="11"/>
 
 				<h:outputLabel for="surname" value="Apellidos:" />
-				<p:inputText id="surname" value="#{personBean.personSelected.surnames}" style="margin:10px" />
+				<p:inputText id="surname" value="#{personBean.personSelected.surnames}" style="margin:10px" maxlength="45" />
 
 				<h:outputLabel for="name" value="Nombres:" />
-				<p:inputText id="name" value="#{personBean.personSelected.names}" style="margin:10px"  />
+				<p:inputText id="name" value="#{personBean.personSelected.names}" style="margin:10px" maxlength="45"  />
 
 				<h:outputLabel for="address" value="Dirección:" />
-				<p:inputText id="address" value="#{personBean.personSelected.address}" style="margin:10px"  />
+				<p:inputText id="address" value="#{personBean.personSelected.address}" style="margin:10px" maxlength="60"  />
 
 				<h:outputLabel for="phone" value="Teléfono:" />
-				<p:inputText id="phone" value="#{personBean.personSelected.phone}" style="margin:10px" />
+				<p:inputText id="phone" value="#{personBean.personSelected.phone}" style="margin:10px" maxlength="11" />
 
 				<h:outputLabel for="option" value="Estado civil:" />
 				<p:selectOneMenu id="option" value="#{personBean.personSelected.civilStatus}" style="margin:10px">

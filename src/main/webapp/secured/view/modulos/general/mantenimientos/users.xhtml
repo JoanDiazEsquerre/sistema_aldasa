@@ -62,10 +62,10 @@
 	        </p:messages>
 			<h:panelGrid id="grid" columns="2">
 				<h:outputLabel for="username" value="Nombre de Usuario: " />
-				<p:inputText id="username" value="#{userBean.userSelected.username}" style="margin:10px" />
+				<p:inputText id="username" value="#{userBean.userSelected.username}" style="margin:10px" maxlength="30" />
 
 				<h:outputLabel for="pass" value="Contraseña:" />
-				<p:inputText id="pass" value="#{userBean.userSelected.password}" style="margin:10px" />
+				<p:inputText id="pass" value="#{userBean.userSelected.password}" style="margin:10px" maxlength="50" />
 				
 				<h:outputLabel for="option" value="Persona:" />
 				<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{userBean.userSelected.person}" converter="#{userBean.conversorPerson}" id="option" completeMethod="#{userBean.completePerson}"  

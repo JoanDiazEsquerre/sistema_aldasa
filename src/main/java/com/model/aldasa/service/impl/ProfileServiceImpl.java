@@ -36,6 +36,15 @@ public class ProfileServiceImpl implements ProfileService {
 	public List<Profile> findByStatus(boolean status) {
 		return profileRepository.findByStatus(status);
 	}
-
+	
+	@Override
+	public Profile findByName(String name) {
+		return profileRepository.findByName(name);
+	}
+	
+	@Override
+	public  Profile findByNameException(String name, int idProfile) {
+		return profileRepository.findByNameException(name, idProfile);
+	}
 	
 }
