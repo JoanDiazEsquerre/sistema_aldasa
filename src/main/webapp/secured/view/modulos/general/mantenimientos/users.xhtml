@@ -81,10 +81,10 @@
 					<f:selectItem itemLabel="Activo" itemValue="#{true}"/>
 					<f:selectItem itemLabel="Inactivo" itemValue="#{false}"/>
 				</p:selectOneMenu>
-                
+                	<p:commandButton value="Guardar" actionListener="#{userBean.saveUpdateUser()}" update=":form:idTableUser :formProyecto"/>
+                	
 			</h:panelGrid>
-			<p:commandButton value="Guardar" actionListener="#{userBean.saveUpdateUser()}" update=":form:idTableUser :formProyecto"/>
-
+			
 		</h:form>
 	</p:dialog>
 </ui:composition>
