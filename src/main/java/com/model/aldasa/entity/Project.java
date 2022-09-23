@@ -14,10 +14,10 @@ import javax.persistence.Table;
 public class Project {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	Integer id;
-	String name;
-	String status;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	private String name;
+	private boolean status;
 	
 	
 	public Integer getId() {
@@ -32,10 +32,10 @@ public class Project {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getStatus() {
+	public boolean isStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
+	public void setStatus(boolean status) {
 		this.status = status;
 	}
 	

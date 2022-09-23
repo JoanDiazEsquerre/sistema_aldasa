@@ -39,6 +39,9 @@ public class NavegacionBean {
 	public void getMantenimientoProfilePage() {
         ruta = "modulos/general/mantenimientos/profile.xhtml";
     }
+	public void getMantenimientoProjectPage() {
+        ruta = "modulos/general/mantenimientos/project.xhtml";
+    }
 
 	public String getRuta() {
 		return ruta;
