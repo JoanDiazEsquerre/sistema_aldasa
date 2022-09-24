@@ -15,8 +15,9 @@
 				listener="#{personBean.listarPersonas()}" />
 		</p:selectOneButton>
 
-		<p:dataTable var="per" id="idTablePer" value="#{personBean.lstPersons}" widgetVar="personsTable" rowIndexVar="row" paginator="true" rows="15" size="small" 
-			emptyMessage="No se encontraron Personas." paginatorPosition="bottom" rowKey="#{per.id}" selection="#{personBean.personSelected}" selectionMode="single">
+		<p:dataTable var="per" id="idTablePer" value="#{personBean.lstPersonsLazy}" widgetVar="personsTable" rowIndexVar="row" paginator="true" rows="3" size="small" 
+			emptyMessage="No se encontraron Personas." paginatorPosition="bottom" rowKey="#{per.id}" selection="#{personBean.personSelected}" selectionMode="single"
+			lazy="true">
 			<f:facet name="header">
 				<div class="p-d-flex p-ai-center p-jc-between">
 					<span>Lista de Personas</span>

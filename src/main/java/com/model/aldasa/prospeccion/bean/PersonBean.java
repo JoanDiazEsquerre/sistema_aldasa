@@ -13,6 +13,7 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -45,24 +46,51 @@ public class PersonBean{
 
 	public void listarCliente() {
 		listarPersonas();
-//		iniciarLazy();
+		iniciarLazy();
 	}
 	
-//	public void iniciarLazy() {
-//		lstPersonsLazy = new LazyDataModel<Person>() {
-//			/**
-//			 * 
-//			 */
-//			private static final long serialVersionUID = 1L;
-//			@Override
-//			public List<Person> load(int first, int pageSize, Map<String, SortMeta> sortBy,
-//					Map<String, FilterMeta> filterBy) {
-//				
-//				Pageable firstPageWithTwoElements = PageRequest.of(0, 3);
-//				return personService.findByStatus(estado,firstPageWithTwoElements);
-//			}
-//		};
-//	}
+	public void iniciarLazy() {
+		lstPersonsLazy = new LazyDataModel<Person>() {
+			private List<Person> datasource;
+
+            @Override
+            public void setRowIndex(int rowIndex) {
+                if (rowIndex == -1 || getPageSize() == 0) {
+                    super.setRowIndex(-1);
+                } else {
+                    super.setRowIndex(rowIndex % getPageSize());
+                }
+            }
+
+            @Override
+            public Person getRowData(String rowKey) {
+                int intRowKey = Integer.parseInt(rowKey);
+                for (Person person : datasource) {
+                    if (person.getId() == intRowKey) {
+                        return person;
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public String getRowKey(Person person) {
+                return String.valueOf(person.getId());
+            }
+
+			@Override
+			public List<Person> load(int first, int pageSize, Map<String, SortMeta> sortBy,
+					Map<String, FilterMeta> filterBy) {
+				/* con filterBy, tengo que hacer una query dinamica para que funcionen los filtros ( Esto me falta)*/
+				Pageable pageable = PageRequest.of(first/pageSize, pageSize);
+				Page<Person> pagePerson= personService.findAllByStatus(estado,pageable);
+				setRowCount((int) pagePerson.getTotalElements());
+				return datasource = pagePerson.getContent();
+				
+			}
+	
+		};
+	}
 	
 	public void listarPersonas() {
 		lstPersons = personService.findByStatus(estado);

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Person;
@@ -34,6 +36,19 @@ public class PersonServiceImpl implements PersonService {
 	@Override
 	public List<Person> findByStatus(Boolean status) {
 		return personRepository.findByStatus(status);
+	}
+	
+	@Override
+	public Page<Person> findAllByStatus(Boolean status, Pageable pageable) {
+		/*Aqui estoy intentando hacer dinamica la query (aun no me sale)
+		 * ExampleMatcher matcher = ExampleMatcher.matching()
+			    .withMatcher("names", match -> match.contains())
+			    .withIgnorePaths("population");
+		
+		Person person = new Person();
+		person.setNames("Ro");
+	    Example<Person> example = Example.of(person, matcher);*/
+		return personRepository.findAllByStatus(status, pageable);
 	}
 	
 	@Override

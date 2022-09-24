@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          .and()
          .formLogin()
          .and()
-         .logout().logoutSuccessUrl("/index.xhtml").invalidateHttpSession(true).deleteCookies("JSESSIONID").logoutUrl("/logout")
+         .logout().logoutSuccessUrl("/login").invalidateHttpSession(true).deleteCookies("JSESSIONID").logoutUrl("/logout")
          .and()
          //.exceptionHandling().accessDeniedPage("/error.xhtml")
          //.and()

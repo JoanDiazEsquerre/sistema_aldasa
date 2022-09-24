@@ -4,6 +4,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,11 +14,13 @@ import org.springframework.stereotype.Component;
 public class NavegacionBean { 
 	
 	private String ruta;
-	
+	private String username;
 
 	@PostConstruct
 	public void init() {
 
+		
+		
 		ruta = "modulos/general/mantenimientos/inicio.xhtml";
 	}
 	
@@ -50,6 +54,18 @@ public class NavegacionBean {
 
 	public void setRuta(String ruta) {
 		this.ruta = ruta;
+	}
+
+	public String getUsername() {
+		if(SecurityContextHolder.getContext().getAuthentication()!=null) {
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		    username = ((UserDetails)principal).getUsername();
+		}
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 

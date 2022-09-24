@@ -23,12 +23,18 @@
 
 				<pe:layoutPane position="north" size="40" closable="false">
 					<div style="width: 100%">
-						<!-- <h:outputText value="SISTEMA ALDASA v.1.0" style="font-weight: bold; font-size: 18px;  color: #666666;  " /> -->
 						<p:graphicImage value="/recursos/images/LOGO.png" width="10%" library="demo"/>
+						 <h:outputText value="#{navegacionBean.username}" style="font-weight: bold; font-size: 18px;  color: #666666;  " /> 
 						<div style="float: right;">
-							<p:linkButton value="Salir" href="#{request.contextPath}/login"
+								<p:linkButton value="Salir" href="#{request.contextPath}/logout"
 								style="margin-right:10px;" />
 						</div>
+						<div style="float: right;">
+							 <h:outputText value="#{navegacionBean.getUsername()}" style="font-weight: bold; font-size: 18px;  color: #666666;margin-right:10px;text-transform: uppercase; margin-top: 5px  " /> 
+
+						</div>
+						
+						
 					</div>
 				</pe:layoutPane>
 				<pe:layoutPane position="center">
