@@ -16,6 +16,6 @@ public interface PersonService {
 	List<Person> findByStatus(Boolean status);
 	Person findByDni(String dni);
 	Person findByDniException(String dni, int idUser);
-	Page<Person> findAllByStatus(Boolean status, Pageable pageable);
+	Page<Person> findAllByDniLikeAndNamesLikeAndStatus(String dni, String names, Boolean status, Pageable pageable);
 
 }

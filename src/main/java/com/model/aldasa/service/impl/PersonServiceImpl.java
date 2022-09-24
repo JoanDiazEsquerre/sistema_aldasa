@@ -39,16 +39,8 @@ public class PersonServiceImpl implements PersonService {
 	}
 	
 	@Override
-	public Page<Person> findAllByStatus(Boolean status, Pageable pageable) {
-		/*Aqui estoy intentando hacer dinamica la query (aun no me sale)
-		 * ExampleMatcher matcher = ExampleMatcher.matching()
-			    .withMatcher("names", match -> match.contains())
-			    .withIgnorePaths("population");
-		
-		Person person = new Person();
-		person.setNames("Ro");
-	    Example<Person> example = Example.of(person, matcher);*/
-		return personRepository.findAllByStatus(status, pageable);
+	public Page<Person> findAllByDniLikeAndNamesLikeAndStatus(String dni, String names, Boolean status, Pageable pageable) {
+		return personRepository.findAllByDniLikeAndNamesLikeAndStatus(dni, names, status, pageable);
 	}
 	
 	@Override

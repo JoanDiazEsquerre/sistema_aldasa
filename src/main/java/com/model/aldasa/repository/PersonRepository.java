@@ -12,7 +12,7 @@ import com.model.aldasa.entity.Person;
 public interface PersonRepository extends PagingAndSortingRepository<Person, Integer>{
 
 	List<Person> findByStatus(Boolean status);
-	Page<Person> findAllByStatus(Boolean status, Pageable pageable);
+	Page<Person> findAllByDniLikeAndNamesLikeAndStatus(String dni, String names, Boolean status, Pageable pageable);
 	Person findByDni(String dni);
 	
 	@Query(nativeQuery = true,value = " SELECT * FROM person  WHERE dni =:dni and id<>:idUser")

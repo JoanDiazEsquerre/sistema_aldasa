@@ -81,9 +81,16 @@ public class PersonBean{
 			@Override
 			public List<Person> load(int first, int pageSize, Map<String, SortMeta> sortBy,
 					Map<String, FilterMeta> filterBy) {
-				/* con filterBy, tengo que hacer una query dinamica para que funcionen los filtros ( Esto me falta)*/
+				//Aqui capturo cada filtro(Si en caso existe), le pongo % al principiio y al final y reemplazo los espacios por %, para hacer el LIKE
+				//Si debageas aqui te vas a dar cuenta como lo captura
+				String dni="%"+ (filterBy.get("dni")!=null?filterBy.get("dni").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String names="%"+ (filterBy.get("names")!=null?filterBy.get("names").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				
 				Pageable pageable = PageRequest.of(first/pageSize, pageSize);
-				Page<Person> pagePerson= personService.findAllByStatus(estado,pageable);
+				//Aqui llamo al servicio que a  su vez llama al repositorio que contiene la sentencia LIKE, 
+				//Aqui tu tienes que completar la query, yo solo lo he hecho para dni y nombre a modo de ejemplo
+				//Tu deberias preparar el metodo para cada filtro que tengas en la tabla
+				Page<Person> pagePerson= personService.findAllByDniLikeAndNamesLikeAndStatus(dni, names,estado,pageable);
 				setRowCount((int) pagePerson.getTotalElements());
 				return datasource = pagePerson.getContent();
 				
