@@ -17,9 +17,11 @@ import org.springframework.web.servlet.support.RequestContext;
 
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Profile;
+import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProfileService;
+import com.model.aldasa.service.TeamService;
 import com.model.aldasa.service.UsuarioService;
 
 import javax.faces.convert.Converter;
@@ -38,9 +40,13 @@ public class UserBean{
 	@Autowired
 	private ProfileService profileService; 
 	
+	@Autowired
+	private TeamService teamService; 
+	
 	private List<Usuario> lstUsers;
 	private List<Person> lstPerson;
 	private List<Profile> lstProfile;
+	private List<Team> lstTeam;
 	
 	private Usuario userSelected;
 	
@@ -54,6 +60,7 @@ public class UserBean{
 		listarUsuarios();
 		listarPersonas();
 		listarPerfiles();
+		listarTeam();
 	}
 	
 	public void listarUsuarios() {
@@ -68,6 +75,9 @@ public class UserBean{
 		lstProfile=profileService.findByStatus(true);
 	}
 	
+	public void listarTeam() {
+		lstTeam=teamService.findByStatus(true);
+	}
 	
 	public void newUser() {
 		tituloDialog = "NUEVO USUARIO";
@@ -233,6 +243,33 @@ public class UserBean{
         };
     }
 	
+	public Converter getConversorTeam() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                    Team c = null;
+                    for (Team si : lstTeam) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Team) value).getId() + "";
+                }
+            }
+        };
+    }
 
 	public UsuarioService getUsuarioService() {
 		return usuarioService;
@@ -293,6 +330,22 @@ public class UserBean{
 	}
 	public void setValidaUsuario(boolean validaUsuario) {
 		this.validaUsuario = validaUsuario;
+	}
+
+	public List<Team> getLstTeam() {
+		return lstTeam;
+	}
+
+	public void setLstTeam(List<Team> lstTeam) {
+		this.lstTeam = lstTeam;
+	}
+
+	public TeamService getTeamService() {
+		return teamService;
+	}
+
+	public void setTeamService(TeamService teamService) {
+		this.teamService = teamService;
 	}
 	
 	

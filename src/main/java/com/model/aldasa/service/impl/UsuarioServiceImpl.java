@@ -57,5 +57,10 @@ public class UsuarioServiceImpl implements UsuarioService {
 		return usuarioRepository.findByByPersonException(idPersona, idUser);
 	}
 	
+	@Override
+	public List<Usuario> findByProfileIdAndStatus(Integer idProfile,boolean status) {
+		return usuarioRepository.findByProfileIdAndStatus(idProfile,status);
+	}
+	
 
 }

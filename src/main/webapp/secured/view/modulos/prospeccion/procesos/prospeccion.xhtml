@@ -10,106 +10,113 @@
 	<h:form id="form">
 		<p:tabView id="tabView">
 			<p:tab title="Lista de Prospecciones">
-				<p:selectOneButton>
-					<f:selectItem itemLabel="En proceso"/>
-					<f:selectItem itemLabel="Concluido"/>
-					<p:ajax update=":form:tabView:idTableProy"
-						listener="#{clientBean.listarCliente()}" />
+				<p:selectOneButton value="#{prospeccionBean.status}">
+					<f:selectItem itemLabel="En seguimiento" itemValue="En seguimiento"/>
+					<f:selectItem itemLabel="Rechazado" itemValue="Rechazado"/>
+					<f:selectItem itemLabel="Terminado" itemValue="Terminado"/>
+					
+					<p:ajax update=":form:tabView:idTableProy" />
 				</p:selectOneButton>
 
-				<p:dataTable var="proy" id="idTableProy" value="#{personBean.lstPersons}" widgetVar="personsTable" rowIndexVar="row" paginator="true" rows="15" size="small" 
-					emptyMessage="No se encontraron Personas." paginatorPosition="bottom" rowKey="#{per.id}" selection="#{personBean.personSelected}" selectionMode="single">
+				<p:dataTable var="proy" id="idTableProy" value="#{prospeccionBean.lstProspectionLazy}" widgetVar="personsTable" rowIndexVar="row" paginator="true" rows="15" size="small" 
+					emptyMessage="No se encontraron Personas." paginatorPosition="bottom" rowKey="#{proy.id}" selection="#{prospeccionBean.prospectionSelected}" selectionMode="single">
 					<f:facet name="header">
 						<div class="p-d-flex p-ai-center p-jc-between">
 							<span>Lista de Prospectos</span>
 						</div>
 					</f:facet>
-					<p:ajax event="rowSelect" oncomplete="PF('dialogProspecto').show();" />
-
-			
-
+					<p:ajax event="rowSelect" listener="#{prospeccionBean.modifyProspection}" update=":dialogPro" oncomplete="PF('dialogProspecto').show();" />
 
 					<p:column headerText="Nro." style="width:25px;">
                             		#{row +1}
                        			</p:column>
-					<p:column headerText="DNI" sortBy="#{proy.dni}"
-						filterBy="#{proy.dni}" filterMatchMode="contains">
-						<h:outputText value="#{proy.dni}" />
+					<p:column headerText="Prospecto" sortBy="#{proy.person.surnames}"
+						filterBy="#{proy.person.surnames}" filterMatchMode="contains">
+						<h:outputText value="#{proy.person.surnames} #{proy.person.names}" />
 					</p:column>
-					<p:column headerText="Apellidos y Nombres" sortBy="#{proy.names}"
-						filterBy="#{proy.names}" filterMatchMode="contains">
-						<h:outputText value="#{proy.surnames} #{proy.names}" />
+					
+					<p:column headerText="Asesor" sortBy="#{proy.assessor.surnames}"
+						filterBy="#{proy.assessor.surnames}" filterMatchMode="contains">
+						<h:outputText value="#{proy.assessor.surnames} #{proy.assessor.names}" />
 					</p:column>
-					<p:column headerText="Teléfono" sortBy="#{proy.phone}"
-						filterBy="#{proy.phone}" filterMatchMode="contains">
-						<h:outputText value="#{proy.phone}" />
+					
+					<p:column headerText="Fecha Inicio" sortBy="#{proy.dateStart}" filterMatchMode="contains">
+						<h:outputText value="#{proy.dateStart}" />
 					</p:column>
-					<p:column headerText="Fecha de inicio" sortBy="#{proy.surnames}"
-						filterBy="#{proy.surnames}" filterMatchMode="contains">
-						<h:outputText value="16/09/2022" />
+					<p:column headerText="Origen de contacto" sortBy="#{proy.originContact}"
+						filterBy="#{proy.originContact}" filterMatchMode="contains">
+						<h:outputText value="#{proy.originContact}" />
 					</p:column>
-					<p:column headerText="Origen de contacto" sortBy="#{proy.address}"
-						filterBy="#{proy.address}" filterMatchMode="contains">
-						<h:outputText value="Campo" />
+					<p:column headerText="Proyecto interesado" sortBy="#{proy.project.name}" filterMatchMode="contains">
+						<h:outputText value="#{proy.project.name}" />
 					</p:column>
-					<p:column headerText="Proyecto" sortBy="#{proy.address}"
-						filterBy="#{proy.address}" filterMatchMode="contains">
-						<h:outputText value="Proyecto 1" />
+					<p:column headerText="Estado" sortBy="#{proy.statuss}" filterMatchMode="contains">
+						<h:outputText value="#{proy.status}" />
+					</p:column>
+					<p:column headerText="Avance" filterMatchMode="contains">
+						 <p:progressBar value="#{proy.porcentage}" labelTemplate="{value}%" displayOnly="true"/>
 					</p:column>
 				</p:dataTable>
 			</p:tab>
 			<p:tab title="Nueva Prospección">
+				<p:messages id="messages" showDetail="true" closable="true" >
+		            <p:autoUpdate/>
+		        </p:messages>
 				<h:panelGrid id="grid" columns="3"> 
-					<h:outputLabel for="username" value="Nombre de Prospecto: " />
-					<p:inputText id="username" style="margin:5px" />
-					<p:commandLink oncomplete="PF('personNewDialog').show();" title="NUEVO PROSPECTO">
+					<h:outputLabel for="prospecto" value="Prospecto: " />
+					<p:autoComplete  scrollHeight="500" styleClass="ui-autocompV" value="#{prospeccionBean.prospectionNew.person}" converter="#{prospeccionBean.conversorPerson}" id="prospecto" completeMethod="#{prospeccionBean.completePerson}"  
+                          var="pros" itemLabel="#{pros.surnames} #{pros.names}" itemValue="#{pros}" forceSelection="true" style="margin:5px;" >
+                    	<p:column width="400px">
+                        	<h:outputLabel value="#{pros.surnames} #{pros.names}" /> 
+                        </p:column>
+                        <p:column width="400px">
+                        	<h:outputLabel value="#{pros.dni}" /> 
+                        </p:column>  
+                    </p:autoComplete>
+                          
+					<p:commandLink oncomplete="PF('personNewDialog').show();" title="NUEVO PROSPECTO"> 
 						<p:graphicImage width="30" value="/recursos/images/anadir.png" />
 					</p:commandLink>
 					
-					<h:outputLabel for="basic" value="Fecha de inicio: " />
-					<p:datePicker id="basic" style="margin:5px"/>
+					<h:outputLabel for="assessor" value="Asesor: " />
+					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{prospeccionBean.prospectionNew.assessor}" converter="#{prospeccionBean.conversorPersonAssessor}" id="assessor" completeMethod="#{prospeccionBean.completePersonAssesor}"  
+                          var="ase" itemLabel="#{ase.surnames} #{ase.names}" itemValue="#{ase}" forceSelection="true" style="margin:5px;" />
 					<p:spacer></p:spacer>
 					
-					<h:outputLabel for="basic" value="Origen de contacto: " />
-					<p:selectOneMenu style="margin:5px" >
-						<f:selectItem itemLabel="Campo" itemValue="1"/>
-						<f:selectItem itemLabel="Redes sociales" itemValue="2"/>
-						<f:selectItem itemLabel="Sitio web oficial" itemValue="3"/>
-						<f:selectItem itemLabel="Referido" itemValue="4"/>
+					<h:outputLabel for="dateStart" value="Fecha inicio: " />
+					<p:datePicker id="dateStart" value="#{prospeccionBean.prospectionNew.dateStart}" style="margin:5px;"/>
+					<p:spacer></p:spacer>
+					
+					<h:outputLabel for="orgCont" value="Origen de contacto: " />
+					<p:selectOneMenu style="margin:5px; width:220px" id="orgCont" value="#{prospeccionBean.prospectionNew.originContact}">
+						<f:selectItem itemLabel="Campo" itemValue="Campo"/>
+						<f:selectItem itemLabel="Sitio web oficial" itemValue="Sitio web oficial"/>
+						<f:selectItem itemLabel="Referido" itemValue="Referido"/>
+						<f:selectItems value="#{prospeccionBean.countriesGroup}"/>
 					</p:selectOneMenu>
 					<p:spacer></p:spacer>
 					
-					<h:outputLabel for="basic" value="Proyecto: " />
-					<p:selectOneMenu style="margin:5px" >
-						<f:selectItem itemLabel="Proyecto 1" itemValue="1"/>
-						<f:selectItem itemLabel="Proyecto 2" itemValue="2"/>
-						<f:selectItem itemLabel="proyecto 3" itemValue="3"/>
-						<f:selectItem itemLabel="Proyecto 4" itemValue="4"/>
+					<h:outputLabel for="optionProject" value="Proyecto: " />
+					<p:selectOneMenu id="optionProject" value="#{prospeccionBean.prospectionNew.project}" converter="#{prospeccionBean.conversorProject}" style="margin:5px; width:220px" > 
+						<f:selectItems value="#{prospeccionBean.lstProject}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro}"/> 
 					</p:selectOneMenu>
 					<p:spacer></p:spacer>
-				
-					<p:commandButton value="Iniciar prospección" />
-				
 				</h:panelGrid>
-				
+				<p:commandButton value="Iniciar prospección" actionListener="#{prospeccionBean.saveNewProspection()}" update=":form:tabView:idTableProy form:tabView:grid" />
 			</p:tab>
 		</p:tabView>
 	</h:form>
 	
-	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogProspecto" header="PROSPECTO:" widgetVar="dialogProspecto" resizable="false" closable="true"
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPro" header="#{prospeccionBean.titleDialog}" widgetVar="dialogProspecto" resizable="false" closable="true" height="500px"
 		appendTo="@(body)" width="90%" >
-		<h:form >
+		<h:form id="formEvents" >
 			<p:tabView> 
-				<p:tab title="Eventos">
+				<p:tab title="Acciones">
 					<h:panelGrid columns="2"> 
-						<h:outputLabel for="username" value="Acción: " />
-						<p:selectOneMenu style="margin:5px" >
-							<f:selectItem itemLabel="Llamada" itemValue="1"/>
-							<f:selectItem itemLabel="Envio de mensaje" itemValue="2"/>
-							<f:selectItem itemLabel="Visita a domicilio" itemValue="3"/>
-							<f:selectItem itemLabel="Visita del proyecto" itemValue="4"/>
+						<h:outputLabel for="accion" value="Acción: " />
+						<p:selectOneMenu id="accion" value="#{prospeccionBean.prospectionDetailNew.action}" converter="#{prospeccionBean.conversorAction}" style="margin:5px; width:220px" > 
+							<f:selectItems value="#{prospeccionBean.lstActions}" var="act" itemLabel="#{act.description}" itemValue="#{act}"/> 
 						</p:selectOneMenu>
-						
 						
 						<h:outputLabel for="time" value="Fecha y Hora: " />
 						<p:datePicker id="time" showTime="true" style="margin:5px" pattern="dd/MM/yyyy HH:mm a"/>
@@ -118,13 +125,11 @@
 						<p:inputTextarea rows="2" cols="33" style="margin:5px"/>
 											
 					</h:panelGrid>
-					<p:fileUpload value="#{fileUploadView.file}" mode="simple" skinSimple="true"/><br></br>
+				
 					<p:commandButton value="Guardar" style="margin-top:10px"/>
 					
-					 
-
-					<p:dataTable var="user"	 widgetVar="usersTable"	rowIndexVar="row" paginator="true" rows="5" size="small"
-						emptyMessage="No se registraron eventos." paginatorPosition="bottom" rowKey="#{user.id}"	selection="#{userBean.userSelected}" selectionMode="single">
+					 <p:dataTable var="det" id="idTableDet" value="#{prospeccionBean.lstProspectionDetail}" rowIndexVar="row" paginator="true" rows="5" size="small" 
+					emptyMessage="No se encontraron eventos." paginatorPosition="bottom" rowKey="#{det.id}" selection="#{prospeccionBean.prospectionDetailSelected}" selectionMode="single"> 
 						<f:facet name="header">
 							<div class="p-d-flex p-ai-center p-jc-between">
 								<span>Lista de Eventos</span>
@@ -142,17 +147,15 @@
                       		#{row +1}
         				</p:column>
 
-						<p:column headerText="Acción" sortBy="#{user.username}"
-							filterBy="#{user.username}" filterMatchMode="contains">
-							<h:outputText value="Llamada" />
+						<p:column headerText="Acción" sortBy="#{det.action.descripcion}" filterMatchMode="contains">
+							<h:outputText value="#{det.action.description}" />
 						</p:column>
-						<p:column headerText="Fecha y Hora" sortBy="#{user.password}"
-							filterBy="#{user.password}" filterMatchMode="contains">
-							<h:outputText value="12/12/2022 12:34" />
+						<p:column headerText="Fecha y Hora" sortBy="#{det.date}" filterMatchMode="contains">
+							<h:outputText value="#{det.date}" />
 						</p:column>
 						
-						<p:column headerText="Eliminar" >
-							<h:outputText value="#{user.profile.name}" />
+						<p:column headerText="Comentario" >
+							<h:outputText value="#{det.comment}" />
 						</p:column>
 					</p:dataTable>
 
@@ -210,6 +213,22 @@
 						</p:column>
 					</p:dataTable>
 				
+				</p:tab>
+				<p:tab title="Cambio de estado"> 
+					<p:messages id="messages1" showDetail="true" closable="true" >
+			            <p:autoUpdate/>
+			        </p:messages>
+					<h:panelGrid columns="2"> 
+						<h:outputText value="Estado: "  />
+						<p:selectOneMenu style="margin:5px" value="#{prospeccionBean.prospectionSelected.status}" >
+							<f:selectItem itemLabel="En seguimiento" itemValue="En seguimiento"/>
+							<f:selectItem itemLabel="Rechazado" itemValue="Rechazado"/>
+							<f:selectItem itemLabel="Terminado" itemValue="Terminado"/>
+						</p:selectOneMenu>
+					</h:panelGrid>
+					
+					<p:commandButton value="Guardar Estado" rendered="#{prospeccionBean.prospectionSelected.status != 'Terminado'}" actionListener="#{prospeccionBean.saveProspectionSelected()}" update=":form:tabView:idTableProy :formEvents"/> 
+					
 				</p:tab>
 			</p:tabView> 
 		</h:form>

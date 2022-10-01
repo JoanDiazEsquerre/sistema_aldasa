@@ -6,6 +6,10 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions"
 	xmlns:f="http://java.sun.com/jsf/core">
+	
+	<f:metadata>
+    	<f:event type="preRenderView" listener="#{navegacionBean.onPageLoad}"/>
+    </f:metadata>
  
     <f:view contentType="text/html">
         <h:head>
@@ -24,13 +28,12 @@
 				<pe:layoutPane position="north" size="40" closable="false">
 					<div style="width: 100%">
 						<p:graphicImage value="/recursos/images/LOGO.png" width="10%" library="demo"/>
-						 <h:outputText value="#{navegacionBean.username}" style="font-weight: bold; font-size: 18px;  color: #666666;  " /> 
 						<div style="float: right;">
 								<p:linkButton value="Salir" href="#{request.contextPath}/logout"
 								style="margin-right:10px;" />
 						</div>
 						<div style="float: right;">
-							 <h:outputText value="#{navegacionBean.getUsername()}" style="font-weight: bold; font-size: 18px;  color: #666666;margin-right:10px;text-transform: uppercase; margin-top: 5px  " /> 
+							 <h:outputText value="#{navegacionBean.usuarioLogin.person.surnames} #{navegacionBean.usuarioLogin.person.names}" style="font-weight: bold; font-size: 18px;  color: #666666;margin-right:10px;text-transform: uppercase; margin-top: 5px  " /> 
 
 						</div>
 						
@@ -45,7 +48,7 @@
 				<h:form id="formMenu">
 					<p:menu toggleable="true">
 						<p:submenu label="Prospección">
-			                <p:menuitem value="Prospectos" icon="pi pi-users" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPersonasPage()}" />
+			                <p:menuitem value="Prospectos" icon="pi pi-users" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProspectosPage()}" /> 
 							<p:menuitem value="Prospección" icon="pi pi-book" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoProspeccionPage()}" />
 			            </p:submenu>
 						<p:submenu label="Procesos">

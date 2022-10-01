@@ -28,7 +28,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
 	
 	//@Query(value = "select p from Usuario p WHERE p.estado=:estado and p.idRol=13 order by p.nombre")
 //	List<Usuario> findByRolGP(@Param(value = "estado") String estado);
-
+    
+    List<Usuario> findByProfileIdAndStatus(Integer idProfile,boolean status);
 	
 	
 }

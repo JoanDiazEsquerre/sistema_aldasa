@@ -11,11 +11,10 @@
 		<p:selectOneButton value="#{personBean.estado}">
 			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
 			<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
-			<p:ajax update=":form:idTablePer"
-				listener="#{personBean.listarPersonas()}" />
+			<p:ajax update=":form:idTablePer" />
 		</p:selectOneButton>
 
-		<p:dataTable var="per" id="idTablePer" value="#{personBean.lstPersonsLazy}" widgetVar="personsTable" rowIndexVar="row" paginator="true" rows="3" size="small" 
+		<p:dataTable var="per" id="idTablePer" value="#{personBean.lstPersonsLazy}" widgetVar="personsTable" rowIndexVar="row" paginator="true" rows="15" size="small" 
 			emptyMessage="No se encontraron Personas." paginatorPosition="bottom" rowKey="#{per.id}" selection="#{personBean.personSelected}" selectionMode="single"
 			lazy="true">
 			<f:facet name="header">
@@ -42,18 +41,16 @@
 			<p:column headerText="DNI" sortBy="#{per.dni}" filterBy="#{per.dni}" filterMatchMode="contains">
 				<h:outputText value="#{per.dni}" />
 			</p:column>
-			<p:column headerText="Apellidos y Nombres" sortBy="#{per.surnames}" filterBy="#{per.surnames},#{per.names}" filterMatchMode="contains">
+			<p:column headerText="Apellidos y Nombres" sortBy="#{per.surnames}" filterBy="#{per.surnames}" filterMatchMode="contains">
 				<h:outputText value="#{per.surnames} #{per.names}" />
 			</p:column>
-			<p:column headerText="Dirección" sortBy="#{per.address}" filterBy="#{per.address}" filterMatchMode="contains">
+			<p:column headerText="Dirección" sortBy="#{per.address}" filterMatchMode="contains">
 				<h:outputText value="#{per.address}" />
 			</p:column>
-			<p:column headerText="Teléfono" sortBy="#{per.phone}"
-				filterBy="#{per.phone}" filterMatchMode="contains">
+			<p:column headerText="Teléfono" sortBy="#{per.phone}" filterMatchMode="contains">
 				<h:outputText value="#{per.phone}" />
 			</p:column>
-			<p:column headerText="Estado Civil" sortBy="#{per.civilStatus}"
-				filterBy="#{per.civilStatus}" filterMatchMode="contains">
+			<p:column headerText="Estado Civil" sortBy="#{per.civilStatus}" filterMatchMode="contains">
 				<h:outputText value="#{per.civilStatus}" />
 			</p:column>
 		</p:dataTable>

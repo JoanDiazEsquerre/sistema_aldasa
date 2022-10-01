@@ -39,8 +39,8 @@ public class PersonServiceImpl implements PersonService {
 	}
 	
 	@Override
-	public Page<Person> findAllByDniLikeAndNamesLikeAndStatus(String dni, String names, Boolean status, Pageable pageable) {
-		return personRepository.findAllByDniLikeAndNamesLikeAndStatus(dni, names, status, pageable);
+	public Page<Person> findAllByDniLikeAndSurnamesLikeAndStatus(String dni, String names, Boolean status, Pageable pageable) {
+		return personRepository.findAllByDniLikeAndSurnamesLikeAndStatus(dni, names, status, pageable);
 	}
 	
 	@Override

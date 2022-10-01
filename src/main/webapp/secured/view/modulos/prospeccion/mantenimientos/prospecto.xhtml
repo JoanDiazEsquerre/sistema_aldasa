@@ -1,0 +1,95 @@
+	<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	locale="#{localeBean.usedLocale}"
+	xmlns:f="http://java.sun.com/jsf/core">
+	<f:metadata>
+    	<f:event type="preRenderView" listener="#{prospectoBean.onPageLoad}"/>
+    </f:metadata>
+
+	<h:form id="form">		
+		<p:dataTable var="per" id="idTablePer" value="#{prospectoBean.lstProspectLazy}" widgetVar="personsTable" rowIndexVar="row" paginator="true" rows="15" size="small" 
+			emptyMessage="No se encontraron Personas." paginatorPosition="bottom" rowKey="#{per.id}" selection="#{prospectoBean.prospectSelected}" selectionMode="single"
+			lazy="true">
+			<f:facet name="header">
+				<div class="p-d-flex p-ai-center p-jc-between">
+					<span>Lista de Prospectos</span>
+				</div>
+			</f:facet>
+
+			<p:column style="width:42px;text-align: left">
+				<f:facet name="header">
+					<p:commandLink action="#{prospectoBean.newPerson()}"
+						update=":formDialog :dialogPerson"
+						oncomplete="PF('personNewDialog').show();" title="NUEVA USUARIO">
+						<p:graphicImage width="50" value="/recursos/images/anadir.png" />
+
+					</p:commandLink>
+				</f:facet>
+			</p:column>
+
+			<p:column width="25px">
+                      #{row +1}
+        	</p:column>
+			<p:column headerText="DNI" sortBy="#{per.person.dni}" filterBy="#{per.person.dni}" filterMatchMode="contains">
+				<h:outputText value="#{per.person.dni}" />
+			</p:column>
+			<p:column headerText="Apellidos y Nombres" sortBy="#{per.person.surnames}" filterBy="#{per.person.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{per.person.surnames} #{per.person.names}" />
+			</p:column>
+			<p:column headerText="Dirección" sortBy="#{per.person.address}" filterMatchMode="contains">
+				<h:outputText value="#{per.person.address}" />
+			</p:column>
+			<p:column headerText="Teléfono" sortBy="#{per.person.phone}" filterMatchMode="contains">
+				<h:outputText value="#{per.person.phone}" />
+			</p:column>
+			<p:column headerText="Estado Civil" sortBy="#{per.person.civilStatus}" filterMatchMode="contains">
+				<h:outputText value="#{per.person.civilStatus}" />
+			</p:column>
+			<p:column headerText="Asesor" sortBy="#{per.usuarioAssessor.person.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{per.usuarioAssessor.person.surnames} #{per.usuarioAssessor.person.names}" />
+			</p:column>
+			<p:column headerText="Supervisor" sortBy="#{per.usuarioAssessor.team.personSupervisor.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{per.usuarioAssessor.team.personSupervisor.surnames} #{per.usuarioAssessor.team.personSupervisor.names}" />
+			</p:column>
+		</p:dataTable>
+	</h:form>
+	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPerson" header="NUEVA PERSONA" widgetVar="personNewDialog" resizable="false" closable="true"
+		appendTo="@(body)" style="width:auto">
+		<h:form id="formDialog">
+			<p:messages id="messages" showDetail="true" closable="true">
+	            <p:autoUpdate/>
+	        </p:messages>
+			<h:panelGrid id="grid" columns="4">
+				<h:outputLabel for="dni" value="DNI:" />
+				<p:inputText id="dni" value="#{prospectoBean.personNew.dni}" style="margin:10px" maxlength="11"/>
+
+				<h:outputLabel for="surname" value="Apellidos:" />
+				<p:inputText id="surname" value="#{prospectoBean.personNew.surnames}" style="margin:10px" maxlength="45" />
+
+				<h:outputLabel for="name" value="Nombres:" />
+				<p:inputText id="name" value="#{prospectoBean.personNew.names}" style="margin:10px" maxlength="45"  />
+
+				<h:outputLabel for="address" value="Dirección:" />
+				<p:inputText id="address" value="#{prospectoBean.personNew.address}" style="margin:10px" maxlength="60"  />
+
+				<h:outputLabel for="phone" value="Teléfono:" />
+				<p:inputText id="phone" value="#{prospectoBean.personNew.phone}" style="margin:10px" maxlength="11" />
+
+				<h:outputLabel for="option" value="Estado civil:" />
+				<p:selectOneMenu id="option" value="#{prospectoBean.personNew.civilStatus}" style="margin:10px">
+					<f:selectItem itemLabel="Soltero(a)" itemValue="Soltero" />
+					<f:selectItem itemLabel="Casado(a)" itemValue="Casado" />
+					<f:selectItem itemLabel="Viudo(a)" itemValue="Viudo" />
+					<f:selectItem itemLabel="Divorciado(a)" itemValue="Divorciado" />
+				</p:selectOneMenu>
+				
+			</h:panelGrid>
+			<p:commandButton value="Guardar" actionListener="#{prospectoBean.savePerson()}" update=":form:idTablePer :formDialog"/>
+ 
+		</h:form>
+	</p:dialog>
+</ui:composition>

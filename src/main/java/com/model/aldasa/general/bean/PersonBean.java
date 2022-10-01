@@ -1,4 +1,4 @@
-package com.model.aldasa.prospeccion.bean;
+package com.model.aldasa.general.bean;
 
 import java.util.List;
 import java.util.Map;
@@ -16,11 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import com.model.aldasa.entity.Person;
-import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.service.PersonService;
 
 @Component
@@ -31,7 +29,7 @@ public class PersonBean{
 	@Autowired
 	private PersonService personService;
 
-	private List<Person> lstPersons;
+//	private List<Person> lstPersons;
 	private LazyDataModel<Person> lstPersonsLazy;
 
 	private Person personSelected; 
@@ -45,7 +43,7 @@ public class PersonBean{
 	}
 
 	public void listarCliente() {
-		listarPersonas();
+//		listarPersonas();
 		iniciarLazy();
 	}
 	
@@ -84,24 +82,22 @@ public class PersonBean{
 				//Aqui capturo cada filtro(Si en caso existe), le pongo % al principiio y al final y reemplazo los espacios por %, para hacer el LIKE
 				//Si debageas aqui te vas a dar cuenta como lo captura
 				String dni="%"+ (filterBy.get("dni")!=null?filterBy.get("dni").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
-				String names="%"+ (filterBy.get("names")!=null?filterBy.get("names").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String names="%"+ (filterBy.get("surnames")!=null?filterBy.get("surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
 				
 				Pageable pageable = PageRequest.of(first/pageSize, pageSize);
 				//Aqui llamo al servicio que a  su vez llama al repositorio que contiene la sentencia LIKE, 
 				//Aqui tu tienes que completar la query, yo solo lo he hecho para dni y nombre a modo de ejemplo
 				//Tu deberias preparar el metodo para cada filtro que tengas en la tabla
-				Page<Person> pagePerson= personService.findAllByDniLikeAndNamesLikeAndStatus(dni, names,estado,pageable);
+				Page<Person> pagePerson= personService.findAllByDniLikeAndSurnamesLikeAndStatus(dni, names,estado,pageable);
 				setRowCount((int) pagePerson.getTotalElements());
 				return datasource = pagePerson.getContent();
-				
 			}
-	
 		};
 	}
 	
-	public void listarPersonas() {
-		lstPersons = personService.findByStatus(estado);
-	}
+//	public void listarPersonas() {
+//		lstPersons = personService.findByStatus(estado);
+//	}
 
 	public void newPerson() {
 		personSelected = new Person();
@@ -119,22 +115,23 @@ public class PersonBean{
 		boolean valor = true;
 		
 		if(person.getDni().equals("") || person.getDni()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar DNI."));
-			listarPersonas();
-			return false ;
+			personSelected.setDni(null);
+//			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar DNI."));
+//			listarPersonas();
+//			return false ;
 		}else {
 			if(tituloDialog.equals("NUEVA PERSONA")) {
 				Person buscarPorDni = personService.findByDni(person.getDni());
 				if(buscarPorDni!=null) {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El DNI ya existe."));
-					listarPersonas();
+//					listarPersonas();
 					return false;
 				}
 			}else {
 				Person buscarPorDni = personService.findByDniException(person.getDni(),person.getId());
 				if(buscarPorDni!=null) {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El DNI ya existe."));
-					listarPersonas();
+//					listarPersonas();
 					return false;
 				}
 			}
@@ -142,22 +139,22 @@ public class PersonBean{
 		}
 		if(person.getSurnames().equals("") || person.getSurnames()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Apellidos."));
-			listarPersonas();
+//			listarPersonas();
 			return false ;
 		}
 		if(person.getNames().equals("") || person.getNames()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Nombres."));
-			listarPersonas();
+//			listarPersonas();
 			return false ;
 		}
 		if(person.getAddress().equals("") || person.getAddress()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar dirección."));
-			listarPersonas();
+//			listarPersonas();
 			return false ;
 		}
 		if(person.getPhone().equals("") || person.getPhone()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Teléfono."));
-			listarPersonas();
+//			listarPersonas();
 			return false ;
 		}
 		
@@ -174,7 +171,7 @@ public class PersonBean{
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se puede guardar."));
 			}else {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente."));
-				listarPersonas();
+//				listarPersonas();
 				if(tituloDialog.equals("NUEVA PERSONA")) {
 					personSelected=new Person();
 				}
@@ -189,12 +186,12 @@ public class PersonBean{
 	public void setPersonService(PersonService personService) {
 		this.personService = personService;
 	}
-	public List<Person> getLstPersons() {
-		return lstPersons;
-	}
-	public void setLstPersons(List<Person> lstPersons) {
-		this.lstPersons = lstPersons;
-	}
+//	public List<Person> getLstPersons() {
+//		return lstPersons;
+//	}
+//	public void setLstPersons(List<Person> lstPersons) {
+//		this.lstPersons = lstPersons;
+//	}
 	public Person getPersonSelected() {
 		return personSelected;
 	}
