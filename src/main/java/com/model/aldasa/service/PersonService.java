@@ -11,8 +11,8 @@ import com.model.aldasa.entity.Person;
 public interface PersonService {
 	
 	Optional<Person> findById(Integer id);
-	Person save(Person client);
-	void delete(Person client);
+	Person save(Person entity);
+	void delete(Person entity);
 	List<Person> findByStatus(Boolean status);
 	Person findByDni(String dni);
 	Person findByDniException(String dni, int idUser);

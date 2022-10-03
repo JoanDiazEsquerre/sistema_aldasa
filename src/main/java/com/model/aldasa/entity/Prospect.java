@@ -21,8 +21,12 @@ public class Prospect {
 	Person person;
 	
 	@ManyToOne
-	@JoinColumn(name="iduserassessor")
-	Usuario usuarioAssessor;
+	@JoinColumn(name="idpersonassessor")
+	Person personAssessor;
+	
+	@ManyToOne
+	@JoinColumn(name="idpersonsupervisor")
+	Person personSupervisor;
 	
 	
 	public Integer getId() {
@@ -37,12 +41,19 @@ public class Prospect {
 	public void setPerson(Person person) {
 		this.person = person;
 	}
-	public Usuario getUsuarioAssessor() {
-		return usuarioAssessor;
+	public Person getPersonAssessor() {
+		return personAssessor;
 	}
-	public void setUsuarioAssessor(Usuario usuarioAssessor) {
-		this.usuarioAssessor = usuarioAssessor;
+	public void setPersonAssessor(Person personAssessor) {
+		this.personAssessor = personAssessor;
 	}
+	public Person getPersonSupervisor() {
+		return personSupervisor;
+	}
+	public void setPersonSupervisor(Person personSupervisor) {
+		this.personSupervisor = personSupervisor;
+	}
+	
 	
 	
 	

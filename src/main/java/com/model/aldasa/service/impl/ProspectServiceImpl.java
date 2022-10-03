@@ -38,15 +38,15 @@ public class ProspectServiceImpl implements ProspectService{
 	}
 
 	@Override
-	public Page<Prospect> findAllByPersonDniLikeAndUsuarioAssessor(String dni,Usuario usuarioAssessor,Pageable pageable) {
+	public Page<Prospect> findAllByPersonDniLikeAndPersonAssessor(String dni,Person assessor,Pageable pageable) {
 		// TODO Auto-generated method stub
-		return prospectRepository.findAllByPersonDniLikeAndUsuarioAssessor(dni,usuarioAssessor,pageable); 
+		return prospectRepository.findAllByPersonDniLikeAndPersonAssessor(dni,assessor,pageable); 
 	}
 	
 	@Override
-	public Page<Prospect> findAllByPersonDniLikeAndUsuarioAssessorTeamPersonSupervisor(String dni,Person supervisor,Pageable pageable) {
+	public Page<Prospect> findAllByPersonDniLikeAndPersonSupervisor(String dni,Person supervisor,Pageable pageable) {
 		// TODO Auto-generated method stub
-		return prospectRepository.findAllByPersonDniLikeAndUsuarioAssessorTeamPersonSupervisor(dni, supervisor,pageable); 
+		return prospectRepository.findAllByPersonDniLikeAndPersonSupervisor(dni, supervisor,pageable); 
 	}
 
 	@Override

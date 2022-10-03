@@ -18,7 +18,7 @@ public class Person {
 	@Column(name="civilstatus")
 	String civilStatus;
 	
-	String dni,names, surnames, address, phone;
+	String dni,names, surnames, address, phone, cellphone;
 	boolean status;
 	
 	
@@ -71,4 +71,11 @@ public class Person {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
+	public String getCellphone() {
+		return cellphone;
+	}
+	public void setCellphone(String cellphone) {
+		this.cellphone = cellphone;
+	}
+	
 }

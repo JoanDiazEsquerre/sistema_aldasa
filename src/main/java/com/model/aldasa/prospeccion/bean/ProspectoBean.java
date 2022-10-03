@@ -53,7 +53,7 @@ public class ProspectoBean {
 	private Prospect prospectSelected;
 	private Person personNew;
 	
-	private String username;;
+	private String username,tituloDialog;
 	private Usuario usuarioLogin = new Usuario();
 
 	@PostConstruct
@@ -114,10 +114,10 @@ public class ProspectoBean {
 					pagePerson= prospectService.findAllByPersonDniLike(dni,pageable); 
 				}else if(usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {
 					// si es asesor
-					pagePerson= prospectService.findAllByPersonDniLikeAndUsuarioAssessor(dni, usuarioLogin, pageable); 
+					pagePerson= prospectService.findAllByPersonDniLikeAndPersonAssessor(dni, usuarioLogin.getPerson(), pageable); 
 				}else if(usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())){
 					// Es supervisor
-					pagePerson= prospectService.findAllByPersonDniLikeAndUsuarioAssessorTeamPersonSupervisor(dni,usuarioLogin.getPerson(),pageable); 
+					pagePerson= prospectService.findAllByPersonDniLikeAndPersonSupervisor(dni,usuarioLogin.getPerson(),pageable); 
 				}
 				
 //				pagePerson= prospectService.findAllByPersonDniLike(dni,pageable); 
@@ -134,9 +134,39 @@ public class ProspectoBean {
 	    Supervisor;
 	}
 	
-	private void newPerson() {
+	public void newPerson() {
 		personNew = new Person();
-		personNew.setStatus(true); 
+		personNew.setStatus(true);
+		tituloDialog = "NUEVA PERSONA";
+	}
+	
+	public void updatePerson() {
+		tituloDialog = "MODIFICAR PERSONA";
+		personNew=prospectSelected.getPerson();
+	}
+	
+
+	public void completar() {
+		if(!personNew.getDni().equals("") || personNew.getDni()!=null) {
+			Person buscarPorDni = personService.findByDni(personNew.getDni());
+			if(buscarPorDni!=null) {
+				personNew.setNames(buscarPorDni.getNames());
+				personNew.setSurnames(buscarPorDni.getSurnames());
+				personNew.setAddress(buscarPorDni.getAddress());
+				personNew.setPhone(buscarPorDni.getPhone());
+				personNew.setCellphone(buscarPorDni.getCellphone());
+				personNew.setStatus(true);
+				personNew.setCivilStatus(buscarPorDni.getCivilStatus());
+			}else {
+				personNew.setNames("");
+				personNew.setSurnames("");
+				personNew.setAddress("");
+				personNew.setPhone("");
+				personNew.setCellphone("");
+				personNew.setStatus(true);
+				personNew.setCivilStatus("Soltero");
+			}
+		}
 	}
 	
 	public boolean validarDatosPersona(Person person) {
@@ -158,41 +188,86 @@ public class ProspectoBean {
 	}
 	
 	public void savePerson() {
-		if(personNew.getDni().equals("") || personNew.getDni()==null) {
-			personNew.setDni(null);
+		if(tituloDialog.equals("NUEVA PERSONA")) {
+			if(personNew.getSurnames().equals("") || personNew.getSurnames()==null) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Apellidos."));
+				return;
+			}
+			if(personNew.getNames().equals("") || personNew.getNames()==null) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Nombres."));
+				return;
+			}
+			
+			if (!personNew.getDni().equals("") || personNew.getDni() != null) {
+				Person buscarPersona = personService.findByDni(personNew.getDni());
+				if (buscarPersona != null) {
+					personNew.setId(buscarPersona.getId());
+					Prospect buscarProspecto = prospectService.findByPerson(buscarPersona);
+					if (buscarProspecto != null) {
+						if (buscarProspecto.getPersonAssessor() != null) {
+							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto esta en seguimiento por el asesor "+ buscarProspecto.getPersonAssessor().getSurnames() + " "+ buscarProspecto.getPersonAssessor().getNames()));
+							return;
+						} else if (buscarProspecto.getPersonSupervisor() != null) {
+							FacesContext.getCurrentInstance().addMessage(null,
+									new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error","El prospecto está a cargo del supervisor "+ buscarProspecto.getPersonSupervisor().getSurnames() + " "+ buscarProspecto.getPersonSupervisor().getNames()));
+							return;
 
-		}else {
-			Person buscarPorDni = personService.findByDni(personNew.getDni());
-			if(buscarPorDni!=null) {
-				Prospect buscarProspecto = prospectService.findByPerson(buscarPorDni);
-				if(buscarProspecto.getUsuarioAssessor() != null) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto esta en seguimiento por el asesor " + buscarProspecto.getUsuarioAssessor().getPerson().getSurnames()+" "+ buscarProspecto.getUsuarioAssessor().getPerson().getNames()));
-					return;
+						} else {
+							if (usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.toString())) {
+								buscarProspecto.setPersonAssessor(usuarioLogin.getPerson());
+							} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {
+								buscarProspecto.setPersonAssessor(usuarioLogin.getPerson());
+								buscarProspecto.setPersonSupervisor(usuarioLogin.getTeam().getPersonSupervisor());
+							} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())) {
+								buscarProspecto.setPersonSupervisor(usuarioLogin.getPerson());
+							}
+							
+							buscarPersona.setNames(personNew.getNames());
+							buscarPersona.setSurnames(personNew.getSurnames());
+							buscarPersona.setAddress(personNew.getAddress());
+							buscarPersona.setPhone(personNew.getPhone());
+							buscarPersona.setCellphone(personNew.getCellphone());
+							buscarPersona.setCellphone(personNew.getCellphone());
+							buscarPersona.setStatus(true);
+							buscarPersona.setCivilStatus(personNew.getCivilStatus());
+							personService.save(buscarPersona);
+
+							prospectService.save(buscarProspecto);
+							FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
+							personNew = new Person();
+							personNew.setStatus(true);
+							return;
+						}
+					}
 				}
+			}
+			
+			Person person =personService.save(personNew);
+			Prospect prospectNew = new Prospect();
+			prospectNew.setPerson(person);
+			if (usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.toString())) {
+				prospectNew.setPersonAssessor(usuarioLogin.getPerson());
+			} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {
+				prospectNew.setPersonAssessor(usuarioLogin.getPerson());
+				prospectNew.setPersonSupervisor(usuarioLogin.getTeam().getPersonSupervisor());
+			} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())) {
+				prospectNew.setPersonSupervisor(usuarioLogin.getPerson());
+			}
+			
+			prospectService.save(prospectNew);
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
+			personNew = new Person();
+			personNew.setStatus(true);
+		}else {
+			Person buscarPorDni = personService.findByDniException(personNew.getDni(),personNew.getId());
+			if(buscarPorDni!=null) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El DNI ya existe."));
+			}else {
+				Person per = personService.save(personNew); 
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
 			}
 		}
 		
-		if(personNew.getSurnames().equals("") || personNew.getSurnames()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Apellidos."));
-			return;
-		}
-		if(personNew.getNames().equals("") || personNew.getNames()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Nombres."));
-			return;
-		}
-		
-		
-//		if(valida) {
-//			Person per = personService.save(personSelected); 
-//			if(per==null) {
-//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se puede guardar."));
-//			}else {
-//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente."));
-//				if(tituloDialog.equals("NUEVA PERSONA")) {
-//					personSelected=new Person();
-//				}
-//			}		
-//		}
 	}
 	
 	
@@ -253,6 +328,14 @@ public class ProspectoBean {
 	}
 	public void setPersonService(PersonService personService) {
 		this.personService = personService;
+	}
+
+	public String getTituloDialog() {
+		return tituloDialog;
+	}
+
+	public void setTituloDialog(String tituloDialog) {
+		this.tituloDialog = tituloDialog;
 	}
 
 	

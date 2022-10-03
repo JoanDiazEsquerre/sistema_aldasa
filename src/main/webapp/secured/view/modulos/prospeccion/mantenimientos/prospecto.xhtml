@@ -18,6 +18,7 @@
 					<span>Lista de Prospectos</span>
 				</div>
 			</f:facet>
+			<p:ajax event="rowSelect" update=":formDialog :dialogPerson" listener="#{prospectoBean.updatePerson()}" oncomplete="PF('personNewDialog').show();" />
 
 			<p:column style="width:42px;text-align: left">
 				<f:facet name="header">
@@ -48,16 +49,16 @@
 			<p:column headerText="Estado Civil" sortBy="#{per.person.civilStatus}" filterMatchMode="contains">
 				<h:outputText value="#{per.person.civilStatus}" />
 			</p:column>
-			<p:column headerText="Asesor" sortBy="#{per.usuarioAssessor.person.surnames}" filterMatchMode="contains">
-				<h:outputText value="#{per.usuarioAssessor.person.surnames} #{per.usuarioAssessor.person.names}" />
+			<p:column headerText="Asesor" sortBy="#{per.personAssessor.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{per.personAssessor.surnames} #{per.personAssessor.names}" />
 			</p:column>
-			<p:column headerText="Supervisor" sortBy="#{per.usuarioAssessor.team.personSupervisor.surnames}" filterMatchMode="contains">
-				<h:outputText value="#{per.usuarioAssessor.team.personSupervisor.surnames} #{per.usuarioAssessor.team.personSupervisor.names}" />
+			<p:column headerText="Supervisor" sortBy="#{per.personSupervisor.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{per.personSupervisor.surnames} #{per.personSupervisor.names}" />
 			</p:column>
 		</p:dataTable>
 	</h:form>
 	
-	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPerson" header="NUEVA PERSONA" widgetVar="personNewDialog" resizable="false" closable="true"
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPerson" header="#{prospectoBean.tituloDialog}" widgetVar="personNewDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formDialog">
 			<p:messages id="messages" showDetail="true" closable="true">
@@ -65,7 +66,9 @@
 	        </p:messages>
 			<h:panelGrid id="grid" columns="4">
 				<h:outputLabel for="dni" value="DNI:" />
-				<p:inputText id="dni" value="#{prospectoBean.personNew.dni}" style="margin:10px" maxlength="11"/>
+				<p:inputText id="dni" value="#{prospectoBean.personNew.dni}" style="margin:10px" maxlength="11"> 
+					<p:ajax event="keyup" listener="#{prospectoBean.completar()}" update=":formDialog" />
+				</p:inputText>
 
 				<h:outputLabel for="surname" value="Apellidos:" />
 				<p:inputText id="surname" value="#{prospectoBean.personNew.surnames}" style="margin:10px" maxlength="45" />
@@ -78,6 +81,9 @@
 
 				<h:outputLabel for="phone" value="Teléfono:" />
 				<p:inputText id="phone" value="#{prospectoBean.personNew.phone}" style="margin:10px" maxlength="11" />
+				
+				<h:outputLabel for="cellphone" value="Celular:" />
+				<p:inputText id="cellphone" value="#{prospectoBean.personNew.cellphone}" style="margin:10px" maxlength="15" />
 
 				<h:outputLabel for="option" value="Estado civil:" />
 				<p:selectOneMenu id="option" value="#{prospectoBean.personNew.civilStatus}" style="margin:10px">
