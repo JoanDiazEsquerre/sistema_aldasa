@@ -14,6 +14,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
+import javax.inject.Inject;
 
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -27,12 +28,16 @@ import org.springframework.stereotype.Component;
 import com.model.aldasa.entity.Action;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Project;
+import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.ProspectionDetail;
 import com.model.aldasa.entity.Usuario;
+import com.model.aldasa.general.bean.NavegacionBean;
+import com.model.aldasa.prospeccion.bean.ProspectoBean.Perfiles;
 import com.model.aldasa.service.ActionService;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProjectService;
+import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.ProspectionDetailService;
 import com.model.aldasa.service.ProspectionService;
 import com.model.aldasa.service.UsuarioService;
@@ -41,6 +46,9 @@ import com.model.aldasa.service.UsuarioService;
 @ManagedBean
 @SessionScoped
 public class ProspeccionBean {
+	
+	@Inject
+	private NavegacionBean navegacionBean;
 	
 	@Autowired
 	private ProspectionService prospectionService;
@@ -60,31 +68,38 @@ public class ProspeccionBean {
 	@Autowired
 	private ActionService actionService;
 	
+	@Autowired
+	private ProspectService prospectService;
+	
 	private LazyDataModel<Prospection> lstProspectionLazy;
 	
 	private Prospection prospectionSelected;
 	private Prospection prospectionNew;
 	private ProspectionDetail prospectionDetailSelected;
 	private ProspectionDetail prospectionDetailNew;
+	private Usuario usuarioLogin = new Usuario();
 	
 	private String status = "En seguimiento";
 	private String titleDialog;
 	
-	private List<Person> lstPerson;
+	private List<Prospect> lstProspect;
 	private List<Person> lstPersonAssessor;
 	private List<SelectItem> countriesGroup;
 	private List<Project> lstProject;
 	private List<ProspectionDetail> lstProspectionDetail = new ArrayList<>();
 	private List<Action> lstActions;
 
-	
+	enum Perfiles{
+	    Administrador, 
+	    Asesor, 
+	    Supervisor;
+	}
 	
 	@PostConstruct
 	public void init() {
 		prospectionNew = new Prospection();
 		
 		iniciarLazy();
-		listarPersonas();
 		listarPersonasAssessor();
 		listarProject();
 		listarActions();
@@ -99,8 +114,19 @@ public class ProspeccionBean {
         countriesGroup.add(europeCountries);
 	}
 	
-	public void listarPersonas() {
-		lstPerson=personService.findByStatus(true);
+	public void onPageLoad(){
+		usuarioLogin = usuarioService.findByUsername(navegacionBean.getUsername());
+		listarProspect();
+	}
+	
+	public void listarProspect() {		
+		if (usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.toString())) {
+			lstProspect = prospectService.findAll();
+		}else if(usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {	
+			lstProspect = prospectService.findAllByPersonDniLikeAndPersonAssessor("", usuarioLogin.getPerson());
+		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())) {
+			lstProspect = prospectService.findAllByPersonDniLikeAndPersonSupervisor("", usuarioLogin.getPerson());
+		}
 	}
 	
 	public void listarProject() {
@@ -164,7 +190,7 @@ public class ProspeccionBean {
 				//Aqui llamo al servicio que a  su vez llama al repositorio que contiene la sentencia LIKE, 
 				//Aqui tu tienes que completar la query, yo solo lo he hecho para dni y nombre a modo de ejemplo
 				//Tu deberias preparar el metodo para cada filtro que tengas en la tabla
-				Page<Prospection> pageProspection= prospectionService.findAllByOriginContactLikeAndAssessorSurnamesLikeAndStatus(originContact,assessor, status, pageable);
+				Page<Prospection> pageProspection= prospectionService.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(originContact,assessor, status, pageable);
 				setRowCount((int) pageProspection.getTotalElements());
 				return datasource = pageProspection.getContent();
 			}
@@ -172,18 +198,18 @@ public class ProspeccionBean {
 	}
 	
 	public void saveNewProspection() {
-		if(prospectionNew.getPerson()==null) {
+		if(prospectionNew.getProspect().getPerson()==null) {
 			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccione un prospecto."));
 			return;
 		}else {
-			Prospection searchProspection = prospectionService.findByPersonIdAndStatus(prospectionNew.getPerson().getId(), "En seguimiento");
+			Prospection searchProspection = prospectionService.findByProspectPersonIdAndStatus(prospectionNew.getProspect().getPerson().getId(), "En seguimiento");
 			if(searchProspection != null) {
-				FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto esta en seguimiento por el asesor " + searchProspection.getAssessor().getNames()+" "+searchProspection.getAssessor().getSurnames()));
+				FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto esta en seguimiento por el asesor " + searchProspection.getPersonAssessor().getNames()+" "+searchProspection.getPersonAssessor().getSurnames()));
 				return;
 			}
 		}
 		
-		if(prospectionNew.getAssessor()==null) {
+		if(prospectionNew.getPersonAssessor()==null) {
 			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccione un prospecto."));
 			return;
 		}
@@ -197,13 +223,13 @@ public class ProspeccionBean {
 		prospectionNew.setStatus("En seguimiento");
 		Prospection nuevo= prospectionService.save(prospectionNew);
 		if(nuevo!=null) {
-			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "Se registro correctamente el prospecto "+ nuevo.getPerson().getSurnames()+" "+ nuevo.getPerson().getNames()));
+			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "Se registro correctamente el prospecto "+ nuevo.getProspect().getPerson().getSurnames()+" "+ nuevo.getProspect().getPerson().getNames()));
 			prospectionNew = new Prospection();
 		}
 	}
 	
 	public void modifyProspection() {
-		titleDialog ="PROSPECTO: "+ prospectionSelected.getPerson().getSurnames()+" "+ prospectionSelected.getPerson().getNames();
+		titleDialog ="PROSPECTO: "+ prospectionSelected.getProspect().getPerson().getSurnames()+" "+ prospectionSelected.getProspect().getPerson().getNames();
 		
 		lstProspectionDetail = prospectionDetailService.findByProspection(prospectionSelected);
 		
@@ -213,9 +239,9 @@ public class ProspeccionBean {
 	
 	public void saveProspectionSelected() {
 		if(prospectionSelected.getStatus().equals("En seguimiento")) {
-			Prospection searchProspection = prospectionService.findByPersonIdAndStatus(prospectionSelected.getPerson().getId(), "En seguimiento");
+			Prospection searchProspection = prospectionService.findByProspectPersonIdAndStatus(prospectionSelected.getProspect().getPerson().getId(), "En seguimiento");
 			if(searchProspection != null) {
-				FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto esta en seguimiento por el asesor " + searchProspection.getAssessor().getNames()+" "+searchProspection.getAssessor().getSurnames()));
+				FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto esta en seguimiento por el asesor " + searchProspection.getPersonAssessor().getNames()+" "+searchProspection.getPersonAssessor().getSurnames()));
 				return;
 			}
 		}
@@ -227,15 +253,15 @@ public class ProspeccionBean {
 	}
 	
 	
-	public Converter getConversorPerson() {
+	public Converter getConversorProspect() {
         return new Converter() {
             @Override
             public Object getAsObject(FacesContext context, UIComponent component, String value) {
                 if (value.trim().equals("") || value == null || value.trim().equals("null")) {
                     return null;
                 } else {
-                    Person c = null;
-                    for (Person si : lstPerson) {
+                    Prospect c = null;
+                    for (Prospect si : lstProspect) {
                         if (si.getId().toString().equals(value)) {
                             c = si;
                         }
@@ -249,7 +275,7 @@ public class ProspeccionBean {
                 if (value == null || value.equals("")) {
                     return "";
                 } else {
-                    return ((Person) value).getId() + "";
+                    return ((Prospect) value).getId() + "";
                 }
             }
         };
@@ -339,10 +365,10 @@ public class ProspeccionBean {
         };
     }
 	
-	public List<Person> completePerson(String query) {
-        List<Person> lista = new ArrayList<>();
-        for (Person c : lstPerson) {
-            if (c.getSurnames().toUpperCase().contains(query.toUpperCase()) || c.getNames().toUpperCase().contains(query.toUpperCase())) {
+	public List<Prospect> completeProspect(String query) {
+        List<Prospect> lista = new ArrayList<>();
+        for (Prospect c : lstProspect) {
+            if (c.getPerson().getSurnames().toUpperCase().contains(query.toUpperCase()) || c.getPerson().getNames().toUpperCase().contains(query.toUpperCase())) {
                 lista.add(c);
             }
         }
@@ -402,12 +428,12 @@ public class ProspeccionBean {
 		this.personService = personService;
 	}
 
-	public List<Person> getLstPerson() {
-		return lstPerson;
+	public List<Prospect> getLstProspect() {
+		return lstProspect;
 	}
 
-	public void setLstPerson(List<Person> lstPerson) {
-		this.lstPerson = lstPerson;
+	public void setLstProspect(List<Prospect> lstProspect) {
+		this.lstProspect = lstProspect;
 	}
 
 	public UsuarioService getUsuarioService() {
@@ -512,6 +538,30 @@ public class ProspeccionBean {
 
 	public void setProspectionDetailNew(ProspectionDetail prospectionDetailNew) {
 		this.prospectionDetailNew = prospectionDetailNew;
+	}
+
+	public NavegacionBean getNavegacionBean() {
+		return navegacionBean;
+	}
+
+	public void setNavegacionBean(NavegacionBean navegacionBean) {
+		this.navegacionBean = navegacionBean;
+	}
+
+	public ProspectService getProspectService() {
+		return prospectService;
+	}
+
+	public void setProspectService(ProspectService prospectService) {
+		this.prospectService = prospectService;
+	}
+
+	public Usuario getUsuarioLogin() {
+		return usuarioLogin;
+	}
+
+	public void setUsuarioLogin(Usuario usuarioLogin) {
+		this.usuarioLogin = usuarioLogin;
 	}
 
 	

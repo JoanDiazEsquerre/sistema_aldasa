@@ -43,15 +43,15 @@ public class ProspectionServiceImpl implements ProspectionService {
 	}
 
 	@Override
-	public Page<Prospection> findAllByOriginContactLikeAndAssessorSurnamesLikeAndStatus(String originContact, String assessorSurname, String status, Pageable pageable) {
+	public Page<Prospection> findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(String originContact, String assessorSurname, String status, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return prospectionRepository.findAllByOriginContactLikeAndAssessorSurnamesLikeAndStatus(originContact,assessorSurname, status, pageable);
+		return prospectionRepository.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(originContact,assessorSurname, status, pageable);
 	}
 	
 	@Override
-	public Prospection findByPersonIdAndStatus(int idPerson,String status) {
+	public Prospection findByProspectPersonIdAndStatus(int idPerson,String status) {
 		// TODO Auto-generated method stub
-		return prospectionRepository.findByPersonIdAndStatus(idPerson,status);
+		return prospectionRepository.findByProspectPersonIdAndStatus(idPerson,status);
 	}
 
 }

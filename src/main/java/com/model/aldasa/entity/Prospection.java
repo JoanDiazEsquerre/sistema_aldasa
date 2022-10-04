@@ -20,12 +20,16 @@ public class Prospection {
 	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name="idperson")
-	Person person;
+	@JoinColumn(name="idprospect")
+	Prospect prospect;
 	
 	@ManyToOne
-	@JoinColumn(name="idassessor")
-	Person assessor;
+	@JoinColumn(name="idpersonassessor")
+	Person personAssessor;
+	
+	@ManyToOne
+	@JoinColumn(name="idpersonsupervisor")
+	Person personSupervisor;
 	
 	@Column(name="dateregister")
 	Date dateRegister;
@@ -43,76 +47,68 @@ public class Prospection {
 	@JoinColumn(name="idproject")
 	Project project;
 
+	
+	
+	
 	public Integer getId() {
 		return id;
 	}
-
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
-	public Person getPerson() {
-		return person;
+	public Prospect getProspect() {
+		return prospect;
 	}
-
-	public void setPerson(Person person) {
-		this.person = person;
+	public void setProspect(Prospect prospect) {
+		this.prospect = prospect;
 	}
-
-	public Person getAssessor() {
-		return assessor;
-	}
-
-	public void setAssessor(Person assessor) {
-		this.assessor = assessor;
-	}
-
 	public Date getDateRegister() {
 		return dateRegister;
 	}
-
 	public void setDateRegister(Date dateRegister) {
 		this.dateRegister = dateRegister;
 	}
-
 	public String getOriginContact() {
 		return originContact;
 	}
-
 	public void setOriginContact(String originContact) {
 		this.originContact = originContact;
 	}
-
 	public Project getProject() {
 		return project;
 	}
-
 	public void setProject(Project project) {
 		this.project = project;
 	}
-
 	public String getStatus() {
 		return status;
 	}
-
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
 	public Date getDateStart() {
 		return dateStart;
 	}
-
 	public void setDateStart(Date dateStart) {
 		this.dateStart = dateStart;
 	}
-
 	public int getPorcentage() {
 		return porcentage;
 	}
-
 	public void setPorcentage(int porcentage) {
 		this.porcentage = porcentage;
+	}
+	public Person getPersonAssessor() {
+		return personAssessor;
+	}
+	public void setPersonAssessor(Person personAssessor) {
+		this.personAssessor = personAssessor;
+	}
+	public Person getPersonSupervisor() {
+		return personSupervisor;
+	}
+	public void setPersonSupervisor(Person personSupervisor) {
+		this.personSupervisor = personSupervisor;
 	}
 	
 	

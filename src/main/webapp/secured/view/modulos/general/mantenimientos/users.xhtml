@@ -64,7 +64,7 @@
                 <h:outputText value="#{user.profile.name}" />
             </p:column>
             <p:column headerText="Equipo" sortBy="#{user.team.name}" filterBy="#{user.team.name}" filterMatchMode="contains">
-                <h:outputText value="#{user.team.supervisor.surnames} #{user.team.supervisor.names}#{user.team eq null?'':' / '}#{user.team.name}" />
+                <h:outputText value="#{user.team.personSupervisor.surnames} #{user.team.personSupervisor.names}#{user.team eq null?'':' / '}#{user.team.name}" />
             </p:column>
             
         </p:dataTable>

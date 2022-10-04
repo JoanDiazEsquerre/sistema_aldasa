@@ -1,5 +1,6 @@
 package com.model.aldasa.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -20,5 +21,9 @@ public interface ProspectService {
 	Page<Prospect> findAllByPersonDniLike(String dni , Pageable pageable);
 
 	Prospect findByPerson(Person entity);
+	
+	List<Prospect> findAllByPersonDniLikeAndPersonAssessor(String dni,Person assessor);
+	List<Prospect> findAllByPersonDniLikeAndPersonSupervisor(String dni,Person supervisor);
+	List<Prospect> findAll();
 
 }

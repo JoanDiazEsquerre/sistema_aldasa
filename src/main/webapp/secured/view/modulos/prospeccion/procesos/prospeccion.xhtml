@@ -6,6 +6,9 @@
 	locale="#{localeBean.usedLocale}"
 	xmlns:f="http://java.sun.com/jsf/core">
 	<!-- 				<p:growl autoUpdate="true" id="growl1" showDetail="true" sticky="true" /> -->
+	<f:metadata>
+    	<f:event type="preRenderView" listener="#{prospeccionBean.onPageLoad}"/>
+    </f:metadata>
 
 	<h:form id="form">
 		<p:tabView id="tabView">
@@ -64,13 +67,13 @@
 		        </p:messages>
 				<h:panelGrid id="grid" columns="3"> 
 					<h:outputLabel for="prospecto" value="Prospecto: " />
-					<p:autoComplete  scrollHeight="500" styleClass="ui-autocompV" value="#{prospeccionBean.prospectionNew.person}" converter="#{prospeccionBean.conversorPerson}" id="prospecto" completeMethod="#{prospeccionBean.completePerson}"  
-                          var="pros" itemLabel="#{pros.surnames} #{pros.names}" itemValue="#{pros}" forceSelection="true" style="margin:5px;" >
+					<p:autoComplete  scrollHeight="500" styleClass="ui-autocompV" value="#{prospeccionBean.prospectionNew.prospect}" converter="#{prospeccionBean.conversorProspect}" id="prospecto" completeMethod="#{prospeccionBean.completeProspect}"  
+                          var="pros" itemLabel="#{pros.person.surnames.concat(' ')}#{pros.person.names}" itemValue="#{pros}" forceSelection="true" style="margin:5px;" >
                     	<p:column width="400px">
-                        	<h:outputLabel value="#{pros.surnames} #{pros.names}" /> 
+                        	<h:outputLabel value="#{pros.person.surnames} #{pros.person.names}" /> 
                         </p:column>
                         <p:column width="400px">
-                        	<h:outputLabel value="#{pros.dni}" /> 
+                        	<h:outputLabel value="#{pros.person.dni}" /> 
                         </p:column>  
                     </p:autoComplete>
                           
@@ -79,8 +82,8 @@
 					</p:commandLink>
 					
 					<h:outputLabel for="assessor" value="Asesor: " />
-					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{prospeccionBean.prospectionNew.assessor}" converter="#{prospeccionBean.conversorPersonAssessor}" id="assessor" completeMethod="#{prospeccionBean.completePersonAssesor}"  
-                          var="ase" itemLabel="#{ase.surnames} #{ase.names}" itemValue="#{ase}" forceSelection="true" style="margin:5px;" />
+					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{prospeccionBean.prospectionNew.personAssessor}" converter="#{prospeccionBean.conversorPersonAssessor}" id="assessor" completeMethod="#{prospeccionBean.completePersonAssesor}"  
+                          var="ase" itemLabel="#{ase.surnames.concat(' ')}#{ase.names}" itemValue="#{ase}" forceSelection="true" style="margin:5px;" />
 					<p:spacer></p:spacer>
 					
 					<h:outputLabel for="dateStart" value="Fecha inicio: " />

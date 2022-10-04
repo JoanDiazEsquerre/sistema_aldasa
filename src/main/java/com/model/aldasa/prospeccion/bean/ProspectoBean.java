@@ -147,7 +147,7 @@ public class ProspectoBean {
 	
 
 	public void completar() {
-		if(!personNew.getDni().equals("") || personNew.getDni()!=null) {
+		if(tituloDialog.equals("NUEVA PERSONA")) {
 			Person buscarPorDni = personService.findByDni(personNew.getDni());
 			if(buscarPorDni!=null) {
 				personNew.setNames(buscarPorDni.getNames());
@@ -157,16 +157,9 @@ public class ProspectoBean {
 				personNew.setCellphone(buscarPorDni.getCellphone());
 				personNew.setStatus(true);
 				personNew.setCivilStatus(buscarPorDni.getCivilStatus());
-			}else {
-				personNew.setNames("");
-				personNew.setSurnames("");
-				personNew.setAddress("");
-				personNew.setPhone("");
-				personNew.setCellphone("");
-				personNew.setStatus(true);
-				personNew.setCivilStatus("Soltero");
-			}
+			}	
 		}
+		
 	}
 	
 	public boolean validarDatosPersona(Person person) {

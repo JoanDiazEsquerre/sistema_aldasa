@@ -11,8 +11,8 @@ import com.model.aldasa.entity.Prospection;
 public interface ProspectionRepository extends PagingAndSortingRepository<Prospection, Integer>{
 	
 	List<Prospection> findByStatus(String status);
-	Page<Prospection> findAllByOriginContactLikeAndAssessorSurnamesLikeAndStatus(String originContact, String assesorSurname, String status, Pageable pageable);
-	Prospection findByPersonIdAndStatus(int idPerson,String status);
+	Page<Prospection> findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(String originContact, String assesorSurname, String status, Pageable pageable);
+	Prospection findByProspectPersonIdAndStatus(int idPerson,String status);
 	
 
 }

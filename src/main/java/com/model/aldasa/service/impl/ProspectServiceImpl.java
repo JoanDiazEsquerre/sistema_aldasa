@@ -1,5 +1,6 @@
 package com.model.aldasa.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,44 +22,52 @@ public class ProspectServiceImpl implements ProspectService{
 
 	@Override
 	public Optional<Prospect> findById(Integer id) {
-		// TODO Auto-generated method stub
 		return prospectRepository.findById(id);
 	}
 
 	@Override
 	public Prospect save(Prospect entity) {
-		// TODO Auto-generated method stub
 		return prospectRepository.save(entity);
 	}
 
 	@Override
 	public void delete(Prospect entity) {
-		// TODO Auto-generated method stub
 		prospectRepository.delete(entity);
 	}
 
 	@Override
 	public Page<Prospect> findAllByPersonDniLikeAndPersonAssessor(String dni,Person assessor,Pageable pageable) {
-		// TODO Auto-generated method stub
 		return prospectRepository.findAllByPersonDniLikeAndPersonAssessor(dni,assessor,pageable); 
 	}
 	
 	@Override
 	public Page<Prospect> findAllByPersonDniLikeAndPersonSupervisor(String dni,Person supervisor,Pageable pageable) {
-		// TODO Auto-generated method stub
 		return prospectRepository.findAllByPersonDniLikeAndPersonSupervisor(dni, supervisor,pageable); 
 	}
 
 	@Override
 	public Page<Prospect> findAllByPersonDniLike(String dni, Pageable pageable) {
-		// TODO Auto-generated method stub
 		return prospectRepository.findAllByPersonDniLike(dni, pageable);
 	}
 
 	@Override
 	public Prospect findByPerson(Person entity) {
-		// TODO Auto-generated method stub
 		return prospectRepository.findByPerson(entity);
+	}
+
+	@Override
+	public List<Prospect> findAllByPersonDniLikeAndPersonAssessor(String dni, Person assessor) {
+		return prospectRepository.findAllByPersonDniLikeAndPersonAssessor(dni, assessor);
+	}
+
+	@Override
+	public List<Prospect> findAllByPersonDniLikeAndPersonSupervisor(String dni, Person supervisor) {
+		return prospectRepository.findAllByPersonDniLikeAndPersonSupervisor(dni, supervisor);
+	}
+
+	@Override
+	public List<Prospect> findAll() {
+		return prospectRepository.findAll();
 	}
 
 }

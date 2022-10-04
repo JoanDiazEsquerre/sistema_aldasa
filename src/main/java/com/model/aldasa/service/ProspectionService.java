@@ -14,7 +14,7 @@ public interface ProspectionService {
 	Prospection save(Prospection prospection);
 	void delete(Prospection prospection);
 	List<Prospection> findByStatus(String status);
-	Page<Prospection> findAllByOriginContactLikeAndAssessorSurnamesLikeAndStatus(String originContact, String assessorSurname, String status, Pageable pageable);
-	Prospection findByPersonIdAndStatus(int idPerson,String status);
+	Page<Prospection> findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(String originContact, String assessorSurname, String status, Pageable pageable);
+	Prospection findByProspectPersonIdAndStatus(int idPerson,String status);
 
 }

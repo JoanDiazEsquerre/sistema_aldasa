@@ -1,5 +1,7 @@
 package com.model.aldasa.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -14,5 +16,9 @@ public interface ProspectRepository extends PagingAndSortingRepository<Prospect,
 	Page<Prospect> findAllByPersonDniLikeAndPersonSupervisor(String dni,Person supervisor,Pageable pageable);
 	Page<Prospect> findAllByPersonDniLike(String dni,Pageable pageable);
 	Prospect findByPerson(Person entity);
+	
+	List<Prospect> findAllByPersonDniLikeAndPersonAssessor(String dni,Person assessor);
+	List<Prospect> findAllByPersonDniLikeAndPersonSupervisor(String dni,Person supervisor);
+	List<Prospect> findAll();
 
 }

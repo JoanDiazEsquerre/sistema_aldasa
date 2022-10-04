@@ -115,7 +115,7 @@ public class PersonBean{
 		boolean valor = true;
 		
 		if(person.getDni().equals("") || person.getDni()==null) {
-			personSelected.setDni(null);
+			personSelected.setDni("");
 //			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar DNI."));
 //			listarPersonas();
 //			return false ;
