@@ -16,6 +16,7 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import javax.inject.Inject;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
@@ -78,6 +79,7 @@ public class ProspeccionBean {
 	private ProspectionDetail prospectionDetailSelected;
 	private ProspectionDetail prospectionDetailNew;
 	private Usuario usuarioLogin = new Usuario();
+	private Person personNew;
 	
 	private String status = "En seguimiento";
 	private String titleDialog;
@@ -100,7 +102,6 @@ public class ProspeccionBean {
 		prospectionNew = new Prospection();
 		
 		iniciarLazy();
-		listarPersonasAssessor();
 		listarProject();
 		listarActions();
 		
@@ -112,20 +113,24 @@ public class ProspeccionBean {
             new SelectItem("Instagram", "Instagram")
         });
         countriesGroup.add(europeCountries);
+        
+        prospectionNew = new Prospection();
+        
 	}
 	
 	public void onPageLoad(){
 		usuarioLogin = usuarioService.findByUsername(navegacionBean.getUsername());
 		listarProspect();
+		listarPersonasAssessor();
 	}
 	
 	public void listarProspect() {		
 		if (usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.toString())) {
 			lstProspect = prospectService.findAll();
 		}else if(usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {	
-			lstProspect = prospectService.findAllByPersonDniLikeAndPersonAssessor("", usuarioLogin.getPerson());
+			lstProspect = prospectService.findAllByPersonAssessor(usuarioLogin.getPerson());
 		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())) {
-			lstProspect = prospectService.findAllByPersonDniLikeAndPersonSupervisor("", usuarioLogin.getPerson());
+			lstProspect = prospectService.findAllByPersonSupervisor(usuarioLogin.getPerson());
 		}
 	}
 	
@@ -138,7 +143,15 @@ public class ProspeccionBean {
 	}
 	
 	public void listarPersonasAssessor() {
-		List<Usuario> lstUsersAssesor = usuarioService.findByProfileIdAndStatus(2, true);
+		List<Usuario> lstUsersAssesor = new ArrayList<>();
+		if (usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.toString())) {
+			lstUsersAssesor = usuarioService.findByProfileIdAndStatus(2, true);
+		}else if(usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {	
+			lstUsersAssesor.add(usuarioLogin);
+		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())) {
+			lstUsersAssesor = usuarioService.findByTeamPersonSupervisorAndStatus(usuarioLogin.getPerson(), true);
+		}
+		
 		lstPersonAssessor = new ArrayList<>();
 		
 		if(lstUsersAssesor!=null) {
@@ -150,7 +163,102 @@ public class ProspeccionBean {
 		}
 	}
 	
+	public void savePerson() {
+		if(personNew.getSurnames().equals("") || personNew.getSurnames()==null) {
+			FacesContext.getCurrentInstance().addMessage("messages2", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Apellidos."));
+			return;
+		}
+		if(personNew.getNames().equals("") || personNew.getNames()==null) {
+			FacesContext.getCurrentInstance().addMessage("messages2", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Nombres."));
+			return;
+		}
+		
+		if (!personNew.getDni().equals("") || personNew.getDni() != null) {
+			Person buscarPersona = personService.findByDni(personNew.getDni());
+			if (buscarPersona != null) {
+				personNew.setId(buscarPersona.getId());
+				Prospect buscarProspecto = prospectService.findByPerson(buscarPersona);
+				if (buscarProspecto != null) {
+					if (buscarProspecto.getPersonAssessor() != null) {
+						FacesContext.getCurrentInstance().addMessage("messages2",new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto esta en seguimiento por el asesor "+ buscarProspecto.getPersonAssessor().getSurnames() + " "+ buscarProspecto.getPersonAssessor().getNames()));
+						return;
+					} else if (buscarProspecto.getPersonSupervisor() != null) {
+						FacesContext.getCurrentInstance().addMessage("messages2",new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error","El prospecto está a cargo del supervisor "+ buscarProspecto.getPersonSupervisor().getSurnames() + " "+ buscarProspecto.getPersonSupervisor().getNames()));
+						return;
+
+					} else {
+						if (usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.toString())) {
+							buscarProspecto.setPersonAssessor(usuarioLogin.getPerson());
+						} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {
+							buscarProspecto.setPersonAssessor(usuarioLogin.getPerson());
+							buscarProspecto.setPersonSupervisor(usuarioLogin.getTeam().getPersonSupervisor());
+						} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())) {
+							buscarProspecto.setPersonSupervisor(usuarioLogin.getPerson());
+						}
+						
+						buscarPersona.setNames(personNew.getNames());
+						buscarPersona.setSurnames(personNew.getSurnames());
+						buscarPersona.setAddress(personNew.getAddress());
+						buscarPersona.setPhone(personNew.getPhone());
+						buscarPersona.setCellphone(personNew.getCellphone());
+						buscarPersona.setCellphone(personNew.getCellphone());
+						buscarPersona.setStatus(true);
+						buscarPersona.setCivilStatus(personNew.getCivilStatus());
+						personService.save(buscarPersona);
+
+						prospectService.save(buscarProspecto);
+						FacesContext.getCurrentInstance().addMessage("messages2", new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
+						personNew = new Person();
+						personNew.setStatus(true);
+						return;
+					}
+				}
+			}
+		}
+		
+		Person person =personService.save(personNew);
+		Prospect prospectNew = new Prospect();
+		prospectNew.setPerson(person);
+		if (usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.toString())) {
+			prospectNew.setPersonAssessor(usuarioLogin.getPerson());
+		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {
+			prospectNew.setPersonAssessor(usuarioLogin.getPerson());
+			prospectNew.setPersonSupervisor(usuarioLogin.getTeam().getPersonSupervisor());
+		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())) {
+			prospectNew.setPersonSupervisor(usuarioLogin.getPerson());
+		}
+		
+		prospectService.save(prospectNew);
+		FacesContext.getCurrentInstance().addMessage("messages2", new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
+		personNew = new Person();
+		personNew.setStatus(true);
+		listarProspect();
+		
+	}
+	
+	public void newPerson() {
+		personNew = new Person();
+		personNew.setStatus(true);
+	}
+	
+	public void completar() {
+
+		Person buscarPorDni = personService.findByDni(personNew.getDni());
+		if(buscarPorDni!=null) {
+			personNew.setNames(buscarPorDni.getNames());
+			personNew.setSurnames(buscarPorDni.getSurnames());
+			personNew.setAddress(buscarPorDni.getAddress());
+			personNew.setPhone(buscarPorDni.getPhone());
+			personNew.setCellphone(buscarPorDni.getCellphone());
+			personNew.setStatus(true);
+			personNew.setCivilStatus(buscarPorDni.getCivilStatus());
+		}	
+		
+		
+	}
+	
 	public void iniciarLazy() {
+
 		lstProspectionLazy = new LazyDataModel<Prospection>() {
 			private List<Prospection> datasource;
 
@@ -197,33 +305,54 @@ public class ProspeccionBean {
 		};
 	}
 	
+	public void mensajeERROR(String mensaje) {
+		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", mensaje);
+		PrimeFaces.current().dialog().showMessageDynamic(message);
+	}
+	
+	public void mensajeINFO(String mensaje) {
+		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Confirmación", mensaje);
+		PrimeFaces.current().dialog().showMessageDynamic(message);
+	}
+	
 	public void saveNewProspection() {
-		if(prospectionNew.getProspect().getPerson()==null) {
-			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccione un prospecto."));
+		if(prospectionNew.getProspect()==null) {
+			mensajeERROR(" Seleccione un prospecto.");
 			return;
 		}else {
-			Prospection searchProspection = prospectionService.findByProspectPersonIdAndStatus(prospectionNew.getProspect().getPerson().getId(), "En seguimiento");
+			Prospection searchProspection = prospectionService.findByProspectAndStatus(prospectionNew.getProspect(), "En seguimiento");
 			if(searchProspection != null) {
-				FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto esta en seguimiento por el asesor " + searchProspection.getPersonAssessor().getNames()+" "+searchProspection.getPersonAssessor().getSurnames()));
-				return;
+				if(searchProspection.getPersonAssessor()!=null) {
+					mensajeERROR("El prospecto está en seguimiento por el asesor \n" + searchProspection.getPersonAssessor().getNames()+" "+searchProspection.getPersonAssessor().getSurnames());
+					return;
+				}
 			}
 		}
 		
 		if(prospectionNew.getPersonAssessor()==null) {
-			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccione un prospecto."));
+			mensajeERROR(" Seleccione un Asesor.");
 			return;
 		}
 		
 		if(prospectionNew.getDateStart()==null) {
-			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccione un prospecto."));
+			mensajeERROR(" Seleccione una fecha de inicio.");
 			return;
 		}
 		
+		Usuario userAsesor = usuarioService.findByPerson(prospectionNew.getPersonAssessor());
+		
+		prospectionNew.setPersonSupervisor(userAsesor.getTeam().getPersonSupervisor());
 		prospectionNew.setDateRegister(new Date());
 		prospectionNew.setStatus("En seguimiento");
+		prospectionNew.setPorcentage(0);
 		Prospection nuevo= prospectionService.save(prospectionNew);
 		if(nuevo!=null) {
-			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "Se registro correctamente el prospecto "+ nuevo.getProspect().getPerson().getSurnames()+" "+ nuevo.getProspect().getPerson().getNames()));
+			Prospect prospectActualiza = prospectionNew.getProspect();
+			prospectActualiza.setPersonAssessor(prospectionNew.getPersonAssessor());
+			prospectActualiza.setPersonSupervisor(userAsesor.getTeam().getPersonSupervisor());
+			prospectService.save(prospectActualiza);
+			
+			mensajeINFO("Se registró correctamente el prospecto \n"+ nuevo.getProspect().getPerson().getSurnames()+" "+ nuevo.getProspect().getPerson().getNames());
 			prospectionNew = new Prospection();
 		}
 	}
@@ -238,18 +367,18 @@ public class ProspeccionBean {
 	}
 	
 	public void saveProspectionSelected() {
-		if(prospectionSelected.getStatus().equals("En seguimiento")) {
-			Prospection searchProspection = prospectionService.findByProspectPersonIdAndStatus(prospectionSelected.getProspect().getPerson().getId(), "En seguimiento");
-			if(searchProspection != null) {
-				FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto esta en seguimiento por el asesor " + searchProspection.getPersonAssessor().getNames()+" "+searchProspection.getPersonAssessor().getSurnames()));
-				return;
-			}
-		}
-		
-		
-		prospectionService.save(prospectionSelected);
-		FacesContext.getCurrentInstance().addMessage("messages1", new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "Se cambio correctamente el estado a: " + prospectionSelected.getStatus()));
-		modifyProspection();
+//		if(prospectionSelected.getStatus().equals("En seguimiento")) {
+//			Prospection searchProspection = prospectionService.findByProspectPersonIdAndStatus(prospectionSelected.getProspect().getPerson().getId(), "En seguimiento");
+//			if(searchProspection != null) {
+//				FacesContext.getCurrentInstance().addMessage("messages1", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto esta en seguimiento por el asesor " + searchProspection.getPersonAssessor().getNames()+" "+searchProspection.getPersonAssessor().getSurnames()));
+//				return;
+//			}
+//		}
+//		
+//		
+//		prospectionService.save(prospectionSelected);
+//		FacesContext.getCurrentInstance().addMessage("messages1", new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "Se cambio correctamente el estado a: " + prospectionSelected.getStatus()));
+//		modifyProspection();
 	}
 	
 	
@@ -563,6 +692,16 @@ public class ProspeccionBean {
 	public void setUsuarioLogin(Usuario usuarioLogin) {
 		this.usuarioLogin = usuarioLogin;
 	}
+
+	public Person getPersonNew() {
+		return personNew;
+	}
+
+	public void setPersonNew(Person personNew) {
+		this.personNew = personNew;
+	}
+	
+	
 
 	
 }

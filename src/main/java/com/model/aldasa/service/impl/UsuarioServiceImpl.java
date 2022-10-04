@@ -61,6 +61,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public List<Usuario> findByProfileIdAndStatus(Integer idProfile,boolean status) {
 		return usuarioRepository.findByProfileIdAndStatus(idProfile,status);
 	}
+
+	@Override
+	public List<Usuario> findByTeamPersonSupervisorAndStatus(Person personSupervisor, boolean status) {
+		return usuarioRepository.findByTeamPersonSupervisorAndStatus(personSupervisor, status);
+	}
 	
 
 }

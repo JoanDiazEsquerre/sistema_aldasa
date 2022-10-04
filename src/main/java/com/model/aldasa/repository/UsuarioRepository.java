@@ -30,6 +30,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
 //	List<Usuario> findByRolGP(@Param(value = "estado") String estado);
     
     List<Usuario> findByProfileIdAndStatus(Integer idProfile,boolean status);
+    List<Usuario> findByTeamPersonSupervisorAndStatus(Person personSupervisor, boolean status);
 	
 	
 }

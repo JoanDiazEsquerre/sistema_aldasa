@@ -162,24 +162,6 @@ public class ProspectoBean {
 		
 	}
 	
-	public boolean validarDatosPersona(Person person) {
-		boolean valor = true;
-		
-		
-		
-		if(person.getAddress().equals("") || person.getAddress()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar dirección."));
-			return false ;
-		}
-		if(person.getPhone().equals("") || person.getPhone()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Teléfono."));
-			return false ;
-		}
-		
-		return valor;
-		
-	}
-	
 	public void savePerson() {
 		if(tituloDialog.equals("NUEVA PERSONA")) {
 			if(personNew.getSurnames().equals("") || personNew.getSurnames()==null) {
@@ -198,11 +180,11 @@ public class ProspectoBean {
 					Prospect buscarProspecto = prospectService.findByPerson(buscarPersona);
 					if (buscarProspecto != null) {
 						if (buscarProspecto.getPersonAssessor() != null) {
-							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto esta en seguimiento por el asesor "+ buscarProspecto.getPersonAssessor().getSurnames() + " "+ buscarProspecto.getPersonAssessor().getNames()));
+							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto está a cargo por el asesor "+ buscarProspecto.getPersonAssessor().getSurnames() + " "+ buscarProspecto.getPersonAssessor().getNames()));
 							return;
 						} else if (buscarProspecto.getPersonSupervisor() != null) {
 							FacesContext.getCurrentInstance().addMessage(null,
-									new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error","El prospecto está a cargo del supervisor "+ buscarProspecto.getPersonSupervisor().getSurnames() + " "+ buscarProspecto.getPersonSupervisor().getNames()));
+									new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error","El prospecto está a cargo por el supervisor "+ buscarProspecto.getPersonSupervisor().getSurnames() + " "+ buscarProspecto.getPersonSupervisor().getNames()));
 							return;
 
 						} else {

@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.Prospection;
 
 public interface ProspectionService {
@@ -15,6 +16,6 @@ public interface ProspectionService {
 	void delete(Prospection prospection);
 	List<Prospection> findByStatus(String status);
 	Page<Prospection> findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(String originContact, String assessorSurname, String status, Pageable pageable);
-	Prospection findByProspectPersonIdAndStatus(int idPerson,String status);
+	Prospection findByProspectAndStatus(Prospect prospect,String status);
 
 }

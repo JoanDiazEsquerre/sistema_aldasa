@@ -33,14 +33,25 @@
 					<p:column headerText="Nro." style="width:25px;">
                             		#{row +1}
                        			</p:column>
-					<p:column headerText="Prospecto" sortBy="#{proy.person.surnames}"
-						filterBy="#{proy.person.surnames}" filterMatchMode="contains">
-						<h:outputText value="#{proy.person.surnames} #{proy.person.names}" />
+                       			
+                    <p:column headerText="DNI Prospecto" sortBy="#{proy.prospect.person.dni}"
+						filterBy="#{proy.prospect.person.dni}" filterMatchMode="contains">
+						<h:outputText value="#{proy.prospect.person.dni}" />
+					</p:column> 
+                    
+					<p:column headerText="Prospecto" sortBy="#{proy.prospect.person.surnames}"
+						filterBy="#{proy.prospect.person.surnames}" filterMatchMode="contains">
+						<h:outputText value="#{proy.prospect.person.surnames} #{proy.prospect.person.names}" />
 					</p:column>
 					
-					<p:column headerText="Asesor" sortBy="#{proy.assessor.surnames}"
-						filterBy="#{proy.assessor.surnames}" filterMatchMode="contains">
-						<h:outputText value="#{proy.assessor.surnames} #{proy.assessor.names}" />
+					<p:column headerText="Asesor" sortBy="#{proy.personAssessor.surnames}"
+						filterBy="#{proy.personAssessor.surnames}" filterMatchMode="contains">
+						<h:outputText value="#{proy.personAssessor.surnames} #{proy.personAssessor.names}" />
+					</p:column>
+					
+					<p:column headerText="Supervisor" sortBy="#{proy.personSupervisor.surnames}"
+						filterBy="#{proy.personSupervisor.surnames}" filterMatchMode="contains">
+						<h:outputText value="#{proy.personSupervisor.surnames} #{proy.personSupervisor.names}" />
 					</p:column>
 					
 					<p:column headerText="Fecha Inicio" sortBy="#{proy.dateStart}" filterMatchMode="contains">
@@ -53,18 +64,15 @@
 					<p:column headerText="Proyecto interesado" sortBy="#{proy.project.name}" filterMatchMode="contains">
 						<h:outputText value="#{proy.project.name}" />
 					</p:column>
-					<p:column headerText="Estado" sortBy="#{proy.statuss}" filterMatchMode="contains">
-						<h:outputText value="#{proy.status}" />
+					<p:column headerText="Resultado" sortBy="#{proy.result}" filterMatchMode="contains">
+						<h:outputText value="#{proy.result}" />
 					</p:column>
 					<p:column headerText="Avance" filterMatchMode="contains">
 						 <p:progressBar value="#{proy.porcentage}" labelTemplate="{value}%" displayOnly="true"/>
 					</p:column>
 				</p:dataTable>
 			</p:tab>
-			<p:tab title="Nueva Prospección">
-				<p:messages id="messages" showDetail="true" closable="true" >
-		            <p:autoUpdate/>
-		        </p:messages>
+			<p:tab title="Nueva Prospección" id="tabNuevaPros">
 				<h:panelGrid id="grid" columns="3"> 
 					<h:outputLabel for="prospecto" value="Prospecto: " />
 					<p:autoComplete  scrollHeight="500" styleClass="ui-autocompV" value="#{prospeccionBean.prospectionNew.prospect}" converter="#{prospeccionBean.conversorProspect}" id="prospecto" completeMethod="#{prospeccionBean.completeProspect}"  
@@ -74,10 +82,12 @@
                         </p:column>
                         <p:column width="400px">
                         	<h:outputLabel value="#{pros.person.dni}" /> 
-                        </p:column>  
+                        </p:column> 
+                         
+                         <p:ajax event="keyup" update=":formDialog" />
                     </p:autoComplete>
                           
-					<p:commandLink oncomplete="PF('personNewDialog').show();" title="NUEVO PROSPECTO"> 
+					<p:commandLink action="#{prospeccionBean.newPerson()}" oncomplete="PF('personNewDialog').show();" title="NUEVO PROSPECTO" update=":formDialog"> 
 						<p:graphicImage width="30" value="/recursos/images/anadir.png" />
 					</p:commandLink>
 					
@@ -219,7 +229,7 @@
 				</p:tab>
 				<p:tab title="Cambio de estado"> 
 					<p:messages id="messages1" showDetail="true" closable="true" >
-			            <p:autoUpdate/>
+						<p:autoUpdate/>
 			        </p:messages>
 					<h:panelGrid columns="2"> 
 						<h:outputText value="Estado: "  />
@@ -240,35 +250,41 @@
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPerson" header="NUEVO PROSPECTO" widgetVar="personNewDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formDialog">
-			<p:messages id="messages" showDetail="true" closable="true">
-	            <p:autoUpdate/>
+			<p:messages id="messages2" showDetail="true" closable="true">
 	        </p:messages>
 			<h:panelGrid id="grid" columns="4">
 				<h:outputLabel for="dni" value="DNI:" />
-				<p:inputText id="dni" value="#{personBean.personSelected.dni}" style="margin:10px"	/>
+				<p:inputText id="dni" value="#{prospeccionBean.personNew.dni}" style="margin:10px" maxlength="11"> 
+					<p:ajax event="keyup" listener="#{prospeccionBean.completar()}" update=":formDialog" /> 
+				</p:inputText>
 
 				<h:outputLabel for="surname" value="Apellidos:" />
-				<p:inputText id="surname" value="#{personBean.personSelected.surnames}" style="margin:10px" />
+				<p:inputText id="surname" value="#{prospeccionBean.personNew.surnames}" style="margin:10px" maxlength="45" > <p:ajax event="keyup" update=":formDialog" /> </p:inputText>
 
 				<h:outputLabel for="name" value="Nombres:" />
-				<p:inputText id="name" value="#{personBean.personSelected.names}" style="margin:10px"  />
+				<p:inputText id="name" value="#{prospeccionBean.personNew.names}" style="margin:10px" maxlength="45"  > <p:ajax event="keyup" update=":formDialog" /> </p:inputText>
 
 				<h:outputLabel for="address" value="Dirección:" />
-				<p:inputText id="address" value="#{personBean.personSelected.address}" style="margin:10px"  />
+				<p:inputText id="address" value="#{prospeccionBean.personNew.address}" style="margin:10px" maxlength="60"  > <p:ajax event="keyup" update=":formDialog" /> </p:inputText>
 
 				<h:outputLabel for="phone" value="Teléfono:" />
-				<p:inputText id="phone" value="#{personBean.personSelected.phone}" style="margin:10px" />
+				<p:inputText id="phone" value="#{prospeccionBean.personNew.phone}" style="margin:10px" maxlength="11" > <p:ajax event="keyup" update=":formDialog" /> </p:inputText>
+				
+				<h:outputLabel for="cellphone" value="Celular:" />
+				<p:inputText id="cellphone" value="#{prospeccionBean.personNew.cellphone}" style="margin:10px" maxlength="15" > <p:ajax event="keyup" update=":formDialog" /> </p:inputText>
 
 				<h:outputLabel for="option" value="Estado civil:" />
-				<p:selectOneMenu id="option" value="#{personBean.personSelected.civilStatus}" style="margin:10px">
+				<p:selectOneMenu id="option" value="#{prospeccionBean.personNew.civilStatus}" style="margin:10px">
 					<f:selectItem itemLabel="Soltero(a)" itemValue="Soltero" />
 					<f:selectItem itemLabel="Casado(a)" itemValue="Casado" />
 					<f:selectItem itemLabel="Viudo(a)" itemValue="Viudo" />
 					<f:selectItem itemLabel="Divorciado(a)" itemValue="Divorciado" />
+					
+					<p:ajax update=":formDialog" />
 				</p:selectOneMenu>
 				
 			</h:panelGrid>
-			<p:commandButton value="Guardar" />
+			<p:commandButton value="Guardar" actionListener="#{prospeccionBean.savePerson()}" update=":formDialog"/>
  
 		</h:form>
 	</p:dialog>

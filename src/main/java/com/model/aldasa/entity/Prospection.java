@@ -40,7 +40,7 @@ public class Prospection {
 	@Column(name="origincontact")
 	String originContact;
 	
-	String status;
+	String status,result;
 	int porcentage;
 	
 	@ManyToOne
@@ -109,6 +109,12 @@ public class Prospection {
 	}
 	public void setPersonSupervisor(Person personSupervisor) {
 		this.personSupervisor = personSupervisor;
+	}
+	public String getResult() {
+		return result;
+	}
+	public void setResult(String result) {
+		this.result = result;
 	}
 	
 	

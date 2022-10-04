@@ -22,8 +22,8 @@ public interface ProspectService {
 
 	Prospect findByPerson(Person entity);
 	
-	List<Prospect> findAllByPersonDniLikeAndPersonAssessor(String dni,Person assessor);
-	List<Prospect> findAllByPersonDniLikeAndPersonSupervisor(String dni,Person supervisor);
+	List<Prospect> findAllByPersonAssessor(Person assessor);
+	List<Prospect> findAllByPersonSupervisor(Person supervisor);
 	List<Prospect> findAll();
 
 }

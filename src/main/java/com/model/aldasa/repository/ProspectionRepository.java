@@ -6,13 +6,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.Prospection;
 
 public interface ProspectionRepository extends PagingAndSortingRepository<Prospection, Integer>{
 	
 	List<Prospection> findByStatus(String status);
 	Page<Prospection> findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(String originContact, String assesorSurname, String status, Pageable pageable);
-	Prospection findByProspectPersonIdAndStatus(int idPerson,String status);
+	Prospection findByProspectAndStatus(Prospect prospect,String status);
 	
 
 }
