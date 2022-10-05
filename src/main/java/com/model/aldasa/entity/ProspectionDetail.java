@@ -28,6 +28,9 @@ public class ProspectionDetail {
 	
 	Date date;
 	String comment;
+	boolean scheduled;
+	
+	
 	public Integer getId() {
 		return id;
 	}
@@ -58,7 +61,10 @@ public class ProspectionDetail {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-
-	
-	
+	public boolean isScheduled() {
+		return scheduled;
+	}
+	public void setScheduled(boolean scheduled) {
+		this.scheduled = scheduled;
+	}
 }

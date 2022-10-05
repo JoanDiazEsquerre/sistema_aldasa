@@ -9,6 +9,6 @@ import com.model.aldasa.entity.ProspectionDetail;
 
 public interface ProspectionDetailRepository extends PagingAndSortingRepository<ProspectionDetail, Integer> {
 	
-	List<ProspectionDetail> findByProspection(Prospection idProspection);
+	List<ProspectionDetail> findByProspectionAndScheduled(Prospection prospection,boolean scheduled);
 
 }

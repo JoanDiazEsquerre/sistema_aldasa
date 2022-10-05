@@ -15,7 +15,6 @@
 			<p:tab title="Lista de Prospecciones">
 				<p:selectOneButton value="#{prospeccionBean.status}">
 					<f:selectItem itemLabel="En seguimiento" itemValue="En seguimiento"/>
-					<f:selectItem itemLabel="Rechazado" itemValue="Rechazado"/>
 					<f:selectItem itemLabel="Terminado" itemValue="Terminado"/>
 					
 					<p:ajax update=":form:tabView:idTableProy" />
@@ -28,7 +27,7 @@
 							<span>Lista de Prospectos</span>
 						</div>
 					</f:facet>
-					<p:ajax event="rowSelect" listener="#{prospeccionBean.modifyProspection}" update=":dialogPro" oncomplete="PF('dialogProspecto').show();" />
+					<p:ajax event="rowSelect" listener="#{prospeccionBean.modifyProspection}" update=":dialogPro :formEvents" oncomplete="PF('dialogProspecto').show();" />
 
 					<p:column headerText="Nro." style="width:25px;">
                             		#{row +1}
@@ -123,23 +122,28 @@
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPro" header="#{prospeccionBean.titleDialog}" widgetVar="dialogProspecto" resizable="false" closable="true" height="500px"
 		appendTo="@(body)" width="90%" >
 		<h:form id="formEvents" >
-			<p:tabView> 
-				<p:tab title="Acciones">
-					<h:panelGrid columns="2"> 
+			<p:tabView id="tabOpciones"> 
+				<p:tab title="Acciones" >
+					<p:messages id="messagesAction" showDetail="true" closable="true" >
+						<p:autoUpdate/>
+			        </p:messages>
+					<h:panelGrid columns="2" id="gridAcciones"> 
 						<h:outputLabel for="accion" value="Acción: " />
 						<p:selectOneMenu id="accion" value="#{prospeccionBean.prospectionDetailNew.action}" converter="#{prospeccionBean.conversorAction}" style="margin:5px; width:220px" > 
 							<f:selectItems value="#{prospeccionBean.lstActions}" var="act" itemLabel="#{act.description}" itemValue="#{act}"/> 
+							
+							<p:ajax update=":formEvents:tabOpciones:messagesAction" />
 						</p:selectOneMenu>
 						
 						<h:outputLabel for="time" value="Fecha y Hora: " />
-						<p:datePicker id="time" showTime="true" style="margin:5px" pattern="dd/MM/yyyy HH:mm a"/>
+						<p:datePicker value="#{prospeccionBean.prospectionDetailNew.date}" id="time" showTime="true" style="margin:5px" pattern="dd/MM/yyyy HH:mm a"> <p:ajax update=":formEvents:tabOpciones:messagesAction" /> </p:datePicker>
 						
 						<h:outputLabel value="Comentario: " />
-						<p:inputTextarea rows="2" cols="33" style="margin:5px"/>
+						<p:inputTextarea value="#{prospeccionBean.prospectionDetailNew.comment}" maxlength="200" rows="2" cols="50" style="margin:5px"> <p:ajax event="keyup" update=":formEvents:tabOpciones:messagesAction" /> </p:inputTextarea>
 											
 					</h:panelGrid>
 				
-					<p:commandButton value="Guardar" style="margin-top:10px"/>
+					<p:commandButton value="Guardar" actionListener="#{prospeccionBean.saveActionProspection}" update=":formEvents:tabOpciones:gridAcciones :formEvents:tabOpciones:idTableDet :form:tabView:idTableProy" style="margin-top:10px"/>
 					
 					 <p:dataTable var="det" id="idTableDet" value="#{prospeccionBean.lstProspectionDetail}" rowIndexVar="row" paginator="true" rows="5" size="small" 
 					emptyMessage="No se encontraron eventos." paginatorPosition="bottom" rowKey="#{det.id}" selection="#{prospeccionBean.prospectionDetailSelected}" selectionMode="single"> 
@@ -148,7 +152,7 @@
 								<span>Lista de Eventos</span>
 							</div>
 						</f:facet>
-						
+						<p:ajax event="rowSelect" />
 
 						<p:column style="width:42px;text-align: left">
 							<f:facet name="header">
@@ -160,47 +164,56 @@
                       		#{row +1}
         				</p:column>
 
-						<p:column headerText="Acción" sortBy="#{det.action.descripcion}" filterMatchMode="contains">
+						<p:column headerText="Acción" sortBy="#{det.action.description}" filterMatchMode="contains">
 							<h:outputText value="#{det.action.description}" />
 						</p:column>
 						<p:column headerText="Fecha y Hora" sortBy="#{det.date}" filterMatchMode="contains">
 							<h:outputText value="#{det.date}" />
 						</p:column>
-						
 						<p:column headerText="Comentario" >
 							<h:outputText value="#{det.comment}" />
+						</p:column>
+						<p:column headerText="Porcentaje" sortBy="#{det.action.porcentage}" filterMatchMode="contains">
+							<h:outputText value="#{det.action.porcentage}%" />
+						</p:column>
+						
+						<p:column width="10%" filterMatchMode="contains">
+							<p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash" process="@this" oncomplete="PF('deleteProductDialog').show()" >
+								<f:setPropertyActionListener value="#{det}" target="#{prospeccionBean.prospectionDetailSelected}" />
+							</p:commandButton>
 						</p:column>
 					</p:dataTable>
 
 				</p:tab>
 				<p:tab title="Agendar">
-					<h:panelGrid columns="2"> 
-						<h:outputLabel value="Acción: " />
-						<p:selectOneMenu style="margin:5px" >
-							<f:selectItem itemLabel="Llamada" itemValue="1"/>
-							<f:selectItem itemLabel="Envio de mensaje" itemValue="2"/>
-							<f:selectItem itemLabel="Visita a domicilio" itemValue="3"/>
-							<f:selectItem itemLabel="Visita del proyecto" itemValue="4"/>
+					<p:messages id="messagesAgenda" showDetail="true" closable="true" >
+						<p:autoUpdate/>
+			        </p:messages>
+					<h:panelGrid columns="2" id="gridAgendas"> 
+						<h:outputLabel for="accionAg" value="Acción: " />
+						<p:selectOneMenu id="accionAg" value="#{prospeccionBean.prospectionDetailAgendaNew.action}" converter="#{prospeccionBean.conversorAction}" style="margin:5px; width:220px" > 
+							<f:selectItems value="#{prospeccionBean.lstActions}" var="act" itemLabel="#{act.description}" itemValue="#{act}"/> 
+							
+							<p:ajax update=":formEvents:tabOpciones:messagesAgenda" />
 						</p:selectOneMenu>
 						
-						<h:outputLabel  value="Programar Fecha y Hora: " />
-						<p:datePicker showTime="true"  style="margin:5px"/>
+						<h:outputLabel for="timeAg" value="Fecha y Hora: " />
+						<p:datePicker value="#{prospeccionBean.prospectionDetailAgendaNew.date}" id="timeAg" showTime="true" style="margin:5px" pattern="dd/MM/yyyy HH:mm a"> <p:ajax update=":formEvents:tabOpciones:messagesAgenda" /> </p:datePicker>
 						
 						<h:outputLabel value="Comentario: " />
-						<p:inputTextarea rows="2" cols="33" style="margin:5px"/>
-						
-						<p:commandButton value="Guardar" />
-					
+						<p:inputTextarea value="#{prospeccionBean.prospectionDetailAgendaNew.comment}" maxlength="200" rows="2" cols="50" style="margin:5px"> <p:ajax event="keyup" update=":formEvents:tabOpciones:messagesAgenda" /> </p:inputTextarea>
 					</h:panelGrid>
+					
+					<p:commandButton value="Guardar" actionListener="#{prospeccionBean.saveActionScheduledProspection}" update=":formEvents:tabOpciones:gridAgendas :formEvents:tabOpciones:idTableDetAg :form:tabView:idTableProy" style="margin-top:10px"/>
 
-					<p:dataTable var="user"	 widgetVar="usersTable"	rowIndexVar="row" paginator="true" rows="5" size="small"
-						emptyMessage="No se registraron Agendas." paginatorPosition="bottom" rowKey="#{user.id}"	selection="#{userBean.userSelected}" selectionMode="single">
+					<p:dataTable var="det" id="idTableDetAg" value="#{prospeccionBean.lstProspectionDetailAgenda}" rowIndexVar="row" paginator="true" rows="5" size="small" 
+						emptyMessage="No se encontraron eventos." paginatorPosition="bottom" rowKey="#{det.id}" selection="#{prospeccionBean.prospectionDetailSelected}" selectionMode="single"> 
 						<f:facet name="header">
 							<div class="p-d-flex p-ai-center p-jc-between">
-								<span>Lista de Agenda</span>
+								<span>Lista de Eventos</span>
 							</div>
 						</f:facet>
-						
+						<p:ajax event="rowSelect" />
 
 						<p:column style="width:42px;text-align: left">
 							<f:facet name="header">
@@ -212,35 +225,47 @@
                       		#{row +1}
         				</p:column>
 
-						<p:column headerText="Acción" sortBy="#{user.username}"
-							filterBy="#{user.username}" filterMatchMode="contains">
-							<h:outputText value="Llamada" />
+						<p:column headerText="Acción" sortBy="#{det.action.description}" filterMatchMode="contains">
+							<h:outputText value="#{det.action.description}" />
 						</p:column>
-						<p:column headerText="Fecha y Hora" sortBy="#{user.password}"
-							filterBy="#{user.password}" filterMatchMode="contains">
-							<h:outputText value="12/12/2022 12:34" />
+						<p:column headerText="Fecha y Hora" sortBy="#{det.date}" filterMatchMode="contains">
+							<h:outputText value="#{det.date}" />
 						</p:column>
-						
-						<p:column headerText="Eliminar" >
-							<h:outputText value="#{user.profile.name}" />
+						<p:column headerText="Comentario" >
+							<h:outputText value="#{det.comment}" />
+						</p:column>
+						<p:column headerText="Porcentaje" sortBy="#{det.action.porcentage}" filterMatchMode="contains">
+							<h:outputText value="#{det.action.porcentage}%" />
+						</p:column>
+						<p:column width="10%" filterMatchMode="contains">
+							<p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash" process="@this" oncomplete="PF('deleteProductDialogAg').show()" >
+								<f:setPropertyActionListener value="#{det}" target="#{prospeccionBean.prospectionDetailSelected}" />
+							</p:commandButton>
 						</p:column>
 					</p:dataTable>
 				
 				</p:tab>
-				<p:tab title="Cambio de estado"> 
+				<p:tab title="Cambio de estado" id="tabCambioEstado" > 
 					<p:messages id="messages1" showDetail="true" closable="true" >
 						<p:autoUpdate/>
 			        </p:messages>
-					<h:panelGrid columns="2"> 
+					<h:panelGrid columns="2" id="gridCambio"> 
 						<h:outputText value="Estado: "  />
-						<p:selectOneMenu style="margin:5px" value="#{prospeccionBean.prospectionSelected.status}" >
+						<p:selectOneMenu style="margin:5px" value="#{prospeccionBean.statusSelected}" >
 							<f:selectItem itemLabel="En seguimiento" itemValue="En seguimiento"/>
-							<f:selectItem itemLabel="Rechazado" itemValue="Rechazado"/>
 							<f:selectItem itemLabel="Terminado" itemValue="Terminado"/>
+							
+							<p:ajax update=":formEvents:tabOpciones:gridCambio :formEvents:tabOpciones:idBotonSaveStatus" />
+						</p:selectOneMenu>
+						
+						<h:outputText value="Resultado: " rendered="#{prospeccionBean.statusSelected eq 'Terminado'}" />
+						<p:selectOneMenu style="margin:5px" value="#{prospeccionBean.resultSelected}" rendered="#{prospeccionBean.statusSelected eq 'Terminado'}">
+							<f:selectItem itemLabel="Rechazado" itemValue="Rechazado"/>
+							<f:selectItem itemLabel="Exitoso" itemValue="Exitoso"/>
 						</p:selectOneMenu>
 					</h:panelGrid>
 					
-					<p:commandButton value="Guardar Estado" rendered="#{prospeccionBean.prospectionSelected.status != 'Terminado'}" actionListener="#{prospeccionBean.saveProspectionSelected()}" update=":form:tabView:idTableProy :formEvents"/> 
+					<p:commandButton id="idBotonSaveStatus" value="Guardar Estado" rendered="#{prospeccionBean.mostrarBotonCambioEstado}" actionListener="#{prospeccionBean.saveCambioEstado}" update=":form:tabView:idTableProy"/> 
 					
 				</p:tab>
 			</p:tabView> 
@@ -288,6 +313,16 @@
  
 		</h:form>
 	</p:dialog>
+	
+	<p:confirmDialog widgetVar="deleteProductDialog" showEffect="fade" width="300" message="¿Deseas eliminar la acción?" header="Confirmación" severity="warn" appendTo="@(body)">
+        <p:commandButton value="Si" icon="pi pi-check" process="@this" update=":formEvents:tabOpciones:idTableDet :form:tabView:idTableProy" oncomplete="PF('deleteProductDialog').hide()" actionListener="#{prospeccionBean.deleteDetailAction}" />
+        <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('deleteProductDialog').hide()" />
+    </p:confirmDialog>
+    
+    <p:confirmDialog widgetVar="deleteProductDialogAg" showEffect="fade" width="300" message="¿Deseas eliminar la agenda?" header="Confirmación" severity="warn" appendTo="@(body)">
+        <p:commandButton value="Si" icon="pi pi-check" process="@this" update=":formEvents:tabOpciones:idTableDetAg :form:tabView:idTableProy" oncomplete="PF('deleteProductDialogAg').hide()" actionListener="#{prospeccionBean.deleteDetailActionAgenda}" />
+        <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('deleteProductDialogAg').hide()" />
+    </p:confirmDialog>
 	
 	<script>
     PrimeFaces.locales['es'] = {

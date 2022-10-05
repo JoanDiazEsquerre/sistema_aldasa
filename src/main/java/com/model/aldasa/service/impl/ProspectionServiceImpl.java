@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.repository.ProspectionRepository;
@@ -45,8 +46,24 @@ public class ProspectionServiceImpl implements ProspectionService {
 	}
 	
 	@Override
+	public Page<Prospection> findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(
+			String originContact, String assessorSurname, Person personAssessor, String status, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return prospectionRepository.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(originContact, assessorSurname, personAssessor, status, pageable);
+	}
+
+	@Override
+	public Page<Prospection> findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(
+			String originContact, String assessorSurname, Person personSupervisor, String status, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return prospectionRepository.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(originContact, assessorSurname, personSupervisor, status, pageable);
+	}
+	
+	@Override
 	public Prospection findByProspectAndStatus(Prospect prospect,String status) {
 		return prospectionRepository.findByProspectAndStatus(prospect, status);
 	}
+
+	
 
 }

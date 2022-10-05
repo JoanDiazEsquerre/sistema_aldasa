@@ -50,18 +50,19 @@
 						<p:submenu label="Prospección">
 			                <p:menuitem value="Prospectos" icon="pi pi-users" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProspectosPage()}" /> 
 							<p:menuitem value="Prospección" icon="pi pi-book" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoProspeccionPage()}" />
+							<p:menuitem value="Agenda" icon="pi pi-calendar" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoProspeccionPage()}" />
 			            </p:submenu>
-						<p:submenu label="Procesos">
+						<p:submenu label="Procesos" rendered="#{navegacionBean.usuarioLogin.profile.name eq 'Administrador'}">
 							<p:menuitem value="Menu en proceso..." icon="pi pi-refresh" />
 							<p:menuitem value="Menu en proceso..." icon="pi pi-times" />
 						</p:submenu>
-						<p:submenu label="Mantenimientos">
+						<p:submenu label="Mantenimientos" rendered="#{navegacionBean.usuarioLogin.profile.name eq 'Administrador'}">
 							<p:menuitem value="Personas" ajax="false" icon="pi pi-user-plus" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPersonasPage()}"  />						
 							<p:menuitem value="Usuarios" ajax="false" icon="pi pi-users" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoUsersPage()}" />
 							<p:menuitem value="Perfiles" ajax="false" icon="pi pi-unlock" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoProfilePage()}"   />
 							<p:menuitem value="Proyectos" ajax="false" icon="pi pi-unlock" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoProjectPage()}"   />
 						</p:submenu>
-						<p:submenu label="Reportes">
+						<p:submenu label="Reportes" rendered="#{navegacionBean.usuarioLogin.profile.name eq 'Administrador'}">
 							<p:menuitem value="Reporte Prospección" ajax="false" icon="pi-database" update=":contenedor" actionListener="#{navegacionBean.getProcesoReporteProspeccionPage()}"/>
 							<p:menuitem value="Menu en proceso..." icon="pi pi-upload" />
 						</p:submenu>

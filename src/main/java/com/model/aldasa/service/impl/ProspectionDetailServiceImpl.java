@@ -34,8 +34,8 @@ public class ProspectionDetailServiceImpl implements ProspectionDetailService{
 	}
 
 	@Override
-	public List<ProspectionDetail> findByProspection(Prospection prospection) {
-		return prospectionDetailRepository.findByProspection(prospection); 
+	public List<ProspectionDetail> findByProspectionAndScheduled(Prospection prospection,boolean scheduled) {
+		return prospectionDetailRepository.findByProspectionAndScheduled(prospection,scheduled); 
 	}
 
 }

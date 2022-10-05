@@ -78,17 +78,20 @@ public class ProspeccionBean {
 	private Prospection prospectionNew;
 	private ProspectionDetail prospectionDetailSelected;
 	private ProspectionDetail prospectionDetailNew;
+	private ProspectionDetail prospectionDetailAgendaNew;
 	private Usuario usuarioLogin = new Usuario();
 	private Person personNew;
 	
 	private String status = "En seguimiento";
-	private String titleDialog;
+	private String titleDialog,statusSelected, resultSelected;
+	private boolean mostrarBotonCambioEstado;
 	
 	private List<Prospect> lstProspect;
 	private List<Person> lstPersonAssessor;
 	private List<SelectItem> countriesGroup;
 	private List<Project> lstProject;
 	private List<ProspectionDetail> lstProspectionDetail = new ArrayList<>();
+	private List<ProspectionDetail> lstProspectionDetailAgenda = new ArrayList<>();
 	private List<Action> lstActions;
 
 	enum Perfiles{
@@ -99,7 +102,7 @@ public class ProspeccionBean {
 	
 	@PostConstruct
 	public void init() {
-		prospectionNew = new Prospection();
+		
 		
 		iniciarLazy();
 		listarProject();
@@ -113,9 +116,7 @@ public class ProspeccionBean {
             new SelectItem("Instagram", "Instagram")
         });
         countriesGroup.add(europeCountries);
-        
         prospectionNew = new Prospection();
-        
 	}
 	
 	public void onPageLoad(){
@@ -241,6 +242,17 @@ public class ProspeccionBean {
 		personNew.setStatus(true);
 	}
 	
+	public void newProspectionDetail() {
+		prospectionDetailNew = new ProspectionDetail();
+		prospectionDetailNew.setProspection(prospectionSelected);
+	}
+	
+	public void newProspectionDetailAgenda() {
+		prospectionDetailAgendaNew = new ProspectionDetail();
+		prospectionDetailAgendaNew.setProspection(prospectionSelected);
+	}
+	
+	
 	public void completar() {
 
 		Person buscarPorDni = personService.findByDni(personNew.getDni());
@@ -298,7 +310,17 @@ public class ProspeccionBean {
 				//Aqui llamo al servicio que a  su vez llama al repositorio que contiene la sentencia LIKE, 
 				//Aqui tu tienes que completar la query, yo solo lo he hecho para dni y nombre a modo de ejemplo
 				//Tu deberias preparar el metodo para cada filtro que tengas en la tabla
-				Page<Prospection> pageProspection= prospectionService.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(originContact,assessor, status, pageable);
+				Page<Prospection> pageProspection=null;
+				
+				
+				if (usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.toString())) {
+					pageProspection= prospectionService.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(originContact,assessor, status, pageable);
+				} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {
+					pageProspection= prospectionService.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(originContact,assessor,usuarioLogin.getPerson(), status, pageable);
+				} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())) {
+					pageProspection= prospectionService.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(originContact,assessor,usuarioLogin.getPerson(), status, pageable);
+				}
+				
 				setRowCount((int) pageProspection.getTotalElements());
 				return datasource = pageProspection.getContent();
 			}
@@ -359,26 +381,91 @@ public class ProspeccionBean {
 	
 	public void modifyProspection() {
 		titleDialog ="PROSPECTO: "+ prospectionSelected.getProspect().getPerson().getSurnames()+" "+ prospectionSelected.getProspect().getPerson().getNames();
+
+		lstProspectionDetail = prospectionDetailService.findByProspectionAndScheduled(prospectionSelected,false);
+		lstProspectionDetailAgenda = prospectionDetailService.findByProspectionAndScheduled(prospectionSelected,true);
+		if(prospectionSelected.getStatus().equals("Terminado")) {
+			mostrarBotonCambioEstado = false;
+		}else {
+			mostrarBotonCambioEstado = true;
+		}
 		
-		lstProspectionDetail = prospectionDetailService.findByProspection(prospectionSelected);
+		newProspectionDetail();
+		newProspectionDetailAgenda();
+	}
+	
+	public void saveActionProspection() {
+		if(prospectionDetailNew.getDate()==null) {
+			FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Selecciona Fecha y Hora."));
+			return;
+		}
 		
+		prospectionDetailNew.setScheduled(false); 
+		
+		ProspectionDetail save = prospectionDetailService.save(prospectionDetailNew);
+		if(save!=null) {
+			FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se registró correctamente la acción."));
+			lstProspectionDetail = prospectionDetailService.findByProspectionAndScheduled(prospectionSelected,false);
+			
+			if(prospectionDetailNew.getAction().getPorcentage()> prospectionSelected.getPorcentage()) {
+				prospectionSelected.setPorcentage(prospectionDetailNew.getAction().getPorcentage());
+				prospectionService.save(prospectionSelected);
+			}
+			
+			
+			newProspectionDetail();
+		}
+	}
+	
+	public void deleteDetailAction() {
+		prospectionDetailService.delete(prospectionDetailSelected);
+		lstProspectionDetail = prospectionDetailService.findByProspectionAndScheduled(prospectionSelected,false);
+		int porcentajeUpdate =0;
+		if(!lstProspectionDetail.isEmpty() || lstProspectionDetail != null) {
+			for(ProspectionDetail detail:lstProspectionDetail) {
+				if(detail.getAction().getPorcentage() > porcentajeUpdate) {
+					porcentajeUpdate=detail.getAction().getPorcentage();
+				}
+			}
+		}
+		prospectionSelected.setPorcentage(porcentajeUpdate); 
+		prospectionService.save(prospectionSelected);
+		
+	}
+	
+	public void deleteDetailActionAgenda() {
+		prospectionDetailService.delete(prospectionDetailSelected);
+		lstProspectionDetailAgenda = prospectionDetailService.findByProspectionAndScheduled(prospectionSelected,true);
+	}
+	
+	public void saveActionScheduledProspection() {
+		if(prospectionDetailAgendaNew.getDate()==null) {
+			FacesContext.getCurrentInstance().addMessage("messagesAgenda", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Selecciona Fecha y Hora."));
+			return;
+		}
+		
+		prospectionDetailAgendaNew.setScheduled(true); 
+		
+		ProspectionDetail save = prospectionDetailService.save(prospectionDetailAgendaNew);
+		if(save!=null) {
+			FacesContext.getCurrentInstance().addMessage("messagesAgenda", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se agendó correctamente la acción."));
+			newProspectionDetailAgenda();
+			lstProspectionDetailAgenda = prospectionDetailService.findByProspectionAndScheduled(prospectionSelected,true);
+		}
 		
 		
 	}
 	
-	public void saveProspectionSelected() {
-//		if(prospectionSelected.getStatus().equals("En seguimiento")) {
-//			Prospection searchProspection = prospectionService.findByProspectPersonIdAndStatus(prospectionSelected.getProspect().getPerson().getId(), "En seguimiento");
-//			if(searchProspection != null) {
-//				FacesContext.getCurrentInstance().addMessage("messages1", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto esta en seguimiento por el asesor " + searchProspection.getPersonAssessor().getNames()+" "+searchProspection.getPersonAssessor().getSurnames()));
-//				return;
-//			}
-//		}
-//		
-//		
-//		prospectionService.save(prospectionSelected);
-//		FacesContext.getCurrentInstance().addMessage("messages1", new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "Se cambio correctamente el estado a: " + prospectionSelected.getStatus()));
-//		modifyProspection();
+	public void saveCambioEstado() {
+		prospectionSelected.setStatus(statusSelected);
+		if(statusSelected.equals("En seguimiento")) {
+			prospectionSelected.setResult(null); 
+		}else {
+			prospectionSelected.setResult(resultSelected); 
+		}
+		
+		prospectionService.save(prospectionSelected);
+		FacesContext.getCurrentInstance().addMessage("messages1", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se cambio correctamente el estado a: " + prospectionSelected.getStatus()));
 	}
 	
 	
@@ -699,6 +786,46 @@ public class ProspeccionBean {
 
 	public void setPersonNew(Person personNew) {
 		this.personNew = personNew;
+	}
+
+	public boolean isMostrarBotonCambioEstado() {
+		return mostrarBotonCambioEstado;
+	}
+
+	public void setMostrarBotonCambioEstado(boolean mostrarBotonCambioEstado) {
+		this.mostrarBotonCambioEstado = mostrarBotonCambioEstado;
+	}
+
+	public ProspectionDetail getProspectionDetailAgendaNew() {
+		return prospectionDetailAgendaNew;
+	}
+
+	public void setProspectionDetailAgendaNew(ProspectionDetail prospectionDetailAgendaNew) {
+		this.prospectionDetailAgendaNew = prospectionDetailAgendaNew;
+	}
+
+	public List<ProspectionDetail> getLstProspectionDetailAgenda() {
+		return lstProspectionDetailAgenda;
+	}
+
+	public void setLstProspectionDetailAgenda(List<ProspectionDetail> lstProspectionDetailAgenda) {
+		this.lstProspectionDetailAgenda = lstProspectionDetailAgenda;
+	}
+
+	public String getStatusSelected() {
+		return statusSelected;
+	}
+
+	public void setStatusSelected(String statusSelected) {
+		this.statusSelected = statusSelected;
+	}
+
+	public String getResultSelected() {
+		return resultSelected;
+	}
+
+	public void setResultSelected(String resultSelected) {
+		this.resultSelected = resultSelected;
 	}
 	
 	

@@ -11,5 +11,5 @@ public interface ProspectionDetailService {
 	Optional<ProspectionDetail> findById(Integer id);
 	ProspectionDetail save(ProspectionDetail entity);
 	void delete(ProspectionDetail entity);
-	List<ProspectionDetail> findByProspection(Prospection prospection);
+	List<ProspectionDetail> findByProspectionAndScheduled(Prospection prospection,boolean scheduled);
 }
