@@ -11,5 +11,7 @@ public interface TeamService {
 	Team save(Team team) ;
 	void delete(Team team);
 	List<Team> findByStatus(boolean status);
+	Team findByName (String name);
+	Team findByNameException(String name, int idTeam);
 
 }

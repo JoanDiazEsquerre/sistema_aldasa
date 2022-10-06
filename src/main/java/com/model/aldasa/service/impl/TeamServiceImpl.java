@@ -40,5 +40,18 @@ public class TeamServiceImpl implements TeamService {
 		return teamRepository.findByStatus(status);
 	}
 	
+	@Override
+	public Team findByName(String name) {
+		// TODO Auto-generated method stub
+		return teamRepository.findByName(name);
+	}
+
+	@Override
+	public Team findByNameException(String name, int idTeam) {
+		// TODO Auto-generated method stub
+		return teamRepository.findByNameException(name, idTeam);
+	}
+	
+	
 	
 }
