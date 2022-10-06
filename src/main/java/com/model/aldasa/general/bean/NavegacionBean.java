@@ -36,6 +36,10 @@ public class NavegacionBean {
        ruta="modulos/prospeccion/procesos/prospeccion.xhtml";
     }
 	
+	public void getProcesoAgendaPage() {
+	       ruta="modulos/prospeccion/procesos/agenda.xhtml";
+	    }
+	
 	public void getProspectosPage() {
 	       ruta="modulos/prospeccion/mantenimientos/prospecto.xhtml";
 	    }

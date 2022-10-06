@@ -50,7 +50,7 @@
 						<p:submenu label="Prospección">
 			                <p:menuitem value="Prospectos" icon="pi pi-users" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProspectosPage()}" /> 
 							<p:menuitem value="Prospección" icon="pi pi-book" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoProspeccionPage()}" />
-							<p:menuitem value="Agenda" icon="pi pi-calendar" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoProspeccionPage()}" />
+							<p:menuitem value="Agenda" icon="pi pi-calendar" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoAgendaPage()}" />
 			            </p:submenu>
 						<p:submenu label="Procesos" rendered="#{navegacionBean.usuarioLogin.profile.name eq 'Administrador'}">
 							<p:menuitem value="Menu en proceso..." icon="pi pi-refresh" />
