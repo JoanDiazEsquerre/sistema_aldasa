@@ -52,6 +52,9 @@
 			<p:column headerText="Estado Civil" sortBy="#{per.person.civilStatus}" filterMatchMode="contains">
 				<h:outputText value="#{per.person.civilStatus}" />
 			</p:column>
+			<p:column headerText="Ocupación" sortBy="#{per.person.occupation}" filterMatchMode="contains">
+				<h:outputText value="#{per.person.occupation}" />
+			</p:column>
 			<p:column headerText="Asesor" sortBy="#{per.personAssessor.surnames}" filterMatchMode="contains">
 				<h:outputText value="#{per.personAssessor.surnames} #{per.personAssessor.names}" />
 			</p:column>
@@ -95,6 +98,9 @@
 					<f:selectItem itemLabel="Viudo(a)" itemValue="Viudo" />
 					<f:selectItem itemLabel="Divorciado(a)" itemValue="Divorciado" />
 				</p:selectOneMenu>
+				
+				<h:outputLabel for="occupation" value="Ocupación:" />
+				<p:inputText id="occupation" value="#{prospectoBean.personNew.occupation}" style="margin:10px" maxlength="15" />
 				
 			</h:panelGrid>
 			<p:commandButton value="Guardar" actionListener="#{prospectoBean.savePerson()}" update=":form:idTablePer :formDialog"/>

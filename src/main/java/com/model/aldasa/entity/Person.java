@@ -18,10 +18,16 @@ public class Person {
 	@Column(name="civilstatus")
 	String civilStatus;
 	
-	String dni,names, surnames, address, phone, cellphone;
+	String dni,names, surnames, address, phone, cellphone, occupation;
 	boolean status;
 	
 	
+	public String getOccupation() {
+		return occupation;
+	}
+	public void setOccupation(String occupation) {
+		this.occupation = occupation;
+	}
 	public Integer getId() {
 		return id;
 	}

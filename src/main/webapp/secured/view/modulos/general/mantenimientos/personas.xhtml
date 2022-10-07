@@ -50,8 +50,14 @@
 			<p:column headerText="Teléfono" sortBy="#{per.phone}" filterMatchMode="contains">
 				<h:outputText value="#{per.phone}" />
 			</p:column>
+			<p:column headerText="Celular" sortBy="#{per.cellphone}" filterMatchMode="contains">
+				<h:outputText value="#{per.cellphone}" />
+			</p:column>
 			<p:column headerText="Estado Civil" sortBy="#{per.civilStatus}" filterMatchMode="contains">
 				<h:outputText value="#{per.civilStatus}" />
+			</p:column>
+			<p:column headerText="Ocupacion" sortBy="#{per.occupation}" filterMatchMode="contains">
+				<h:outputText value="#{per.occupation}" />
 			</p:column>
 		</p:dataTable>
 	</h:form>
@@ -77,6 +83,9 @@
 
 				<h:outputLabel for="phone" value="Teléfono:" />
 				<p:inputText id="phone" value="#{personBean.personSelected.phone}" style="margin:10px" maxlength="11" />
+				
+				<h:outputLabel for="cellphone" value="Celular:" />
+				<p:inputText id="cellphone" value="#{personBean.personSelected.cellphone}" style="margin:10px" maxlength="11" />
 
 				<h:outputLabel for="option" value="Estado civil:" />
 				<p:selectOneMenu id="option" value="#{personBean.personSelected.civilStatus}" style="margin:10px">
@@ -85,6 +94,9 @@
 					<f:selectItem itemLabel="Viudo(a)" itemValue="Viudo" />
 					<f:selectItem itemLabel="Divorciado(a)" itemValue="Divorciado" />
 				</p:selectOneMenu>
+				
+				<h:outputLabel for="occupation" value="Ocupación:" />
+				<p:inputText id="occupation" value="#{personBean.personSelected.occupation}" style="margin:10px" maxlength="11" />
 				
 			</h:panelGrid>
 			<p:commandButton value="Guardar" actionListener="#{personBean.savePerson()}" update=":form:idTablePer :formDialog"/>
