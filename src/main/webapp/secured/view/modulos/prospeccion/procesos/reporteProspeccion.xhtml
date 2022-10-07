@@ -9,7 +9,13 @@
 
 	<h:form id="form">
 		<h1 style="color: #007d4c;">REPORTE DE PROSPECCIONES</h1>
-		<h:panelGrid id="grid" columns="10" width="80%">
+		<h:panelGrid id="grid" columns="8" width="95%">
+			<h:outputLabel value="Fecha Inicio Acción: " style="text-align:right"/>
+			<p:inputText style="margin:5px" />
+			
+			<h:outputLabel value="Fecha Fin Acción: " style="text-align:right"/>
+			<p:inputText style="margin:5px" />
+			
 			<h:outputLabel value="Asesor: " style="text-align:right"/>
 			<p:inputText style="margin:5px" />
 
@@ -43,43 +49,6 @@
 
 		</h:panelGrid>
 		
-		<p:dataTable var="proy" id="idTableProy" value="#{personBean.lstPersons}" widgetVar="personsTable" rowIndexVar="row" paginator="true" rows="15" size="small" 
-					emptyMessage="No se encontraron Personas." paginatorPosition="bottom" rowKey="#{per.id}" selection="#{personBean.personSelected}" selectionMode="single">
-					<f:facet name="header">
-						<div class="p-d-flex p-ai-center p-jc-between">
-							<span>Lista de Prospecciones</span>
-						</div>
-					</f:facet>
-					<p:ajax event="rowSelect" oncomplete="PF('dialogProspecto').show();" />
-
-					<p:column headerText="Nro." style="width:25px;">
-                       			</p:column>
-					<p:column headerText="DNI" sortBy="#{proy.dni}"
-						filterBy="#{proy.dni}" filterMatchMode="contains">
-						
-					</p:column>
-					<p:column headerText="Apellidos y Nombres" sortBy="#{proy.names}"
-						filterBy="#{proy.names}" filterMatchMode="contains">
-						
-					</p:column>
-					<p:column headerText="Teléfono" sortBy="#{proy.phone}"
-						filterBy="#{proy.phone}" filterMatchMode="contains">
-						
-					</p:column>
-					<p:column headerText="Asesor" sortBy="#{proy.surnames}"
-						filterBy="#{proy.surnames}" filterMatchMode="contains">
-						
-					</p:column>
-					<p:column headerText="Acción" sortBy="#{proy.address}"
-						filterBy="#{proy.address}" filterMatchMode="contains">
-					</p:column>
-					<p:column headerText="Fecha y Hora" sortBy="#{proy.address}"
-						filterBy="#{proy.address}" filterMatchMode="contains">
-					</p:column>
-					<p:column headerText="Origen de contacto" sortBy="#{proy.address}"
-						filterBy="#{proy.address}" filterMatchMode="contains">
-					</p:column>
-				</p:dataTable>
 
 	</h:form>
 </ui:composition>

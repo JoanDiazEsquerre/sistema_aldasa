@@ -1,5 +1,6 @@
 package com.model.aldasa.prospeccion.bean;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,10 +12,12 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
@@ -25,11 +28,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
+import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.ProspectionDetail;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.ProspectionDetailService;
+import com.model.aldasa.service.ProspectionService;
 import com.model.aldasa.service.UsuarioService;
+import com.model.aldasa.util.EstadoProspeccion;
+import com.model.aldasa.util.Perfiles;
 
 @Component
 @ManagedBean
@@ -45,15 +52,19 @@ public class AgendaBean {
 	@Autowired
 	private ProspectionDetailService prospectionDetailService;
 	
+	@Autowired
+	private ProspectionService prospectionService;
+	
 	private Usuario usuarioLogin = new Usuario();
 	private List<ProspectionDetail> lstProspectionDetailAgenda = new ArrayList<>();
 	
 	private ScheduleModel eventModel= new DefaultScheduleModel();
   
-    private ProspectionDetail prospectionSelection;
+    private ProspectionDetail prospectionDetailSelected;
     
     private ScheduleModel lazyEventModel;
  
+    SimpleDateFormat sdfFull = new SimpleDateFormat("dd/MM/yyyy");
 	
 	@PostConstruct
 	public void init() {
@@ -113,12 +124,20 @@ public class AgendaBean {
 
             @Override
             public void loadEvents(LocalDateTime start, LocalDateTime end) {
-            	if (usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.name())) {
-        			lstProspectionDetailAgenda = prospectionDetailService.findByProspectionStatusAndScheduled("En seguimiento",true);
-        		}else if(usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.name())) {	
-        			lstProspectionDetailAgenda = prospectionDetailService.findByProspectionPersonAssessorAndProspectionStatusAndScheduled(usuarioLogin.getPerson(),"En seguimiento",true);
-        		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.name())) {
-        			lstProspectionDetailAgenda = prospectionDetailService.findByProspectionPersonSupervisorAndProspectionStatusAndScheduled(usuarioLogin.getPerson(),"En seguimiento",true);
+            	
+            	Instant instant1 = start.atZone(ZoneId.systemDefault()).toInstant();
+            	Date dateStart = Date.from(instant1);
+            	
+            	Instant instant2 = end.atZone(ZoneId.systemDefault()).toInstant();
+            	Date dateFinish = Date.from(instant2);
+            	
+            	
+            	if (Perfiles.ADMINISTRADOR.getName().equals(usuarioLogin.getProfile().getName()) ) {
+        			lstProspectionDetailAgenda = prospectionDetailService.findByProspectionStatusAndScheduledAndDateBetween(EstadoProspeccion.EN_SEGUIMIENTO.getName(),true,dateStart,dateFinish);
+        		}else if(Perfiles.ASESOR.getName().equals(usuarioLogin.getProfile().getName())) {	
+        			lstProspectionDetailAgenda = prospectionDetailService.findByProspectionPersonAssessorAndProspectionStatusAndScheduledAndDateBetween(usuarioLogin.getPerson(),EstadoProspeccion.EN_SEGUIMIENTO.getName(),true,dateStart,dateFinish);
+        		} else if (Perfiles.SUPERVISOR.getName().equals(usuarioLogin.getProfile().getName())) {
+        			lstProspectionDetailAgenda = prospectionDetailService.findByProspectionPersonSupervisorAndProspectionStatusAndScheduledAndDateBetween(usuarioLogin.getPerson(),EstadoProspeccion.EN_SEGUIMIENTO.getName(),true,dateStart,dateFinish);
         		}
         		
             
@@ -129,6 +148,13 @@ public class AgendaBean {
 	    				Instant instant = input.toInstant();
 	    				ZonedDateTime zdt = instant.atZone(ZoneId.systemDefault());
 	    				LocalDateTime date = zdt.toLocalDateTime();
+	    				
+	    				String color="red";
+	    				if(detalle.getDate().after(new Date())) {
+	    					color="#27AE60";
+	    				}else if(detalle.getDate().before(new Date())) {
+	    					color="orange";
+	    				}
 	    					    			
 	    				DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder()
 	    						
@@ -139,51 +165,52 @@ public class AgendaBean {
 	    						.description(detalle.getProspection().getProspect().getPerson().getSurnames()+" "+detalle.getProspection().getProspect().getPerson().getNames()+""+(detalle.getComment().equals("")?"":" / "+detalle.getComment()))
 	    						.overlapAllowed(true)
 	    						.id(detalle.getId()+"")
-	    						.borderColor("#CB4335").build();
+	    						.borderColor(color).build();
 	    				addEvent(event);
 	    			}
 	    		}
             	
             }
         };
-		
-//		if(!lstProspectionDetailAgenda.isEmpty() || lstProspectionDetailAgenda !=null) {
-//			for(ProspectionDetail detalle : lstProspectionDetailAgenda) {
-//				Date input = detalle.getDate();
-//				Instant instant = input.toInstant();
-//				ZonedDateTime zdt = instant.atZone(ZoneId.systemDefault());
-//				LocalDateTime date = zdt.toLocalDateTime();
-//					
-//				DefaultScheduleEvent<?> event2 = DefaultScheduleEvent.builder()
-//						.title(detalle.getAction().getDescription())
-//						.startDate(date)
-//						.data(detalle)
-//						.endDate(date)
-//						.description(detalle.getProspection().getProspect().getPerson().getSurnames()+" "+detalle.getProspection().getProspect().getPerson().getNames()+""+(detalle.getComment().equals("")?"":" / "+detalle.getComment()))
-//						.overlapAllowed(true)
-//						.id(detalle.getId()+"")
-//						.borderColor("#CB4335").build();
-//				eventModel.addEvent(event2);
-//			}
-//		}
 			
 	}
 	
+    public void realizarAction() {
+    	String dateNow = sdfFull.format(new Date());
+    	String dateDetail = sdfFull.format(prospectionDetailSelected.getDate());
+    	if(dateNow.equals(dateDetail)) {
+    		prospectionDetailSelected.setScheduled(false);
+    		prospectionDetailService.save(prospectionDetailSelected);
+    		
+    		
+    		if(prospectionDetailSelected.getAction().getPorcentage()> prospectionDetailSelected.getProspection().getPorcentage()) {
+    			Prospection prospection = prospectionDetailSelected.getProspection();
+    			prospection.setPorcentage(prospectionDetailSelected.getAction().getPorcentage());
+				prospectionService.save(prospection);
+			}
+    		
+    		mensajeINFO("Se realizó correctamente la acción");
+    	}else {
+    		mensajeERROR("La fecha agandada no es igual a la fecha actual."); 
+    	}
+    }
     
+    public void mensajeERROR(String mensaje) {
+		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", mensaje);
+		PrimeFaces.current().dialog().showMessageDynamic(message);
+	}
+	
+	public void mensajeINFO(String mensaje) {
+		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Confirmación", mensaje);
+		PrimeFaces.current().dialog().showMessageDynamic(message);
+	}
 
     
    public void onEventSelect(SelectEvent<ScheduleEvent<?>> selectEvent) {
 	   ScheduleEvent event = selectEvent.getObject();
-	   prospectionSelection = (ProspectionDetail) event.getData();
+	   prospectionDetailSelected = (ProspectionDetail) event.getData();
 	   
-   }
-   
-	enum Perfiles{
-	    Administrador, 
-	    Asesor, 
-	    Supervisor;
-	}
-     
+   }  
  
     public ScheduleModel getEventModel() {
         return eventModel;
@@ -195,12 +222,16 @@ public class AgendaBean {
 
      
 
-	public ProspectionDetail getProspectionSelection() {
-		return prospectionSelection;
+
+
+    
+    
+	public ProspectionDetail getProspectionDetailSelected() {
+		return prospectionDetailSelected;
 	}
 
-	public void setProspectionSelection(ProspectionDetail prospectionSelection) {
-		this.prospectionSelection = prospectionSelection;
+	public void setProspectionDetailSelected(ProspectionDetail prospectionDetailSelected) {
+		this.prospectionDetailSelected = prospectionDetailSelected;
 	}
 
 	public ProspectionDetailService getProspectionDetailService() {
@@ -255,4 +286,20 @@ public class AgendaBean {
 		this.lazyEventModel = lazyEventModel;
 	}
 
+	public ProspectionService getProspectionService() {
+		return prospectionService;
+	}
+
+	public void setProspectionService(ProspectionService prospectionService) {
+		this.prospectionService = prospectionService;
+	}
+
+	public SimpleDateFormat getSdfFull() {
+		return sdfFull;
+	}
+
+	public void setSdfFull(SimpleDateFormat sdfFull) {
+		this.sdfFull = sdfFull;
+	}
+	
 }

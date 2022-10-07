@@ -1,5 +1,6 @@
 package com.model.aldasa.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,18 +41,18 @@ public class ProspectionDetailServiceImpl implements ProspectionDetailService{
 	}
 
 	@Override
-	public List<ProspectionDetail> findByProspectionStatusAndScheduled(String prospectionStatus, boolean scheduled) {
-		return prospectionDetailRepository.findByProspectionStatusAndScheduled(prospectionStatus, scheduled);
+	public List<ProspectionDetail> findByProspectionStatusAndScheduledAndDateBetween(String prospectionStatus, boolean scheduled,Date  dateStart,Date dateFinish) {
+		return prospectionDetailRepository.findByProspectionStatusAndScheduledAndDateBetween(prospectionStatus, scheduled,dateStart,dateFinish);
 	}
 
 	@Override
-	public List<ProspectionDetail> findByProspectionPersonAssessorAndProspectionStatusAndScheduled(Person personAssessor, String prospectionStatus, boolean scheduled) {
-		return prospectionDetailRepository.findByProspectionPersonAssessorAndProspectionStatusAndScheduled(personAssessor, prospectionStatus, scheduled);
+	public List<ProspectionDetail> findByProspectionPersonAssessorAndProspectionStatusAndScheduledAndDateBetween(Person personAssessor, String prospectionStatus, boolean scheduled,Date dateStart,Date dateFinish) {
+		return prospectionDetailRepository.findByProspectionPersonAssessorAndProspectionStatusAndScheduledAndDateBetween(personAssessor, prospectionStatus, scheduled,dateStart,dateFinish);
 	}
 
 	@Override
-	public List<ProspectionDetail> findByProspectionPersonSupervisorAndProspectionStatusAndScheduled(Person personSupervisor, String prospectionStatus, boolean scheduled) {
-		return prospectionDetailRepository.findByProspectionPersonSupervisorAndProspectionStatusAndScheduled(personSupervisor, prospectionStatus, scheduled);
+	public List<ProspectionDetail> findByProspectionPersonSupervisorAndProspectionStatusAndScheduledAndDateBetween(Person personSupervisor, String prospectionStatus, boolean scheduled,Date dateStart,Date dateFinish) {
+		return prospectionDetailRepository.findByProspectionPersonSupervisorAndProspectionStatusAndScheduledAndDateBetween(personSupervisor, prospectionStatus, scheduled,dateStart,dateFinish);
 	}
 
 }

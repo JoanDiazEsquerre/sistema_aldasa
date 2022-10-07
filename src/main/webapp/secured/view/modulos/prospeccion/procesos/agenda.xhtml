@@ -12,24 +12,29 @@
 
 	<h:form id="form">
        	<p:schedule id="schedule" value="#{agendaBean.lazyEventModel}" widgetVar="myschedule" style="width:90%"  > 
-           	<p:ajax event="eventSelect" listener="#{agendaBean.onEventSelect}" update="formDialog:eventDetails" oncomplete="PF('myscheduleDialog').show();" />
+           	<p:ajax event="eventSelect" listener="#{agendaBean.onEventSelect}" update=":formDialog:eventDetails :scheduleDialog" oncomplete="PF('myscheduleDialog').show();" />
        	</p:schedule>
 
 	</h:form>
 	
-	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="scheduleDialog" header="Agenda" widgetVar="myscheduleDialog" resizable="false" closable="false"
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="scheduleDialog" header="#{agendaBean.prospectionDetailSelected.action.description}" widgetVar="myscheduleDialog" resizable="false" closable="false"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formDialog">
 			<h:panelGrid id="eventDetails" columns="2" cellpadding="7">
                 
-                <p:outputLabel for="title2" value="Prospecto:" styleClass="font-bold"/>
-                <p:outputLabel id="title2" value="#{agendaBean.prospectionSelection.action.description}"/>
-
+                <p:outputLabel for="prospect" value="Prospecto:" styleClass="font-bold"/>
+                <p:outputLabel id="prospect" value="#{agendaBean.prospectionDetailSelected.prospection.prospect.person.surnames} #{agendaBean.prospectionDetailSelected.prospection.prospect.person.names}"/>
+				
+				<p:outputLabel for="date" value="Fecha y hora:" styleClass="font-bold"/>
+                <p:outputLabel id="date" value="#{agendaBean.prospectionDetailSelected.date}"/>
+                
+                <p:outputLabel for="com" value="Comentario:" styleClass="font-bold"/>
+                <p:outputLabel id="com" value="#{agendaBean.prospectionDetailSelected.comment	}"/>
 
             </h:panelGrid>
 
             <div class="flex justify-content-between mt-3">
-                <p:commandButton value="Realizar" style="margin:10px" update=":form:schedule"/>
+                <p:commandButton value="Realizar" style="margin:10px" update=":form:schedule" actionListener="#{agendaBean.realizarAction}" oncomplete="PF('myscheduleDialog').hide();"/>
                 <p:commandButton value="Cerrar" oncomplete="PF('myscheduleDialog').hide();" update=":form:schedule" styleClass="font-bold ui-button-outlined"/>
             </div>
  

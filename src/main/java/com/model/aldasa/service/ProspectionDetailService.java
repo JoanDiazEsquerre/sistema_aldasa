@@ -1,5 +1,6 @@
 package com.model.aldasa.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +15,7 @@ public interface ProspectionDetailService {
 	void delete(ProspectionDetail entity);
 	List<ProspectionDetail> findByProspectionAndScheduled(Prospection prospection,boolean scheduled);
 	
-	List<ProspectionDetail> findByProspectionStatusAndScheduled(String prospectionStatus,boolean scheduled);
-	List<ProspectionDetail> findByProspectionPersonAssessorAndProspectionStatusAndScheduled(Person personAssessor,String prospectionStatus,boolean scheduled);
-	List<ProspectionDetail> findByProspectionPersonSupervisorAndProspectionStatusAndScheduled(Person personSupervisor,String prospectionStatus,boolean scheduled);
+	List<ProspectionDetail> findByProspectionStatusAndScheduledAndDateBetween(String prospectionStatus,boolean scheduled,Date  dateStart,Date dateFinish);
+	List<ProspectionDetail> findByProspectionPersonAssessorAndProspectionStatusAndScheduledAndDateBetween(Person personAssessor,String prospectionStatus,boolean scheduled,Date dateStart,Date dateFinish);
+	List<ProspectionDetail> findByProspectionPersonSupervisorAndProspectionStatusAndScheduledAndDateBetween(Person personSupervisor,String prospectionStatus,boolean scheduled,Date dateStart,Date dateFinish);
 }
