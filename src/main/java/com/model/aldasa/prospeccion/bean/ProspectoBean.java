@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -30,6 +29,7 @@ import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.UsuarioService;
+import com.model.aldasa.util.Perfiles;
 
 @Named
 @Component
@@ -109,13 +109,13 @@ public class ProspectoBean {
 				
 				Page<Prospect> pagePerson = null; 
 				
-				if(usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.toString())) {
+				if(usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
 					// si es Administrador
 					pagePerson= prospectService.findAllByPersonDniLike(dni,pageable); 
-				}else if(usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {
+				}else if(usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
 					// si es asesor
 					pagePerson= prospectService.findAllByPersonDniLikeAndPersonAssessor(dni, usuarioLogin.getPerson(), pageable); 
-				}else if(usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())){
+				}else if(usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())){
 					// Es supervisor
 					pagePerson= prospectService.findAllByPersonDniLikeAndPersonSupervisor(dni,usuarioLogin.getPerson(),pageable); 
 				}
@@ -126,12 +126,6 @@ public class ProspectoBean {
 				return datasource = pagePerson.getContent();
 			}
 		};
-	}
-	
-	enum Perfiles{
-	    Administrador, 
-	    Asesor, 
-	    Supervisor;
 	}
 	
 	public void newPerson() {
@@ -188,12 +182,12 @@ public class ProspectoBean {
 							return;
 
 						} else {
-							if (usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.toString())) {
+							if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
 								buscarProspecto.setPersonAssessor(usuarioLogin.getPerson());
-							} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {
+							} else if (usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
 								buscarProspecto.setPersonAssessor(usuarioLogin.getPerson());
 								buscarProspecto.setPersonSupervisor(usuarioLogin.getTeam().getPersonSupervisor());
-							} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())) {
+							} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
 								buscarProspecto.setPersonSupervisor(usuarioLogin.getPerson());
 							}
 							
@@ -220,12 +214,12 @@ public class ProspectoBean {
 			Person person =personService.save(personNew);
 			Prospect prospectNew = new Prospect();
 			prospectNew.setPerson(person);
-			if (usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.toString())) {
+			if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
 				prospectNew.setPersonAssessor(usuarioLogin.getPerson());
-			} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {
+			} else if (usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
 				prospectNew.setPersonAssessor(usuarioLogin.getPerson());
 				prospectNew.setPersonSupervisor(usuarioLogin.getTeam().getPersonSupervisor());
-			} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())) {
+			} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
 				prospectNew.setPersonSupervisor(usuarioLogin.getPerson());
 			}
 			

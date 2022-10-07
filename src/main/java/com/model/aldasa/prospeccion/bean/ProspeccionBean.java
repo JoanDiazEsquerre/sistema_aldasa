@@ -34,7 +34,6 @@ import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.ProspectionDetail;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.general.bean.NavegacionBean;
-import com.model.aldasa.prospeccion.bean.ProspectoBean.Perfiles;
 import com.model.aldasa.service.ActionService;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProjectService;
@@ -42,6 +41,7 @@ import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.ProspectionDetailService;
 import com.model.aldasa.service.ProspectionService;
 import com.model.aldasa.service.UsuarioService;
+import com.model.aldasa.util.Perfiles;
 
 @Component
 @ManagedBean
@@ -93,12 +93,6 @@ public class ProspeccionBean {
 	private List<ProspectionDetail> lstProspectionDetail = new ArrayList<>();
 	private List<ProspectionDetail> lstProspectionDetailAgenda = new ArrayList<>();
 	private List<Action> lstActions;
-
-	enum Perfiles{
-	    Administrador, 
-	    Asesor, 
-	    Supervisor;
-	}
 	
 	@PostConstruct
 	public void init() {
@@ -113,25 +107,28 @@ public class ProspeccionBean {
         europeCountries.setSelectItems(new SelectItem[]{
             new SelectItem("WhatsAap", "WhatsApp"),
             new SelectItem("Facebook", "Facebook"),
-            new SelectItem("Instagram", "Instagram")
+            new SelectItem("Instagram", "Instagram"),
+            new SelectItem("Google/ADS", "Google/ADS"),
+            new SelectItem("Google/SEO", "Google/SEO")
         });
         countriesGroup.add(europeCountries);
         prospectionNew = new Prospection();
 	}
 	
 	public void onPageLoad(){
-		usuarioLogin = usuarioService.findByUsername(navegacionBean.getUsername());
+//		usuarioLogin = usuarioService.findByUsername(navegacionBean.getUsername());
+		usuarioLogin = navegacionBean.getUsuarioLogin();
 		listarProspect();
 		listarPersonasAssessor();
 	}
 	
 	public void listarProspect() {		
-		if (usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.toString())) {
+		if (Perfiles.ADMINISTRADOR.getName().equals(usuarioLogin.getProfile().getName()) ) {
 			lstProspect = prospectService.findAll();
-		}else if(usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {	
-			lstProspect = prospectService.findAllByPersonAssessor(usuarioLogin.getPerson());
-		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())) {
-			lstProspect = prospectService.findAllByPersonSupervisor(usuarioLogin.getPerson());
+		}else if(usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {	
+			lstProspect = prospectService.findByPersonAssessor(usuarioLogin.getPerson());
+		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
+			lstProspect = prospectService.findByPersonSupervisor(usuarioLogin.getPerson());
 		}
 	}
 	
@@ -145,11 +142,11 @@ public class ProspeccionBean {
 	
 	public void listarPersonasAssessor() {
 		List<Usuario> lstUsersAssesor = new ArrayList<>();
-		if (usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.toString())) {
+		if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
 			lstUsersAssesor = usuarioService.findByProfileIdAndStatus(2, true);
-		}else if(usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {	
+		}else if(usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {	
 			lstUsersAssesor.add(usuarioLogin);
-		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())) {
+		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
 			lstUsersAssesor = usuarioService.findByTeamPersonSupervisorAndStatus(usuarioLogin.getPerson(), true);
 		}
 		
@@ -188,12 +185,12 @@ public class ProspeccionBean {
 						return;
 
 					} else {
-						if (usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.toString())) {
+						if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
 							buscarProspecto.setPersonAssessor(usuarioLogin.getPerson());
-						} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {
+						} else if (usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
 							buscarProspecto.setPersonAssessor(usuarioLogin.getPerson());
 							buscarProspecto.setPersonSupervisor(usuarioLogin.getTeam().getPersonSupervisor());
-						} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())) {
+						} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
 							buscarProspecto.setPersonSupervisor(usuarioLogin.getPerson());
 						}
 						
@@ -220,12 +217,12 @@ public class ProspeccionBean {
 		Person person =personService.save(personNew);
 		Prospect prospectNew = new Prospect();
 		prospectNew.setPerson(person);
-		if (usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.toString())) {
+		if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
 			prospectNew.setPersonAssessor(usuarioLogin.getPerson());
-		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {
+		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
 			prospectNew.setPersonAssessor(usuarioLogin.getPerson());
 			prospectNew.setPersonSupervisor(usuarioLogin.getTeam().getPersonSupervisor());
-		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())) {
+		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
 			prospectNew.setPersonSupervisor(usuarioLogin.getPerson());
 		}
 		
@@ -313,11 +310,11 @@ public class ProspeccionBean {
 				Page<Prospection> pageProspection=null;
 				
 				
-				if (usuarioLogin.getProfile().getName().equals(Perfiles.Administrador.toString())) {
+				if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
 					pageProspection= prospectionService.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(originContact,assessor, status, pageable);
-				} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Asesor.toString())) {
+				} else if (usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
 					pageProspection= prospectionService.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(originContact,assessor,usuarioLogin.getPerson(), status, pageable);
-				} else if (usuarioLogin.getProfile().getName().equals(Perfiles.Supervisor.toString())) {
+				} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
 					pageProspection= prospectionService.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(originContact,assessor,usuarioLogin.getPerson(), status, pageable);
 				}
 				

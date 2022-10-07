@@ -56,13 +56,13 @@ public class ProspectServiceImpl implements ProspectService{
 	}
 
 	@Override
-	public List<Prospect> findAllByPersonAssessor(Person assessor) {
-		return prospectRepository.findAllByPersonAssessor(assessor);
+	public List<Prospect> findByPersonAssessor(Person assessor) {
+		return prospectRepository.findByPersonAssessor(assessor);
 	}
 
 	@Override
-	public List<Prospect> findAllByPersonSupervisor(Person supervisor) {
-		return prospectRepository.findAllByPersonSupervisor(supervisor);
+	public List<Prospect> findByPersonSupervisor(Person supervisor) {
+		return prospectRepository.findByPersonSupervisor(supervisor);
 	}
 
 	@Override

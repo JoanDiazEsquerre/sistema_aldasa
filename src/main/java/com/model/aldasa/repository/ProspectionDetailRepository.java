@@ -17,4 +17,7 @@ public interface ProspectionDetailRepository extends PagingAndSortingRepository<
 	List<ProspectionDetail> findByProspectionPersonAssessorAndProspectionStatusAndScheduledAndDateBetween(Person personAssessor,String prospectionStatus,boolean scheduled,Date dateStart,Date dateFinish);
 	List<ProspectionDetail> findByProspectionPersonSupervisorAndProspectionStatusAndScheduledAndDateBetween(Person personSupervisor,String prospectionStatus,boolean scheduled,Date dateStart,Date dateFinish);
 
+	
+//	List<ProspectionDetail> findByScheduledAndProspectionProspectPersonIdLikeAndProspectionPersonAssessorIdLikeAndActionIdLikeAndProspectionOriginContactLikeAndProspectionProjectIdLikeAndDateBetween(boolean scheduled,String idPerson, String idPersonAssessor,String idAction,String originContact, String idProject, Date fechaIni, Date fechaFin);
+	List<ProspectionDetail> findByScheduledAndProspectionProspectPersonIdLike(boolean scheduled,String idPerson);
 }

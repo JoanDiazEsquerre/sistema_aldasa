@@ -17,8 +17,8 @@ public interface ProspectRepository extends PagingAndSortingRepository<Prospect,
 	Page<Prospect> findAllByPersonDniLike(String dni,Pageable pageable);
 	Prospect findByPerson(Person entity);
 	
-	List<Prospect> findAllByPersonAssessor(Person assessor);
-	List<Prospect> findAllByPersonSupervisor(Person supervisor);
+	List<Prospect> findByPersonAssessor(Person assessor);
+	List<Prospect> findByPersonSupervisor(Person supervisor);
 	List<Prospect> findAll();
 
 }

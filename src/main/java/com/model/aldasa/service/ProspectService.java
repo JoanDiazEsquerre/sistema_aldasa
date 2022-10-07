@@ -22,8 +22,8 @@ public interface ProspectService {
 
 	Prospect findByPerson(Person entity);
 	
-	List<Prospect> findAllByPersonAssessor(Person assessor);
-	List<Prospect> findAllByPersonSupervisor(Person supervisor);
+	List<Prospect> findByPersonAssessor(Person assessor);
+	List<Prospect> findByPersonSupervisor(Person supervisor);
 	List<Prospect> findAll();
 
 }

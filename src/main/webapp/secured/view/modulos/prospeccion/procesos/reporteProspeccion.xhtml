@@ -6,49 +6,112 @@
 	locale="#{localeBean.usedLocale}"
 	xmlns:f="http://java.sun.com/jsf/core">
 	<!-- 				<p:growl autoUpdate="true" id="growl1" showDetail="true" sticky="true" /> -->
+	<f:metadata>
+    	<f:event type="preRenderView" listener="#{reporteProspeccionBean.onPageLoad}"/>
+    </f:metadata>
 
 	<h:form id="form">
 		<h1 style="color: #007d4c;">REPORTE DE PROSPECCIONES</h1>
 		<h:panelGrid id="grid" columns="8" width="95%">
-			<h:outputLabel value="Fecha Inicio Acción: " style="text-align:right"/>
-			<p:inputText style="margin:5px" />
+			<h:outputLabel value="Fecha inicio Acción:" style="text-align:right"/>
+			<p:datePicker value="#{reporteProspeccionBean.fechaIni}" readonlyInput="true"/>
 			
-			<h:outputLabel value="Fecha Fin Acción: " style="text-align:right"/>
-			<p:inputText style="margin:5px" />
+			<h:outputLabel value="Fecha fin Acción:" style="text-align:right"/>
+			<p:datePicker value="#{reporteProspeccionBean.fechaFin}" readonlyInput="true" />
 			
+			<h:outputLabel for="prospecto" value="Prospecto: " />
+			<p:autoComplete  scrollHeight="500" styleClass="ui-autocompV" value="#{reporteProspeccionBean.prospectSelected}" converter="#{reporteProspeccionBean.conversorProspect}" id="prospecto" completeMethod="#{reporteProspeccionBean.completeProspect}"  
+                  var="pros" itemLabel="#{pros.person.surnames.concat(' ')}#{pros.person.names}" itemValue="#{pros}" forceSelection="true" >
+            	<p:column width="400px">
+                	<h:outputLabel value="#{pros.person.surnames} #{pros.person.names}" /> 
+                </p:column>
+                <p:column width="400px">
+                	<h:outputLabel value="#{pros.person.dni}" /> 
+                </p:column> 
+            </p:autoComplete>
+		
 			<h:outputLabel value="Asesor: " style="text-align:right"/>
-			<p:inputText style="margin:5px" />
+			<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{reporteProspeccionBean.personAssessorSelected}" converter="#{reporteProspeccionBean.conversorPersonAssessor}" id="assessor" completeMethod="#{reporteProspeccionBean.completePersonAssesor}"  
+                          var="ase" itemLabel="#{ase.surnames.concat(' ')}#{ase.names}" itemValue="#{ase}" forceSelection="true" />
+	
 
 			<h:outputLabel value="Acción: " />
-			<p:selectOneMenu style="margin:5px" width="100px">
-				<f:selectItem itemLabel="Llamada" itemValue="1" />
-				<f:selectItem itemLabel="Envio de mensaje" itemValue="2" />
-				<f:selectItem itemLabel="Visita a domicilio" itemValue="3" />
-				<f:selectItem itemLabel="Visita del proyecto" itemValue="4" />
+			<p:selectOneMenu id="accion" value="#{reporteProspeccionBean.actionSelected}" converter="#{reporteProspeccionBean.conversorAction}" > 
+				<f:selectItem itemLabel="[-- TODOS --]" itemValue="#{null}" />
+				<f:selectItems value="#{reporteProspeccionBean.lstActions}" var="act" itemLabel="#{act.description}" itemValue="#{act}"/>  
 			</p:selectOneMenu>
 
 
 			<h:outputLabel for="basic" value="Origen de contacto: " />
-			<p:selectOneMenu style="margin:5px">
-				<f:selectItem itemLabel="Campo" itemValue="1" />
-				<f:selectItem itemLabel="Redes sociales" itemValue="2" />
-				<f:selectItem itemLabel="Sitio web oficial" itemValue="3" />
-				<f:selectItem itemLabel="Referido" itemValue="4" />
+			<p:selectOneMenu id="orgCont" value="#{reporteProspeccionBean.origenContactoSelected}">
+				<f:selectItem itemLabel="[-- TODOS --]" itemValue="" />
+				<f:selectItem itemLabel="Campo" itemValue="Campo"/>
+				<f:selectItem itemLabel="Sitio web oficial" itemValue="Sitio web oficial"/>
+				<f:selectItem itemLabel="Referido" itemValue="Referido"/>
+				<f:selectItems value="#{reporteProspeccionBean.countriesGroup}"/>
 			</p:selectOneMenu>
 			
 			<h:outputLabel for="basic" value="Proyecto: " />
-			<p:selectOneMenu style="margin:5px" >
-				<f:selectItem itemLabel="Proyecto 1" itemValue="1"/>
-				<f:selectItem itemLabel="Proyecto 2" itemValue="2"/>
-				<f:selectItem itemLabel="proyecto 3" itemValue="3"/>
-				<f:selectItem itemLabel="Proyecto 4" itemValue="4"/>
+			<p:selectOneMenu id="optionProject" value="#{reporteProspeccionBean.projectSelected}" converter="#{reporteProspeccionBean.conversorProject}"> 
+				<f:selectItem itemLabel="[-- TODOS --]" itemValue="#{null}" />
+				<f:selectItems value="#{reporteProspeccionBean.lstProject}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro}"/> 
 			</p:selectOneMenu>
 			
-			<p:commandButton value="Buscar" />
+			<p:commandButton value="Buscar" styleClass="font-bold ui-button-outlined" actionListener="#{reporteProspeccionBean.buscarReporte}" update="idTableDet"/>
 			<p:commandButton value="Descargar" />
-
 		</h:panelGrid>
 		
+		<p:dataTable var="det" id="idTableDet" value="#{reporteProspeccionBean.lstProspectionDetailReporte}" rowIndexVar="row" paginator="true" rows="5" size="small" 
+		emptyMessage="No se encontraron registros." paginatorPosition="bottom" rowKey="#{det.id}" > 
+			<f:facet name="header">
+				<div class="p-d-flex p-ai-center p-jc-between">
+					<span>Lista de Prospecciones</span>
+				</div>
+			</f:facet>
+			<p:ajax event="rowSelect" />
+
+			<p:column style="width:15px;text-align: left">
+				<f:facet name="header">
+				#
+				</f:facet>
+			</p:column>
+
+			<p:column width="25px">
+                   		#{row +1}
+     				</p:column>
+     				
+     		<p:column headerText="Prospecto / DNI" sortBy="#{det.prospection.prospect.person.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{det.prospection.prospect.person.surnames}#{det.prospection.prospect.person.dni eq ''?'':' / '+ det.prospection.prospect.person.dni}" />
+			</p:column>
+			<p:column headerText="Teléfono" sortBy="#{det.action.description}" filterMatchMode="contains">
+				
+			</p:column>
+			<p:column headerText="Celular" sortBy="#{det.action.description}" filterMatchMode="contains">
+				
+			</p:column>
+			
+			<p:column headerText="Ocupación" sortBy="#{det.action.description}" filterMatchMode="contains">
+				
+			</p:column>
+
+			<p:column headerText="Acción" sortBy="#{det.action.description}" filterMatchMode="contains">
+				<h:outputText value="#{det.action.description}" />
+			</p:column>
+			<p:column headerText="Fecha y Hora" sortBy="#{det.date}" filterMatchMode="contains">
+				<h:outputText value="#{det.date}" />
+			</p:column>
+			<p:column headerText="Asesor" sortBy="#{det.action.description}" filterMatchMode="contains">
+				
+			</p:column>
+			<p:column headerText="Origen contacto" sortBy="#{det.action.description}" filterMatchMode="contains">
+				
+			</p:column>
+			<p:column headerText="Proyecto" sortBy="#{det.action.description}" filterMatchMode="contains">
+				
+			</p:column>
+
+
+		</p:dataTable>
 
 	</h:form>
 </ui:composition>

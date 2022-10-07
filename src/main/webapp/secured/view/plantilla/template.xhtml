@@ -63,9 +63,8 @@
 							<p:menuitem value="Proyectos" ajax="false" icon="pi pi-unlock" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoProjectPage()}"   />
 							<p:menuitem value="Equipo" ajax="false" icon="pi pi-unlock" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoTeamPage()}"   />
 						</p:submenu>
-						<p:submenu label="Reportes" rendered="#{navegacionBean.usuarioLogin.profile.name eq 'Administrador'}">
-							<p:menuitem value="Reporte Prospección" ajax="false" icon="pi-database" update=":contenedor" actionListener="#{navegacionBean.getProcesoReporteProspeccionPage()}"/>
-							<p:menuitem value="Menu en proceso..." icon="pi pi-upload" />
+						<p:submenu label="Reportes">
+							<p:menuitem value="Reporte Prospección" icon="pi pi-upload" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoReporteProspeccionPage()}"/>
 						</p:submenu>
 					</p:menu>
 					</h:form>

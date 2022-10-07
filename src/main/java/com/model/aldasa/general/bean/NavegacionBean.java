@@ -28,8 +28,7 @@ public class NavegacionBean {
 	@PostConstruct
 	public void init() {
 		ruta = "modulos/general/mantenimientos/inicio.xhtml";
-//		System.out.println("AAA"+getUsername());
-//		usuarioLogin = usuarioService.findByUsername(getUsername());
+		
 	}
 	
 	public void getProcesoProspeccionPage() {
@@ -70,6 +69,7 @@ public class NavegacionBean {
 	
 	public void onPageLoad(){
 		usuarioLogin = usuarioService.findByUsername(getUsername());
+
 	}
 
 	public String getRuta() {

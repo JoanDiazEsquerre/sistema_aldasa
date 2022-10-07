@@ -55,4 +55,15 @@ public class ProspectionDetailServiceImpl implements ProspectionDetailService{
 		return prospectionDetailRepository.findByProspectionPersonSupervisorAndProspectionStatusAndScheduledAndDateBetween(personSupervisor, prospectionStatus, scheduled,dateStart,dateFinish);
 	}
 
+//	@Override
+//	public List<ProspectionDetail> findByScheduledAndProspectionProspectPersonIdLikeAndProspectionPersonAssessorIdLikeAndActionIdLikeAndProspectionOriginContactLikeAndProspectionProjectIdLikeAndDateBetween(
+//			boolean scheduled, String idPerson, String idPersonAssessor, String idAction, String originContact,String idProject,Date fechaIni, Date fechaFin) {
+//		return prospectionDetailRepository.findByScheduledAndProspectionProspectPersonIdLikeAndProspectionPersonAssessorIdLikeAndActionIdLikeAndProspectionOriginContactLikeAndProspectionProjectIdLikeAndDateBetween(scheduled, idPerson, idPersonAssessor, idAction, originContact, idProject, fechaIni, fechaFin);
+//	}
+	
+	@Override
+	public List<ProspectionDetail> findByScheduledAndProspectionProspectPersonIdLike(boolean scheduled, String idPerson) {
+		return prospectionDetailRepository.findByScheduledAndProspectionProspectPersonIdLike(scheduled, idPerson);
+	}
+
 }
