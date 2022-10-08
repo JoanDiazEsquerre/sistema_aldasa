@@ -100,7 +100,7 @@
 				</p:selectOneMenu>
 				
 				<h:outputLabel for="occupation" value="Ocupación:" />
-				<p:inputText id="occupation" value="#{prospectoBean.personNew.occupation}" style="margin:10px" maxlength="15" />
+				<p:inputText id="occupation" value="#{prospectoBean.personNew.occupation}" style="margin:10px" maxlength="45" />
 				
 			</h:panelGrid>
 			<p:commandButton value="Guardar" actionListener="#{prospectoBean.savePerson()}" update=":form:idTablePer :formDialog"/>

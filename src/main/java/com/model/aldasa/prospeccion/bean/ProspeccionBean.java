@@ -96,7 +96,7 @@ public class ProspeccionBean {
 	
 	@PostConstruct
 	public void init() {
-		
+		status = "En seguimiento";
 		
 		iniciarLazy();
 		listarProject();
@@ -125,9 +125,9 @@ public class ProspeccionBean {
 	public void listarProspect() {		
 		if (Perfiles.ADMINISTRADOR.getName().equals(usuarioLogin.getProfile().getName()) ) {
 			lstProspect = prospectService.findAll();
-		}else if(usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {	
+		}else if(Perfiles.ASESOR.getName().equals(usuarioLogin.getProfile().getName())) {	
 			lstProspect = prospectService.findByPersonAssessor(usuarioLogin.getPerson());
-		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
+		} else if (Perfiles.SUPERVISOR.getName().equals(usuarioLogin.getProfile().getName())) {
 			lstProspect = prospectService.findByPersonSupervisor(usuarioLogin.getPerson());
 		}
 	}

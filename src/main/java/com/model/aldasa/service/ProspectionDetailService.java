@@ -22,5 +22,5 @@ public interface ProspectionDetailService {
 	
 	//Consulta para reporte
 //	List<ProspectionDetail> findByScheduledAndProspectionProspectPersonIdLikeAndProspectionPersonAssessorIdLikeAndActionIdLikeAndProspectionOriginContactLikeAndProspectionProjectIdLikeAndDateBetween(boolean scheduled,String idPerson, String idPersonAssessor,String idAction,String originContact, String idProject,Date fechaIni, Date fechaFin);
-	List<ProspectionDetail> findByScheduledAndProspectionProspectPersonIdLike(boolean scheduled,String idPerson);
+	List<ProspectionDetail> findByScheduledAndProspectionProspectPerson(boolean scheduled,Person person);
 }

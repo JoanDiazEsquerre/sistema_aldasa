@@ -1,9 +1,9 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions"
-	locale="#{localeBean.usedLocale}"
+	locale="#{localeBean.usedLocale}" 
 	xmlns:f="http://java.sun.com/jsf/core">
 	<!-- 				<p:growl autoUpdate="true" id="growl1" showDetail="true" sticky="true" /> -->
 	<f:metadata>
@@ -42,7 +42,7 @@
 			</p:selectOneMenu>
 
 
-			<h:outputLabel for="basic" value="Origen de contacto: " />
+			<h:outputLabel for="orgCont" value="Origen de contacto: " />
 			<p:selectOneMenu id="orgCont" value="#{reporteProspeccionBean.origenContactoSelected}">
 				<f:selectItem itemLabel="[-- TODOS --]" itemValue="" />
 				<f:selectItem itemLabel="Campo" itemValue="Campo"/>
@@ -51,13 +51,13 @@
 				<f:selectItems value="#{reporteProspeccionBean.countriesGroup}"/>
 			</p:selectOneMenu>
 			
-			<h:outputLabel for="basic" value="Proyecto: " />
+			<h:outputLabel for="optionProject" value="Proyecto: " />
 			<p:selectOneMenu id="optionProject" value="#{reporteProspeccionBean.projectSelected}" converter="#{reporteProspeccionBean.conversorProject}"> 
 				<f:selectItem itemLabel="[-- TODOS --]" itemValue="#{null}" />
 				<f:selectItems value="#{reporteProspeccionBean.lstProject}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro}"/> 
 			</p:selectOneMenu>
 			
-			<p:commandButton value="Buscar" styleClass="font-bold ui-button-outlined" actionListener="#{reporteProspeccionBean.buscarReporte}" update="idTableDet"/>
+			<p:commandButton value="Buscar" styleClass="font-bold ui-button-outlined" actionListener="#{reporteProspeccionBean.buscarReporte}" update="form:idTableDet"/>
 			<p:commandButton value="Descargar" />
 		</h:panelGrid>
 		
@@ -81,17 +81,17 @@
      				</p:column>
      				
      		<p:column headerText="Prospecto / DNI" sortBy="#{det.prospection.prospect.person.surnames}" filterMatchMode="contains">
-				<h:outputText value="#{det.prospection.prospect.person.surnames}#{det.prospection.prospect.person.dni eq ''?'':' / '+ det.prospection.prospect.person.dni}" />
+				<h:outputText value="#{det.prospection.prospect.person.surnames} #{det.prospection.prospect.person.names}#{det.prospection.prospect.person.dni eq ''?'':' / '}#{det.prospection.prospect.person.dni}" />
 			</p:column>
-			<p:column headerText="Teléfono" sortBy="#{det.action.description}" filterMatchMode="contains">
-				
+			<p:column headerText="Teléfono" sortBy="#{det.prospection.prospect.person.phone}" filterMatchMode="contains">
+				<h:outputText value="#{det.prospection.prospect.person.phone}" />
 			</p:column>
-			<p:column headerText="Celular" sortBy="#{det.action.description}" filterMatchMode="contains">
-				
+			<p:column headerText="Celular" sortBy="#{det.prospection.prospect.person.cellphone}" filterMatchMode="contains">
+				<h:outputText value="#{det.prospection.prospect.person.cellphone}" />
 			</p:column>
 			
-			<p:column headerText="Ocupación" sortBy="#{det.action.description}" filterMatchMode="contains">
-				
+			<p:column headerText="Ocupación" sortBy="#{det.prospection.prospect.person.occupation}" filterMatchMode="contains">
+				<h:outputText value="#{det.prospection.prospect.person.occupation}" />
 			</p:column>
 
 			<p:column headerText="Acción" sortBy="#{det.action.description}" filterMatchMode="contains">
@@ -101,17 +101,79 @@
 				<h:outputText value="#{det.date}" />
 			</p:column>
 			<p:column headerText="Asesor" sortBy="#{det.action.description}" filterMatchMode="contains">
-				
+				<h:outputText value="#{det.prospection.prospect.personAssessor.surnames} #{det.prospection.prospect.personAssessor.names}" />
 			</p:column>
-			<p:column headerText="Origen contacto" sortBy="#{det.action.description}" filterMatchMode="contains">
-				
+			<p:column headerText="Origen contacto" sortBy="#{det.prospection.originContact}" filterMatchMode="contains">
+				<h:outputText value="#{det.prospection.originContact}" />
 			</p:column>
-			<p:column headerText="Proyecto" sortBy="#{det.action.description}" filterMatchMode="contains">
-				
+			<p:column headerText="Proyecto" sortBy="#{det.prospection.project.name}" filterMatchMode="contains">
+				<h:outputText value="#{det.prospection.project.name}" />
 			</p:column>
 
 
 		</p:dataTable>
 
 	</h:form>
+	
+	<script>
+    PrimeFaces.locales['es'] = {
+        closeText: 'Cerrar',
+        prevText: 'Anterior',
+        nextText: 'Siguiente',
+        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+        dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+        weekHeader: 'Semana',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: '',
+        timeOnlyTitle: 'Sólo hora',
+        timeText: 'Tiempo',
+        hourText: 'Hora',
+        minuteText: 'Minuto',
+        secondText: 'Segundo',
+        millisecondText: 'Milisegundo',
+        currentText: 'Fecha actual',
+        ampm: false,
+        month: 'Mes',
+        week: 'Semana',
+        day: 'Día',
+        allDayText: 'Todo el día',
+        today: 'Hoy',
+        clear: 'Claro'
+    };
+    PrimeFaces.locales ['de'] = {
+        closeText: 'Schließen',
+        prevText: 'Zurück',
+        nextText: 'Weiter',
+        monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+        monthNamesShort: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+        dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+        dayNamesShort: ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam'],
+        dayNamesMin: ['S', 'M', 'D', 'M ', 'D', 'F ', 'S'],
+        weekHeader: 'Woche',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: '',
+        timeOnlyTitle: 'Nur Zeit',
+        timeText: 'Zeit',
+        hourText: 'Stunde',
+        minuteText: 'Minute',
+        secondText: 'Sekunde',
+        millisecondText: 'Millisekunde',
+        currentText: 'Aktuelles Datum',
+        ampm: false,
+        month: 'Monat',
+        week: 'Woche',
+        day: 'Tag',
+        allDayText: 'Ganzer Tag',
+        today: 'Heute',
+        clear: 'Löschen'
+    };
+</script>
+	
 </ui:composition>

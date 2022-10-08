@@ -62,8 +62,8 @@ public class ProspectionDetailServiceImpl implements ProspectionDetailService{
 //	}
 	
 	@Override
-	public List<ProspectionDetail> findByScheduledAndProspectionProspectPersonIdLike(boolean scheduled, String idPerson) {
-		return prospectionDetailRepository.findByScheduledAndProspectionProspectPersonIdLike(scheduled, idPerson);
+	public List<ProspectionDetail> findByScheduledAndProspectionProspectPerson(boolean scheduled,Person person) {
+		return prospectionDetailRepository.findByScheduledAndProspectionProspectPerson(scheduled, person);
 	}
 
 }

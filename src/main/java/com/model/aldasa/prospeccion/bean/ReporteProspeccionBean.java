@@ -31,6 +31,7 @@ import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.ProspectionDetailService;
 import com.model.aldasa.service.UsuarioService;
+import com.model.aldasa.util.EstadoProspeccion;
 import com.model.aldasa.util.Perfiles;
 
 
@@ -101,14 +102,14 @@ public class ReporteProspeccionBean {
 	}
 	
 	public void buscarReporte() {
-		String idPerson="";
+		String idPerson="%%";
 		String idPersonAssessor="";
 		String idAction="";
 		String originContact=origenContactoSelected;
 		String idProject="";
 		
 		if(prospectSelected!=null) {
-			idPerson= prospectSelected.getPerson().getId()+"";
+			idPerson= "%"+prospectSelected.getPerson().getId()+"%";
 		}
 		
 		if(personAssessorSelected!=null) {
@@ -125,11 +126,11 @@ public class ReporteProspeccionBean {
 		
 		if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
 //			lstProspectionDetailReporte = prospectionDetailService.findByScheduledAndProspectionProspectPersonIdLikeAndProspectionPersonAssessorIdLikeAndActionIdLikeAndProspectionOriginContactLikeAndProspectionProjectIdLikeAndDateBetween(false, idPerson, idPersonAssessor, idAction, originContact, idProject, fechaIni, fechaFin);
-			lstProspectionDetailReporte = prospectionDetailService.findByScheduledAndProspectionProspectPersonIdLike(false, idPersonAssessor);
+			lstProspectionDetailReporte = prospectionDetailService.findByProspectionStatusAndScheduledAndDateBetween(EstadoProspeccion.EN_SEGUIMIENTO.getName(),false, fechaIni,fechaFin);
 		}else if(usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {	
-			
+			lstProspectionDetailReporte = prospectionDetailService.findByProspectionPersonAssessorAndProspectionStatusAndScheduledAndDateBetween(usuarioLogin.getPerson(), EstadoProspeccion.EN_SEGUIMIENTO.getName(),false,fechaIni,fechaFin);
 		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
-			
+			lstProspectionDetailReporte = prospectionDetailService.findByProspectionPersonSupervisorAndProspectionStatusAndScheduledAndDateBetween(usuarioLogin.getPerson(),EstadoProspeccion.EN_SEGUIMIENTO.getName(),false,fechaIni,fechaFin);
 		}
 	}
 	

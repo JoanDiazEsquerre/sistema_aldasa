@@ -151,6 +151,7 @@ public class ProspectoBean {
 				personNew.setCellphone(buscarPorDni.getCellphone());
 				personNew.setStatus(true);
 				personNew.setCivilStatus(buscarPorDni.getCivilStatus());
+				personNew.setOccupation(buscarPorDni.getOccupation());
 			}	
 		}
 		
