@@ -113,6 +113,7 @@ public class ProspeccionBean {
         });
         countriesGroup.add(europeCountries);
         prospectionNew = new Prospection();
+        newPerson();
 	}
 	
 	public void onPageLoad(){
@@ -162,6 +163,7 @@ public class ProspeccionBean {
 	}
 	
 	public void savePerson() {
+		System.out.println("aaa");
 		if(personNew.getSurnames().equals("") || personNew.getSurnames()==null) {
 			FacesContext.getCurrentInstance().addMessage("messages2", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Apellidos."));
 			return;
@@ -206,8 +208,7 @@ public class ProspeccionBean {
 
 						prospectService.save(buscarProspecto);
 						FacesContext.getCurrentInstance().addMessage("messages2", new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
-						personNew = new Person();
-						personNew.setStatus(true);
+						newPerson();
 						return;
 					}
 				}
@@ -228,8 +229,7 @@ public class ProspeccionBean {
 		
 		prospectService.save(prospectNew);
 		FacesContext.getCurrentInstance().addMessage("messages2", new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
-		personNew = new Person();
-		personNew.setStatus(true);
+		newPerson();
 		listarProspect();
 		
 	}
@@ -257,10 +257,11 @@ public class ProspeccionBean {
 			personNew.setNames(buscarPorDni.getNames());
 			personNew.setSurnames(buscarPorDni.getSurnames());
 			personNew.setAddress(buscarPorDni.getAddress());
-			personNew.setPhone(buscarPorDni.getPhone());
-			personNew.setCellphone(buscarPorDni.getCellphone());
+//			personNew.setPhone(buscarPorDni.getPhone());
+//			personNew.setCellphone(buscarPorDni.getCellphone());
 			personNew.setStatus(true);
 			personNew.setCivilStatus(buscarPorDni.getCivilStatus());
+			personNew.setOccupation(buscarPorDni.getOccupation());
 		}	
 		
 		

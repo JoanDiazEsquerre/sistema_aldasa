@@ -18,9 +18,8 @@ public interface ProspectionDetailService {
 	List<ProspectionDetail> findByProspectionStatusAndScheduledAndDateBetween(String prospectionStatus,boolean scheduled,Date  dateStart,Date dateFinish);
 	List<ProspectionDetail> findByProspectionPersonAssessorAndProspectionStatusAndScheduledAndDateBetween(Person personAssessor,String prospectionStatus,boolean scheduled,Date dateStart,Date dateFinish);
 	List<ProspectionDetail> findByProspectionPersonSupervisorAndProspectionStatusAndScheduledAndDateBetween(Person personSupervisor,String prospectionStatus,boolean scheduled,Date dateStart,Date dateFinish);
-
-	
-	//Consulta para reporte
-//	List<ProspectionDetail> findByScheduledAndProspectionProspectPersonIdLikeAndProspectionPersonAssessorIdLikeAndActionIdLikeAndProspectionOriginContactLikeAndProspectionProjectIdLikeAndDateBetween(boolean scheduled,String idPerson, String idPersonAssessor,String idAction,String originContact, String idProject,Date fechaIni, Date fechaFin);
 	List<ProspectionDetail> findByScheduledAndProspectionProspectPerson(boolean scheduled,Person person);
+	
+	//ConsultaS para reporte
+	List<ProspectionDetail> findByProspectionStatusAndScheduledAndDateBetweenAndProspectionProspectPersonSurnamesLikeAndProspectionPersonAssessorDniLikeAndActionDescriptionLikeAndProspectionOriginContactLikeAndProspectionProjectNameLike(String prospectionStatus,boolean scheduled,Date  dateStart,Date dateFinish,String personSurnames,String assessorDni,String action,String originContact,String project);
 }

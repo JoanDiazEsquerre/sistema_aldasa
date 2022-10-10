@@ -73,7 +73,7 @@
 			<h:panelGrid id="grid" columns="4">
 				<h:outputLabel for="dni" value="DNI:" />
 				<p:inputText id="dni" value="#{prospectoBean.personNew.dni}" style="margin:10px" maxlength="11"> 
-					<p:ajax event="keyup" listener="#{prospectoBean.completar()}" update=":formDialog" />
+					<p:ajax event="blur" listener="#{prospectoBean.completar()}" update=":formDialog" />
 				</p:inputText>
 
 				<h:outputLabel for="surname" value="Apellidos:" />

@@ -61,14 +61,13 @@ public class ReporteProspeccionBean {
 	private Usuario usuarioLogin = new Usuario();
 	
 	private List<SelectItem> countriesGroup;
-	private List<Prospect> lstProspect;
 	private List<Person> lstPersonAssessor;
 	private List<Action> lstActions;
 	private List<Project> lstProject;
 	private List<ProspectionDetail> lstProspectionDetailReporte;
 	
 	private Date fechaIni,fechaFin;
-	private String origenContactoSelected;
+	private String origenContactoSelected,prospectSurnames="";
 	
 	private Prospect prospectSelected;
 	private Person personAssessorSelected;
@@ -97,50 +96,38 @@ public class ReporteProspeccionBean {
 	
 	public void onPageLoad(){
 		usuarioLogin = usuarioService.findByUsername(navegacionBean.getUsername());
-		listarProspect();
 		listarPersonasAssessor();
+		buscarReporte();
 	}
 	
 	public void buscarReporte() {
-		String idPerson="%%";
-		String idPersonAssessor="";
-		String idAction="";
-		String originContact=origenContactoSelected;
-		String idProject="";
+		String personSurnames="%"+prospectSurnames+"%";
+		String assessorDni="%%";
+		String action="%%";
+		String originContact="%"+origenContactoSelected+"%";
+		String project="%%";
 		
-		if(prospectSelected!=null) {
-			idPerson= "%"+prospectSelected.getPerson().getId()+"%";
-		}
 		
 		if(personAssessorSelected!=null) {
-			idPersonAssessor= personAssessorSelected.getId()+"";
+			assessorDni="%"+personAssessorSelected.getDni()+"%";
 		}
 		
 		if(actionSelected!=null) {
-			idAction= actionSelected.getId()+"";
+			action= "%"+actionSelected.getDescription()+"%";
 		}
 		
 		if(projectSelected!=null) {
-			idAction= projectSelected.getId()+"";
+			project="%"+ projectSelected.getName()+"%";
 		}
 		
+		fechaFin.setHours(23);
+		
 		if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
-//			lstProspectionDetailReporte = prospectionDetailService.findByScheduledAndProspectionProspectPersonIdLikeAndProspectionPersonAssessorIdLikeAndActionIdLikeAndProspectionOriginContactLikeAndProspectionProjectIdLikeAndDateBetween(false, idPerson, idPersonAssessor, idAction, originContact, idProject, fechaIni, fechaFin);
-			lstProspectionDetailReporte = prospectionDetailService.findByProspectionStatusAndScheduledAndDateBetween(EstadoProspeccion.EN_SEGUIMIENTO.getName(),false, fechaIni,fechaFin);
+			lstProspectionDetailReporte = prospectionDetailService.findByProspectionStatusAndScheduledAndDateBetweenAndProspectionProspectPersonSurnamesLikeAndProspectionPersonAssessorDniLikeAndActionDescriptionLikeAndProspectionOriginContactLikeAndProspectionProjectNameLike(EstadoProspeccion.EN_SEGUIMIENTO.getName(),false, fechaIni,fechaFin,personSurnames,assessorDni,action,originContact,project);
 		}else if(usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {	
 			lstProspectionDetailReporte = prospectionDetailService.findByProspectionPersonAssessorAndProspectionStatusAndScheduledAndDateBetween(usuarioLogin.getPerson(), EstadoProspeccion.EN_SEGUIMIENTO.getName(),false,fechaIni,fechaFin);
 		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
 			lstProspectionDetailReporte = prospectionDetailService.findByProspectionPersonSupervisorAndProspectionStatusAndScheduledAndDateBetween(usuarioLogin.getPerson(),EstadoProspeccion.EN_SEGUIMIENTO.getName(),false,fechaIni,fechaFin);
-		}
-	}
-	
-	public void listarProspect() {		
-		if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
-			lstProspect = prospectService.findAll();
-		}else if(usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {	
-			lstProspect = prospectService.findByPersonAssessor(usuarioLogin.getPerson());
-		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
-			lstProspect = prospectService.findByPersonSupervisor(usuarioLogin.getPerson());
 		}
 	}
 	
@@ -182,34 +169,6 @@ public class ReporteProspeccionBean {
 			}
 		}
 	}
-	
-	public Converter getConversorProspect() {
-        return new Converter() {
-            @Override
-            public Object getAsObject(FacesContext context, UIComponent component, String value) {
-                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
-                    return null;
-                } else {
-                    Prospect c = null;
-                    for (Prospect si : lstProspect) {
-                        if (si.getId().toString().equals(value)) {
-                            c = si;
-                        }
-                    }
-                    return c;
-                }
-            }
-
-            @Override
-            public String getAsString(FacesContext context, UIComponent component, Object value) {
-                if (value == null || value.equals("")) {
-                    return "";
-                } else {
-                    return ((Prospect) value).getId() + "";
-                }
-            }
-        };
-    }
 	
 	public Converter getConversorPersonAssessor() {
         return new Converter() {
@@ -295,16 +254,6 @@ public class ReporteProspeccionBean {
         };
     }
 	
-	public List<Prospect> completeProspect(String query) {
-        List<Prospect> lista = new ArrayList<>();
-        for (Prospect c : lstProspect) {
-            if (c.getPerson().getSurnames().toUpperCase().contains(query.toUpperCase()) || c.getPerson().getNames().toUpperCase().contains(query.toUpperCase())) {
-                lista.add(c);
-            }
-        }
-        return lista;
-    }
-	
 	public List<Person> completePersonAssesor(String query) {
         List<Person> lista = new ArrayList<>();
         for (Person c : lstPersonAssessor) {
@@ -377,14 +326,6 @@ public class ReporteProspeccionBean {
 
 	public void setProspectService(ProspectService prospectService) {
 		this.prospectService = prospectService;
-	}
-
-	public List<Prospect> getLstProspect() {
-		return lstProspect;
-	}
-
-	public void setLstProspect(List<Prospect> lstProspect) {
-		this.lstProspect = lstProspect;
 	}
 
 	public Prospect getProspectSelected() {
@@ -473,6 +414,22 @@ public class ReporteProspeccionBean {
 
 	public void setLstProspectionDetailReporte(List<ProspectionDetail> lstProspectionDetailReporte) {
 		this.lstProspectionDetailReporte = lstProspectionDetailReporte;
+	}
+
+	public ProspectionDetailService getProspectionDetailService() {
+		return prospectionDetailService;
+	}
+
+	public void setProspectionDetailService(ProspectionDetailService prospectionDetailService) {
+		this.prospectionDetailService = prospectionDetailService;
+	}
+
+	public String getProspectSurnames() {
+		return prospectSurnames;
+	}
+
+	public void setProspectSurnames(String prospectSurnames) {
+		this.prospectSurnames = prospectSurnames;
 	}
 	
 	

@@ -89,7 +89,6 @@ public class UserBean{
 	
 	public void updateUser() {
 		tituloDialog = "MODIFICAR USUARIO";
-		
 		listarPersonas();
 	}
 	

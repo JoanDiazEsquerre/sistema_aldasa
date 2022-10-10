@@ -13,6 +13,7 @@ public interface UsuarioService {
 	void delete(Usuario user);
 	List<Usuario> findByStatus(boolean estado);
 	Usuario findByPerson(Person person);
+	Usuario findByUsernameAndStatus(String username, boolean status);
 	Usuario findByUsername(String username);
 	Usuario findByUsernameException(String username, int idUser);
 	Usuario findByByPersonException(int idPersona, int idUser);

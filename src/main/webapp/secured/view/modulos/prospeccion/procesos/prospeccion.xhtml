@@ -308,6 +308,9 @@
 					<p:ajax update=":formDialog" />
 				</p:selectOneMenu>
 				
+				<h:outputLabel for="occupation" value="Ocupación:" />
+				<p:inputText id="occupation" value="#{prospeccionBean.personNew.occupation}" style="margin:10px" maxlength="45" />
+				
 			</h:panelGrid>
 			<p:commandButton value="Guardar" actionListener="#{prospeccionBean.savePerson()}" update=":formDialog"/>
  

@@ -147,8 +147,8 @@ public class ProspectoBean {
 				personNew.setNames(buscarPorDni.getNames());
 				personNew.setSurnames(buscarPorDni.getSurnames());
 				personNew.setAddress(buscarPorDni.getAddress());
-				personNew.setPhone(buscarPorDni.getPhone());
-				personNew.setCellphone(buscarPorDni.getCellphone());
+//				personNew.setPhone(buscarPorDni.getPhone());
+//				personNew.setCellphone(buscarPorDni.getCellphone());
 				personNew.setStatus(true);
 				personNew.setCivilStatus(buscarPorDni.getCivilStatus());
 				personNew.setOccupation(buscarPorDni.getOccupation());
@@ -184,7 +184,7 @@ public class ProspectoBean {
 
 						} else {
 							if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
-								buscarProspecto.setPersonAssessor(usuarioLogin.getPerson());
+								buscarProspecto.setPersonAssessor(null);
 							} else if (usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
 								buscarProspecto.setPersonAssessor(usuarioLogin.getPerson());
 								buscarProspecto.setPersonSupervisor(usuarioLogin.getTeam().getPersonSupervisor());
@@ -216,7 +216,7 @@ public class ProspectoBean {
 			Prospect prospectNew = new Prospect();
 			prospectNew.setPerson(person);
 			if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
-				prospectNew.setPersonAssessor(usuarioLogin.getPerson());
+				prospectNew.setPersonAssessor(null);
 			} else if (usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
 				prospectNew.setPersonAssessor(usuarioLogin.getPerson());
 				prospectNew.setPersonSupervisor(usuarioLogin.getTeam().getPersonSupervisor());

@@ -11,6 +11,7 @@ import com.model.aldasa.entity.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
 	
+	Usuario findByUsernameAndStatus(String username,boolean status);
 	Usuario findByUsername(String username);
 	Usuario findById(String id);
 	List<Usuario> findByStatus(boolean status);

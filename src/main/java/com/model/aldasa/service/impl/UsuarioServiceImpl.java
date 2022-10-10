@@ -43,8 +43,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 	
 	@Override
-	public Usuario findByUsername(String username) {
-		return usuarioRepository.findByUsername(username);
+	public Usuario findByUsernameAndStatus(String username, boolean status) {
+		return usuarioRepository.findByUsernameAndStatus(username,status);
 	}
 	
 	@Override
@@ -65,6 +65,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	public List<Usuario> findByTeamPersonSupervisorAndStatus(Person personSupervisor, boolean status) {
 		return usuarioRepository.findByTeamPersonSupervisorAndStatus(personSupervisor, status);
+	}
+
+	@Override
+	public Usuario findByUsername(String username) {
+		return usuarioRepository.findByUsername(username);
 	}
 	
 
