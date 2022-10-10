@@ -49,6 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          .antMatchers("/index.xhtml", "/index.html", "/login.xhtml", "/javax.faces.resources/**").permitAll()
          .and()
          .formLogin()
+         .defaultSuccessUrl("/secured/view/home.xhtml").successForwardUrl("/secured/view/home.xhtml")
          .and()
          .logout().logoutSuccessUrl("/login").invalidateHttpSession(true).deleteCookies("JSESSIONID").logoutUrl("/logout")
          .and()

@@ -24,33 +24,6 @@ import com.model.aldasa.service.UsuarioService;
 @SessionScoped
 public class NavegacionBean { 
 	
-	@Inject
-	private ReporteProspeccionBean reporteProspeccionBean;
-	
-	@Inject
-	private ProspeccionBean prospeccionBean;
-	
-	@Inject
-	private AgendaBean agendaBean;
-	
-	@Inject
-	private ProspectoBean prospectoBean;
-	
-	@Inject
-	private PersonBean personBean;
-	
-	@Inject
-	private UserBean userBean;
-	
-	@Inject
-	private ProfileBean profileBean;
-	
-	@Inject
-	private ProjectBean projectBean;
-	
-	@Inject
-	private TeamBean teamBean;
-	
 	@Autowired
 	private UsuarioService usuarioService;
 	
@@ -66,51 +39,44 @@ public class NavegacionBean {
 	
 	public void getProcesoProspeccionPage() {
        ruta="modulos/prospeccion/procesos/prospeccion.xhtml";
-       prospeccionBean.init();
     }
 	
 	public void getProcesoAgendaPage() {
        ruta="modulos/prospeccion/procesos/agenda.xhtml";
-       agendaBean.init();
+
     }
 	
 	public void getProspectosPage() {
        ruta="modulos/prospeccion/mantenimientos/prospecto.xhtml";
-       prospectoBean.init();
     }
 	
 	public void getProcesoReporteProspeccionPage() {
        ruta="modulos/prospeccion/procesos/reporteProspeccion.xhtml";
-       reporteProspeccionBean.init();
     }
 	
 	public void getMantenimientoPersonasPage() {
         ruta = "modulos/general/mantenimientos/personas.xhtml";
-        personBean.init();
     }
 	
 	public void getMantenimientoUsersPage() {
         ruta = "modulos/general/mantenimientos/users.xhtml";
-        userBean.init();
     }
 
 	public void getMantenimientoProfilePage() {
         ruta = "modulos/general/mantenimientos/profile.xhtml";
-        profileBean.init();
     }
 	public void getMantenimientoProjectPage() {
         ruta = "modulos/general/mantenimientos/project.xhtml";
-        projectBean.init();
     }
 	
 	public void getMantenimientoTeamPage() {
         ruta = "modulos/general/mantenimientos/team.xhtml";
-        teamBean.init();
     }
 	
 	
 	public void onPageLoad(){
 		usuarioLogin = usuarioService.findByUsername(getUsername());
+		
 	}
 
 	public String getRuta() {
@@ -150,21 +116,6 @@ public class NavegacionBean {
 		this.usuarioLogin = usuarioLogin;
 	}
 
-	public ReporteProspeccionBean getReporteProspeccionBean() {
-		return reporteProspeccionBean;
-	}
-
-	public void setReporteProspeccionBean(ReporteProspeccionBean reporteProspeccionBean) {
-		this.reporteProspeccionBean = reporteProspeccionBean;
-	}
-
-	public ProspeccionBean getProspeccionBean() {
-		return prospeccionBean;
-	}
-
-	public void setProspeccionBean(ProspeccionBean prospeccionBean) {
-		this.prospeccionBean = prospeccionBean;
-	}
 
 	
 	
