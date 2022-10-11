@@ -289,6 +289,12 @@
 				<h:outputLabel for="name" value="Nombres:" />
 				<p:inputText id="name" value="#{prospeccionBean.personNew.names}" style="margin:10px" maxlength="45"  > <p:ajax event="keyup" update=":formDialog" /> </p:inputText>
 
+				<h:outputLabel for="sexo" value="Sexo:" />
+				<p:selectOneMenu id="sexo" value="#{prospeccionBean.personNew.gender}" style="margin:10px">
+					<f:selectItem itemLabel="Masculino" itemValue="M" />
+					<f:selectItem itemLabel="Femenino" itemValue="F" />
+				</p:selectOneMenu>
+
 				<h:outputLabel for="address" value="Dirección:" />
 				<p:inputText id="address" value="#{prospeccionBean.personNew.address}" style="margin:10px" maxlength="60"  > <p:ajax event="keyup" update=":formDialog" /> </p:inputText>
 
@@ -304,16 +310,29 @@
 					<f:selectItem itemLabel="Casado(a)" itemValue="Casado" />
 					<f:selectItem itemLabel="Viudo(a)" itemValue="Viudo" />
 					<f:selectItem itemLabel="Divorciado(a)" itemValue="Divorciado" />
-					
 					<p:ajax update=":formDialog" />
 				</p:selectOneMenu>
 				
 				<h:outputLabel for="occupation" value="Ocupación:" />
 				<p:inputText id="occupation" value="#{prospeccionBean.personNew.occupation}" style="margin:10px" maxlength="45" />
 				
+				<h:outputLabel for="monthEntry" value="Entrada mensual soles:" />
+				<p:selectOneMenu id="monthEntry" value="#{prospeccionBean.personNew.monthEntry}" style="margin:10px">
+					<f:selectItem itemLabel="0-500" itemValue="0-500" />
+					<f:selectItem itemLabel="500-1000" itemValue="500-1000" />
+					<f:selectItem itemLabel="1000-1500" itemValue="1000-1500" />
+					<f:selectItem itemLabel="1500-2000" itemValue="1500-2000" />
+					<f:selectItem itemLabel="2000-2500" itemValue="2000-2500" />
+					<f:selectItem itemLabel="2500-3000" itemValue="2500-3000" />
+					<f:selectItem itemLabel="3000-3500" itemValue="3000-3500" />
+					<f:selectItem itemLabel="3500-4000" itemValue="3500-4000" />
+					<f:selectItem itemLabel="4000-4500" itemValue="4000-4500" />
+					<f:selectItem itemLabel="4500-5000" itemValue="4500-5000" />
+					<f:selectItem itemLabel="5000 a más" itemValue="5000 a más" />
+				</p:selectOneMenu>
+				
 			</h:panelGrid>
-			<p:commandButton value="Guardar" actionListener="#{prospeccionBean.savePerson()}" update=":formDialog"/>
- 
+			<p:commandButton value="Guardar" actionListener="#{prospeccionBean.savePerson()}" update=":formDialog"/> 
 		</h:form>
 	</p:dialog>
 	

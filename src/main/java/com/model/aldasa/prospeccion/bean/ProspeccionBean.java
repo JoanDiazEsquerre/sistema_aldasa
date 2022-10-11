@@ -108,7 +108,7 @@ public class ProspeccionBean {
             new SelectItem("WhatsAap", "WhatsApp"),
             new SelectItem("Facebook", "Facebook"),
             new SelectItem("Instagram", "Instagram"),
-            new SelectItem("Google/ADS", "Google/ADS"),
+            new SelectItem("Google/SEM", "Google/SEM"),
             new SelectItem("Google/SEO", "Google/SEO")
         });
         countriesGroup.add(europeCountries);
@@ -262,6 +262,8 @@ public class ProspeccionBean {
 			personNew.setStatus(true);
 			personNew.setCivilStatus(buscarPorDni.getCivilStatus());
 			personNew.setOccupation(buscarPorDni.getOccupation());
+			personNew.setGender(buscarPorDni.getGender());
+			personNew.setMonthEntry(buscarPorDni.getMonthEntry());
 		}	
 		
 		

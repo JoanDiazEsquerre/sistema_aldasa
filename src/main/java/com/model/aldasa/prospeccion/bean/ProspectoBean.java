@@ -152,6 +152,8 @@ public class ProspectoBean {
 				personNew.setStatus(true);
 				personNew.setCivilStatus(buscarPorDni.getCivilStatus());
 				personNew.setOccupation(buscarPorDni.getOccupation());
+				personNew.setGender(buscarPorDni.getGender());
+				personNew.setMonthEntry(buscarPorDni.getMonthEntry());
 			}	
 		}
 		

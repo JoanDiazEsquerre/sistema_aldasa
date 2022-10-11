@@ -18,7 +18,10 @@ public class Person {
 	@Column(name="civilstatus")
 	String civilStatus;
 	
-	String dni,names, surnames, address, phone, cellphone, occupation;
+	@Column(name="monthentry")
+	String monthEntry;
+	
+	String dni,names, surnames, address, phone, cellphone, occupation, gender;
 	boolean status;
 	
 	
@@ -83,6 +86,19 @@ public class Person {
 	public void setCellphone(String cellphone) {
 		this.cellphone = cellphone;
 	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	public String getMonthEntry() {
+		return monthEntry;
+	}
+	public void setMonthEntry(String monthEntry) {
+		this.monthEntry = monthEntry;
+	}
+	
 	
 	
 }

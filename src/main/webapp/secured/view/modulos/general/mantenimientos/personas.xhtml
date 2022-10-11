@@ -44,6 +44,9 @@
 			<p:column headerText="Apellidos y Nombres" sortBy="#{per.surnames}" filterBy="#{per.surnames}" filterMatchMode="contains">
 				<h:outputText value="#{per.surnames} #{per.names}" />
 			</p:column>
+			<p:column headerText="Sexo" sortBy="#{per.gender}" filterMatchMode="contains">
+				<h:outputText value="#{per.gender eq 'M'?'Masculino':per.gender eq'F'?'Femenino':''}" />
+			</p:column>
 			<p:column headerText="Dirección" sortBy="#{per.address}" filterMatchMode="contains">
 				<h:outputText value="#{per.address}" />
 			</p:column>
@@ -58,7 +61,11 @@
 			</p:column>
 			<p:column headerText="Ocupacion" sortBy="#{per.occupation}" filterMatchMode="contains">
 				<h:outputText value="#{per.occupation}" />
+				</p:column>
+			<p:column headerText="Entrada mensual soles" sortBy="#{per.monthEntry}" filterMatchMode="contains">
+				<h:outputText value="#{per.monthEntry}" />
 			</p:column>
+			
 		</p:dataTable>
 	</h:form>
 	
@@ -77,6 +84,12 @@
 
 				<h:outputLabel for="name" value="Nombres:" />
 				<p:inputText id="name" value="#{personBean.personSelected.names}" style="margin:10px" maxlength="45"  />
+				
+				<h:outputLabel for="sexo" value="Sexo:" />
+				<p:selectOneMenu id="sexo" value="#{personBean.personSelected.gender}" style="margin:10px">
+					<f:selectItem itemLabel="Masculino" itemValue="M" />
+					<f:selectItem itemLabel="Femenino" itemValue="F" />
+				</p:selectOneMenu>
 
 				<h:outputLabel for="address" value="Dirección:" />
 				<p:inputText id="address" value="#{personBean.personSelected.address}" style="margin:10px" maxlength="60"  />
@@ -97,6 +110,21 @@
 				
 				<h:outputLabel for="occupation" value="Ocupación:" />
 				<p:inputText id="occupation" value="#{personBean.personSelected.occupation}" style="margin:10px" maxlength="11" />
+				
+				<h:outputLabel for="monthEntry" value="Entrada mensual soles:" />
+				<p:selectOneMenu id="monthEntry" value="#{personBean.personSelected.monthEntry}" style="margin:10px">
+					<f:selectItem itemLabel="0-500" itemValue="0-500" />
+					<f:selectItem itemLabel="500-1000" itemValue="500-1000" />
+					<f:selectItem itemLabel="1000-1500" itemValue="1000-1500" />
+					<f:selectItem itemLabel="1500-2000" itemValue="1500-2000" />
+					<f:selectItem itemLabel="2000-2500" itemValue="2000-2500" />
+					<f:selectItem itemLabel="2500-3000" itemValue="2500-3000" />
+					<f:selectItem itemLabel="3000-3500" itemValue="3000-3500" />
+					<f:selectItem itemLabel="3500-4000" itemValue="3500-4000" />
+					<f:selectItem itemLabel="4000-4500" itemValue="4000-4500" />
+					<f:selectItem itemLabel="4500-5000" itemValue="4500-5000" />
+					<f:selectItem itemLabel="5000 a más" itemValue="5000 a más" />
+				</p:selectOneMenu>
 				
 			</h:panelGrid>
 			<p:commandButton value="Guardar" actionListener="#{personBean.savePerson()}" update=":form:idTablePer :formDialog"/>

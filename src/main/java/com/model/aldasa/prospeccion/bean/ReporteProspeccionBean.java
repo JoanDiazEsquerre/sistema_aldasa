@@ -85,7 +85,7 @@ public class ReporteProspeccionBean {
             new SelectItem("WhatsAap", "WhatsApp"),
             new SelectItem("Facebook", "Facebook"),
             new SelectItem("Instagram", "Instagram"),
-            new SelectItem("Google/ADS", "Google/ADS"),
+            new SelectItem("Google/SEM", "Google/SEM"),
             new SelectItem("Google/SEO", "Google/SEO")
         });
         countriesGroup.add(europeCountries);
