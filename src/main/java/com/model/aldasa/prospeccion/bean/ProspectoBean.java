@@ -1,5 +1,7 @@
 package com.model.aldasa.prospeccion.bean;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -159,7 +161,7 @@ public class ProspectoBean {
 		
 	}
 	
-	public void savePerson() {
+	public void savePerson() {		
 		if(tituloDialog.equals("NUEVA PERSONA")) {
 			if(personNew.getSurnames().equals("") || personNew.getSurnames()==null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Apellidos."));
@@ -170,52 +172,63 @@ public class ProspectoBean {
 				return;
 			}
 			
+//			if (!personNew.getDni().equals("") || personNew.getDni() != null) {
+//				Person buscarPersona = personService.findByDni(personNew.getDni());
+//				if (buscarPersona != null) {
+//					personNew.setId(buscarPersona.getId());
+//					Prospect buscarProspecto = prospectService.findByPerson(buscarPersona);
+//					if (buscarProspecto != null) {
+//						Date fechaRest = sumaRestarFecha(buscarProspecto.getDateBlock(), 180);
+//						if(fechaRest.after(new Date())) {
+//							if (buscarProspecto.getPersonAssessor() != null) {
+//								Usuario buscarInactivo = usuarioService.findByPerson(buscarProspecto.getPersonAssessor());
+//								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto está a cargo por el asesor "+ buscarProspecto.getPersonAssessor().getSurnames() + " "+ buscarProspecto.getPersonAssessor().getNames()));
+//								return;
+//							} else if (buscarProspecto.getPersonSupervisor() != null) {
+//								FacesContext.getCurrentInstance().addMessage(null,
+//										new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error","El prospecto está a cargo por el supervisor "+ buscarProspecto.getPersonSupervisor().getSurnames() + " "+ buscarProspecto.getPersonSupervisor().getNames()));
+//								return;
+//							} 
+//						}else {
+//							if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
+//								buscarProspecto.setPersonAssessor(null);
+//							} else if (usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
+//								buscarProspecto.setPersonAssessor(usuarioLogin.getPerson());
+//								buscarProspecto.setPersonSupervisor(usuarioLogin.getTeam().getPersonSupervisor());
+//							} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
+//								buscarProspecto.setPersonSupervisor(usuarioLogin.getPerson());
+//							}
+//							
+//						
+//							personService.save(personNew);
+//							buscarProspecto.setDateBlock(new Date());
+// 							prospectService.save(buscarProspecto);
+//							FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
+//							personNew = new Person();
+//							personNew.setStatus(true);
+//							return;
+//						}
+//					}
+//				}
+//			}
+			
+			Prospect prospectNew = new Prospect();
+			
 			if (!personNew.getDni().equals("") || personNew.getDni() != null) {
 				Person buscarPersona = personService.findByDni(personNew.getDni());
 				if (buscarPersona != null) {
 					personNew.setId(buscarPersona.getId());
 					Prospect buscarProspecto = prospectService.findByPerson(buscarPersona);
 					if (buscarProspecto != null) {
-						if (buscarProspecto.getPersonAssessor() != null) {
-							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto está a cargo por el asesor "+ buscarProspecto.getPersonAssessor().getSurnames() + " "+ buscarProspecto.getPersonAssessor().getNames()));
-							return;
-						} else if (buscarProspecto.getPersonSupervisor() != null) {
-							FacesContext.getCurrentInstance().addMessage(null,
-									new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error","El prospecto está a cargo por el supervisor "+ buscarProspecto.getPersonSupervisor().getSurnames() + " "+ buscarProspecto.getPersonSupervisor().getNames()));
-							return;
-
-						} else {
-							if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
-								buscarProspecto.setPersonAssessor(null);
-							} else if (usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
-								buscarProspecto.setPersonAssessor(usuarioLogin.getPerson());
-								buscarProspecto.setPersonSupervisor(usuarioLogin.getTeam().getPersonSupervisor());
-							} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
-								buscarProspecto.setPersonSupervisor(usuarioLogin.getPerson());
-							}
-							
-							buscarPersona.setNames(personNew.getNames());
-							buscarPersona.setSurnames(personNew.getSurnames());
-							buscarPersona.setAddress(personNew.getAddress());
-							buscarPersona.setPhone(personNew.getPhone());
-							buscarPersona.setCellphone(personNew.getCellphone());
-							buscarPersona.setCellphone(personNew.getCellphone());
-							buscarPersona.setStatus(true);
-							buscarPersona.setCivilStatus(personNew.getCivilStatus());
-							personService.save(buscarPersona);
-
-							prospectService.save(buscarProspecto);
-							FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
-							personNew = new Person();
-							personNew.setStatus(true);
-							return;
-						}
+						prospectNew=buscarProspecto;
 					}
 				}
 			}
 			
+			
 			Person person =personService.save(personNew);
-			Prospect prospectNew = new Prospect();
+			
+			prospectNew.setDateBlock(new Date());
 			prospectNew.setPerson(person);
 			if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
 				prospectNew.setPersonAssessor(null);
@@ -230,6 +243,8 @@ public class ProspectoBean {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
 			personNew = new Person();
 			personNew.setStatus(true);
+			
+			
 		}else {
 			Person buscarPorDni = personService.findByDniException(personNew.getDni(),personNew.getId());
 			if(buscarPorDni!=null) {
@@ -241,6 +256,22 @@ public class ProspectoBean {
 		}
 		
 	}
+	
+	public Date sumaRestarFecha(Date fecha, int sumaresta){
+        Calendar calendar = Calendar.getInstance();
+        try{
+
+            calendar.setTime(fecha);
+            
+            calendar.add(Calendar.DAY_OF_WEEK, sumaresta);
+     
+        }
+        catch(Exception e)
+        {
+            System.out.println("Error:\n" + e);
+        }
+        return calendar.getTime();
+    }
 	
 	
 	public String getUsername() {

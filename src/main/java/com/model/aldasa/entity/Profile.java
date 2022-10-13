@@ -15,6 +15,8 @@ public class Profile {
 	private String name;
 	private boolean status;
 	
+	
+	
 	public Integer getId() {
 		return id;
 	}

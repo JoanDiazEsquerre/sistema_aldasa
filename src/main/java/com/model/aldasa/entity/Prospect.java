@@ -1,5 +1,8 @@
 package com.model.aldasa.entity;
 
+import java.util.Date;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,15 +21,18 @@ public class Prospect {
 	
 	@ManyToOne
 	@JoinColumn(name="idperson")
-	Person person;
+	private Person person;
 	
 	@ManyToOne
 	@JoinColumn(name="idpersonassessor")
-	Person personAssessor;
+	private Person personAssessor;
 	
 	@ManyToOne
 	@JoinColumn(name="idpersonsupervisor")
-	Person personSupervisor;
+	private Person personSupervisor;
+	
+	@Column(name="dateblock")
+	private Date dateBlock;
 	
 	
 	public Integer getId() {
@@ -41,6 +47,12 @@ public class Prospect {
 	public void setPerson(Person person) {
 		this.person = person;
 	}
+	public Date getDateBlock() {
+		return dateBlock;
+	}
+	public void setDateBlock(Date dateBlock) {
+		this.dateBlock = dateBlock;
+	}
 	public Person getPersonAssessor() {
 		return personAssessor;
 	}
@@ -53,7 +65,7 @@ public class Prospect {
 	public void setPersonSupervisor(Person personSupervisor) {
 		this.personSupervisor = personSupervisor;
 	}
-	
+
 	
 	
 	

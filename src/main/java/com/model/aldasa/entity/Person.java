@@ -13,16 +13,16 @@ public class Person {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+	private Integer id;
 	
 	@Column(name="civilstatus")
-	String civilStatus;
+	private String civilStatus;
 	
 	@Column(name="monthentry")
-	String monthEntry;
+	private String monthEntry;
 	
-	String dni,names, surnames, address, phone, cellphone, occupation, gender;
-	boolean status;
+	private String dni,names, surnames, address, phone, cellphone, occupation, gender;
+	private boolean status;
 	
 	
 	public String getOccupation() {

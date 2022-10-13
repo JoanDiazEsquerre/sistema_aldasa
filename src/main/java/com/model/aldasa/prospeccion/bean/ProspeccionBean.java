@@ -163,7 +163,6 @@ public class ProspeccionBean {
 	}
 	
 	public void savePerson() {
-		System.out.println("aaa");
 		if(personNew.getSurnames().equals("") || personNew.getSurnames()==null) {
 			FacesContext.getCurrentInstance().addMessage("messages2", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Apellidos."));
 			return;
@@ -196,15 +195,7 @@ public class ProspeccionBean {
 							buscarProspecto.setPersonSupervisor(usuarioLogin.getPerson());
 						}
 						
-						buscarPersona.setNames(personNew.getNames());
-						buscarPersona.setSurnames(personNew.getSurnames());
-						buscarPersona.setAddress(personNew.getAddress());
-						buscarPersona.setPhone(personNew.getPhone());
-						buscarPersona.setCellphone(personNew.getCellphone());
-						buscarPersona.setCellphone(personNew.getCellphone());
-						buscarPersona.setStatus(true);
-						buscarPersona.setCivilStatus(personNew.getCivilStatus());
-						personService.save(buscarPersona);
+						personService.save(personNew);
 
 						prospectService.save(buscarProspecto);
 						FacesContext.getCurrentInstance().addMessage("messages2", new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
@@ -461,7 +452,12 @@ public class ProspeccionBean {
 		if(statusSelected.equals("En seguimiento")) {
 			prospectionSelected.setResult(null); 
 		}else {
-			prospectionSelected.setResult(resultSelected); 
+			prospectionSelected.setResult(resultSelected);
+			if(resultSelected.equals("Exitoso")) {
+				Prospect pro = prospectionSelected.getProspect();
+				pro.setDateBlock(new Date()); 
+				prospectService.save(pro);
+			}
 		}
 		
 		prospectionService.save(prospectionSelected);
