@@ -63,6 +63,13 @@ public class UserBean{
 		listarTeam();
 	}
 	
+	public void onPageLoad(){
+		listarUsuarios();
+		listarPersonas();
+		listarPerfiles();
+		listarTeam();
+	}
+	
 	public void listarUsuarios() {
 		lstUsers=usuarioService.findByStatus(estado);
 	}
@@ -170,6 +177,7 @@ public class UserBean{
 				listarUsuarios();
 				if(tituloDialog.equals("NUEVO USUARIO")) {
 					userSelected=new Usuario();
+					userSelected.setStatus(true);
 				}
 			}
 		}
