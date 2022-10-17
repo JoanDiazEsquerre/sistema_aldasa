@@ -22,5 +22,7 @@ public interface ProspectionDetailRepository extends PagingAndSortingRepository<
 	
 	
 	//PANTALLA REPORTE
-	List<ProspectionDetail> findByProspectionStatusAndScheduledAndDateBetweenAndProspectionProspectPersonSurnamesLikeAndProspectionPersonAssessorDniLikeAndActionDescriptionLikeAndProspectionOriginContactLikeAndProspectionProjectNameLike(String prospectionStatus,boolean scheduled,Date  dateStart,Date dateFinish,String personSurnames,String assessorDni,String action,String originContact,String project);
-}
+	List<ProspectionDetail> findByScheduledAndDateBetweenAndProspectionProspectPersonSurnamesLikeAndProspectionPersonAssessorDniLikeAndProspectionPersonSupervisorDniLikeAndActionDescriptionLikeAndProspectionOriginContactLikeAndProspectionProjectNameLike(
+			boolean scheduled,Date  dateStart,Date dateFinish,String personSurnames,String assessorDni,String supervisorDni,String action,String originContact,String project);
+
+}	

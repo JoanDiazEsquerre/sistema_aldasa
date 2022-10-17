@@ -208,7 +208,16 @@ public class ProspeccionBean {
 					
 						personService.save(personNew);
 						buscarProspecto.setDateBlock(new Date());
-							prospectService.save(buscarProspecto);
+						prospectService.save(buscarProspecto);
+						
+						Prospection prospection = prospectionService.findByProspectAndStatus(buscarProspecto, "En seguimiento");
+						if(prospection!=null) {
+							prospection.setStatus("Terminado");
+ 							prospection.setResult("Rechazado");
+ 							prospectionService.save(prospection);
+ 							
+						}
+						
 						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
 						newPerson();
 						return;

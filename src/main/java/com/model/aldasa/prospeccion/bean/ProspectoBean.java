@@ -26,10 +26,12 @@ import org.springframework.stereotype.Component;
 
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Prospect;
+import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProspectService;
+import com.model.aldasa.service.ProspectionService;
 import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.Perfiles;
 
@@ -44,6 +46,9 @@ public class ProspectoBean {
 	
 	@Autowired
 	private ProspectService prospectService;
+	
+	@Autowired
+	private ProspectionService prospectionService;
 	
 	@Autowired
 	private UsuarioService usuarioService;
@@ -206,10 +211,21 @@ public class ProspectoBean {
 								buscarProspecto.setPersonSupervisor(usuarioLogin.getPerson());
 							}
 							
+							
+							
 						
 							personService.save(personNew);
 							buscarProspecto.setDateBlock(new Date());
  							prospectService.save(buscarProspecto);
+ 							
+ 							Prospection prospection = prospectionService.findByProspectAndStatus(buscarProspecto, "En seguimiento");
+ 							if(prospection!=null) {
+ 								prospection.setStatus("Terminado");
+ 	 							prospection.setResult("Rechazado");
+ 	 							prospectionService.save(prospection);
+ 	 							
+ 							}
+ 							
 							FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
 							newPerson();
 							return;
@@ -335,6 +351,14 @@ public class ProspectoBean {
 
 	public void setTituloDialog(String tituloDialog) {
 		this.tituloDialog = tituloDialog;
+	}
+
+	public ProspectionService getProspectionService() {
+		return prospectionService;
+	}
+
+	public void setProspectionService(ProspectionService prospectionService) {
+		this.prospectionService = prospectionService;
 	}
 
 	

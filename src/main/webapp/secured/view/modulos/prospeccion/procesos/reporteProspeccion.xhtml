@@ -50,7 +50,10 @@
 			</p:selectOneMenu>
 			
 			<p:commandButton value="Buscar" styleClass="font-bold ui-button-outlined" actionListener="#{reporteProspeccionBean.buscarReporte}" update="form:idTableDet"/>
-			<p:commandButton value="Descargar" />
+			<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{reporteProspeccionBean.procesarExcel}"
+                         icon="pi pi-arrow-down" styleClass="mr-2">
+            <p:fileDownload value="#{reporteProspeccionBean.fileDes}"/> 
+        </p:commandButton>
 		</h:panelGrid>
 		
 		<p:dataTable var="det" id="idTableDet" value="#{reporteProspeccionBean.lstProspectionDetailReporte}" rowIndexVar="row" paginator="true" rows="5" size="small" 
@@ -92,8 +95,11 @@
 			<p:column headerText="Fecha y Hora" sortBy="#{det.date}" filterMatchMode="contains">
 				<h:outputText value="#{det.date}" />
 			</p:column>
-			<p:column headerText="Asesor" sortBy="#{det.action.description}" filterMatchMode="contains">
-				<h:outputText value="#{det.prospection.prospect.personAssessor.surnames} #{det.prospection.prospect.personAssessor.names}" />
+			<p:column headerText="Asesor" sortBy="#{det.prospection.personAssessor.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{det.prospection.personAssessor.surnames} #{det.prospection.personAssessor.names}" />
+			</p:column>
+			<p:column headerText="Supervisor" sortBy="#{det.prospection.personSupervisor.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{det.prospection.personSupervisor.surnames} #{det.prospection.personSupervisor.names}" />
 			</p:column>
 			<p:column headerText="Origen contacto" sortBy="#{det.prospection.originContact}" filterMatchMode="contains">
 				<h:outputText value="#{det.prospection.originContact}" />
@@ -101,7 +107,9 @@
 			<p:column headerText="Proyecto" sortBy="#{det.prospection.project.name}" filterMatchMode="contains">
 				<h:outputText value="#{det.prospection.project.name}" />
 			</p:column>
-
+			<p:column headerText="Resultado" sortBy="#{det.prospection.result}" filterMatchMode="contains">
+				<h:outputText value="#{det.prospection.result}" />
+			</p:column>
 
 		</p:dataTable>
 
