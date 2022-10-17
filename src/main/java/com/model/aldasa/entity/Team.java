@@ -50,4 +50,21 @@ public class Team {
 	}
 	
 	
+	
+	@Override
+    public boolean equals(Object other) {
+        return (other instanceof Team) && (id != null)
+            ? id.equals(((Team) other).id)
+            : (other == this);
+    }
+
+
+
+   @Override
+    public int hashCode() {
+        return (id != null)
+            ? (this.getClass().hashCode() + id.hashCode())
+            : super.hashCode();
+    }
+	
 }
