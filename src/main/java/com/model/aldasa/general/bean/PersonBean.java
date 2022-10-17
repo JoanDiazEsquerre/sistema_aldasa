@@ -32,7 +32,7 @@ public class PersonBean{
 //	private List<Person> lstPersons;
 	private LazyDataModel<Person> lstPersonsLazy;
 
-	private Person personSelected; 
+	private Person personSelected,personNew;
 
 	private Boolean estado = true;
 	private String tituloDialog;
@@ -100,14 +100,16 @@ public class PersonBean{
 //	}
 
 	public void newPerson() {
-		personSelected = new Person();
 		tituloDialog = "NUEVA PERSONA";
 		
-		personSelected.setStatus(true);
+		personNew = new Person();
+		personNew.setStatus(true);
 	}
 	
 	public void updatePerson() {
 		tituloDialog = "MODIFICAR PERSONA";
+		
+		personNew = personSelected;
 	}
 	
 
@@ -115,7 +117,7 @@ public class PersonBean{
 		boolean valor = true;
 		
 		if(person.getDni().equals("") || person.getDni()==null) {
-			personSelected.setDni("");
+			personNew.setDni("");
 //			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar DNI."));
 //			listarPersonas();
 //			return false ;
@@ -163,17 +165,17 @@ public class PersonBean{
 	}
 	
 	public void savePerson() {
-		boolean valida = validarDatosPersona(personSelected);
+		boolean valida = validarDatosPersona(personNew);
 		
 		if(valida) {
-			Person per = personService.save(personSelected); 
+			Person per = personService.save(personNew); 
 			if(per==null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se puede guardar."));
 			}else {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente."));
 //				listarPersonas();
 				if(tituloDialog.equals("NUEVA PERSONA")) {
-					personSelected=new Person();
+					newPerson();
 				}
 			}		
 		}
@@ -216,7 +218,16 @@ public class PersonBean{
 	public void setLstPersonsLazy(LazyDataModel<Person> lstPersonsLazy) {
 		this.lstPersonsLazy = lstPersonsLazy;
 	}
+	
 
+
+	public Person getPersonNew() {
+		return personNew;
+	}
+
+	public void setPersonNew(Person personNew) {
+		this.personNew = personNew;
+	}
 
 	/**/
 	public void addMessage(FacesMessage.Severity severity, String summary, String detail) {

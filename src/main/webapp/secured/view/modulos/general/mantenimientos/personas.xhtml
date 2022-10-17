@@ -77,31 +77,31 @@
 	        </p:messages>
 			<h:panelGrid id="grid" columns="4">
 				<h:outputLabel for="dni" value="DNI:" />
-				<p:inputText id="dni" value="#{personBean.personSelected.dni}" style="margin:10px" maxlength="11"/>
+				<p:inputText id="dni" value="#{personBean.personNew.dni}" style="margin:10px" maxlength="11"/>
 
 				<h:outputLabel for="surname" value="Apellidos:" />
-				<p:inputText id="surname" value="#{personBean.personSelected.surnames}" style="margin:10px" maxlength="45" />
+				<p:inputText id="surname" value="#{personBean.personNew.surnames}" style="margin:10px" maxlength="45" />
 
 				<h:outputLabel for="name" value="Nombres:" />
-				<p:inputText id="name" value="#{personBean.personSelected.names}" style="margin:10px" maxlength="45"  />
+				<p:inputText id="name" value="#{personBean.personNew.names}" style="margin:10px" maxlength="45"  />
 				
 				<h:outputLabel for="sexo" value="Sexo:" />
-				<p:selectOneMenu id="sexo" value="#{personBean.personSelected.gender}" style="margin:10px">
+				<p:selectOneMenu id="sexo" value="#{personBean.personNew.gender}" style="margin:10px">
 					<f:selectItem itemLabel="Masculino" itemValue="M" />
 					<f:selectItem itemLabel="Femenino" itemValue="F" />
 				</p:selectOneMenu>
 
 				<h:outputLabel for="address" value="Dirección:" />
-				<p:inputText id="address" value="#{personBean.personSelected.address}" style="margin:10px" maxlength="60"  />
+				<p:inputText id="address" value="#{personBean.personNew.address}" style="margin:10px" maxlength="60"  />
 
 				<h:outputLabel for="phone" value="Teléfono:" />
-				<p:inputText id="phone" value="#{personBean.personSelected.phone}" style="margin:10px" maxlength="11" />
+				<p:inputText id="phone" value="#{personBean.personNew.phone}" style="margin:10px" maxlength="11" />
 				
 				<h:outputLabel for="cellphone" value="Celular:" />
-				<p:inputText id="cellphone" value="#{personBean.personSelected.cellphone}" style="margin:10px" maxlength="11" />
+				<p:inputText id="cellphone" value="#{personBean.personNew.cellphone}" style="margin:10px" maxlength="11" />
 
 				<h:outputLabel for="option" value="Estado civil:" />
-				<p:selectOneMenu id="option" value="#{personBean.personSelected.civilStatus}" style="margin:10px">
+				<p:selectOneMenu id="option" value="#{personBean.personNew.civilStatus}" style="margin:10px">
 					<f:selectItem itemLabel="Soltero(a)" itemValue="Soltero" />
 					<f:selectItem itemLabel="Casado(a)" itemValue="Casado" />
 					<f:selectItem itemLabel="Viudo(a)" itemValue="Viudo" />
@@ -109,10 +109,10 @@
 				</p:selectOneMenu>
 				
 				<h:outputLabel for="occupation" value="Ocupación:" />
-				<p:inputText id="occupation" value="#{personBean.personSelected.occupation}" style="margin:10px" maxlength="11" />
+				<p:inputText id="occupation" value="#{personBean.personNew.occupation}" style="margin:10px" maxlength="11" />
 				
 				<h:outputLabel for="monthEntry" value="Entrada mensual soles:" />
-				<p:selectOneMenu id="monthEntry" value="#{personBean.personSelected.monthEntry}" style="margin:10px">
+				<p:selectOneMenu id="monthEntry" value="#{personBean.personNew.monthEntry}" style="margin:10px">
 					<f:selectItem itemLabel="0-500" itemValue="0-500" />
 					<f:selectItem itemLabel="500-1000" itemValue="500-1000" />
 					<f:selectItem itemLabel="1000-1500" itemValue="1000-1500" />
