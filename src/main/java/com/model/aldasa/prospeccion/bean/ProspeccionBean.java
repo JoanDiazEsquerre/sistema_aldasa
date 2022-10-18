@@ -122,6 +122,8 @@ public class ProspeccionBean {
 		usuarioLogin = navegacionBean.getUsuarioLogin();
 		listarProspect();
 		listarPersonasAssessor();
+		listarProject();
+		listarActions();
 	}
 	
 	public void listarProspect() {		
