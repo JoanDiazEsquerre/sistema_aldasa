@@ -113,7 +113,32 @@
 						<f:selectItems value="#{prospeccionBean.lstProject}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro}"/> 
 					</p:selectOneMenu>
 					<p:spacer></p:spacer>
+					
 				</h:panelGrid>
+				<p:panel id="pnl" header="Lugar de Prospección" style="width:400px">
+					<h:panelGrid  columns="2"> 
+						<h:outputLabel for="pais" value="País: " />
+						<p:selectOneMenu style="margin:5px; width:220px" id="pais" value="#{prospeccionBean.prospectionNew.originContact}">
+							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+							
+						</p:selectOneMenu>
+						
+						<h:outputLabel for="dep" value="Departamento: " />
+						<p:selectOneMenu style="margin:5px; width:220px" id="dep" value="#{prospeccionBean.prospectionNew.originContact}">
+							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+						</p:selectOneMenu>
+						
+						<h:outputLabel for="prov" value="Provincia: " />
+						<p:selectOneMenu style="margin:5px; width:220px" id="prov" value="#{prospeccionBean.prospectionNew.originContact}">
+							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+						</p:selectOneMenu>
+						
+						<h:outputLabel for="dist" value="Distrito: " />
+						<p:selectOneMenu style="margin:5px; width:220px" id="dist" value="#{prospeccionBean.prospectionNew.originContact}">
+							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+						</p:selectOneMenu>
+					</h:panelGrid>
+				</p:panel>
 				<p:commandButton value="Iniciar prospección" actionListener="#{prospeccionBean.saveNewProspection()}" update=":form:tabView:idTableProy form:tabView:grid" />
 			</p:tab>
 		</p:tabView>

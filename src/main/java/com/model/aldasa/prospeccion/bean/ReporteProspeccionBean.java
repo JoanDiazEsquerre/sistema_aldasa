@@ -243,6 +243,7 @@ public class ReporteProspeccionBean {
 		}
 		
 		fechaFin.setHours(23);
+		fechaFin.setMinutes(59);
 		
 		if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
 			lstProspectionDetailReporte = prospectionDetailService.findByScheduledAndDateBetweenAndProspectionProspectPersonSurnamesLikeAndProspectionPersonAssessorDniLikeAndProspectionPersonSupervisorDniLikeAndActionDescriptionLikeAndProspectionOriginContactLikeAndProspectionProjectNameLike(false, fechaIni,fechaFin,personSurnames,assessorDni,"%%",action,originContact,project);

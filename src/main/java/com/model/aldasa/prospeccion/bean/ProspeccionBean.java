@@ -864,8 +864,6 @@ public class ProspeccionBean {
 	public void setResultSelected(String resultSelected) {
 		this.resultSelected = resultSelected;
 	}
-	
-	
 
 	
 }
