@@ -1,9 +1,11 @@
 package com.model.aldasa.prospeccion.bean;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,6 +54,8 @@ import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 
@@ -88,7 +92,7 @@ public class ReporteProspeccionBean {
 	
 	private Date fechaIni,fechaFin;
 	private String origenContactoSelected,prospectSurnames="";
-	private String nombreArchivo = "Reporte_Documento_Compra.xls";
+	private String nombreArchivo = "Reporte de Acciones.xlsx";
 	
 	private Prospect prospectSelected;
 	private Person personAssessorSelected;
@@ -98,6 +102,7 @@ public class ReporteProspeccionBean {
 	private StreamedContent fileDes;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat sdfFull = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
 	
 	@PostConstruct
 	public void init() {
@@ -126,34 +131,53 @@ public class ReporteProspeccionBean {
 	
 	public void procesarExcel() {
 
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheet = workbook.createSheet("Acciones");
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Acciones");
 
         CellStyle styleBorder = UtilXls.styleCell(workbook, 'B');
-        //CellStyle styleSubTotal =UtilsXls.styleCell(workbook,'X');
+        CellStyle styleTitulo =UtilXls.styleCell(workbook,'A');
         //CellStyle styleSumaTotal = UtilsXls.styleCell(workbook,'Z');
 
-        Row rowTituloHoja = sheet.createRow(0);
-        Cell cellTituloHoja = rowTituloHoja.createCell(0);
-        cellTituloHoja.setCellValue("Reporte de Acciones");
-        cellTituloHoja.setCellStyle(styleBorder);
-        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 11)); //combinar Celdas para titulo
+//        Row rowTituloHoja = sheet.createRow(0);
+//        Cell cellTituloHoja = rowTituloHoja.createCell(0);
+//        cellTituloHoja.setCellValue("Reporte de Acciones");
+//        cellTituloHoja.setCellStyle(styleBorder);
+//        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 11)); //combinar Celdas para titulo
 
-        Row rowSubTitulo = sheet.createRow(1);
-        Cell cellSubIndex = rowSubTitulo.createCell(0);cellSubIndex.setCellValue("INDEX");cellSubIndex.setCellStyle(styleBorder);
-        Cell cellSubDoc = rowSubTitulo.createCell(1);cellSubDoc.setCellValue("DOCUMENTO");cellSubDoc.setCellStyle(styleBorder);
-        Cell cellSubSerie = rowSubTitulo.createCell(2);cellSubSerie.setCellValue("SERIE - NUMERO");cellSubSerie.setCellStyle(styleBorder);
-        Cell cellSubFechaEmision = rowSubTitulo.createCell(3);cellSubFechaEmision.setCellValue("FECHA EMISION");cellSubFechaEmision.setCellStyle(styleBorder);
-        Cell cellSubFechaVen = rowSubTitulo.createCell(4);cellSubFechaVen.setCellValue("FECHA VENCIMIENTO");cellSubFechaVen.setCellStyle(styleBorder);
-        Cell cellSubTipo = rowSubTitulo.createCell(5);cellSubTipo.setCellValue("TIPO PROVEEDOR");cellSubTipo.setCellStyle(styleBorder);
-        Cell cellSubTipoProv = rowSubTitulo.createCell(6);cellSubTipoProv.setCellValue("PROVEEDOR");cellSubTipoProv.setCellStyle(styleBorder);
-        Cell cellSubMoneda = rowSubTitulo.createCell(7);cellSubMoneda.setCellValue("MONEDA");cellSubMoneda.setCellStyle(styleBorder);
-        Cell cellSubTotal = rowSubTitulo.createCell(8);cellSubTotal.setCellValue("TOTAL");cellSubTotal.setCellStyle(styleBorder);
-        Cell cellSubNeto = rowSubTitulo.createCell(9);cellSubNeto.setCellValue("NETO");cellSubNeto.setCellStyle(styleBorder);
-        Cell cellSubCondicion = rowSubTitulo.createCell(10);cellSubCondicion.setCellValue("CONDICION");cellSubCondicion.setCellStyle(styleBorder);
-        Cell cellSubTrans = rowSubTitulo.createCell(11);cellSubTrans.setCellValue("TRANSPORTE");cellSubTrans.setCellStyle(styleBorder);
+        Row rowSubTitulo = sheet.createRow(0);
+        Cell cellSubIndex = rowSubTitulo.createCell(0);cellSubIndex.setCellValue("PROSPECTO");cellSubIndex.setCellStyle(styleTitulo);
+        Cell cellSubDoc = rowSubTitulo.createCell(1);cellSubDoc.setCellValue("DNI PROSPECTO");cellSubDoc.setCellStyle(styleTitulo);
+        Cell cellSubSerie = rowSubTitulo.createCell(2);cellSubSerie.setCellValue("TELEFONO");cellSubSerie.setCellStyle(styleTitulo);
+        Cell cellSubFechaEmision = rowSubTitulo.createCell(3);cellSubFechaEmision.setCellValue("CELULAR");cellSubFechaEmision.setCellStyle(styleTitulo);
+        Cell cellSubFechaVen = rowSubTitulo.createCell(4);cellSubFechaVen.setCellValue("OCUPACION");cellSubFechaVen.setCellStyle(styleTitulo);
+        Cell cellSubTipo = rowSubTitulo.createCell(5);cellSubTipo.setCellValue("ACCION");cellSubTipo.setCellStyle(styleTitulo);
+        Cell cellSubTipoProv = rowSubTitulo.createCell(6);cellSubTipoProv.setCellValue("FECHA Y HORA");cellSubTipoProv.setCellStyle(styleTitulo);
+        Cell cellSubMoneda = rowSubTitulo.createCell(7);cellSubMoneda.setCellValue("ASESOR");cellSubMoneda.setCellStyle(styleTitulo);
+        Cell cellSubTotal = rowSubTitulo.createCell(8);cellSubTotal.setCellValue("SUPERVISOR");cellSubTotal.setCellStyle(styleTitulo);
+        Cell cellSubNeto = rowSubTitulo.createCell(9);cellSubNeto.setCellValue("ORIGEN CONTACTO");cellSubNeto.setCellStyle(styleTitulo);
+        Cell cellSubCondicion = rowSubTitulo.createCell(10);cellSubCondicion.setCellValue("PROYECTO");cellSubCondicion.setCellStyle(styleTitulo);
+        Cell cellSubTrans = rowSubTitulo.createCell(11);cellSubTrans.setCellValue("RESULTADO");cellSubTrans.setCellStyle(styleTitulo);
       
-        
+        if(lstProspectionDetailReporte != null) {
+        	int index = 1;
+        	for(ProspectionDetail detail :lstProspectionDetailReporte) {
+        		Row rowDetail = sheet.createRow(index);
+        	    Cell cellNomPros = rowDetail.createCell(0);cellNomPros.setCellValue(detail.getProspection().getProspect().getPerson().getSurnames()+" "+detail.getProspection().getProspect().getPerson().getNames());cellNomPros.setCellStyle(styleBorder);
+        	    Cell cellDniPros = rowDetail.createCell(1);cellDniPros.setCellValue(detail.getProspection().getProspect().getPerson().getDni());cellDniPros.setCellStyle(styleBorder);
+        	    Cell cellTlf = rowDetail.createCell(2);cellTlf.setCellValue(detail.getProspection().getProspect().getPerson().getPhone());cellTlf.setCellStyle(styleBorder);
+        	    Cell cellCellPhone = rowDetail.createCell(3);cellCellPhone.setCellValue(detail.getProspection().getProspect().getPerson().getCellphone());cellCellPhone.setCellStyle(styleBorder);
+        	    Cell cellOccu = rowDetail.createCell(4);cellOccu.setCellValue(detail.getProspection().getProspect().getPerson().getOccupation());cellOccu.setCellStyle(styleBorder);
+        	    Cell cellAction = rowDetail.createCell(5);cellAction.setCellValue(detail.getAction().getDescription());cellAction.setCellStyle(styleBorder);
+        	    Cell cellDate = rowDetail.createCell(6);cellDate.setCellValue(sdfFull.format(detail.getDate()));cellDate.setCellStyle(styleBorder);
+        	    Cell cellAse = rowDetail.createCell(7);cellAse.setCellValue(detail.getProspection().getPersonAssessor().getSurnames()+" "+detail.getProspection().getPersonAssessor().getNames());cellAse.setCellStyle(styleBorder);
+        	    Cell cellSup = rowDetail.createCell(8);cellSup.setCellValue(detail.getProspection().getPersonSupervisor().getSurnames()+" "+detail.getProspection().getPersonSupervisor().getNames());cellSup.setCellStyle(styleBorder);
+        	    Cell cellOri = rowDetail.createCell(9);cellOri.setCellValue(detail.getProspection().getOriginContact());cellOri.setCellStyle(styleBorder);
+        	    Cell cellProy = rowDetail.createCell(10);cellProy.setCellValue(detail.getProspection().getProject().getName());cellProy.setCellStyle(styleBorder);
+        	    Cell cellRes = rowDetail.createCell(11);cellRes.setCellValue(detail.getProspection().getResult());cellRes.setCellStyle(styleBorder);
+        	    
+        	    index++;
+        	}
+        }
      
 
         for (int j = 0; j <= 11; j++) {
@@ -168,9 +192,10 @@ public class ReporteProspeccionBean {
             out.close();
             fileDes = DefaultStreamedContent.builder()
                     .name(nombreArchivo)
-                    .contentType("aplication/xlsx")
+                    .contentType("aplication/xls")
                     .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/fileAttachments/"+nombreArchivo))
                     .build();
+            
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -180,6 +205,20 @@ public class ReporteProspeccionBean {
    
 
     }
+	
+//	public void descargarArchivo(String rutaArchivo,String nombreArchivo) {
+//		   System.out.println("Inicio descargarArchivo");
+//		   InputStream is = null;
+//		   try {
+//		      is = new FileInputStream(rutaArchivo);
+//		      Date hoy=new Date();
+//		      if (is != null)Filedownload.save(is, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", nombreArchivo);
+//		        else alert("d");
+//		   } catch (FileNotFoundException e) {
+//		      e.printStackTrace();
+//		   }
+//		   System.out.println("Fin descargarArchivo");
+//		}
 	
 
 	public void buscarReporte() {
