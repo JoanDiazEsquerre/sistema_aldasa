@@ -105,6 +105,7 @@ public class ProspeccionBean {
 	private Country countrySelected;
 	private Department departmentSelected;
 	private Province provinceSelected;
+	private District districtSelected;
 	
 	public Country getCountrySelected() {
 		return countrySelected;
@@ -460,7 +461,7 @@ public class ProspeccionBean {
 			return;
 		}
 		
-		if(prospectionNew.getDistrict()==null) {
+		if(districtSelected==null) {
 			mensajeERROR("Completar el lugar de prospección");
 			return;
 		}
@@ -471,6 +472,7 @@ public class ProspeccionBean {
 		prospectionNew.setDateRegister(new Date());
 		prospectionNew.setStatus("En seguimiento");
 		prospectionNew.setPorcentage(0);
+		prospectionNew.setDistrict(districtSelected);
 		Prospection nuevo= prospectionService.save(prospectionNew);
 		if(nuevo!=null) {
 			Prospect prospectActualiza = prospectionNew.getProspect();
@@ -1128,6 +1130,14 @@ public class ProspeccionBean {
 
 	public void setProvinceSelected(Province provinceSelected) {
 		this.provinceSelected = provinceSelected;
+	}
+
+	public District getDistrictSelected() {
+		return districtSelected;
+	}
+
+	public void setDistrictSelected(District districtSelected) {
+		this.districtSelected = districtSelected;
 	}
 
 	
