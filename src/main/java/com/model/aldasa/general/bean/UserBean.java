@@ -18,13 +18,16 @@ import org.springframework.web.servlet.support.RequestContext;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Profile;
 import com.model.aldasa.entity.Prospect;
+import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProfileService;
 import com.model.aldasa.service.ProspectService;
+import com.model.aldasa.service.ProspectionService;
 import com.model.aldasa.service.TeamService;
 import com.model.aldasa.service.UsuarioService;
+import com.model.aldasa.util.EstadoProspeccion;
 
 import javax.faces.convert.Converter;
 
@@ -47,6 +50,9 @@ public class UserBean{
 	
 	@Autowired
 	private ProspectService prospectService;
+	
+	@Autowired
+	private ProspectionService prospectionService;
 	
 	private List<Usuario> lstUsers;
 	private List<Person> lstPerson;
@@ -183,6 +189,14 @@ public class UserBean{
 					for (Prospect prospect:lstProspectAsesor) {
 						prospect.setPersonSupervisor(userSelected.getTeam().getPersonSupervisor());
 						prospectService.save(prospect);
+						
+						List<Prospection> lstProspection = prospectionService.findByProspect(prospect);
+						for (Prospection prospection:lstProspection) {
+							prospection.setStatus (EstadoProspeccion.TERMINADO.getName());
+							prospectionService.save(prospection);
+							
+						}
+						
 					}
 				}
 				
@@ -376,6 +390,14 @@ public class UserBean{
 
 	public void setProspectService(ProspectService prospectService) {
 		this.prospectService = prospectService;
+	}
+
+	public ProspectionService getProspectionService() {
+		return prospectionService;
+	}
+
+	public void setProspectionService(ProspectionService prospectionService) {
+		this.prospectionService = prospectionService;
 	}
 	
 	

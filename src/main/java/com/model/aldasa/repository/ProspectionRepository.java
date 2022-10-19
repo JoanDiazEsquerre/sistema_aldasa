@@ -17,6 +17,6 @@ public interface ProspectionRepository extends PagingAndSortingRepository<Prospe
 	Page<Prospection> findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(String originContact, String assessorSurname,Person personAssessor, String status, Pageable pageable);
 	Page<Prospection> findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(String originContact, String assessorSurname,Person personSupervisor, String status, Pageable pageable);
 	Prospection findByProspectAndStatus(Prospect prospect,String status);
-	
+	List<Prospection> findByProspect(Prospect prospect);
 
 }

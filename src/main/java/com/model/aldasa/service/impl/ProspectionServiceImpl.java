@@ -64,6 +64,12 @@ public class ProspectionServiceImpl implements ProspectionService {
 		return prospectionRepository.findByProspectAndStatus(prospect, status);
 	}
 
+	@Override
+	public List<Prospection> findByProspect(Prospect prospect) {
+		// TODO Auto-generated method stub
+		return prospectionRepository.findByProspect(prospect);
+	}
+
 	
 
 }
