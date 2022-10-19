@@ -482,7 +482,10 @@ public class ProspeccionBean {
 			
 			mensajeINFO("Se registró correctamente el prospecto \n"+ nuevo.getProspect().getPerson().getSurnames()+" "+ nuevo.getProspect().getPerson().getNames());
 			prospectionNew = new Prospection();
-			listarDepartamentos();
+			lstDepartment = new ArrayList<>();
+			lstProvince = new ArrayList<>();
+			lstDistrict = new ArrayList<>();
+			countrySelected=null;
 		}
 	}
 	
