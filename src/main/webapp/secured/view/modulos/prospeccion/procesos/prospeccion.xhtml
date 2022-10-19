@@ -140,7 +140,7 @@
 						</p:selectOneMenu>
 						
 						<h:outputLabel for="dist" value="Distrito: " />
-						<p:selectOneMenu style="margin:5px; width:220px" id="dist" value="#{prospeccionBean.prospectionNew.district}" converter="#{prospeccionBean.conversorDistrict}">
+						<p:selectOneMenu style="margin:5px; width:220px" id="dist" value="#{prospeccionBean.districtSelected}" converter="#{prospeccionBean.conversorDistrict}">
 							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
 							<f:selectItems value="#{prospeccionBean.lstDistrict}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro}"/>
 						</p:selectOneMenu>
