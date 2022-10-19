@@ -14,6 +14,5 @@ public interface ProjectService {
 	List<Project> findByStatus(boolean status);
 	Project findByName (String name);
 	Project findByNameException(String name, int idProject);
-	Optional<Project> findBy(Integer id);
 
 }

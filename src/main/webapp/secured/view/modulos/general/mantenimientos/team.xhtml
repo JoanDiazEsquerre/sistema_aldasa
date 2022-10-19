@@ -8,12 +8,13 @@
 
 
 	<h:form id="form">
-	<p:selectOneButton value="#{teamBean.estado}">
-		<f:selectItem itemLabel="Activos" itemValue="#{true}" />
-		<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
-		<p:ajax update=":form:idTableTeam"
-			listener="#{teamBean.listarTeam()}" />
-	</p:selectOneButton>      
+		<h2 style="color: #007d4c;">EQUIPOS</h2>
+		<p:selectOneButton value="#{teamBean.estado}">
+			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
+			<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
+			<p:ajax update=":form:idTableTeam"
+				listener="#{teamBean.listarTeam()}" />
+		</p:selectOneButton>      
 		<p:dataTable var="team" id="idTableTeam" value="#{teamBean.listTeam}" widgetVar="teamTable" rowIndexVar="row" paginator="true" rows="15" size="small"
 		emptyMessage="No se encontraron equipos."	paginatorPosition="bottom" rowKey="#{team.id}" selection="#{teamBean.teamSelected}" selectionMode="single">
 		<f:facet name="header">

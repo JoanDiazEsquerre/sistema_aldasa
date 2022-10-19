@@ -17,12 +17,6 @@ public class ProjectServiceImpl implements ProjectService {
 	private ProjectRepository projectRepository;
 	
 	@Override
-	public Optional<Project> findBy(Integer id) {
-		return projectRepository.findById(id);
-	}
-
-	
-	@Override
 	public Project save(Project entity) {
 		return projectRepository.save(entity);
 	}

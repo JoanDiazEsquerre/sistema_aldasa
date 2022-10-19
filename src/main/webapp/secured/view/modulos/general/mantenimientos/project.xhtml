@@ -8,12 +8,13 @@
 
 
 	<h:form id="form">
-	<p:selectOneButton value="#{projectBean.estado}">
-		<f:selectItem itemLabel="Activos" itemValue="#{true}" />
-		<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
-		<p:ajax update=":form:idTableProject"
-			listener="#{projectBean.listarProject()}" />
-	</p:selectOneButton>      
+		<h2 style="color: #007d4c;">PROYECTOS</h2>
+		<p:selectOneButton value="#{projectBean.estado}">
+			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
+			<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
+			<p:ajax update=":form:idTableProject"
+				listener="#{projectBean.listarProject()}" />
+		</p:selectOneButton>      
 		<p:dataTable var="project" id="idTableProject" value="#{projectBean.listProject}" widgetVar="projectTable" rowIndexVar="row" paginator="true" rows="15" size="small"
 		emptyMessage="No se encontraron proyectos."	paginatorPosition="bottom" rowKey="#{project.id}" selection="#{projectBean.projectSelected}" selectionMode="single">
 		<f:facet name="header">

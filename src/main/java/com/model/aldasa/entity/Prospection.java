@@ -21,33 +21,35 @@ public class Prospection {
 	
 	@ManyToOne
 	@JoinColumn(name="idprospect")
-	Prospect prospect;
+	private Prospect prospect;
 	
 	@ManyToOne
 	@JoinColumn(name="idpersonassessor")
-	Person personAssessor;
+	private Person personAssessor;
 	
 	@ManyToOne
 	@JoinColumn(name="idpersonsupervisor")
-	Person personSupervisor;
+	private Person personSupervisor;
 	
 	@Column(name="dateregister")
-	Date dateRegister;
+	private Date dateRegister;
 	
 	@Column(name="datestart")
-	Date dateStart;
+	private Date dateStart;
 	
 	@Column(name="origincontact")
-	String originContact;
+	private String originContact;
 	
-	String status,result;
-	int porcentage;
+	private String status,result;
+	private int porcentage;
 	
 	@ManyToOne
 	@JoinColumn(name="idproject")
-	Project project;
+	private Project project;
 
-	
+	@ManyToOne
+	@JoinColumn(name="iddistrict")
+	private District district;
 	
 	
 	public Integer getId() {
@@ -115,6 +117,12 @@ public class Prospection {
 	}
 	public void setResult(String result) {
 		this.result = result;
+	}
+	public District getDistrict() {
+		return district;
+	}
+	public void setDistrict(District district) {
+		this.district = district;
 	}
 	
 	

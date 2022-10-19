@@ -9,15 +9,12 @@
     	<f:event type="preRenderView" listener="#{prospectoBean.onPageLoad}"/>
     </f:metadata>
 
-	<h:form id="form">		
+	<h:form id="form">
+		<h2 style="color: #007d4c;">PROSPECTOS</h2>
 		<p:dataTable var="per" id="idTablePer" value="#{prospectoBean.lstProspectLazy}" widgetVar="personsTable" rowIndexVar="row" paginator="true" rows="15" size="small" 
 			emptyMessage="No se encontraron Personas." paginatorPosition="bottom" rowKey="#{per.id}" selection="#{prospectoBean.prospectSelected}" selectionMode="single"
 			lazy="true">
-			<f:facet name="header">
-				<div class="p-d-flex p-ai-center p-jc-between">
-					<span>Lista de Prospectos</span>
-				</div>
-			</f:facet>
+			
 			<p:ajax event="rowSelect" update=":formDialog :dialogPerson" listener="#{prospectoBean.updatePerson()}" oncomplete="PF('personNewDialog').show();" />
 
 			<p:column style="width:42px;text-align: left">

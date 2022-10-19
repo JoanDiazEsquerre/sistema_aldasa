@@ -28,19 +28,27 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.model.aldasa.entity.Action;
+import com.model.aldasa.entity.Country;
+import com.model.aldasa.entity.Department;
+import com.model.aldasa.entity.District;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.ProspectionDetail;
+import com.model.aldasa.entity.Province;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.ActionService;
+import com.model.aldasa.service.CountryService;
+import com.model.aldasa.service.DepartmentService;
+import com.model.aldasa.service.DistrictService;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.ProspectionDetailService;
 import com.model.aldasa.service.ProspectionService;
+import com.model.aldasa.service.ProvinceService;
 import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.Perfiles;
 
@@ -71,6 +79,18 @@ public class ProspeccionBean {
 	private ActionService actionService;
 	
 	@Autowired
+	private CountryService countryService;
+	
+	@Autowired
+	private DepartmentService departmentService;
+	
+	@Autowired
+	private ProvinceService provinceService;
+	
+	@Autowired
+	private DistrictService districtService;
+	
+	@Autowired
 	private ProspectService prospectService;
 	
 	private LazyDataModel<Prospection> lstProspectionLazy;
@@ -82,7 +102,18 @@ public class ProspeccionBean {
 	private ProspectionDetail prospectionDetailAgendaNew;
 	private Usuario usuarioLogin = new Usuario();
 	private Person personNew;
+	private Country countrySelected;
+	private Department departmentSelected;
+	private Province provinceSelected;
 	
+	public Country getCountrySelected() {
+		return countrySelected;
+	}
+
+	public void setCountrySelected(Country countrySelected) {
+		this.countrySelected = countrySelected;
+	}
+
 	private String status = "En seguimiento";
 	private String titleDialog,statusSelected, resultSelected;
 	private boolean mostrarBotonCambioEstado;
@@ -94,6 +125,10 @@ public class ProspeccionBean {
 	private List<ProspectionDetail> lstProspectionDetail = new ArrayList<>();
 	private List<ProspectionDetail> lstProspectionDetailAgenda = new ArrayList<>();
 	private List<Action> lstActions;
+	private List<Country> lstCountry;
+	private List<Department> lstDepartment;
+	private List<Province> lstProvince;
+	private List<District> lstDistrict;
 	
 	@PostConstruct
 	public void init() {
@@ -102,6 +137,7 @@ public class ProspeccionBean {
 		iniciarLazy();
 		listarProject();
 		listarActions();
+		listarPais();
 		
 		countriesGroup = new ArrayList<>();
         SelectItemGroup europeCountries = new SelectItemGroup("Redes Sociales");
@@ -124,6 +160,37 @@ public class ProspeccionBean {
 		listarPersonasAssessor();
 		listarProject();
 		listarActions();
+	}
+	
+	public void listarPais() {
+		lstCountry = (List<Country>) countryService.findAll();
+	}
+	
+	public void listarDepartamentos() {
+		lstDepartment = new ArrayList<>();
+		lstProvince = new ArrayList<>();
+		lstDistrict = new ArrayList<>();
+		
+		if(countrySelected !=null) {
+			lstDepartment = departmentService.findByCountry(countrySelected);
+		}
+	}
+	
+	public void listarProvincias() {
+		lstProvince = new ArrayList<>();
+		lstDistrict = new ArrayList<>();
+		
+		if(departmentSelected !=null) {
+			lstProvince = provinceService.findByDepartment(departmentSelected); 
+		}
+	}
+	
+	public void listarDistritos() {
+		lstDistrict = new ArrayList<>();
+		
+		if(provinceSelected!=null) {
+			lstDistrict = districtService.findByProvince(provinceSelected); 
+		}
 	}
 	
 	public void listarProspect() {		
@@ -393,6 +460,11 @@ public class ProspeccionBean {
 			return;
 		}
 		
+		if(prospectionNew.getDistrict()==null) {
+			mensajeERROR("Completar el lugar de prospección");
+			return;
+		}
+		
 		Usuario userAsesor = usuarioService.findByPerson(prospectionNew.getPersonAssessor());
 		
 		prospectionNew.setPersonSupervisor(userAsesor.getTeam().getPersonSupervisor());
@@ -408,6 +480,7 @@ public class ProspeccionBean {
 			
 			mensajeINFO("Se registró correctamente el prospecto \n"+ nuevo.getProspect().getPerson().getSurnames()+" "+ nuevo.getProspect().getPerson().getNames());
 			prospectionNew = new Prospection();
+			listarDepartamentos();
 		}
 	}
 	
@@ -585,6 +658,118 @@ public class ProspeccionBean {
                     return "";
                 } else {
                     return ((Project) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorCountry() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                    Country c = null;
+                    for (Country si : lstCountry) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Country) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorDepartment() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Department c = null;
+                    for (Department si : lstDepartment) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Department) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorProvince() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Province c = null;
+                    for (Province si : lstProvince) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Province) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorDistrict() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	District c = null;
+                    for (District si : lstDistrict) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((District) value).getId() + "";
                 }
             }
         };
@@ -863,6 +1048,86 @@ public class ProspeccionBean {
 
 	public void setResultSelected(String resultSelected) {
 		this.resultSelected = resultSelected;
+	}
+
+	public CountryService getCountryService() {
+		return countryService;
+	}
+
+	public void setCountryService(CountryService countryService) {
+		this.countryService = countryService;
+	}
+
+	public DepartmentService getDepartmentService() {
+		return departmentService;
+	}
+
+	public void setDepartmentService(DepartmentService departmentService) {
+		this.departmentService = departmentService;
+	}
+
+	public ProvinceService getProvinceService() {
+		return provinceService;
+	}
+
+	public void setProvinceService(ProvinceService provinceService) {
+		this.provinceService = provinceService;
+	}
+
+	public DistrictService getDistrictService() {
+		return districtService;
+	}
+
+	public void setDistrictService(DistrictService districtService) {
+		this.districtService = districtService;
+	}
+
+	public List<Country> getLstCountry() {
+		return lstCountry;
+	}
+
+	public void setLstCountry(List<Country> lstCountry) {
+		this.lstCountry = lstCountry;
+	}
+
+	public List<Department> getLstDepartment() {
+		return lstDepartment;
+	}
+
+	public void setLstDepartment(List<Department> lstDepartment) {
+		this.lstDepartment = lstDepartment;
+	}
+
+	public List<Province> getLstProvince() {
+		return lstProvince;
+	}
+
+	public void setLstProvince(List<Province> lstProvince) {
+		this.lstProvince = lstProvince;
+	}
+
+	public List<District> getLstDistrict() {
+		return lstDistrict;
+	}
+
+	public void setLstDistrict(List<District> lstDistrict) {
+		this.lstDistrict = lstDistrict;
+	}
+
+	public Department getDepartmentSelected() {
+		return departmentSelected;
+	}
+
+	public void setDepartmentSelected(Department departmentSelected) {
+		this.departmentSelected = departmentSelected;
+	}
+
+	public Province getProvinceSelected() {
+		return provinceSelected;
+	}
+
+	public void setProvinceSelected(Province provinceSelected) {
+		this.provinceSelected = provinceSelected;
 	}
 
 	

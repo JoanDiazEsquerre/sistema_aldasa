@@ -8,12 +8,13 @@
 
 
 	<h:form id="form">
-	<p:selectOneButton value="#{profileBean.estado}">
-		<f:selectItem itemLabel="Activos" itemValue="#{true}" />
-		<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
-		<p:ajax update=":form:idTableProfile"
-			listener="#{profileBean.listarProfiles()}" />
-	</p:selectOneButton>      
+		<h2 style="color: #007d4c;">PERFILES</h2>
+		<p:selectOneButton value="#{profileBean.estado}">
+			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
+			<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
+			<p:ajax update=":form:idTableProfile"
+				listener="#{profileBean.listarProfiles()}" />
+		</p:selectOneButton>      
 		<p:dataTable var="profile" id="idTableProfile" value="#{profileBean.listProfile}" widgetVar="profileTable" rowIndexVar="row" paginator="true" rows="15" size="small"
 		emptyMessage="No se encontraron perfiles."	paginatorPosition="bottom" rowKey="#{profile.id}" selection="#{profileBean.profileSelected}" selectionMode="single">
 		<f:facet name="header">

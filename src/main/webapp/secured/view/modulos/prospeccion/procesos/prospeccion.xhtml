@@ -11,6 +11,7 @@
     </f:metadata>
 
 	<h:form id="form">
+		<h2 style="color: #007d4c;">PROSPECCIÓN</h2>
 		<p:tabView id="tabView">
 			<p:tab title="Lista de Prospecciones">
 				<p:selectOneButton value="#{prospeccionBean.status}">
@@ -83,7 +84,7 @@
                         	<h:outputLabel value="#{pros.person.dni}" /> 
                         </p:column> 
                          
-                         <p:ajax event="keyup" update=":formDialog" />
+                         <p:ajax event="blur" update=":formDialog" />
                     </p:autoComplete>
                           
 					<p:commandLink action="#{prospeccionBean.newPerson()}" oncomplete="PF('personNewDialog').show();" title="NUEVO PROSPECTO" update=":formDialog"> 
@@ -118,24 +119,30 @@
 				<p:panel id="pnl" header="Lugar de Prospección" style="width:400px">
 					<h:panelGrid  columns="2"> 
 						<h:outputLabel for="pais" value="País: " />
-						<p:selectOneMenu style="margin:5px; width:220px" id="pais" value="#{prospeccionBean.prospectionNew.originContact}">
+						<p:selectOneMenu style="margin:5px; width:220px" id="pais" value="#{prospeccionBean.countrySelected}" converter="#{prospeccionBean.conversorCountry}">
 							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
-							
+							<f:selectItems value="#{prospeccionBean.lstCountry}" var="country" itemLabel="#{country.name}" itemValue="#{country}"/>
+							<p:ajax listener="#{prospeccionBean.listarDepartamentos}" update=":form:tabView:pnl" />
 						</p:selectOneMenu>
 						
 						<h:outputLabel for="dep" value="Departamento: " />
-						<p:selectOneMenu style="margin:5px; width:220px" id="dep" value="#{prospeccionBean.prospectionNew.originContact}">
+						<p:selectOneMenu style="margin:5px; width:220px" id="dep" value="#{prospeccionBean.departmentSelected}" converter="#{prospeccionBean.conversorDepartment}">
 							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+							<f:selectItems value="#{prospeccionBean.lstDepartment}" var="dep" itemLabel="#{dep.name}" itemValue="#{dep}"/>
+							<p:ajax listener="#{prospeccionBean.listarProvincias}" update=":form:tabView:pnl" />
 						</p:selectOneMenu>
 						
 						<h:outputLabel for="prov" value="Provincia: " />
-						<p:selectOneMenu style="margin:5px; width:220px" id="prov" value="#{prospeccionBean.prospectionNew.originContact}">
+						<p:selectOneMenu style="margin:5px; width:220px" id="prov" value="#{prospeccionBean.provinceSelected}" converter="#{prospeccionBean.conversorProvince}">
 							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+							<f:selectItems value="#{prospeccionBean.lstProvince}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro}"/>
+							<p:ajax listener="#{prospeccionBean.listarDistritos}" update=":form:tabView:pnl" />
 						</p:selectOneMenu>
 						
 						<h:outputLabel for="dist" value="Distrito: " />
-						<p:selectOneMenu style="margin:5px; width:220px" id="dist" value="#{prospeccionBean.prospectionNew.originContact}">
+						<p:selectOneMenu style="margin:5px; width:220px" id="dist" value="#{prospeccionBean.prospectionNew.district}" converter="#{prospeccionBean.conversorDistrict}">
 							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+							<f:selectItems value="#{prospeccionBean.lstDistrict}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro}"/>
 						</p:selectOneMenu>
 					</h:panelGrid>
 				</p:panel>
@@ -164,7 +171,7 @@
 						<p:datePicker value="#{prospeccionBean.prospectionDetailNew.date}" id="time" showTime="true" style="margin:5px" pattern="dd/MM/yyyy HH:mm a"> <p:ajax update=":formEvents:tabOpciones:messagesAction" /> </p:datePicker>
 						
 						<h:outputLabel value="Comentario: " />
-						<p:inputTextarea value="#{prospeccionBean.prospectionDetailNew.comment}" maxlength="200" rows="2" cols="50" style="margin:5px"> <p:ajax event="keyup" update=":formEvents:tabOpciones:messagesAction" /> </p:inputTextarea>
+						<p:inputTextarea value="#{prospeccionBean.prospectionDetailNew.comment}" maxlength="200" rows="2" cols="50" style="margin:5px"> <p:ajax event="blur" update=":formEvents:tabOpciones:messagesAction" /> </p:inputTextarea>
 											
 					</h:panelGrid>
 				
@@ -226,7 +233,7 @@
 						<p:datePicker value="#{prospeccionBean.prospectionDetailAgendaNew.date}" id="timeAg" showTime="true" style="margin:5px" pattern="dd/MM/yyyy HH:mm a"> <p:ajax update=":formEvents:tabOpciones:messagesAgenda" /> </p:datePicker>
 						
 						<h:outputLabel value="Comentario: " />
-						<p:inputTextarea value="#{prospeccionBean.prospectionDetailAgendaNew.comment}" maxlength="200" rows="2" cols="50" style="margin:5px"> <p:ajax event="keyup" update=":formEvents:tabOpciones:messagesAgenda" /> </p:inputTextarea>
+						<p:inputTextarea value="#{prospeccionBean.prospectionDetailAgendaNew.comment}" maxlength="200" rows="2" cols="50" style="margin:5px"> <p:ajax event="blur" update=":formEvents:tabOpciones:messagesAgenda" /> </p:inputTextarea>
 					</h:panelGrid>
 					
 					<p:commandButton value="Guardar" actionListener="#{prospeccionBean.saveActionScheduledProspection}" update=":formEvents:tabOpciones:gridAgendas :formEvents:tabOpciones:idTableDetAg :form:tabView:idTableProy" style="margin-top:10px"/>
@@ -305,14 +312,14 @@
 			<h:panelGrid id="grid" columns="4">
 				<h:outputLabel for="dni" value="DNI:" />
 				<p:inputText id="dni" value="#{prospeccionBean.personNew.dni}" style="margin:10px" maxlength="11"> 
-					<p:ajax event="keyup" listener="#{prospeccionBean.completar()}" update=":formDialog" /> 
+					<p:ajax event="blur" listener="#{prospeccionBean.completar()}" update=":formDialog" /> 
 				</p:inputText>
 
 				<h:outputLabel for="surname" value="Apellidos:" />
-				<p:inputText id="surname" value="#{prospeccionBean.personNew.surnames}" style="margin:10px" maxlength="45" > <p:ajax event="keyup" update=":formDialog" /> </p:inputText>
+				<p:inputText id="surname" value="#{prospeccionBean.personNew.surnames}" style="margin:10px" maxlength="45" > <p:ajax event="blur" update=":formDialog" /> </p:inputText>
 
 				<h:outputLabel for="name" value="Nombres:" />
-				<p:inputText id="name" value="#{prospeccionBean.personNew.names}" style="margin:10px" maxlength="45"  > <p:ajax event="keyup" update=":formDialog" /> </p:inputText>
+				<p:inputText id="name" value="#{prospeccionBean.personNew.names}" style="margin:10px" maxlength="45"  > <p:ajax event="blur" update=":formDialog" /> </p:inputText>
 
 				<h:outputLabel for="sexo" value="Sexo:" />
 				<p:selectOneMenu id="sexo" value="#{prospeccionBean.personNew.gender}" style="margin:10px">
@@ -321,13 +328,13 @@
 				</p:selectOneMenu>
 
 				<h:outputLabel for="address" value="Dirección:" />
-				<p:inputText id="address" value="#{prospeccionBean.personNew.address}" style="margin:10px" maxlength="60"  > <p:ajax event="keyup" update=":formDialog" /> </p:inputText>
+				<p:inputText id="address" value="#{prospeccionBean.personNew.address}" style="margin:10px" maxlength="60"  > <p:ajax event="blur" update=":formDialog" /> </p:inputText>
 
 				<h:outputLabel for="phone" value="Teléfono:" />
-				<p:inputText id="phone" value="#{prospeccionBean.personNew.phone}" style="margin:10px" maxlength="11" > <p:ajax event="keyup" update=":formDialog" /> </p:inputText>
+				<p:inputText id="phone" value="#{prospeccionBean.personNew.phone}" style="margin:10px" maxlength="11" > <p:ajax event="blur" update=":formDialog" /> </p:inputText>
 				
 				<h:outputLabel for="cellphone" value="Celular:" />
-				<p:inputText id="cellphone" value="#{prospeccionBean.personNew.cellphone}" style="margin:10px" maxlength="15" > <p:ajax event="keyup" update=":formDialog" /> </p:inputText>
+				<p:inputText id="cellphone" value="#{prospeccionBean.personNew.cellphone}" style="margin:10px" maxlength="15" > <p:ajax event="blur" update=":formDialog" /> </p:inputText>
 
 				<h:outputLabel for="option" value="Estado civil:" />
 				<p:selectOneMenu id="option" value="#{prospeccionBean.personNew.civilStatus}" style="margin:10px">

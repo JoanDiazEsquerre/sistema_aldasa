@@ -20,15 +20,15 @@ public class ProspectionDetail {
 	
 	@ManyToOne
 	@JoinColumn(name="idprospection")
-	Prospection prospection;
+	private Prospection prospection;
 	
 	@ManyToOne
 	@JoinColumn(name="idaction")
-	Action action;
+	private Action action;
 	
-	Date date;
-	String comment;
-	boolean scheduled;
+	private Date date;
+	private String comment;
+	private boolean scheduled;
 	
 	
 	public Integer getId() {

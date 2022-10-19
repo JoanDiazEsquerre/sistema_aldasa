@@ -144,7 +144,7 @@ public class UserBean{
 					return false;
 				}
 			}else {
-				Usuario buscaUsername = usuarioService.findByByPersonException(user.getPerson().getId(), user.getId());
+				Usuario buscaUsername = usuarioService.findByPersonException(user.getPerson().getId(), user.getId());
 				if(buscaUsername!=null ) {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La persona esta asignada en otro Usuario.."));
 					listarUsuarios();

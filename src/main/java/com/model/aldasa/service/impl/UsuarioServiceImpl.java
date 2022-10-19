@@ -53,8 +53,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 	
 	@Override
-	public Usuario findByByPersonException(int idPersona, int idUser) {
-		return usuarioRepository.findByByPersonException(idPersona, idUser);
+	public Usuario findByPersonException(int idPersona, int idUser) {
+		return usuarioRepository.findByPersonException(idPersona, idUser);
 	}
 	
 	@Override
