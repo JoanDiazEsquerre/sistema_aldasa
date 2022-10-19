@@ -70,6 +70,7 @@ public class ProspectoBean {
 	
 	public void onPageLoad(){
 		usuarioLogin = usuarioService.findByUsername(navegacionBean.getUsername());
+		iniciarLazy();
 	}
 	
 	public void iniciarLazy() {

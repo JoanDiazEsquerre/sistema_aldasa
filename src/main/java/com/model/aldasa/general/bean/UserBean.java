@@ -17,10 +17,12 @@ import org.springframework.web.servlet.support.RequestContext;
 
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Profile;
+import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProfileService;
+import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.TeamService;
 import com.model.aldasa.service.UsuarioService;
 
@@ -42,6 +44,9 @@ public class UserBean{
 	
 	@Autowired
 	private TeamService teamService; 
+	
+	@Autowired
+	private ProspectService prospectService;
 	
 	private List<Usuario> lstUsers;
 	private List<Person> lstPerson;
@@ -173,6 +178,16 @@ public class UserBean{
 				validaUsuario=false;
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se puede guardar."));
 			}else {
+				List<Prospect> lstProspectAsesor = prospectService.findByPersonAssessor(userSelected.getPerson());		
+				if(!lstProspectAsesor.isEmpty()) {
+					for (Prospect prospect:lstProspectAsesor) {
+						prospect.setPersonSupervisor(userSelected.getTeam().getPersonSupervisor());
+						prospectService.save(prospect);
+					}
+				}
+				
+				
+				
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente."));
 				listarUsuarios();
 				if(tituloDialog.equals("NUEVO USUARIO")) {
@@ -353,6 +368,14 @@ public class UserBean{
 
 	public void setTeamService(TeamService teamService) {
 		this.teamService = teamService;
+	}
+
+	public ProspectService getProspectService() {
+		return prospectService;
+	}
+
+	public void setProspectService(ProspectService prospectService) {
+		this.prospectService = prospectService;
 	}
 	
 	
