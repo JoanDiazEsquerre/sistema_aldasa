@@ -12,7 +12,7 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">AGENDA</h2>
-       	<p:schedule id="schedule" value="#{agendaBean.lazyEventModel}" widgetVar="myschedule" style="width:90%"  > 
+       	<p:schedule id="schedule" value="#{agendaBean.lazyEventModel}" widgetVar="myschedule"  > 
            	<p:ajax event="eventSelect" listener="#{agendaBean.onEventSelect}" update=":formDialog:eventDetails :scheduleDialog" oncomplete="PF('myscheduleDialog').show();" />
        	</p:schedule>
 
