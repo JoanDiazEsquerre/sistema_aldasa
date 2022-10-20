@@ -192,9 +192,10 @@ public class UserBean{
 						
 						List<Prospection> lstProspection = prospectionService.findByProspect(prospect);
 						for (Prospection prospection:lstProspection) {
-							prospection.setStatus (EstadoProspeccion.TERMINADO.getName());
-							prospectionService.save(prospection);
-							
+							if(prospection.getStatus().equals(EstadoProspeccion.EN_SEGUIMIENTO.getName())) {
+								prospection.setPersonSupervisor(userSelected.getTeam().getPersonSupervisor());
+								prospectionService.save(prospection);
+							}
 						}
 						
 					}

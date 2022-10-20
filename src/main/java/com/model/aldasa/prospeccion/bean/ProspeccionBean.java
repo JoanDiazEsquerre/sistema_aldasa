@@ -462,7 +462,7 @@ public class ProspeccionBean {
 		}
 		
 		if(districtSelected==null) {
-			mensajeERROR("Completar el lugar de prospección");
+			mensajeERROR("Completar Ciudad de Contacto");
 			return;
 		}
 		

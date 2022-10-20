@@ -22,10 +22,15 @@
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formDialog">
 			<h:panelGrid id="eventDetails" columns="2" cellpadding="7">
-                
-                <p:outputLabel for="prospect" value="Prospecto:" styleClass="font-bold"/>
+				<p:outputLabel for="prospect" value="Prospecto:" styleClass="font-bold"/>
                 <p:outputLabel id="prospect" value="#{agendaBean.prospectionDetailSelected.prospection.prospect.person.surnames} #{agendaBean.prospectionDetailSelected.prospection.prospect.person.names}"/>
 				
+				<p:outputLabel for="asesor" value="Asesor:" styleClass="font-bold"/>
+                <p:outputLabel id="asesor" value="#{agendaBean.prospectionDetailSelected.prospection.personAssessor.surnames} #{agendaBean.prospectionDetailSelected.prospection.personAssessor.names}"/>
+                
+                <p:outputLabel for="sup" value="Supervisor:" styleClass="font-bold"/>
+                <p:outputLabel id="sup" value="#{agendaBean.prospectionDetailSelected.prospection.personSupervisor.surnames} #{agendaBean.prospectionDetailSelected.prospection.personSupervisor.names}"/>
+                
 				<p:outputLabel for="date" value="Fecha y hora:" styleClass="font-bold"/>
                 <p:outputLabel id="date" value="#{agendaBean.prospectionDetailSelected.date}"/>
                 
