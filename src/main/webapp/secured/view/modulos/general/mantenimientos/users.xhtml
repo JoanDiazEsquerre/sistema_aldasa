@@ -67,7 +67,7 @@
                 <h:outputText value="#{user.profile.name}" />
             </p:column>
             <p:column headerText="Equipo" sortBy="#{user.team.name}" filterBy="#{user.team.name}" filterMatchMode="contains">
-                <h:outputText value="#{user.team.name} / #{user.team.personSupervisor.surnames} #{user.team.personSupervisor.names}" />
+                <h:outputText value="#{user.team.name}#{user.team eq null?'':' / '}#{user.team.personSupervisor.surnames} #{user.team.personSupervisor.names}" />
             </p:column>
             
         </p:dataTable>
@@ -99,6 +99,7 @@
                 
                 <h:outputLabel for="optionTeam" value="Equipo:" />
                 <p:selectOneMenu id="optionTeam" value="#{userBean.userSelected.team}" converter="#{userBean.conversorTeam}" style="margin:10px" >
+             	   <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
                     <f:selectItems value="#{userBean.lstTeam}" var="prof" itemLabel="#{prof.name} / #{prof.personSupervisor.surnames} #{prof.personSupervisor.names}" itemValue="#{prof}"/>
                 </p:selectOneMenu>
                 

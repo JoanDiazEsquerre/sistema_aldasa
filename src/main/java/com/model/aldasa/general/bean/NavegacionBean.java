@@ -73,6 +73,10 @@ public class NavegacionBean {
         ruta = "modulos/general/mantenimientos/team.xhtml";
     }
 	
+	public void getMantenimientoPasswordchangePage() {
+        ruta = "modulos/general/mantenimientos/passwordchange.xhtml";
+    }
+	
 	
 	public void onPageLoad(){
 		usuarioLogin = usuarioService.findByUsername(getUsername());
