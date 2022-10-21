@@ -36,7 +36,6 @@ public class PasswordchangeBean {
 	}
 	
 	public void onPageLoad(){
-
 		usuarioLogin = navegacionBean.getUsuarioLogin();
 		
 	}
@@ -44,9 +43,6 @@ public class PasswordchangeBean {
 	public void save() {
 		 Usuario usuario = usuarioService.findByUsername(usuarioLogin.getUsername());
 		 
-		
-		
-		
 		if (passActual.equals("") || passActual==null) {
 			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar contraseña actual."));
 			return;
@@ -72,8 +68,11 @@ public class PasswordchangeBean {
 		usuario.setPassword(passNueva);
 		usuarioService.save(usuario);
 		FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO, "Confirmacion", "Se guardo correctamente la contraseña."));
+		passActual="";
+		passNueva="";
+		passConfNueva="";
 	}
-
+	
 	public String getPassActual() {
 		return passActual;
 	}
