@@ -55,6 +55,11 @@ public class NavegacionBean {
 		
 	}
 	
+	public void onPageLoadInit() {
+		ruta = "modulos/general/mantenimientos/inicio.xhtml";
+		
+	}
+	
 	public void onPageLoad(){
 		usuarioLogin = usuarioService.findByUsername(getUsername());
 		permisoPantallas();

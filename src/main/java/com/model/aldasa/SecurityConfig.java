@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          .formLogin()
          .defaultSuccessUrl("/secured/view/home.xhtml").successForwardUrl("/secured/view/home.xhtml")
          .and()
-         .logout().logoutSuccessUrl("/login").invalidateHttpSession(true).deleteCookies("JSESSIONID").logoutUrl("/logout")
+         .logout().logoutSuccessUrl("/index.xhtml").invalidateHttpSession(true).deleteCookies("JSESSIONID").logoutUrl("/logout")
          .and()
          //.exceptionHandling().accessDeniedPage("/error.xhtml")
          //.and()
