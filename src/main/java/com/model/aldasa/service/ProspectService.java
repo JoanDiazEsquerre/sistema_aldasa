@@ -16,9 +16,9 @@ public interface ProspectService {
 	Prospect save(Prospect entity);
 	
 	void delete(Prospect entity);
-	Page<Prospect> findAllByPersonDniLikeAndPersonAssessor(String dni,Person assessor,Pageable pageable);
-	Page<Prospect> findAllByPersonDniLikeAndPersonSupervisor(String dni,Person supervisor,Pageable pageable);
-	Page<Prospect> findAllByPersonDniLike(String dni , Pageable pageable);
+	Page<Prospect> findByPersonSurnamesLikeAndPersonDniLikeAndPersonAssessor(String surnamesPerson, String dni,Person assessor,Pageable pageable);
+	Page<Prospect> findByPersonAssessorSurnamesLikeAndPersonSurnamesLikeAndPersonDniLikeAndPersonSupervisor(String surnamesAssessor, String surnamesPerson, String dni,Person supervisor,Pageable pageable);
+	Page<Prospect> findByPersonSupervisorSurnamesLikeAndPersonAssessorSurnamesLikeAndPersonSurnamesLikeAndPersonDniLike(String surnamesSupervisor, String surnamesAssessor, String surnamesPerson, String dni , Pageable pageable);
 
 	Prospect findByPerson(Person entity);
 	

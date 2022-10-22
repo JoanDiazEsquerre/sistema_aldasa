@@ -404,7 +404,12 @@ public class ProspeccionBean {
 				//Aqui capturo cada filtro(Si en caso existe), le pongo % al principiio y al final y reemplazo los espacios por %, para hacer el LIKE
 				//Si debageas aqui te vas a dar cuenta como lo captura
 				String originContact="%"+ (filterBy.get("originContact")!=null?filterBy.get("originContact").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
-				String assessor="%"+ (filterBy.get("assessor.surnames")!=null?filterBy.get("assessor.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String assessor="%"+ (filterBy.get("personAssessor.surnames")!=null?filterBy.get("personAssessor.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String dniProspecto="%"+ (filterBy.get("prospect.person.dni")!=null?filterBy.get("prospect.person.dni").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String surnamesProspecto="%"+ (filterBy.get("prospect.person.surnames")!=null?filterBy.get("prospect.person.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String surnamesAsesor="%"+ (filterBy.get("personAssessor.surnames")!=null?filterBy.get("personAssessor.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String surnamesSupervisor="%"+ (filterBy.get("personSupervisor.surnames")!=null?filterBy.get("personSupervisor.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+
 				
 				Pageable pageable = PageRequest.of(first/pageSize, pageSize);
 				//Aqui llamo al servicio que a  su vez llama al repositorio que contiene la sentencia LIKE, 
@@ -414,11 +419,11 @@ public class ProspeccionBean {
 				
 				
 				if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
-					pageProspection= prospectionService.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(originContact,assessor, status, pageable);
+					pageProspection= prospectionService.findAllByPersonSupervisorSurnamesLikeAndPersonAssessorSurnamesLikeAndProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(surnamesSupervisor, surnamesAsesor, surnamesProspecto, dniProspecto, originContact,assessor, status, pageable);
 				} else if (usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
-					pageProspection= prospectionService.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(originContact,assessor,usuarioLogin.getPerson(), status, pageable);
+					pageProspection= prospectionService.findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(surnamesProspecto, dniProspecto, originContact,assessor,usuarioLogin.getPerson(), status, pageable);
 				} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
-					pageProspection= prospectionService.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(originContact,assessor,usuarioLogin.getPerson(), status, pageable);
+					pageProspection= prospectionService.findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(surnamesProspecto, dniProspecto, originContact,assessor,usuarioLogin.getPerson(), status, pageable);
 				}
 				
 				setRowCount((int) pageProspection.getTotalElements());

@@ -36,18 +36,18 @@ public class ProspectServiceImpl implements ProspectService{
 	}
 
 	@Override
-	public Page<Prospect> findAllByPersonDniLikeAndPersonAssessor(String dni,Person assessor,Pageable pageable) {
-		return prospectRepository.findAllByPersonDniLikeAndPersonAssessor(dni,assessor,pageable); 
+	public Page<Prospect> findByPersonSurnamesLikeAndPersonDniLikeAndPersonAssessor(String surnamesPerson, String dni,Person assessor,Pageable pageable) {
+		return prospectRepository.findByPersonSurnamesLikeAndPersonDniLikeAndPersonAssessor(surnamesPerson, dni,assessor,pageable); 
 	}
 	
 	@Override
-	public Page<Prospect> findAllByPersonDniLikeAndPersonSupervisor(String dni,Person supervisor,Pageable pageable) {
-		return prospectRepository.findAllByPersonDniLikeAndPersonSupervisor(dni, supervisor,pageable); 
+	public Page<Prospect> findByPersonAssessorSurnamesLikeAndPersonSurnamesLikeAndPersonDniLikeAndPersonSupervisor(String surnamesAssessor, String surnamesPerson, String dni,Person supervisor,Pageable pageable) {
+		return prospectRepository.findByPersonAssessorSurnamesLikeAndPersonSurnamesLikeAndPersonDniLikeAndPersonSupervisor(surnamesAssessor, surnamesPerson, dni, supervisor,pageable); 
 	}
 
 	@Override
-	public Page<Prospect> findAllByPersonDniLike(String dni, Pageable pageable) {
-		return prospectRepository.findAllByPersonDniLike(dni, pageable);
+	public Page<Prospect> findByPersonSupervisorSurnamesLikeAndPersonAssessorSurnamesLikeAndPersonSurnamesLikeAndPersonDniLike(String surnamesSupervisor, String surnamesAssessor, String surnamesPerson, String dni, Pageable pageable) {
+		return prospectRepository.findByPersonSupervisorSurnamesLikeAndPersonAssessorSurnamesLikeAndPersonSurnamesLikeAndPersonDniLike(surnamesSupervisor, surnamesAssessor, surnamesPerson, dni, pageable);
 	}
 
 	@Override

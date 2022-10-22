@@ -41,22 +41,21 @@ public class ProspectionServiceImpl implements ProspectionService {
 	}
 
 	@Override
-	public Page<Prospection> findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(String originContact, String assessorSurname, String status, Pageable pageable) {
-		return prospectionRepository.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(originContact,assessorSurname, status, pageable);
+	public Page<Prospection> findAllByPersonSupervisorSurnamesLikeAndPersonAssessorSurnamesLikeAndProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(String surnamesPersonSupervisor, String surnamesPersonAssessor, String surnamesProspect, String dniProspect, String originContact, String assessorSurname, String status, Pageable pageable) {
+		return prospectionRepository.findAllByPersonSupervisorSurnamesLikeAndPersonAssessorSurnamesLikeAndProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(surnamesPersonSupervisor, surnamesPersonAssessor, surnamesProspect, dniProspect, originContact,assessorSurname, status, pageable);
 	}
 	
 	@Override
-	public Page<Prospection> findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(
-			String originContact, String assessorSurname, Person personAssessor, String status, Pageable pageable) {
+	public Page<Prospection> findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(String surnamesProspect, String dniProspecto, String originContact, String assessorSurname, Person personAssessor, String status, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return prospectionRepository.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(originContact, assessorSurname, personAssessor, status, pageable);
+		return prospectionRepository.findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(surnamesProspect, dniProspecto, originContact, assessorSurname, personAssessor, status, pageable);
 	}
 
 	@Override
-	public Page<Prospection> findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(
-			String originContact, String assessorSurname, Person personSupervisor, String status, Pageable pageable) {
+	public Page<Prospection> findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(
+			String surnamesProspecto, String dniProspecto, String originContact, String assessorSurname, Person personSupervisor, String status, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return prospectionRepository.findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(originContact, assessorSurname, personSupervisor, status, pageable);
+		return prospectionRepository.findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(surnamesProspecto, dniProspecto, originContact, assessorSurname, personSupervisor, status, pageable);
 	}
 	
 	@Override

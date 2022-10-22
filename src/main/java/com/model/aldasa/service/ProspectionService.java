@@ -16,9 +16,9 @@ public interface ProspectionService {
 	Prospection save(Prospection prospection);
 	void delete(Prospection prospection);
 	List<Prospection> findByStatus(String status);
-	Page<Prospection> findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(String originContact, String assessorSurname, String status, Pageable pageable);
-	Page<Prospection> findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(String originContact, String assessorSurname,Person personAssessor, String status, Pageable pageable);
-	Page<Prospection> findAllByOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(String originContact, String assessorSurname,Person personSupervisor, String status, Pageable pageable);
+	Page<Prospection> findAllByPersonSupervisorSurnamesLikeAndPersonAssessorSurnamesLikeAndProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(String surnamesPersonSupervisor, String surnamesPersonAssessor, String surnamesProspect, String dniProspect, String originContact, String assessorSurname, String status, Pageable pageable);
+	Page<Prospection> findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(String surnamesProspect, String dniProspect, String originContact, String assessorSurname,Person personAssessor, String status, Pageable pageable);
+	Page<Prospection> findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(String surnamesProspect, String dniProspecto, String originContact, String assessorSurname,Person personSupervisor, String status, Pageable pageable);
 	Prospection findByProspectAndStatus(Prospect prospect,String status);
 	List<Prospection> findByProspect(Prospect prospect);
 
