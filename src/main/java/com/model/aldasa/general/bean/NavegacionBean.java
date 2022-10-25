@@ -34,12 +34,13 @@ public class NavegacionBean {
 	private int idAsesor = Perfiles.ASESOR.getId();
 	
 	private boolean menuProspeccion, menuMantenimiento,menuReporte;
-	private boolean subMenuProspectos, subMenuProspeccion,subMenuAgenda,subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
+	private boolean subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
 					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones;
 	
 	private int[] permisoProspectos= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoProspeccion= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoAgenda= {idAdministrador,idSupervisor,idAsesor};
+	private int[] permisoSimulador= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoPersonas= {idAdministrador};
 	private int[] permisoUsuarios= {idAdministrador};
 	private int[] permisoPerfiles= {idAdministrador};
@@ -74,8 +75,9 @@ public class NavegacionBean {
 		subMenuProspectos = validaPermiso(permisoProspectos);
 		subMenuProspeccion= validaPermiso(permisoProspeccion);
 		subMenuAgenda= validaPermiso(permisoAgenda);
+		subMenuSimulador= validaPermiso(permisoSimulador);
 		
-		if(subMenuProspectos || subMenuProspeccion || subMenuAgenda) {
+		if(subMenuProspectos || subMenuProspeccion || subMenuAgenda || subMenuSimulador) {
 			menuProspeccion=true;
 		}
 		
@@ -120,6 +122,10 @@ public class NavegacionBean {
        ruta="modulos/prospeccion/procesos/prospeccion.xhtml";
     }
 	
+	public void getProcesoSimuladorPage() {
+	       ruta="modulos/prospeccion/procesos/simulador.xhtml";
+	    }
+	
 	public void getProcesoAgendaPage() {
        ruta="modulos/prospeccion/procesos/agenda.xhtml";
 
@@ -155,8 +161,6 @@ public class NavegacionBean {
 	public void getMantenimientoPasswordchangePage() {
         ruta = "modulos/general/mantenimientos/passwordchange.xhtml";
     }
-	
-	
 	
 	
 	
@@ -410,6 +414,14 @@ public class NavegacionBean {
 
 	public void setPermisoReporteAcciones(int[] permisoReporteAcciones) {
 		this.permisoReporteAcciones = permisoReporteAcciones;
+	}
+
+	public boolean isSubMenuSimulador() {
+		return subMenuSimulador;
+	}
+
+	public void setSubMenuSimulador(boolean subMenuSimulador) {
+		this.subMenuSimulador = subMenuSimulador;
 	}
 
 

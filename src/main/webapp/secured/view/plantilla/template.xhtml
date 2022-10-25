@@ -49,6 +49,8 @@
 			                <p:menuitem value="Prospectos" icon="pi pi-users" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProspectosPage()}" rendered="#{navegacionBean.subMenuProspectos}"/> 
 							<p:menuitem value="Prospección" icon="pi pi-book" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoProspeccionPage()}" rendered="#{navegacionBean.subMenuProspeccion}" />
 							<p:menuitem value="Agenda" icon="pi pi-calendar" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoAgendaPage()}" rendered="#{navegacionBean.subMenuAgenda}"/>
+							<p:menuitem value="Simulador de cuotas" icon="pi pi-dollar" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoSimuladorPage()}" rendered="#{navegacionBean.subMenuSimulador}"/>
+							
 			            </p:submenu>
 						<p:submenu label="Mantenimientos" rendered="#{navegacionBean.menuMantenimiento}">
 							<p:menuitem value="Personas" ajax="false" icon="pi pi-user-plus" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPersonasPage()}"  rendered="#{navegacionBean.subMenuPersonas}"/>						
