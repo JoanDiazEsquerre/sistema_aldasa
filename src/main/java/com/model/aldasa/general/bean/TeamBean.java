@@ -42,6 +42,9 @@ public class TeamBean {
 	
 	@PostConstruct
 	public void init() {
+	
+	}
+	public void onPageLoad () {
 		listarTeam();
 		listarPersonas();
 	}
