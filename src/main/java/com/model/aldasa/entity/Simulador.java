@@ -2,16 +2,17 @@ package com.model.aldasa.entity;
 
 public class Simulador {
 
-	private int nroCuota;
+	private String nroCuota;
 	private Double inicial, cuotaSI, interes, cuotaTotal;
 	
 	
 	
 	
-	public int getNroCuota() {
+	
+	public String getNroCuota() {
 		return nroCuota;
 	}
-	public void setNroCuota(int nroCuota) {
+	public void setNroCuota(String nroCuota) {
 		this.nroCuota = nroCuota;
 	}
 	public Double getInicial() {

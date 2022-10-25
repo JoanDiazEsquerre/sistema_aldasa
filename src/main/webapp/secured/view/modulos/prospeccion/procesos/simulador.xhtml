@@ -1,4 +1,3 @@
-
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
@@ -15,7 +14,7 @@
 
 		<h:panelGrid id="grid" columns="4">
 			<h:outputLabel for="montoTotal" value="Monto total: " />
-			<p:inputNumber id="montoTotal" style="margin:5px; width:220px" value="#{simuladorBean.montoTotal}" modifyValueOnWheel="false">
+			<p:inputNumber id="montoTotal" style="margin:10px; width:220px" value="#{simuladorBean.montoTotal}" modifyValueOnWheel="false" >
 				<p:ajax listener="#{simuladorBean.calcularMontoDeuda}" update=":form:grid" />
 			</p:inputNumber>
 			
@@ -23,15 +22,15 @@
 			<h:outputLabel id="montoDeuda"  value="#{simuladorBean.textoDeuda}" />
 						
 			<h:outputLabel for="montoInicial" value="Monto inicial: " />
-			<p:inputNumber id="montoInicial" style="margin:5px; width:220px" value="#{simuladorBean.montoInicial}" modifyValueOnWheel="false" >
+			<p:inputNumber id="montoInicial" style="margin:10px; width:220px" value="#{simuladorBean.montoInicial}" modifyValueOnWheel="false" >
 				<p:ajax listener="#{simuladorBean.calcularMontoDeuda}" update=":form:grid" />
 			</p:inputNumber>
 			
 			<h:outputLabel for="interes" value="Interés: " />
 			<h:outputLabel id="interes"  value="#{simuladorBean.porcentaje}%" />
      		
-     		<h:outputLabel for="numeroCuotas" value="N° Cuotas: " />
-   			<p:selectOneMenu style="margin:5px; width:220px" id="orgCont" value="#{simuladorBean.numeroCuotas}">
+     		<h:outputLabel for="cuotas" value="N° Cuotas: " />
+   			<p:selectOneMenu  style="margin:10px; width:220px" id="cuotas" value="#{simuladorBean.numeroCuotas}">
 				<f:selectItem itemLabel="6 meses" itemValue="#{6}"/>
 				<f:selectItem itemLabel="12 meses" itemValue="#{12}"/>
 				<f:selectItem itemLabel="18 meses" itemValue="#{18}"/>
@@ -47,30 +46,34 @@
 		
 		<p:commandButton value="Simular" actionListener="#{simuladorBean.simularCuotas()}" update="form:idTableSimulador" />
 		
-		<p:dataTable var="simulador" id="idTableSimulador" emptyMessage="Vacío." value="#{simuladorBean.lstSimulador}" widgetVar="personsTable" rowIndexVar="row" size="small">
+		<p:dataTable var="simulador" id="idTableSimulador" emptyMessage="Vacío." style="margin:20px" value="#{simuladorBean.lstSimulador}" widgetVar="personsTable" rowIndexVar="row" size="small">
 		
-			<p:column headerText="Nro." style="width:25px;">
-                            		#{(row-1) +1}
-                       			</p:column>
-
-			<p:column headerText="N° de cuota">
+			<p:column headerText="Nro. Cuota">
 				<h:outputText value="#{simulador.nroCuota}" />
 			</p:column>
 			
 			<p:column headerText="Inicial">
-				<h:outputText value="#{simulador.inicial}" />
+				<h:outputText value="#{simulador.inicial}">
+	                <f:convertNumber type="currency" currencySymbol="S/"/>
+	            </h:outputText>
 			</p:column>
 			
 			<p:column headerText="Cuota S.I">
-				<h:outputText value="#{simulador.cuotaSI}" />
+				<h:outputText value="#{simulador.cuotaSI}">
+	                <f:convertNumber type="currency" currencySymbol="S/"/>
+	            </h:outputText>
 			</p:column>
 			
-			<p:column headerText="Interes">
-				<h:outputText value="#{simulador.interes}" />
+			<p:column headerText="Interés">
+				<h:outputText value="#{simulador.interes}">
+	                <f:convertNumber type="currency" currencySymbol="S/"/>
+	            </h:outputText>
 			</p:column>
 			
 			<p:column headerText="Cuota total">
-				<h:outputText value="#{simulador.cuotaTotal}" />
+				<h:outputText value="#{simulador.cuotaTotal}">
+	                <f:convertNumber type="currency" currencySymbol="S/"/>
+	            </h:outputText>
 			</p:column>
 
 		</p:dataTable>

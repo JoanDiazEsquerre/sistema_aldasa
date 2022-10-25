@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Named;
 
+import org.primefaces.PrimeFaces;
 import org.springframework.stereotype.Component;
 
 import com.model.aldasa.entity.Simulador;
@@ -18,7 +20,7 @@ import com.model.aldasa.entity.Simulador;
 @SessionScoped
 public class SimuladorBean {
 	
-	private Double montoTotal;
+	private Double montoTotal,montoInteres;
 	private Double montoInicial;
 	private Double montoDeuda=0.0;
 	private Integer numeroCuotas;
@@ -76,14 +78,111 @@ public class SimuladorBean {
 	public void simularCuotas () {
 		lstSimulador.clear();
 		
+		if(montoTotal==null) {
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingrese el monto total");
+			PrimeFaces.current().dialog().showMessageDynamic(message);
+			return;
+		}
+		
+		if(montoTotal==null) {
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingrese el monto inicial");
+			PrimeFaces.current().dialog().showMessageDynamic(message);
+			return;
+		}
+		
+		if(montoInicial >= montoTotal) {
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El monto inicial tiene que ser menor al monto total");
+			PrimeFaces.current().dialog().showMessageDynamic(message);
+			return;
+		}
+		
+		
 		Simulador filaInicio = new Simulador();
-		filaInicio.setNroCuota(0) ;
+		filaInicio.setNroCuota("0");
 		filaInicio.setInicial(montoInicial);
 		filaInicio.setCuotaSI(0.0);
 		filaInicio.setInteres(0.0);
 		filaInicio.setCuotaTotal(0.0);
-		
 		lstSimulador.add(filaInicio);
+		
+		if(porcentaje==0) {
+			montoInteres=0.0;
+			
+			double cuota = montoDeuda / numeroCuotas;
+			
+			for(int i=0; i<numeroCuotas;i++) {
+				Simulador filaCouta = new Simulador();
+				filaCouta.setNroCuota((i+1)+"");
+				filaCouta.setInicial(0.0);
+				filaCouta.setCuotaSI(cuota);
+				filaCouta.setInteres(0.0);
+				filaCouta.setCuotaTotal(cuota);
+				lstSimulador.add(filaCouta);
+			}
+			
+			Simulador filaTotal = new Simulador();
+			filaTotal.setNroCuota("TOTAL");
+			filaTotal.setInicial(montoInicial);
+			filaTotal.setCuotaSI(montoDeuda);
+			filaTotal.setInteres(0.0);
+			filaTotal.setCuotaTotal(montoDeuda);
+			lstSimulador.add(filaTotal);
+			
+		}else {
+			double sumaTotal=0.0;
+			
+			double porc=porcentaje;
+			double porcMin= (porc/100);
+			montoInteres = montoDeuda*porcMin;
+			
+			double cuota = montoDeuda / numeroCuotas;
+			double sumaItems=0.0;
+			double sumaInteresItem=0.0;
+			List<Simulador> listaPrevia = new ArrayList<>();
+			for(int i=0; i<numeroCuotas-1;i++) {
+				Simulador filaCouta = new Simulador();
+				filaCouta.setNroCuota((i+2)+"");
+				filaCouta.setInicial(0.0);
+				filaCouta.setCuotaSI((double)Math.round(cuota));
+				filaCouta.setInteres((double)Math.round(montoInteres/numeroCuotas));
+				filaCouta.setCuotaTotal(filaCouta.getCuotaSI()+filaCouta.getInteres());
+				listaPrevia.add(filaCouta);
+				
+				sumaItems = sumaItems + filaCouta.getCuotaSI();
+				sumaInteresItem = sumaInteresItem+filaCouta.getInteres();
+				sumaTotal=sumaTotal+filaCouta.getCuotaTotal();
+			}
+			
+			Simulador filaPrimeraCuota = new Simulador();
+			filaPrimeraCuota.setNroCuota("1");
+			filaPrimeraCuota.setInicial(0.0);
+			filaPrimeraCuota.setCuotaSI(montoDeuda-sumaItems);
+			filaPrimeraCuota.setInteres(montoInteres-sumaInteresItem);
+			filaPrimeraCuota.setCuotaTotal(filaPrimeraCuota.getCuotaSI()+filaPrimeraCuota.getInteres());
+			sumaTotal=sumaTotal+filaPrimeraCuota.getCuotaTotal();
+			lstSimulador.add(filaPrimeraCuota);
+			
+			double sumaCuotaSI=0.0;
+			for(Simulador sim:listaPrevia) {
+				lstSimulador.add(sim);
+			}
+			
+			Simulador filaTotal = new Simulador();
+			filaTotal.setNroCuota("TOTAL");
+			filaTotal.setInicial(montoInicial);
+			filaTotal.setCuotaSI(sumaItems+filaPrimeraCuota.getCuotaSI());
+			filaTotal.setInteres(montoInteres);
+			filaTotal.setCuotaTotal(sumaTotal);
+			lstSimulador.add(filaTotal);
+			
+		}
+		
+		
+		
+		
+		
+		
+		
 		
 	}
 
