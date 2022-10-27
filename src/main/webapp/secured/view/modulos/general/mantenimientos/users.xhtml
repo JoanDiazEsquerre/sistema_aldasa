@@ -65,7 +65,7 @@
             <p:column headerText="Perfil" sortBy="#{user.profile.name}" filterBy="#{user.profile.name}" filterMatchMode="contains">
                 <h:outputText value="#{user.profile.name}" />
             </p:column>
-            <p:column headerText="Equipo" sortBy="#{user.team.name}" filterBy="#{user.team.name}" filterMatchMode="contains">
+            <p:column headerText="Equipo" sortBy="#{user.team.name}" filterMatchMode="contains">
                 <h:outputText value="#{user.team.name}#{user.team eq null?'':' / '}#{user.team.personSupervisor.surnames} #{user.team.personSupervisor.names}" />
             </p:column>
             

@@ -75,9 +75,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
-	public Page<Usuario> findByUsernameLikeAndStatus(String username, boolean status, Pageable pageable) {
-		return usuarioRepository.findByUsernameLikeAndStatus(username, status, pageable); 
-	}
+    public Page<Usuario> findByProfileNameLikeAndPersonSurnamesLikeAndPasswordLikeAndUsernameLikeAndStatus(String profileName,String personSurnames, String password, String username, boolean status, Pageable pageable) {
+        return usuarioRepository.findByProfileNameLikeAndPersonSurnamesLikeAndPasswordLikeAndUsernameLikeAndStatus(profileName,personSurnames, password, username, status, pageable);
+    }
 	
 
 }

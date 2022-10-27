@@ -35,7 +35,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
     List<Usuario> findByProfileIdAndStatus(Integer idProfile,boolean status);
     List<Usuario> findByTeamPersonSupervisorAndStatus(Person personSupervisor, boolean status);
     
-    Page<Usuario> findByUsernameLikeAndStatus(String username, boolean status, Pageable pageable);
+    Page<Usuario> findByProfileNameLikeAndPersonSurnamesLikeAndPasswordLikeAndUsernameLikeAndStatus(String profileName, String personSurnames, String password, String username, boolean status, Pageable pageable);
 	
 	
 }

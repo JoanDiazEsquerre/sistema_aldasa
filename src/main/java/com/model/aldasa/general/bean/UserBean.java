@@ -1,6 +1,5 @@
 package com.model.aldasa.general.bean;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -125,25 +124,26 @@ public class UserBean{
 
 			@Override
 			public List<Usuario> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-				//Aqui capturo cada filtro(Si en caso existe), le pongo % al principiio y al final y reemplazo los espacios por %, para hacer el LIKE
-				//Si debageas aqui te vas a dar cuenta como lo captura
-				
-				String username="%"+ (filterBy.get("username")!=null?filterBy.get("username").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
-//				
-
-				
-				Pageable pageable = PageRequest.of(first/pageSize, pageSize);
-				//Aqui llamo al servicio que a  su vez llama al repositorio que contiene la sentencia LIKE, 
-				//Aqui tu tienes que completar la query, yo solo lo he hecho para dni y nombre a modo de ejemplo
-				//Tu deberias preparar el metodo para cada filtro que tengas en la tabla
-				Page<Usuario> pageUsuario=null;
-				
-				
-				pageUsuario= usuarioService.findByUsernameLikeAndStatus(username, estado, pageable);
-				
-				setRowCount((int) pageUsuario.getTotalElements());
-				return datasource = pageUsuario.getContent();
-			}
+                //Aqui capturo cada filtro(Si en caso existe), le pongo % al principiio y al final y reemplazo los espacios por %, para hacer el LIKE
+                //Si debageas aqui te vas a dar cuenta como lo captura
+                
+                String username="%"+ (filterBy.get("username")!=null?filterBy.get("username").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+                String password="%"+ (filterBy.get("password")!=null?filterBy.get("password").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+                String personSurnames="%"+ (filterBy.get("person.surnames")!=null?filterBy.get("person.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+                String profileName="%"+ (filterBy.get("profile.name")!=null?filterBy.get("profile.name").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+//                
+                Pageable pageable = PageRequest.of(first/pageSize, pageSize);
+                //Aqui llamo al servicio que a  su vez llama al repositorio que contiene la sentencia LIKE,
+                //Aqui tu tienes que completar la query, yo solo lo he hecho para dni y nombre a modo de ejemplo
+                //Tu deberias preparar el metodo para cada filtro que tengas en la tabla
+                Page<Usuario> pageUsuario=null;
+                
+                
+                pageUsuario= usuarioService.findByProfileNameLikeAndPersonSurnamesLikeAndPasswordLikeAndUsernameLikeAndStatus(profileName, personSurnames, password, username, estado, pageable);
+                
+                setRowCount((int) pageUsuario.getTotalElements());
+                return datasource = pageUsuario.getContent();
+            }
 		};
 	}
 	
@@ -242,6 +242,8 @@ public class UserBean{
 				validaUsuario=false;
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se puede guardar."));
 			}else {
+				
+				
 				List<Prospect> lstProspectAsesor = prospectService.findByPersonAssessor(usu.getPerson());		
 				if(!lstProspectAsesor.isEmpty()) {
 					for (Prospect prospect:lstProspectAsesor) {
