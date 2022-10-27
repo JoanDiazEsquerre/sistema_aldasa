@@ -96,6 +96,12 @@ public class SimuladorBean {
 			return;
 		}
 		
+		if(porcentaje==null) {
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingrese el porcentaje de interés");
+            PrimeFaces.current().dialog().showMessageDynamic(message);
+            return;
+        }
+		
 		
 		Simulador filaInicio = new Simulador();
 		filaInicio.setNroCuota("0");
@@ -176,10 +182,6 @@ public class SimuladorBean {
 			lstSimulador.add(filaTotal);
 			
 		}
-		
-		
-		
-		
 		
 		
 		

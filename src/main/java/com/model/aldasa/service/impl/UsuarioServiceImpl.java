@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Person;
@@ -70,6 +72,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	public Usuario findByUsername(String username) {
 		return usuarioRepository.findByUsername(username);
+	}
+
+	@Override
+	public Page<Usuario> findByUsernameLikeAndStatus(String username, boolean status, Pageable pageable) {
+		return usuarioRepository.findByUsernameLikeAndStatus(username, status, pageable); 
 	}
 	
 

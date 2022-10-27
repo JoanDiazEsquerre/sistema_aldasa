@@ -22,7 +22,7 @@
 
 
 
-       <p:dataTable var="user" id="idTableUser" value="#{userBean.lstUsers}" widgetVar="usersTable" rowIndexVar="row" paginator="true" rows="15" size="small"
+       <p:dataTable var="user" id="idTableUser" value="#{userBean.lstUsuarioLazy}" widgetVar="usersTable" rowIndexVar="row" paginator="true" rows="15" size="small"
             emptyMessage="No se encontraron usuarios." paginatorPosition="bottom" rowKey="#{user.id}" selection="#{userBean.userSelected}" selectionMode="single">
             <f:facet name="header">
                 <div class="p-d-flex p-ai-center p-jc-between">

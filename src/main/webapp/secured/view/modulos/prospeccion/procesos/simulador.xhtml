@@ -6,7 +6,7 @@
 	locale="#{localeBean.usedLocale}"
 	xmlns:f="http://java.sun.com/jsf/core">
 	<f:metadata>
-		<f:event type="preRenderView" listener="#{prospectoBean.onPageLoad}" />
+		<f:event type="preRenderView" listener="#{simuladorBean.onPageLoad}" />
 	</f:metadata>
 
 	<h:form id="form">
@@ -27,7 +27,7 @@
 			</p:inputNumber>
 			
 			<h:outputLabel for="interes" value="Interés: " />
-			<h:outputLabel id="interes"  value="#{simuladorBean.porcentaje}%" />
+			<p:inputNumber id="interes" value="#{simuladorBean.porcentaje}" symbol="%" symbolPosition="s" emptyValue="always" />
      		
      		<h:outputLabel for="cuotas" value="N° Cuotas: " />
    			<p:selectOneMenu  style="margin:10px; width:220px" id="cuotas" value="#{simuladorBean.numeroCuotas}">

@@ -3,6 +3,7 @@ package com.model.aldasa.general.bean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -11,7 +12,13 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.model.FilterMeta;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.support.RequestContext;
 
@@ -28,6 +35,7 @@ import com.model.aldasa.service.ProspectionService;
 import com.model.aldasa.service.TeamService;
 import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.EstadoProspeccion;
+import com.model.aldasa.util.Perfiles;
 
 import javax.faces.convert.Converter;
 
@@ -54,6 +62,8 @@ public class UserBean{
 	@Autowired
 	private ProspectionService prospectionService;
 	
+	private LazyDataModel<Usuario> lstUsuarioLazy;
+	
 	private List<Usuario> lstUsers;
 	private List<Person> lstPerson;
 	private List<Profile> lstProfile;
@@ -68,22 +78,77 @@ public class UserBean{
 	
 	@PostConstruct
 	public void init() {
-		listarUsuarios();
+		iniciarLazy();
 		listarPersonas();
 		listarPerfiles();
 		listarTeam();
 	}
 	
 	public void onPageLoad(){
-		listarUsuarios();
+//		listarUsuarios();
 		listarPersonas();
 		listarPerfiles();
 		listarTeam();
 	}
 	
-	public void listarUsuarios() {
-		lstUsers=usuarioService.findByStatus(estado);
+	
+	public void iniciarLazy() {
+
+		lstUsuarioLazy = new LazyDataModel<Usuario>() {
+			private List<Usuario> datasource;
+
+            @Override
+            public void setRowIndex(int rowIndex) {
+                if (rowIndex == -1 || getPageSize() == 0) {
+                    super.setRowIndex(-1);
+                } else {
+                    super.setRowIndex(rowIndex % getPageSize());
+                }
+            }
+
+            @Override
+            public Usuario getRowData(String rowKey) {
+                int intRowKey = Integer.parseInt(rowKey);
+                for (Usuario usuario : datasource) {
+                    if (usuario.getId() == intRowKey) {
+                        return usuario;
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public String getRowKey(Usuario usuario) {
+                return String.valueOf(usuario.getId());
+            }
+
+			@Override
+			public List<Usuario> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+				//Aqui capturo cada filtro(Si en caso existe), le pongo % al principiio y al final y reemplazo los espacios por %, para hacer el LIKE
+				//Si debageas aqui te vas a dar cuenta como lo captura
+				
+				String username="%"+ (filterBy.get("username")!=null?filterBy.get("username").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+//				
+
+				
+				Pageable pageable = PageRequest.of(first/pageSize, pageSize);
+				//Aqui llamo al servicio que a  su vez llama al repositorio que contiene la sentencia LIKE, 
+				//Aqui tu tienes que completar la query, yo solo lo he hecho para dni y nombre a modo de ejemplo
+				//Tu deberias preparar el metodo para cada filtro que tengas en la tabla
+				Page<Usuario> pageUsuario=null;
+				
+				
+				pageUsuario= usuarioService.findByUsernameLikeAndStatus(username, estado, pageable);
+				
+				setRowCount((int) pageUsuario.getTotalElements());
+				return datasource = pageUsuario.getContent();
+			}
+		};
 	}
+	
+//	public void listarUsuarios() {
+//		lstUsers=usuarioService.findByStatus(estado);
+//	}
 	
 	public void listarPersonas() {
 		lstPerson=personService.findByStatus(true);
@@ -115,21 +180,18 @@ public class UserBean{
 		
 		if(user.getUsername().equals("") || user.getUsername()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Nombre de usuario."));
-			listarUsuarios();
 			return false ;
 		}else {
 			if(tituloDialog.equals("NUEVO USUARIO")) {
 				Usuario buscaUsername = usuarioService.findByUsername(user.getUsername());
 				if(buscaUsername!=null ) {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya existe el nombre de usuario."));
-					listarUsuarios();
 					return false ;
 				}
 			}else {
 				Usuario buscaUsername = usuarioService.findByUsernameException(user.getUsername(), userSelected.getId());
 				if(buscaUsername!=null ) {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya existe el nombre de usuario."));
-					listarUsuarios();
 					return false ;
 				}
 			}
@@ -138,27 +200,23 @@ public class UserBean{
 		
 		if(user.getPassword().equals("") || user.getPassword()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar contraseña."));
-			listarUsuarios();
 			return false ;
 		}
 		
 		if(user.getPerson()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta asignar una persona."));
-			listarUsuarios();
 			return false ;
 		}else {
 			if(tituloDialog.equals("NUEVO USUARIO")) {
 				Usuario buscarPorPersona =usuarioService.findByPerson(user.getPerson());
 				if(buscarPorPersona!=null) {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La persona esta asignada en otro Usuario."));
-					listarUsuarios();
 					return false;
 				}
 			}else {
 				Usuario buscaUsername = usuarioService.findByPersonException(user.getPerson().getId(), user.getId());
 				if(buscaUsername!=null ) {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La persona esta asignada en otro Usuario.."));
-					listarUsuarios();
 					return false ;
 				}
 			}
@@ -168,7 +226,6 @@ public class UserBean{
 		
 		if(user.getProfile()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta asignar Perfil."));
-			listarUsuarios();
 			return false ;
 		}
 		
@@ -204,7 +261,6 @@ public class UserBean{
 				
 				
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente."));
-				listarUsuarios();
 				if(tituloDialog.equals("NUEVO USUARIO")) {
 					userSelected=new Usuario();
 					userSelected.setStatus(true);
@@ -400,6 +456,15 @@ public class UserBean{
 	public void setProspectionService(ProspectionService prospectionService) {
 		this.prospectionService = prospectionService;
 	}
+
+	public LazyDataModel<Usuario> getLstUsuarioLazy() {
+		return lstUsuarioLazy;
+	}
+
+	public void setLstUsuarioLazy(LazyDataModel<Usuario> lstUsuarioLazy) {
+		this.lstUsuarioLazy = lstUsuarioLazy;
+	}
+	
 	
 	
 }
