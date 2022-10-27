@@ -16,8 +16,7 @@
         <p:selectOneButton value="#{userBean.estado}">
             <f:selectItem itemLabel="Activos" itemValue="#{true}" />
             <f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
-            <p:ajax update=":form:idTableUser"
-                listener="#{userBean.listarUsuarios()}" />
+            <p:ajax update=":form:idTableUser" />
         </p:selectOneButton>
 
 

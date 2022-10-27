@@ -69,6 +69,7 @@ public class UserBean{
 	private List<Profile> lstProfile;
 	private List<Team> lstTeam;
 	
+	private Usuario newUsuario;
 	private Usuario userSelected;
 	
 	private boolean estado=true;
@@ -189,7 +190,7 @@ public class UserBean{
 					return false ;
 				}
 			}else {
-				Usuario buscaUsername = usuarioService.findByUsernameException(user.getUsername(), userSelected.getId());
+				Usuario buscaUsername = usuarioService.findByUsernameException(user.getUsername(), user.getId());
 				if(buscaUsername!=null ) {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya existe el nombre de usuario."));
 					return false ;
@@ -241,16 +242,16 @@ public class UserBean{
 				validaUsuario=false;
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se puede guardar."));
 			}else {
-				List<Prospect> lstProspectAsesor = prospectService.findByPersonAssessor(userSelected.getPerson());		
+				List<Prospect> lstProspectAsesor = prospectService.findByPersonAssessor(usu.getPerson());		
 				if(!lstProspectAsesor.isEmpty()) {
 					for (Prospect prospect:lstProspectAsesor) {
-						prospect.setPersonSupervisor(userSelected.getTeam().getPersonSupervisor());
+						prospect.setPersonSupervisor(usu.getTeam().getPersonSupervisor());
 						prospectService.save(prospect);
 						
 						List<Prospection> lstProspection = prospectionService.findByProspect(prospect);
 						for (Prospection prospection:lstProspection) {
 							if(prospection.getStatus().equals(EstadoProspeccion.EN_SEGUIMIENTO.getName())) {
-								prospection.setPersonSupervisor(userSelected.getTeam().getPersonSupervisor());
+								prospection.setPersonSupervisor(usu.getTeam().getPersonSupervisor());
 								prospectionService.save(prospection);
 							}
 						}
@@ -262,8 +263,7 @@ public class UserBean{
 				
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente."));
 				if(tituloDialog.equals("NUEVO USUARIO")) {
-					userSelected=new Usuario();
-					userSelected.setStatus(true);
+					newUser();
 				}
 			}
 		}
@@ -463,6 +463,14 @@ public class UserBean{
 
 	public void setLstUsuarioLazy(LazyDataModel<Usuario> lstUsuarioLazy) {
 		this.lstUsuarioLazy = lstUsuarioLazy;
+	}
+
+	public Usuario getNewUsuario() {
+		return newUsuario;
+	}
+
+	public void setNewUsuario(Usuario newUsuario) {
+		this.newUsuario = newUsuario;
 	}
 	
 	
