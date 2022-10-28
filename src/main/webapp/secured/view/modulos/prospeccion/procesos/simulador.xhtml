@@ -12,24 +12,21 @@
 	<h:form id="form">
 		<h2 style="color: #007d4c;">SIMULADOR DE CUOTAS</h2>
 
-		<h:panelGrid id="grid" columns="4">
-			<h:outputLabel for="montoTotal" value="Monto total: " />
-			<p:inputNumber id="montoTotal" style="margin:10px; width:220px" value="#{simuladorBean.montoTotal}" modifyValueOnWheel="false" >
+		<h:panelGrid id="grid" columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+			<h:outputLabel for="montoTotal" value="Monto total: " style="font-weight: bold;width:200px" />
+			<p:inputNumber id="montoTotal" value="#{simuladorBean.montoTotal}" modifyValueOnWheel="false" >
 				<p:ajax listener="#{simuladorBean.calcularMontoDeuda}" update=":form:grid" />
 			</p:inputNumber>
-			
-			<h:outputLabel for="montoDeuda" value="Monto deuda: " />
-			<h:outputLabel id="montoDeuda"  value="#{simuladorBean.textoDeuda}" />
 						
-			<h:outputLabel for="montoInicial" value="Monto inicial: " />
-			<p:inputNumber id="montoInicial" style="margin:10px; width:220px" value="#{simuladorBean.montoInicial}" modifyValueOnWheel="false" >
+			<h:outputLabel for="montoInicial" value="Monto inicial: " style="font-weight: bold;"/>
+			<p:inputNumber id="montoInicial" value="#{simuladorBean.montoInicial}" modifyValueOnWheel="false" >
 				<p:ajax listener="#{simuladorBean.calcularMontoDeuda}" update=":form:grid" />
 			</p:inputNumber>
 			
-			<h:outputLabel for="interes" value="Interés: " />
-			<p:inputNumber id="interes" value="#{simuladorBean.porcentaje}" symbol="%" symbolPosition="s" emptyValue="always" />
-     		
-     		<h:outputLabel for="cuotas" value="N° Cuotas: " />
+			<h:outputLabel for="montoDeuda" value="Monto deuda: " style="font-weight: bold;"/>
+			<h:outputLabel id="montoDeuda"  value="#{simuladorBean.textoDeuda}" />
+			
+			<h:outputLabel for="cuotas" value="N° Cuotas: " style="font-weight: bold;" />
    			<p:selectOneMenu  style="margin:10px; width:220px" id="cuotas" value="#{simuladorBean.numeroCuotas}">
 				<f:selectItem itemLabel="6 meses" itemValue="#{6}"/>
 				<f:selectItem itemLabel="12 meses" itemValue="#{12}"/>
@@ -41,12 +38,16 @@
 				
 				<p:ajax listener="#{simuladorBean.calcularPorcentaje}" update=":form:grid" />
 			</p:selectOneMenu>
-
+			
+			<h:outputLabel for="interes" value="Interés: " style="font-weight: bold;" />
+			<p:inputNumber id="interes" value="#{simuladorBean.porcentaje}" symbol="%" symbolPosition="s" emptyValue="always" />
+     		
 		</h:panelGrid>
 		
 		<p:commandButton value="Simular" actionListener="#{simuladorBean.simularCuotas()}" update="form:idTableSimulador" />
+		<p:commandButton value="Limpiar" actionListener="#{simuladorBean.limpiar()}" update="form" style="margin-left:20px;" styleClass="font-bold ui-button-outlined" />
 		
-		<p:dataTable var="simulador" id="idTableSimulador" emptyMessage="Vacío." style="margin:20px" value="#{simuladorBean.lstSimulador}" widgetVar="personsTable" rowIndexVar="row" size="small">
+		<p:dataTable reflow="true" var="simulador" id="idTableSimulador" emptyMessage="Vacío." style="margin:20px" value="#{simuladorBean.lstSimulador}" widgetVar="personsTable" rowIndexVar="row" size="small">
 		
 			<p:column headerText="Nro. Cuota">
 				<h:outputText value="#{simulador.nroCuota}" />

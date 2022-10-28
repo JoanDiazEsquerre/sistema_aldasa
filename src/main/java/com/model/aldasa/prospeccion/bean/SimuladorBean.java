@@ -36,6 +36,16 @@ public class SimuladorBean {
 	public void onPageLoad(){
 		
 	}
+	
+	public void limpiar() {
+		montoTotal=null;
+		montoInicial=null;
+		montoDeuda=0.0;
+		textoDeuda =String.format("%,.2f",montoDeuda);
+		porcentaje=0; 
+		numeroCuotas=6;
+		lstSimulador.clear();
+	}
 
 	public void calcularPorcentaje() {
 		switch (numeroCuotas) {
