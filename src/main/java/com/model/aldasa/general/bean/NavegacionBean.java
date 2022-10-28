@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.model.aldasa.controller.SecurityController;
 import com.model.aldasa.entity.Usuario;
 
 import com.model.aldasa.service.UsuarioService;
@@ -24,6 +25,9 @@ public class NavegacionBean {
 	
 	@Autowired
 	private UsuarioService usuarioService;
+	
+	@Autowired
+	private SecurityController securityController;
 	
 	private String ruta;
 	private String username;
@@ -62,7 +66,7 @@ public class NavegacionBean {
 	}
 	
 	public void onPageLoad(){
-		usuarioLogin = usuarioService.findByUsername(getUsername());
+		usuarioLogin = usuarioService.findByUsername(securityController.currentUserNameSimple());
 		permisoPantallas();
 		
 	}
@@ -168,10 +172,6 @@ public class NavegacionBean {
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 	}
 	
-	
-	
-	
-	
 
 	public String getRuta() {
 		return ruta;
@@ -181,11 +181,7 @@ public class NavegacionBean {
 	}
 
 	public String getUsername() {
-		if(SecurityContextHolder.getContext().getAuthentication()!=null) {
-			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		    username = ((UserDetails)principal).getUsername();
-		}
-		return username;
+		return securityController.currentUserNameSimple();
 	}
 
 	public void setUsername(String username) {

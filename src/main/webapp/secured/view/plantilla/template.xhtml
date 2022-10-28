@@ -54,7 +54,7 @@
 			            </p:submenu>
 						<p:submenu label="Mantenimientos" rendered="#{navegacionBean.menuMantenimiento}">
 							<p:menuitem value="Personas" ajax="false" icon="pi pi-user-plus" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPersonasPage()}"  rendered="#{navegacionBean.subMenuPersonas}"/>						
-							<p:menuitem value="Usuarios" ajax="false" icon="pi pi-users" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoUsersPage()}" rendered="#{navegacionBean.subMenuUsuarios}"/>
+							<p:menuitem value="Usuarios" ajax="false" icon="pi pi-users"  actionListener="#{navegacionBean.getMantenimientoUsersPage()}" rendered="#{navegacionBean.subMenuUsuarios}"/>
 							<p:menuitem value="Perfiles" ajax="false" icon="pi pi-unlock" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoProfilePage()}" rendered="#{navegacionBean.subMenuPerfiles}" />
 							<p:menuitem value="Proyectos" ajax="false" icon="pi pi-home" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoProjectPage()}" rendered="#{navegacionBean.subMenuProyectos}"/>
 							<p:menuitem value="Equipos" ajax="false" icon="pi pi-sitemap" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoTeamPage()}" rendered="#{navegacionBean.subMenuEquipos}"/>
