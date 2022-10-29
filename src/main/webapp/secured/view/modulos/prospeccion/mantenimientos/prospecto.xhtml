@@ -55,10 +55,10 @@
 			<p:column headerText="Ocupación" sortBy="#{per.person.occupation}" filterMatchMode="contains">
 				<h:outputText value="#{per.person.occupation}" />
 			</p:column>
-			<p:column headerText="Asesor" sortBy="#{per.personAssessor.surnames}" filterBy="#{per.personAssessor.surnames}" filterMatchMode="contains">
+			<p:column headerText="Asesor" sortBy="#{per.personAssessor.surnames}" filterMatchMode="contains">
 				<h:outputText value="#{per.personAssessor.surnames} #{per.personAssessor.names}" />
 			</p:column>
-			<p:column headerText="Supervisor" sortBy="#{per.personSupervisor.surnames}" filterBy="#{per.personSupervisor.surnames}" filterMatchMode="contains">
+			<p:column headerText="Supervisor" sortBy="#{per.personSupervisor.surnames}" filterMatchMode="contains">
 				<h:outputText value="#{per.personSupervisor.surnames} #{per.personSupervisor.names}" />
 			</p:column>
 			<p:column headerText="Entrada mensual soles" sortBy="#{per.person.monthEntry}" filterMatchMode="contains">

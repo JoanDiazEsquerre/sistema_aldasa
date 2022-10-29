@@ -109,8 +109,8 @@ public class ProspectoBean {
 				//Si debageas aqui te vas a dar cuenta como lo captura
 				String dni="%"+ (filterBy.get("person.dni")!=null?filterBy.get("person.dni").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
 				String surnamesPerson="%"+ (filterBy.get("person.surnames")!=null?filterBy.get("person.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
-				String surnamesAssessor="%"+ (filterBy.get("personAssessor.surnames")!=null?filterBy.get("personAssessor.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
-				String surnamesSupervisor="%"+ (filterBy.get("personSupervisor.surnames")!=null?filterBy.get("personSupervisor.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+//				String surnamesAssessor="%"+ (filterBy.get("personAssessor.surnames")!=null?filterBy.get("personAssessor.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+//				String surnamesSupervisor="%"+ (filterBy.get("personSupervisor.surnames")!=null?filterBy.get("personSupervisor.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
 
 				Pageable pageable = PageRequest.of(first/pageSize, pageSize);
 				//Aqui llamo al servicio que a  su vez llama al repositorio que contiene la sentencia LIKE, 
@@ -121,16 +121,28 @@ public class ProspectoBean {
 				
 				if(usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
 					// si es Administrador
-					pagePerson= prospectService.findByPersonSupervisorSurnamesLikeAndPersonAssessorSurnamesLikeAndPersonSurnamesLikeAndPersonDniLike(surnamesSupervisor, surnamesAssessor, surnamesPerson, dni,pageable); 
+					if(!dni.equals("")) {
+						pagePerson= prospectService.findByPersonSurnamesLikeAndPersonDniLike(surnamesPerson,dni,pageable);
+					}else {
+						pagePerson= prospectService.findByPersonSurnamesLike(surnamesPerson,pageable);
+					}
 				}else if(usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
 					// si es asesor
-					pagePerson= prospectService.findByPersonSurnamesLikeAndPersonDniLikeAndPersonAssessor(surnamesPerson, dni, usuarioLogin.getPerson(), pageable); 
+					if(!dni.equals("")) {
+						pagePerson= prospectService.findByPersonDniLikeAndPersonSurnamesLikeAndPersonAssessor(dni, surnamesPerson, usuarioLogin.getPerson(), pageable); 
+					}else {
+						pagePerson= prospectService.findByPersonSurnamesLikeAndPersonAssessor(surnamesPerson, usuarioLogin.getPerson(), pageable); 
+					}
+					
 				}else if(usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())){
 					// Es supervisor
-					pagePerson= prospectService.findByPersonAssessorSurnamesLikeAndPersonSurnamesLikeAndPersonDniLikeAndPersonSupervisor(surnamesAssessor, surnamesPerson, dni,usuarioLogin.getPerson(),pageable); 
+					if(!dni.equals("")) {
+						pagePerson= prospectService.findByPersonDniLikeAndPersonSurnamesLikeAndPersonSupervisor(dni, surnamesPerson, usuarioLogin.getPerson(), pageable); 
+					}else {
+						pagePerson= prospectService.findByPersonSurnamesLikeAndPersonSupervisor(surnamesPerson, usuarioLogin.getPerson(), pageable); 
+					}
 				}
 				
-//				pagePerson= prospectService.findAllByPersonDniLike(dni,pageable); 
 				
 				setRowCount((int) pagePerson.getTotalElements());
 				return datasource = pagePerson.getContent();
