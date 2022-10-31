@@ -19,8 +19,6 @@
             <p:ajax update=":form:idTableUser" />
         </p:selectOneButton>
 
-
-
        <p:dataTable reflow="true" var="user" id="idTableUser" value="#{userBean.lstUsuarioLazy}" widgetVar="usersTable" rowIndexVar="row" paginator="true" rows="15" size="small"
             emptyMessage="No se encontraron usuarios." paginatorPosition="bottom" rowKey="#{user.id}" selection="#{userBean.userSelected}" selectionMode="single">
             <f:facet name="header">
@@ -30,8 +28,6 @@
             </f:facet>
             <p:ajax event="rowSelect" update=":formProyecto :dialogProyecto" listener="#{userBean.updateUser()}" oncomplete="PF('proyectoNewDialog').show();" />
 
-
-
            <p:column style="width:42px;text-align: left">
                 <f:facet name="header">
                     <p:commandLink action="#{userBean.newUser()}"
@@ -39,19 +35,13 @@
                         oncomplete="PF('proyectoNewDialog').show();" title="NUEVA USUARIO">
                         <p:graphicImage width="50" value="/recursos/images/anadir.png" />
 
-
-
                    </p:commandLink>
                 </f:facet>
             </p:column>
 
-
-
            <p:column width="25px">
                       #{row +1}
         </p:column>
-
-
 
            <p:column headerText="Nombre de Usuario" sortBy="#{user.username}" filterBy="#{user.username}" filterMatchMode="contains">
                 <h:outputText value="#{user.username}" />

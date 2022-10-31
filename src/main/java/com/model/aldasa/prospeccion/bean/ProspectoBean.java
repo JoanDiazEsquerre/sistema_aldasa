@@ -103,8 +103,7 @@ public class ProspectoBean {
             }
 
 			@Override
-			public List<Prospect> load(int first, int pageSize, Map<String, SortMeta> sortBy,
-					Map<String, FilterMeta> filterBy) {
+			public List<Prospect> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
 				//Aqui capturo cada filtro(Si en caso existe), le pongo % al principiio y al final y reemplazo los espacios por %, para hacer el LIKE
 				//Si debageas aqui te vas a dar cuenta como lo captura
 				String dni="%"+ (filterBy.get("person.dni")!=null?filterBy.get("person.dni").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";

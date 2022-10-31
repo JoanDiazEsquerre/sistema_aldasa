@@ -11,8 +11,8 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">PROSPECTOS</h2>
-		<p:dataTable var="per" id="idTablePer" value="#{prospectoBean.lstProspectLazy}" widgetVar="personsTable" rowIndexVar="row" paginator="true" rows="15" size="small" 
-			emptyMessage="No se encontraron Personas." paginatorPosition="bottom" rowKey="#{per.id}" selection="#{prospectoBean.prospectSelected}" selectionMode="single"
+		<p:dataTable reflow="true" var="per" id="idTablePer" value="#{prospectoBean.lstProspectLazy}" widgetVar="personsTable" rowIndexVar="row" paginator="true" rows="15" size="small" 
+			emptyMessage="No se encontraron Prospectos." paginatorPosition="bottom" rowKey="#{per.id}" selection="#{prospectoBean.prospectSelected}" selectionMode="single"
 			lazy="true">
 			
 			<p:ajax event="rowSelect" update=":formDialog :dialogPerson" listener="#{prospectoBean.updatePerson()}" oncomplete="PF('personNewDialog').show();" />
@@ -31,37 +31,37 @@
 			<p:column width="25px">
                       #{row +1}
         	</p:column>
-			<p:column headerText="DNI" sortBy="#{per.person.dni}" filterBy="#{per.person.dni}" filterMatchMode="contains">
+			<p:column headerText="DNI" filterBy="#{per.person.dni}" filterMatchMode="contains">
 				<h:outputText value="#{per.person.dni}" />
 			</p:column>
-			<p:column headerText="Apellidos y Nombres" sortBy="#{per.person.surnames}" filterBy="#{per.person.surnames}" filterMatchMode="contains">
+			<p:column headerText="Apellidos y Nombres" filterBy="#{per.person.surnames}" filterMatchMode="contains">
 				<h:outputText value="#{per.person.surnames} #{per.person.names}" />
 			</p:column>
-			<p:column headerText="Sexo" sortBy="#{per.person.gender}" filterMatchMode="contains">
+			<p:column headerText="Sexo" filterMatchMode="contains">
 				<h:outputText value="#{per.person.gender eq 'M'?'Masculino':per.person.gender eq'F'?'Femenino':''}" />
 			</p:column>
-			<p:column headerText="Dirección" sortBy="#{per.person.address}" filterMatchMode="contains">
+			<p:column headerText="Dirección" filterMatchMode="contains">
 				<h:outputText value="#{per.person.address}" />
 			</p:column>
-			<p:column headerText="Teléfono" sortBy="#{per.person.phone}" filterMatchMode="contains">
+			<p:column headerText="Teléfono" filterMatchMode="contains">
 				<h:outputText value="#{per.person.phone}" />
 			</p:column>
-			<p:column headerText="Celular" sortBy="#{per.person.cellphone}" filterMatchMode="contains">
+			<p:column headerText="Celular" filterMatchMode="contains">
 				<h:outputText value="#{per.person.cellphone}" />
 			</p:column>
-			<p:column headerText="Estado Civil" sortBy="#{per.person.civilStatus}" filterMatchMode="contains">
+			<p:column headerText="Estado Civil" filterMatchMode="contains">
 				<h:outputText value="#{per.person.civilStatus}" />
 			</p:column>
-			<p:column headerText="Ocupación" sortBy="#{per.person.occupation}" filterMatchMode="contains">
+			<p:column headerText="Ocupación" filterMatchMode="contains">
 				<h:outputText value="#{per.person.occupation}" />
 			</p:column>
-			<p:column headerText="Asesor" sortBy="#{per.personAssessor.surnames}" filterMatchMode="contains">
+			<p:column headerText="Asesor" filterMatchMode="contains">
 				<h:outputText value="#{per.personAssessor.surnames} #{per.personAssessor.names}" />
 			</p:column>
-			<p:column headerText="Supervisor" sortBy="#{per.personSupervisor.surnames}" filterMatchMode="contains">
+			<p:column headerText="Supervisor" filterMatchMode="contains">
 				<h:outputText value="#{per.personSupervisor.surnames} #{per.personSupervisor.names}" />
 			</p:column>
-			<p:column headerText="Entrada mensual soles" sortBy="#{per.person.monthEntry}" filterMatchMode="contains">
+			<p:column headerText="Entrada mensual soles" filterMatchMode="contains">
 				<h:outputText value="#{per.person.monthEntry}" />
 			</p:column>
 		</p:dataTable>
