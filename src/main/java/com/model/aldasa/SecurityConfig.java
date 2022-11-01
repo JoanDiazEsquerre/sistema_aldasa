@@ -13,10 +13,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.impl.UserDetailService;
+
+import java.io.IOException;
+
+import javax.inject.Inject;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -27,6 +38,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 	
 	@Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -49,7 +63,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          .antMatchers("/index.xhtml", "/index.html", "/login.xhtml", "/javax.faces.resources/**").permitAll()
          .and()
          .formLogin()
-         .defaultSuccessUrl("/secured/view/home.xhtml").successForwardUrl("/secured/view/home.xhtml")
+              .defaultSuccessUrl("/secured/view/home.xhtml").successForwardUrl("/secured/view/home.xhtml")
+         .successHandler(customAuthenticationSuccessHandler)
          .and()
          .logout().logoutSuccessUrl("/index.xhtml").invalidateHttpSession(true).deleteCookies("JSESSIONID").logoutUrl("/logout")
          .and()

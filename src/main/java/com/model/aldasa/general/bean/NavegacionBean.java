@@ -68,9 +68,8 @@ public class NavegacionBean {
 	public void onPageLoad(){
 		usuarioLogin = usuarioService.findByUsername(securityController.currentUserNameSimple());
 		permisoPantallas();
-		
 	}
-	
+
 	
 	public void permisoPantallas() {
 		menuProspeccion=false; menuMantenimiento=false; menuReporte=false;
