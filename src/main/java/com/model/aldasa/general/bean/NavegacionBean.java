@@ -56,12 +56,12 @@ public class NavegacionBean {
 
 	@PostConstruct
 	public void init() {
-		ruta = "modulos/general/mantenimientos/inicio.xhtml";
+		ruta = "secured/view/modulos/general/mantenimientos/inicio.xhtml";
 		
 	}
 	
 	public void onPageLoadInit() {
-		ruta = "modulos/general/mantenimientos/inicio.xhtml";
+		ruta = "secured/view/modulos/general/mantenimientos/inicio.xhtml";
 		
 	}
 	
@@ -123,47 +123,47 @@ public class NavegacionBean {
 	
 	
 	public void getProcesoProspeccionPage() {
-       ruta="modulos/prospeccion/procesos/prospeccion.xhtml";
+       ruta="secured/view/modulos/prospeccion/procesos/prospeccion.xhtml";
     }
 	
 	public void getProcesoSimuladorPage() {
-	       ruta="modulos/prospeccion/procesos/simulador.xhtml";
+	       ruta="secured/view/modulos/prospeccion/procesos/simulador.xhtml";
 	    }
 	
 	public void getProcesoAgendaPage() {
-       ruta="modulos/prospeccion/procesos/agenda.xhtml";
+       ruta="secured/view/modulos/prospeccion/procesos/agenda.xhtml";
 
     }
 	
 	public void getProspectosPage() {
-       ruta="modulos/prospeccion/mantenimientos/prospecto.xhtml";
+       ruta="secured/view/modulos/prospeccion/mantenimientos/prospecto.xhtml";
     }
 	
 	public void getProcesoReporteProspeccionPage() {
-       ruta="modulos/prospeccion/procesos/reporteProspeccion.xhtml";
+       ruta="secured/view/modulos/prospeccion/procesos/reporteProspeccion.xhtml";
     }
 	
 	public void getMantenimientoPersonasPage() {
-        ruta = "modulos/general/mantenimientos/personas.xhtml";
+        ruta = "secured/view/modulos/general/mantenimientos/personas.xhtml";
     }
 	
 	public void getMantenimientoUsersPage() {
-        ruta = "modulos/general/mantenimientos/users.xhtml";
+        ruta = "secured/view/modulos/general/mantenimientos/users.xhtml";
     }
 
 	public void getMantenimientoProfilePage() {
-        ruta = "modulos/general/mantenimientos/profile.xhtml";
+        ruta = "secured/view/modulos/general/mantenimientos/profile.xhtml";
     }
 	public void getMantenimientoProjectPage() {
-        ruta = "modulos/general/mantenimientos/project.xhtml";
+        ruta = "secured/view/modulos/general/mantenimientos/project.xhtml";
     }
 	
 	public void getMantenimientoTeamPage() {
-        ruta = "modulos/general/mantenimientos/team.xhtml";
+        ruta = "secured/view/modulos/general/mantenimientos/team.xhtml";
     }
 	
 	public void getMantenimientoPasswordchangePage() {
-        ruta = "modulos/general/mantenimientos/passwordchange.xhtml";
+        ruta = "secured/view/modulos/general/mantenimientos/passwordchange.xhtml";
     }
 	
 	
