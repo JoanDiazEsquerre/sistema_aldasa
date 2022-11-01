@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -37,6 +38,7 @@ import com.model.aldasa.util.EstadoProspeccion;
 import com.model.aldasa.util.Perfiles;
 
 import javax.faces.convert.Converter;
+import javax.faces.view.ViewScoped;
 
 @Component
 @ManagedBean
@@ -85,10 +87,17 @@ public class UserBean{
 	}
 	
 	public void onPageLoad(){
-//		listarUsuarios();
-		listarPersonas();
-		listarPerfiles();
-		listarTeam();
+		if (!FacesContext.getCurrentInstance().isProcessingEvents()) {
+			System.out.println("ok");
+			
+		}
+		if (!FacesContext.getCurrentInstance().isPostback()) {
+//			listarUsuarios();
+			listarPersonas();
+			listarPerfiles();
+			listarTeam();
+		}
+
 	}
 	
 	
