@@ -6,11 +6,8 @@
 	locale="#{localeBean.usedLocale}"
 	xmlns:f="http://java.sun.com/jsf/core">
 
-	<f:metadata>
-    	<f:event type="preRenderView" listener="#{teamBean.onPageLoad}"/>
-    </f:metadata>
-
 	<h:form id="form">
+		<f:event type="preRenderComponent" listener="#{teamBean.onPageLoad}"/>
 		<h2 style="color: #007d4c;">EQUIPOS</h2>
 		<p:selectOneButton value="#{teamBean.estado}">
 			<f:selectItem itemLabel="Activos" itemValue="#{true}" />

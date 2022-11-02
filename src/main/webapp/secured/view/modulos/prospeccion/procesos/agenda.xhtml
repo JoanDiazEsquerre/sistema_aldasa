@@ -6,11 +6,9 @@
 	locale="#{localeBean.usedLocale}"
 	xmlns:f="http://java.sun.com/jsf/core">
 	<!-- 				<p:growl autoUpdate="true" id="growl1" showDetail="true" sticky="true" /> -->
-	<f:metadata>
-    	<f:event type="preRenderView" listener="#{agendaBean.onPageLoad}"/>
-    </f:metadata>
 
 	<h:form id="form">
+		<f:event type="preRenderComponent" listener="#{agendaBean.onPageLoad}"/>
 		<h2 style="color: #007d4c;">AGENDA</h2>
        	<p:schedule id="schedule" value="#{agendaBean.lazyEventModel}" widgetVar="myschedule" height="auto" locale="es" > 
            	<p:ajax event="eventSelect" listener="#{agendaBean.onEventSelect}" update=":formDialog:eventDetails :scheduleDialog" oncomplete="PF('myscheduleDialog').show();" />

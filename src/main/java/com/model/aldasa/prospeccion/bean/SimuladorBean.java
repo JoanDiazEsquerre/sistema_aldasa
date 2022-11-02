@@ -30,11 +30,11 @@ public class SimuladorBean {
 	
 	@PostConstruct
 	public void init() {
-		
+		limpiar();
 	}
 	
 	public void onPageLoad(){
-		
+		limpiar();
 	}
 	
 	public void limpiar() {

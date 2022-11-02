@@ -5,11 +5,9 @@
 	xmlns:pe="http://primefaces.org/ui/extensions"
 	locale="#{localeBean.usedLocale}"
 	xmlns:f="http://java.sun.com/jsf/core">
-	<f:metadata>
-    	<f:event type="preRenderView" listener="#{prospectoBean.onPageLoad}"/>
-    </f:metadata>
 
 	<h:form id="form">
+		<f:event type="preRenderComponent" listener="#{prospectoBean.onPageLoad}"/>
 		<h2 style="color: #007d4c;">PROSPECTOS</h2>
 		<p:dataTable reflow="true" var="per" id="idTablePer" value="#{prospectoBean.lstProspectLazy}" widgetVar="personsTable" rowIndexVar="row" paginator="true" rows="15" size="small" 
 			emptyMessage="No se encontraron Prospectos." paginatorPosition="bottom" rowKey="#{per.id}" selection="#{prospectoBean.prospectSelected}" selectionMode="single"

@@ -6,11 +6,9 @@
 	locale="#{localeBean.usedLocale}"
 	xmlns:f="http://java.sun.com/jsf/core">
 	<!-- 				<p:growl autoUpdate="true" id="growl1" showDetail="true" sticky="true" /> -->
-	<f:metadata>
-    	<f:event type="preRenderView" listener="#{prospeccionBean.onPageLoad}"/>
-    </f:metadata>
 
 	<h:form id="form">
+		<f:event type="preRenderComponent" listener="#{prospeccionBean.onPageLoad}"/>
 		<h2 style="color: #007d4c;">PROSPECCIÓN</h2>
 		<p:tabView id="tabView">
 			<p:tab title="Lista de Prospecciones">

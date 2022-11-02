@@ -87,17 +87,12 @@ public class UserBean{
 	}
 	
 	public void onPageLoad(){
-		if (!FacesContext.getCurrentInstance().isProcessingEvents()) {
-			System.out.println("ok");
-			
-		}
-		if (!FacesContext.getCurrentInstance().isPostback()) {
-//			listarUsuarios();
-			listarPersonas();
-			listarPerfiles();
-			listarTeam();
-		}
 
+//		listarUsuarios();
+		listarPersonas();
+		listarPerfiles();
+		listarTeam();
+		
 	}
 	
 	
