@@ -23,7 +23,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 		navegacionBean.onPageLoadInit();
-		navegacionBean.onPageLoad();
+		//navegacionBean.onPageLoad();
 		response.sendRedirect(request.getContextPath()+"/secured/view/home.xhtml");
 	}
 
