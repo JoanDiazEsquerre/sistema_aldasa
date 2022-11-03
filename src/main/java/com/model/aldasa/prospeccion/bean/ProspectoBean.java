@@ -180,7 +180,9 @@ public class ProspectoBean {
 		
 	}
 	
-	public void savePerson() {	
+	public void savePerson() {
+		usuarioLogin = usuarioService.findByUsername(navegacionBean.getUsername());
+		
 		if(personNew.getSurnames().equals("") || personNew.getSurnames()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Apellidos."));
 			return;
