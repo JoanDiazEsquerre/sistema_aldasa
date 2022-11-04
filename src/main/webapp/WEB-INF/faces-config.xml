@@ -1,22 +1,22 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <faces-config version="2.2"
-              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
-        
-    <application>
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+	<application>
 		<locale-config>
 			<default-locale>es</default-locale>
 		</locale-config>
 		<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
 	</application>
-	
+
 	<lifecycle>
-           <phase-listener>com.model.aldasa.util.LoginErrorPhaseListener</phase-listener>
-    </lifecycle>
-       
-      <managed-bean>
-		 <managed-bean-name>navegacionBean</managed-bean-name>
+		<phase-listener>com.model.aldasa.util.LoginErrorPhaseListener</phase-listener>
+	</lifecycle>
+
+	<managed-bean>
+		<managed-bean-name>navegacionBean</managed-bean-name>
 		<managed-bean-class>com.model.aldasa.general.bean.NavegacionBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 		<managed-property>
@@ -24,9 +24,9 @@
 			<value>#{usuarioService}</value>
 		</managed-property>
 	</managed-bean>
-	
-	 <managed-bean>
-		 <managed-bean-name>passwordchangeBean</managed-bean-name>
+
+	<managed-bean>
+		<managed-bean-name>passwordchangeBean</managed-bean-name>
 		<managed-bean-class>com.model.aldasa.general.bean.PasswordchangeBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
 		<managed-property>
@@ -38,9 +38,10 @@
 			<value>#{usuarioService}</value>
 		</managed-property>
 	</managed-bean>
+
 	
 	<managed-bean>
-		 <managed-bean-name>userBean</managed-bean-name>
+		<managed-bean-name>userBean</managed-bean-name>
 		<managed-bean-class>com.model.aldasa.general.bean.UserBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
 		<managed-property>
@@ -51,7 +52,7 @@
 			<property-name>personService</property-name>
 			<value>#{personService}</value>
 		</managed-property>
-		
+
 		<managed-property>
 			<property-name>profileService</property-name>
 			<value>#{profileService}</value>
@@ -68,5 +69,189 @@
 			<property-name>prospectionService</property-name>
 			<value>#{prospectionService}</value>
 		</managed-property>
+	</managed-bean>
+
+<managed-bean>
+		<managed-bean-name>personBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.general.bean.PersonBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>personService</property-name>
+			<value>#{personService}</value>
+		</managed-property>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>profileBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.general.bean.ProfileBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>profileService</property-name>
+			<value>#{profileService}</value>
+		</managed-property>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>projectBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.general.bean.ProjectBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>projectService</property-name>
+			<value>#{projectService}</value>
+		</managed-property>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>teamBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.general.bean.TeamBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>teamService</property-name>
+			<value>#{teamService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>personService</property-name>
+			<value>#{personService}</value>
+		</managed-property>
+	</managed-bean>
+
+
+
+	<managed-bean>
+		<managed-bean-name>agendaBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.prospeccion.bean.AgendaBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>usuarioService</property-name>
+			<value>#{usuarioService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>prospectionDetailService</property-name>
+			<value>#{prospectionDetailService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>prospectionService</property-name>
+			<value>#{prospectionService}</value>
+		</managed-property>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>prospeccionBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.prospeccion.bean.ProspeccionBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>prospectionService</property-name>
+			<value>#{prospectionService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>personService</property-name>
+			<value>#{personService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>projectService</property-name>
+			<value>#{projectService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>usuarioService</property-name>
+			<value>#{usuarioService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>prospectionDetailService</property-name>
+			<value>#{prospectionDetailService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>actionService</property-name>
+			<value>#{actionService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>countryService</property-name>
+			<value>#{countryService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>departmentService</property-name>
+			<value>#{departmentService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>provinceService</property-name>
+			<value>#{provinceService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>districtService</property-name>
+			<value>#{districtService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>prospectService</property-name>
+			<value>#{prospectService}</value>
+		</managed-property>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>prospectoBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.prospeccion.bean.ProspectoBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>prospectService</property-name>
+			<value>#{prospectService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>prospectionService</property-name>
+			<value>#{prospectionService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>usuarioService</property-name>
+			<value>#{usuarioService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>personService</property-name>
+			<value>#{personService}</value>
+		</managed-property>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>reporteProspeccionBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.prospeccion.bean.ReporteProspeccionBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>usuarioService</property-name>
+			<value>#{usuarioService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>prospectService</property-name>
+			<value>#{prospectService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>actionService</property-name>
+			<value>#{actionService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>projectService</property-name>
+			<value>#{projectService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>prospectionDetailService</property-name>
+			<value>#{prospectionDetailService}</value>
+		</managed-property>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>simuladorBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.prospeccion.bean.SimuladorBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
 </faces-config>

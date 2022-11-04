@@ -7,12 +7,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
-import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
-import org.springframework.stereotype.Component;
 
 import com.model.aldasa.entity.Simulador;
 
@@ -32,10 +29,6 @@ public class SimuladorBean  implements Serializable {
 	
 	@PostConstruct
 	public void init() {
-		limpiar();
-	}
-	
-	public void onPageLoad(){
 		limpiar();
 	}
 	
@@ -254,6 +247,14 @@ public class SimuladorBean  implements Serializable {
 
 	public void setLstSimulador(List<Simulador> lstSimulador) {
 		this.lstSimulador = lstSimulador;
+	}
+
+	public Double getMontoInteres() {
+		return montoInteres;
+	}
+
+	public void setMontoInteres(Double montoInteres) {
+		this.montoInteres = montoInteres;
 	}
 
 

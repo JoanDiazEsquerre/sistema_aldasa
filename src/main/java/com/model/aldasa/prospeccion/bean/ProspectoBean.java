@@ -10,22 +10,17 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Prospect;
@@ -68,10 +63,6 @@ public class ProspectoBean  implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		iniciarLazy();
-	}
-	
-	public void onPageLoad(){
 		usuarioLogin = usuarioService.findByUsername(navegacionBean.getUsername());
 		iniciarLazy();
 	}

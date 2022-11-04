@@ -15,37 +15,43 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Autowired
 	private ProjectRepository projectRepository;
-	
-	@Override
-	public Project save(Project entity) {
-		return projectRepository.save(entity);
-	}
-	
-	@Override
-	public void delete(Project entity) {
-		projectRepository.delete(entity);
-	}
-	
-	@Override
-	public List<Project> findByStatus(boolean status) {
-		return projectRepository.findByStatus(status);
-	}
-	
-	@Override
-	public Project findByName(String name) {
-		return projectRepository.findByName(name);
-	}
-	
-	@Override
-	public  Project findByNameException(String name, int idProject) {
-		return projectRepository.findByNameException(name, idProject);
-	}
-
 
 	@Override
 	public Optional<Project> findById(Integer id) {
 		// TODO Auto-generated method stub
-		return null;
+		return projectRepository.findById(id);
 	}
+
+	@Override
+	public Project save(Project project) {
+		// TODO Auto-generated method stub
+		return projectRepository.save(project);
+	}
+
+	@Override
+	public void delete(Project project) {
+		// TODO Auto-generated method stub
+		projectRepository.delete(project);
+	}
+
+	@Override
+	public List<Project> findByStatus(boolean status) {
+		// TODO Auto-generated method stub
+		return projectRepository.findByStatus(status);
+	}
+
+	@Override
+	public Project findByName(String name) {
+		// TODO Auto-generated method stub
+		return projectRepository.findByName(name);
+	}
+
+	@Override
+	public Project findByNameException(String name, int idProject) {
+		// TODO Auto-generated method stub
+		return projectRepository.findByNameException(name, idProject); 
+	}
+	
+
 	
 }

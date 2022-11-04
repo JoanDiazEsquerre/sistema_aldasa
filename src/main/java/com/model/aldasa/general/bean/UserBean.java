@@ -9,20 +9,17 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.support.RequestContext;
 
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Profile;
@@ -37,10 +34,6 @@ import com.model.aldasa.service.ProspectionService;
 import com.model.aldasa.service.TeamService;
 import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.EstadoProspeccion;
-import com.model.aldasa.util.Perfiles;
-
-import javax.faces.convert.Converter;
-import javax.faces.view.ViewScoped;
 
 @ManagedBean
 @ViewScoped

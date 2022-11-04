@@ -1,6 +1,5 @@
 package com.model.aldasa.prospeccion.bean;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,24 +10,20 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
-import javax.inject.Inject;
 
 import org.primefaces.PrimeFaces;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
 
 import com.model.aldasa.entity.Action;
 import com.model.aldasa.entity.Country;
@@ -57,9 +52,7 @@ import com.model.aldasa.util.Perfiles;
 
 @ManagedBean
 @ViewScoped
-public class ProspeccionBean  implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
+public class ProspeccionBean {
 	
 	@ManagedProperty(value = "#{navegacionBean}")
 	private NavegacionBean navegacionBean;
@@ -137,6 +130,12 @@ public class ProspeccionBean  implements Serializable {
 	
 	@PostConstruct
 	public void init() {
+		usuarioLogin = navegacionBean.getUsuarioLogin();
+		listarProspect();
+		listarPersonasAssessor();
+		listarProject();
+		listarActions();
+		
 		status = "En seguimiento";
 		
 		iniciarLazy();
@@ -156,15 +155,6 @@ public class ProspeccionBean  implements Serializable {
         countriesGroup.add(europeCountries);
         prospectionNew = new Prospection();
         newPerson();
-	}
-	
-	public void onPageLoad(){
-//		usuarioLogin = usuarioService.findByUsername(navegacionBean.getUsername());
-		usuarioLogin = navegacionBean.getUsuarioLogin();
-		listarProspect();
-		listarPersonasAssessor();
-		listarProject();
-		listarActions();
 	}
 	
 	public void listarPais() {
@@ -251,6 +241,12 @@ public class ProspeccionBean  implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingrese telefono o celular."));
 			return;
 		}
+		if(districtSelected==null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingrese distrito."));
+			return;
+		} else {
+			personNew.setDistrict(districtSelected);
+		}
 		
 		if (!personNew.getDni().equals("")) {
 			Person buscarPersona = personService.findByDni(personNew.getDni());
@@ -291,7 +287,7 @@ public class ProspeccionBean  implements Serializable {
  							prospectionService.save(prospection);
  							
 						}
-						
+					    limpiarDatosCiudades();
 						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
 						newPerson();
 						return;
@@ -299,6 +295,7 @@ public class ProspeccionBean  implements Serializable {
 				}
 			}
 		}
+		
 		
 		Prospect prospectNew = new Prospect();
 		
@@ -316,10 +313,18 @@ public class ProspeccionBean  implements Serializable {
 		}
 		
 		prospectService.save(prospectNew);
+	    limpiarDatosCiudades();
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
 		newPerson();
 		listarProspect();
 		
+	}
+	
+	public void limpiarDatosCiudades() {
+		countrySelected=null;
+		lstDepartment.clear();
+		lstProvince.clear();
+		lstDistrict.clear();
 	}
 	
 	public Date sumaRestarFecha(Date fecha, int sumaresta){

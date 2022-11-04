@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -21,8 +23,12 @@ public class Person {
 	@Column(name="monthentry")
 	private String monthEntry;
 	
-	private String dni,names, surnames, address, phone, cellphone, occupation, gender;
+	private String dni,names, surnames, address, phone, cellphone, occupation, gender,email;
 	private boolean status;
+	
+	@ManyToOne
+    @JoinColumn(name="iddistrict")
+    private District district;
 	
 	
 	public String getOccupation() {
@@ -97,6 +103,18 @@ public class Person {
 	}
 	public void setMonthEntry(String monthEntry) {
 		this.monthEntry = monthEntry;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public District getDistrict() {
+		return district;
+	}
+	public void setDistrict(District district) {
+		this.district = district;
 	}
 	
 	

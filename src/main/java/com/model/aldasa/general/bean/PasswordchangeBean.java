@@ -6,16 +6,10 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.model.aldasa.entity.Usuario;
-import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.UsuarioService;
 
 @ManagedBean
@@ -43,7 +37,7 @@ public class PasswordchangeBean implements Serializable  {
 	
 
 	public void save() {
-		 Usuario usuario = usuarioService.findByUsername(usuarioLogin.getUsername());
+//		 Usuario usuario = usuarioService.findByUsername(usuarioLogin.getUsername());
 		 
 		if (passActual.equals("") || passActual==null) {
 			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar contraseña actual."));
@@ -57,7 +51,7 @@ public class PasswordchangeBean implements Serializable  {
 			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta confirmar la contraseña nueva."));
 			return;
 		}
-		if (!passActual.equals(usuario.getPassword()) ) {
+		if (!passActual.equals(usuarioLogin.getPassword()) ) {
 			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Contraseña actual incorrecta."));
 			return;
 		}
@@ -67,8 +61,8 @@ public class PasswordchangeBean implements Serializable  {
 		}
 		
 		
-		usuario.setPassword(passNueva);
-		usuarioService.save(usuario);
+		usuarioLogin.setPassword(passNueva);
+		usuarioService.save(usuarioLogin);
 		FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO, "Confirmacion", "Se guardo correctamente la contraseña."));
 		passActual="";
 		passNueva="";

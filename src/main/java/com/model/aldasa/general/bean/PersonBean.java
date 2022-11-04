@@ -8,18 +8,15 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
 
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.service.PersonService;
@@ -33,7 +30,6 @@ public class PersonBean implements Serializable {
 	@ManagedProperty(value = "#{personService}")
 	private PersonService personService;
 
-//	private List<Person> lstPersons;
 	private LazyDataModel<Person> lstPersonsLazy;
 
 	private Person personSelected,personNew;
@@ -232,6 +228,8 @@ public class PersonBean implements Serializable {
 	public void setPersonNew(Person personNew) {
 		this.personNew = personNew;
 	}
+	
+	
 
 	/**/
 	public void addMessage(FacesMessage.Severity severity, String summary, String detail) {

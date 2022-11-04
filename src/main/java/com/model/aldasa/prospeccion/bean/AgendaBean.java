@@ -10,15 +10,12 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
 
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
@@ -27,8 +24,6 @@ import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import com.model.aldasa.entity.Prospection;
@@ -73,53 +68,7 @@ public class AgendaBean  implements Serializable {
 	@PostConstruct
 	public void init() {
 		
-//		
-//		DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder()
-//	                .title(detalle.getAction().getDescription())
-//	                .startDate(date)
-//	                .endDate(date)
-//	                .description("Aqui la descripcion")
-//	                .build();
-//		eventModel.addEvent(event);
-//	}
-//}
-		
-		
-//		DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder().title("Champions League Match")
-//				.startDate(previousDay8Pm(date)).endDate(previousDay11Pm(date)).description("Team A vs. Team B")
-//				.url("https://www.uefa.com/uefachampionsleague/").borderColor("orange").build();
-//		eventModel.addEvent(event);
-//
-//		DefaultScheduleEvent<?> event1 = DefaultScheduleEvent.builder().startDate(date.minusDays(6)).endDate(date.minusDays(3))
-//				.overlapAllowed(true).editable(false).resizable(false).backgroundColor("lightgreen").build();
-//		eventModel.addEvent(event1);
-//
-//		
-//
-//		DefaultScheduleEvent<?> event2event = DefaultScheduleEvent.builder().title("Breakfast at Tiffanys (always resizable)")
-//				.startDate(nextDay9Am(date)).endDate(nextDay11Am(date)).description("all you can eat")
-//				.overlapAllowed(true).resizable(true).borderColor("#27AE60").build();
-//		eventModel.addEvent(event2event);
-//
-//		event = DefaultScheduleEvent.builder().title("Plant the new garden stuff (always draggable)")
-//				.startDate(theDayAfter3Pm(date)).endDate(fourDaysLater3pm(date)).description("Trees, flowers, ...")
-//				.draggable(true).borderColor("#27AE60").build();
-//		eventModel.addEvent(event);
-//
-//		DefaultScheduleEvent<?> scheduleEventAllDay = DefaultScheduleEvent.builder().title("Holidays (AllDay)")
-//				.startDate(sevenDaysLater0am(date)).endDate(eightDaysLater0am(date))
-//				.description("sleep as long as you want").borderColor("#27AE60").allDay(true).build();
-//		eventModel.addEvent(scheduleEventAllDay);
-		
-   	}
-	
-	   public LocalDateTime getRandomDateTime(LocalDateTime base) {
-	        LocalDateTime dateTime = base.withMinute(0).withSecond(0).withNano(0);
-	        return dateTime.plusDays(((int) (Math.random() * 30)));
-	    }
-	   
-	public void onPageLoad(){
-		usuarioLogin = usuarioService.findByUsername(navegacionBean.getUsername());		
+usuarioLogin = usuarioService.findByUsername(navegacionBean.getUsername());		
 		
 		
 		eventModel= new DefaultScheduleModel();
@@ -176,8 +125,52 @@ public class AgendaBean  implements Serializable {
             	
             }
         };
-			
-	}
+		
+//		
+//		DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder()
+//	                .title(detalle.getAction().getDescription())
+//	                .startDate(date)
+//	                .endDate(date)
+//	                .description("Aqui la descripcion")
+//	                .build();
+//		eventModel.addEvent(event);
+//	}
+//}
+		
+		
+//		DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder().title("Champions League Match")
+//				.startDate(previousDay8Pm(date)).endDate(previousDay11Pm(date)).description("Team A vs. Team B")
+//				.url("https://www.uefa.com/uefachampionsleague/").borderColor("orange").build();
+//		eventModel.addEvent(event);
+//
+//		DefaultScheduleEvent<?> event1 = DefaultScheduleEvent.builder().startDate(date.minusDays(6)).endDate(date.minusDays(3))
+//				.overlapAllowed(true).editable(false).resizable(false).backgroundColor("lightgreen").build();
+//		eventModel.addEvent(event1);
+//
+//		
+//
+//		DefaultScheduleEvent<?> event2event = DefaultScheduleEvent.builder().title("Breakfast at Tiffanys (always resizable)")
+//				.startDate(nextDay9Am(date)).endDate(nextDay11Am(date)).description("all you can eat")
+//				.overlapAllowed(true).resizable(true).borderColor("#27AE60").build();
+//		eventModel.addEvent(event2event);
+//
+//		event = DefaultScheduleEvent.builder().title("Plant the new garden stuff (always draggable)")
+//				.startDate(theDayAfter3Pm(date)).endDate(fourDaysLater3pm(date)).description("Trees, flowers, ...")
+//				.draggable(true).borderColor("#27AE60").build();
+//		eventModel.addEvent(event);
+//
+//		DefaultScheduleEvent<?> scheduleEventAllDay = DefaultScheduleEvent.builder().title("Holidays (AllDay)")
+//				.startDate(sevenDaysLater0am(date)).endDate(eightDaysLater0am(date))
+//				.description("sleep as long as you want").borderColor("#27AE60").allDay(true).build();
+//		eventModel.addEvent(scheduleEventAllDay);
+		
+   	}
+	
+	public LocalDateTime getRandomDateTime(LocalDateTime base) {
+        LocalDateTime dateTime = base.withMinute(0).withSecond(0).withNano(0);
+        return dateTime.plusDays(((int) (Math.random() * 30)));
+    }
+	   
 	
     public void realizarAction() {
     	String dateNow = sdfFull.format(new Date());

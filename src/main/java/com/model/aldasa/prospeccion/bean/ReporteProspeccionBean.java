@@ -1,11 +1,9 @@
 package com.model.aldasa.prospeccion.bean;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,21 +14,17 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
-import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
 import org.primefaces.PrimeFaces;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.model.aldasa.entity.Action;
 import com.model.aldasa.entity.Person;
@@ -47,16 +41,9 @@ import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.Perfiles;
 import com.model.aldasa.util.UtilXls;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -108,6 +95,9 @@ public class ReporteProspeccionBean  implements Serializable {
 	
 	@PostConstruct
 	public void init() {
+		usuarioLogin = usuarioService.findByUsername(navegacionBean.getUsername());
+		listarPersonasAssessor();
+		
 		fechaIni = new Date() ;
 		fechaFin = new Date() ;
 
@@ -124,11 +114,6 @@ public class ReporteProspeccionBean  implements Serializable {
         
         listarActions();
         listarProject();
-	}
-	
-	public void onPageLoad(){
-		usuarioLogin = usuarioService.findByUsername(navegacionBean.getUsername());
-		listarPersonasAssessor();
 	}
 	
 	public void procesarExcel() {
@@ -575,6 +560,22 @@ public class ReporteProspeccionBean  implements Serializable {
 
 	public void setSdf(SimpleDateFormat sdf) {
 		this.sdf = sdf;
+	}
+
+	public String getNombreArchivo() {
+		return nombreArchivo;
+	}
+
+	public void setNombreArchivo(String nombreArchivo) {
+		this.nombreArchivo = nombreArchivo;
+	}
+
+	public SimpleDateFormat getSdfFull() {
+		return sdfFull;
+	}
+
+	public void setSdfFull(SimpleDateFormat sdfFull) {
+		this.sdfFull = sdfFull;
 	}
 	
 	

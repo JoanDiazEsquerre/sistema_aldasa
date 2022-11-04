@@ -4,28 +4,23 @@ package com.model.aldasa.general.bean;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.annotation.ManagedBean;
+import javax.faces.bean.ManagedBean;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.service.ProjectService;
 
-
 @ManagedBean
 @ViewScoped
-public class ProjectBean  implements Serializable {
+public class ProjectBean implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	@Autowired
+	@ManagedProperty(value = "#{projectService}")
 	private ProjectService projectService;
 	
 	private List<Project> listProject;
@@ -38,9 +33,11 @@ public class ProjectBean  implements Serializable {
 	public void init() {
 		listarProject();
 	}
+	
 	public void listarProject (){
-		listProject=(List) projectService.findByStatus(estado);
+		listProject= projectService.findByStatus(estado);
 	}
+	
 	public void newProject() {
 		tituloDialog="NUEVO PROYECTO";
 		projectSelected=new Project();
@@ -91,12 +88,7 @@ public class ProjectBean  implements Serializable {
 	public void setProjectService(ProjectService projectService) {
 		this.projectService = projectService;
 	}
-	public List getListProject() {
-		return listProject;
-	}
-	public void setListProject(List listProject) {
-		this.listProject = listProject;
-	}
+	
 	public Project getProjectSelected() {
 		return projectSelected;
 	}
@@ -114,6 +106,12 @@ public class ProjectBean  implements Serializable {
 	}
 	public void setTituloDialog(String tituloDialog) {
 		this.tituloDialog = tituloDialog;
+	}
+	public void setListProject(List<Project> listProject) {
+		this.listProject = listProject;
+	}
+	public List<Project> getListProject() {
+		return listProject;
 	}
 
 	

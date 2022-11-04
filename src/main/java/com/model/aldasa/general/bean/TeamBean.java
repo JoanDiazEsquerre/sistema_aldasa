@@ -5,24 +5,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.TeamService;
-
 
 @ManagedBean
 @ViewScoped
@@ -45,12 +40,10 @@ public class TeamBean  implements Serializable {
 	
 	@PostConstruct
 	public void init() {
-	
-	}
-	public void onPageLoad () {
 		listarTeam();
 		listarPersonas();
 	}
+	
 	public void listarTeam (){
 		listTeam=teamService.findByStatus(estado);
 	}
@@ -155,12 +148,15 @@ public class TeamBean  implements Serializable {
 	public void setTeamService(TeamService teamService) {
 		this.teamService = teamService;
 	}
-	public List getListTeam() {
+	
+	public List<Team> getListTeam() {
 		return listTeam;
 	}
-	public void setListTeam(List listTeam) {
+
+	public void setListTeam(List<Team> listTeam) {
 		this.listTeam = listTeam;
 	}
+
 	public Team getTeamSelected() {
 		return teamSelected;
 	}

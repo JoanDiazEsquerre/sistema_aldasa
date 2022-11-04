@@ -401,6 +401,14 @@ public class NavegacionBean implements Serializable  {
 		this.subMenuSimulador = subMenuSimulador;
 	}
 
+	public int[] getPermisoSimulador() {
+		return permisoSimulador;
+	}
+
+	public void setPermisoSimulador(int[] permisoSimulador) {
+		this.permisoSimulador = permisoSimulador;
+	}
+
 
 	
 	
