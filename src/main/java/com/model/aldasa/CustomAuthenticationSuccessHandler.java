@@ -16,13 +16,13 @@ import com.model.aldasa.general.bean.NavegacionBean;
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-	@Inject
-	private NavegacionBean navegacionBean;
+	//@Inject
+	//private NavegacionBean navegacionBean;
 	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
-		navegacionBean.onPageLoadInit();
+		//navegacionBean.onPageLoadInit();
 		//navegacionBean.onPageLoad();
 		response.sendRedirect(request.getContextPath()+"/secured/view/home.xhtml");
 	}

@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,7 +15,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -57,29 +60,28 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-
-
-@Component
 @ManagedBean
-@SessionScoped
-public class ReporteProspeccionBean {
+@ViewScoped
+public class ReporteProspeccionBean  implements Serializable {
 	
-	@Inject
+	private static final long serialVersionUID = 1L;
+	
+	@ManagedProperty(value = "#{navegacionBean}")
 	private NavegacionBean navegacionBean;
 	
-	@Autowired
+	@ManagedProperty(value = "#{usuarioService}")
 	private UsuarioService usuarioService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{prospectService}")
 	private ProspectService prospectService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{actionService}")
 	private ActionService actionService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{projectService}")
 	private ProjectService projectService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{prospectionDetailService}")
 	private ProspectionDetailService prospectionDetailService;
 	
 	private Usuario usuarioLogin = new Usuario();

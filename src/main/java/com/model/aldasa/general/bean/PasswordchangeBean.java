@@ -1,9 +1,13 @@
 package com.model.aldasa.general.bean;
 
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
@@ -14,15 +18,16 @@ import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.UsuarioService;
 
-@Component
 @ManagedBean
-@SessionScoped
-public class PasswordchangeBean {
+@ViewScoped
+public class PasswordchangeBean implements Serializable  {
 	
-	@Inject
+	private static final long serialVersionUID = 1L;
+	
+	@ManagedProperty(value = "#{navegacionBean}")
 	private NavegacionBean navegacionBean;
 	
-	@Autowired
+	@ManagedProperty(value = "#{usuarioService}")
 	private UsuarioService usuarioService;
 	
 	private String passActual="";
@@ -32,14 +37,11 @@ public class PasswordchangeBean {
 	
 	@PostConstruct
 	public void init() {
-	
-	}
-	
-	public void onPageLoad(){
 		usuarioLogin = navegacionBean.getUsuarioLogin();
-		
+
 	}
 	
+
 	public void save() {
 		 Usuario usuario = usuarioService.findByUsername(usuarioLogin.getUsername());
 		 

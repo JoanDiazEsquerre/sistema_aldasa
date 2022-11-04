@@ -1,12 +1,15 @@
 package com.model.aldasa.general.bean;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.model.FilterMeta;
@@ -21,12 +24,13 @@ import org.springframework.stereotype.Component;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.service.PersonService;
 
-@Component
 @ManagedBean
-@SessionScoped
-public class PersonBean{
+@ViewScoped
+public class PersonBean implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
-	@Autowired
+	@ManagedProperty(value = "#{personService}")
 	private PersonService personService;
 
 //	private List<Person> lstPersons;

@@ -1,12 +1,72 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<faces-config
-    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd"
-    version="2.3">
-
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="2.2"
+              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+        
     <application>
-	<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
-    </application>
-
+		<locale-config>
+			<default-locale>es</default-locale>
+		</locale-config>
+		<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+	</application>
+	
+	<lifecycle>
+           <phase-listener>com.model.aldasa.util.LoginErrorPhaseListener</phase-listener>
+    </lifecycle>
+       
+      <managed-bean>
+		 <managed-bean-name>navegacionBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.general.bean.NavegacionBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>usuarioService</property-name>
+			<value>#{usuarioService}</value>
+		</managed-property>
+	</managed-bean>
+	
+	 <managed-bean>
+		 <managed-bean-name>passwordchangeBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.general.bean.PasswordchangeBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>usuarioService</property-name>
+			<value>#{usuarioService}</value>
+		</managed-property>
+	</managed-bean>
+	
+	<managed-bean>
+		 <managed-bean-name>userBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.general.bean.UserBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>usuarioService</property-name>
+			<value>#{usuarioService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>personService</property-name>
+			<value>#{personService}</value>
+		</managed-property>
+		
+		<managed-property>
+			<property-name>profileService</property-name>
+			<value>#{profileService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>teamService</property-name>
+			<value>#{teamService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>prospectService</property-name>
+			<value>#{prospectService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>prospectionService</property-name>
+			<value>#{prospectionService}</value>
+		</managed-property>
+	</managed-bean>
 </faces-config>

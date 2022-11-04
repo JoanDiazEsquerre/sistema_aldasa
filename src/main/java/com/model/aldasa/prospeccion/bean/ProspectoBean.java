@@ -1,5 +1,6 @@
 package com.model.aldasa.prospeccion.bean;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -8,7 +9,9 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,25 +38,25 @@ import com.model.aldasa.service.ProspectionService;
 import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.Perfiles;
 
-@Named
-@Component
 @ManagedBean
-@SessionScoped
-public class ProspectoBean {
+@ViewScoped
+public class ProspectoBean  implements Serializable {
 	
-	@Inject
+	private static final long serialVersionUID = 1L;
+	
+	@ManagedProperty(value = "#{navegacionBean}")
 	private NavegacionBean navegacionBean;
 	
-	@Autowired
+	@ManagedProperty(value = "#{prospectService}")
 	private ProspectService prospectService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{prospectionService}")
 	private ProspectionService prospectionService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{usuarioService}")
 	private UsuarioService usuarioService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{personService}")
 	private PersonService personService;
 	
 	private LazyDataModel<Prospect> lstProspectLazy;

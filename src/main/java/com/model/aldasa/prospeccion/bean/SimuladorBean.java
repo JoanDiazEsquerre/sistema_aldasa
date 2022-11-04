@@ -1,5 +1,6 @@
 package com.model.aldasa.prospeccion.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
@@ -14,11 +16,11 @@ import org.springframework.stereotype.Component;
 
 import com.model.aldasa.entity.Simulador;
 
-@Named
-@Component
 @ManagedBean
-@SessionScoped
-public class SimuladorBean {
+@ViewScoped
+public class SimuladorBean  implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private Double montoTotal,montoInteres;
 	private Double montoInicial;

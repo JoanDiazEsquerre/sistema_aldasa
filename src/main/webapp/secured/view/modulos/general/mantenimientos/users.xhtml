@@ -7,7 +7,6 @@
     xmlns:f="http://java.sun.com/jsf/core">
 
     <h:form id="form">
-        <f:event type="preRenderComponent" listener="#{userBean.onPageLoad}"/>
     	<h2 style="color: #007d4c;">USUARIOS</h2>
         <p:selectOneButton value="#{userBean.estado}">
             <f:selectItem itemLabel="Activos" itemValue="#{true}" />

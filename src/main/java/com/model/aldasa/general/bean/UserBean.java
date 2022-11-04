@@ -1,5 +1,6 @@
 package com.model.aldasa.general.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
@@ -40,27 +42,28 @@ import com.model.aldasa.util.Perfiles;
 import javax.faces.convert.Converter;
 import javax.faces.view.ViewScoped;
 
-@Component
 @ManagedBean
-@SessionScoped
-public class UserBean{
+@ViewScoped
+public class UserBean implements Serializable {
 	
-	@Autowired
+	private static final long serialVersionUID = 1L;
+	
+	@ManagedProperty(value = "#{usuarioService}")
 	private UsuarioService usuarioService; 
 	
-	@Autowired
+	@ManagedProperty(value = "#{personService}")
 	private PersonService personService; 
 	
-	@Autowired
+	@ManagedProperty(value = "#{profileService}")
 	private ProfileService profileService; 
 	
-	@Autowired
+	@ManagedProperty(value = "#{teamService}")
 	private TeamService teamService; 
 	
-	@Autowired
+	@ManagedProperty(value = "#{prospectService}")
 	private ProspectService prospectService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{prospectionService}")
 	private ProspectionService prospectionService;
 	
 	private LazyDataModel<Usuario> lstUsuarioLazy;
@@ -85,16 +88,7 @@ public class UserBean{
 		listarPerfiles();
 		listarTeam();
 	}
-	
-	public void onPageLoad(){
 
-//		listarUsuarios();
-		listarPersonas();
-		listarPerfiles();
-		listarTeam();
-		
-	}
-	
 	
 	public void iniciarLazy() {
 

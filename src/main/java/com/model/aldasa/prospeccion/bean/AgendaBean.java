@@ -1,5 +1,6 @@
 package com.model.aldasa.prospeccion.bean;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -14,7 +15,9 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
 import org.primefaces.PrimeFaces;
@@ -38,21 +41,22 @@ import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.EstadoProspeccion;
 import com.model.aldasa.util.Perfiles;
 
-@Component
 @ManagedBean
-@SessionScoped
-public class AgendaBean {
+@ViewScoped
+public class AgendaBean  implements Serializable {
 	
-	@Inject
+	private static final long serialVersionUID = 1L;
+	
+	@ManagedProperty(value = "#{navegacionBean}")
 	private NavegacionBean navegacionBean;
 	
-	@Autowired
+	@ManagedProperty(value = "#{usuarioService}")
 	private UsuarioService usuarioService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{prospectionDetailService}")
 	private ProspectionDetailService prospectionDetailService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{prospectionService}")
 	private ProspectionService prospectionService;
 	
 	private Usuario usuarioLogin = new Usuario();

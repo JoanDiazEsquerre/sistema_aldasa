@@ -1,5 +1,6 @@
 package com.model.aldasa.prospeccion.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -9,7 +10,9 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -52,45 +55,46 @@ import com.model.aldasa.service.ProvinceService;
 import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.Perfiles;
 
-@Component
 @ManagedBean
-@SessionScoped
-public class ProspeccionBean {
+@ViewScoped
+public class ProspeccionBean  implements Serializable {
 	
-	@Inject
+	private static final long serialVersionUID = 1L;
+	
+	@ManagedProperty(value = "#{navegacionBean}")
 	private NavegacionBean navegacionBean;
 	
-	@Autowired
+	@ManagedProperty(value = "#{prospectionService}")
 	private ProspectionService prospectionService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{personService}")
 	private PersonService personService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{projectService}")
 	private ProjectService projectService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{usuarioService}")
 	private UsuarioService usuarioService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{prospectionDetailService}")
 	private ProspectionDetailService prospectionDetailService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{actionService}")
 	private ActionService actionService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{countryService}")
 	private CountryService countryService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{departmentService}")
 	private DepartmentService departmentService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{provinceService}")
 	private ProvinceService provinceService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{districtService}")
 	private DistrictService districtService;
 	
-	@Autowired
+	@ManagedProperty(value = "#{prospectService}")
 	private ProspectService prospectService;
 	
 	private LazyDataModel<Prospection> lstProspectionLazy;

@@ -1,7 +1,10 @@
 package com.model.aldasa.general.bean;
 
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
@@ -17,17 +20,17 @@ import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.Perfiles;
 
-@Named
-@Component
-@ManagedBean
+@ManagedBean(name = "navegacionBean")
 @SessionScoped
-public class NavegacionBean { 
+public class NavegacionBean implements Serializable  { 
 	
-	@Autowired
+	private static final long serialVersionUID = 1L;
+	
+	@ManagedProperty(value = "#{usuarioService}")
 	private UsuarioService usuarioService;
 	
-	@Autowired
-	private SecurityController securityController;
+//	@ManagedProperty(value = "#{securityController}")
+//	private SecurityController securityController;
 	
 	private String ruta;
 	private String username;
@@ -57,18 +60,11 @@ public class NavegacionBean {
 	@PostConstruct
 	public void init() {
 		ruta = "modulos/general/mantenimientos/inicio.xhtml";
-		
-	}
-	
-	public void onPageLoadInit() {
-		ruta = "modulos/general/mantenimientos/inicio.xhtml";
-		
-	}
-	
-	public void onPageLoad(){
-		usuarioLogin = usuarioService.findByUsername(securityController.currentUserNameSimple());
+		username = SecurityContextHolder.getContext().getAuthentication().getName();
+		usuarioLogin = usuarioService.findByUsername(username);
 		permisoPantallas();
 	}
+	
 
 	
 	public void permisoPantallas() {
@@ -175,7 +171,7 @@ public class NavegacionBean {
 	}
 
 	public String getUsername() {
-		return securityController.currentUserNameSimple();
+		return this.username;
 	}
 
 	public void setUsername(String username) {

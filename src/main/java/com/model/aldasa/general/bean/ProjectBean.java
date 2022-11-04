@@ -1,12 +1,15 @@
 package com.model.aldasa.general.bean;
 
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +19,11 @@ import com.model.aldasa.entity.Project;
 import com.model.aldasa.service.ProjectService;
 
 
-@Component
 @ManagedBean
-@SessionScoped
-
-public class ProjectBean {
+@ViewScoped
+public class ProjectBean  implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	@Autowired
 	private ProjectService projectService;
