@@ -7,16 +7,10 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
-import com.model.aldasa.controller.SecurityController;
 import com.model.aldasa.entity.Usuario;
-
 import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.Perfiles;
 
@@ -28,9 +22,6 @@ public class NavegacionBean implements Serializable  {
 	
 	@ManagedProperty(value = "#{usuarioService}")
 	private UsuarioService usuarioService;
-	
-//	@ManagedProperty(value = "#{securityController}")
-//	private SecurityController securityController;
 	
 	private String ruta;
 	private String username;
