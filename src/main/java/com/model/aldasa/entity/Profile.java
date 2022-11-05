@@ -46,8 +46,6 @@ public class Profile {
             : (other == this);
     }
 
-
-
    @Override
     public int hashCode() {
         return (id != null)

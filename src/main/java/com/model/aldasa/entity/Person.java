@@ -118,5 +118,18 @@ public class Person {
 	}
 	
 	
+	@Override
+    public boolean equals(Object other) {
+        return (other instanceof Person) && (id != null)
+            ? id.equals(((Person) other).id)
+            : (other == this);
+    }
+
+   @Override
+    public int hashCode() {
+        return (id != null)
+            ? (this.getClass().hashCode() + id.hashCode())
+            : super.hashCode();
+    }
 	
 }

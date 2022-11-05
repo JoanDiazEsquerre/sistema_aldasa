@@ -56,5 +56,20 @@ public class Department {
 		this.country = country;
 	}
 	
+	@Override
+    public boolean equals(Object other) {
+        return (other instanceof Department) && (id != null)
+            ? id.equals(((Department) other).id)
+            : (other == this);
+    }
+
+
+
+   @Override
+    public int hashCode() {
+        return (id != null)
+            ? (this.getClass().hashCode() + id.hashCode())
+            : super.hashCode();
+    }
 	
 }

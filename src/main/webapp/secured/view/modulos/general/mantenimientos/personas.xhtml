@@ -92,14 +92,14 @@
 					<f:selectItem itemLabel="Femenino" itemValue="F" />
 				</p:selectOneMenu>
 
-				<h:outputLabel for="address" value="Dirección:" />
-				<p:inputText id="address" value="#{personBean.personNew.address}" style="margin:10px" maxlength="60"  />
-
 				<h:outputLabel for="phone" value="Teléfono:" />
 				<p:inputText id="phone" value="#{personBean.personNew.phone}" style="margin:10px" maxlength="11" />
 				
 				<h:outputLabel for="cellphone" value="Celular:" />
 				<p:inputText id="cellphone" value="#{personBean.personNew.cellphone}" style="margin:10px" maxlength="11" />
+				
+				<h:outputLabel for="email" value="Correo electrónico:" />
+				<p:inputText id="email" value="#{personBean.personNew.email}" style="margin:10px" maxlength="45"/>
 
 				<h:outputLabel for="option" value="Estado civil:" />
 				<p:selectOneMenu id="option" value="#{personBean.personNew.civilStatus}" style="margin:10px">
@@ -125,6 +125,36 @@
 					<f:selectItem itemLabel="4000-4500" itemValue="4000-4500" />
 					<f:selectItem itemLabel="4500-5000" itemValue="4500-5000" />
 					<f:selectItem itemLabel="5000 a más" itemValue="5000 a más" />
+				</p:selectOneMenu>
+				
+				<h:outputLabel for="address" value="Dirección:" />
+				<p:inputText id="address" value="#{personBean.personNew.address}" style="margin:10px" maxlength="60"  />
+				
+				<h:outputLabel for="pais" value="País: " />
+				<p:selectOneMenu style="margin:5px; width:220px" id="pais" value="#{personBean.countrySelected}" converter="#{personBean.conversorCountry}">
+					<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+					<f:selectItems value="#{personBean.lstCountry}" var="country" itemLabel="#{country.name}" itemValue="#{country}"/>
+					<p:ajax listener="#{personBean.listarDepartamentos}" update="dep,prov,dist" />
+				</p:selectOneMenu>
+				
+				<h:outputLabel for="dep" value="Departamento: " />
+				<p:selectOneMenu style="margin:5px; width:220px" id="dep" value="#{personBean.departmentSelected}" converter="#{personBean.conversorDepartment}">
+					<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+					<f:selectItems value="#{personBean.lstDepartment}" var="dep" itemLabel="#{dep.name}" itemValue="#{dep}"/>
+					<p:ajax listener="#{personBean.listarProvincias}" update="prov,dist" />
+				</p:selectOneMenu>
+				
+				<h:outputLabel for="prov" value="Provincia: " />
+				<p:selectOneMenu style="margin:5px; width:220px" id="prov" value="#{personBean.provinceSelected}" converter="#{personBean.conversorProvince}">
+					<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+					<f:selectItems value="#{personBean.lstProvince}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro}"/>
+					<p:ajax listener="#{personBean.listarDistritos}" update="dist" />
+				</p:selectOneMenu>
+				
+				<h:outputLabel for="dist" value="Distrito: " />
+				<p:selectOneMenu style="margin:5px; width:220px" id="dist" value="#{personBean.districtSelected}" converter="#{personBean.conversorDistrict}">
+					<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+					<f:selectItems value="#{personBean.lstDistrict}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro}"/>
 				</p:selectOneMenu>
 				
 			</h:panelGrid>

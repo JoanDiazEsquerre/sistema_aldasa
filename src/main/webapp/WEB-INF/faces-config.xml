@@ -39,7 +39,7 @@
 		</managed-property>
 	</managed-bean>
 
-	
+
 	<managed-bean>
 		<managed-bean-name>userBean</managed-bean-name>
 		<managed-bean-class>com.model.aldasa.general.bean.UserBean</managed-bean-class>
@@ -71,13 +71,29 @@
 		</managed-property>
 	</managed-bean>
 
-<managed-bean>
+	<managed-bean>
 		<managed-bean-name>personBean</managed-bean-name>
 		<managed-bean-class>com.model.aldasa.general.bean.PersonBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
 		<managed-property>
 			<property-name>personService</property-name>
 			<value>#{personService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>countryService</property-name>
+			<value>#{countryService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>departmentService</property-name>
+			<value>#{departmentService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>provinceService</property-name>
+			<value>#{provinceService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>districtService</property-name>
+			<value>#{districtService}</value>
 		</managed-property>
 	</managed-bean>
 
@@ -204,6 +220,22 @@
 		<managed-property>
 			<property-name>prospectService</property-name>
 			<value>#{prospectService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>countryService</property-name>
+			<value>#{countryService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>departmentService</property-name>
+			<value>#{departmentService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>provinceService</property-name>
+			<value>#{provinceService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>districtService</property-name>
+			<value>#{districtService}</value>
 		</managed-property>
 		<managed-property>
 			<property-name>prospectionService</property-name>

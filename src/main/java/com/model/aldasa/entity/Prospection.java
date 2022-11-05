@@ -126,5 +126,17 @@ public class Prospection {
 	}
 	
 	
+	@Override
+    public boolean equals(Object other) {
+        return (other instanceof Prospection) && (id != null)
+            ? id.equals(((Prospection) other).id)
+            : (other == this);
+    }
 
+   @Override
+    public int hashCode() {
+        return (id != null)
+            ? (this.getClass().hashCode() + id.hashCode())
+            : super.hashCode();
+    }
 }

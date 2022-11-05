@@ -88,14 +88,14 @@
 					<f:selectItem itemLabel="Femenino" itemValue="F"/>
 				</p:selectOneMenu>
 
-				<h:outputLabel for="address" value="Dirección:" />
-				<p:inputText id="address" value="#{prospectoBean.personNew.address}" style="margin:10px" maxlength="60"/>
-
 				<h:outputLabel for="phone" value="Teléfono:" />
 				<p:inputText id="phone" value="#{prospectoBean.personNew.phone}" style="margin:10px" maxlength="11"/>
 				
 				<h:outputLabel for="cellphone" value="Celular:" />
 				<p:inputText id="cellphone" value="#{prospectoBean.personNew.cellphone}" style="margin:10px" maxlength="15"/>
+				
+				<h:outputLabel for="email" value="Correo electrónico:" />
+				<p:inputText id="email" value="#{prospectoBean.personNew.email}" style="margin:10px" maxlength="45"/>
 
 				<h:outputLabel for="option" value="Estado civil:" />
 				<p:selectOneMenu id="option" value="#{prospectoBean.personNew.civilStatus}" style="margin:10px">
@@ -121,6 +121,35 @@
 					<f:selectItem itemLabel="4000-4500" itemValue="4000-4500" />
 					<f:selectItem itemLabel="4500-5000" itemValue="4500-5000" />
 					<f:selectItem itemLabel="5000 a más" itemValue="5000 a más" />
+				</p:selectOneMenu>
+				<h:outputLabel for="address" value="Dirección:" />
+				<p:inputText id="address" value="#{prospectoBean.personNew.address}" style="margin:10px" maxlength="60"/>
+				
+				<h:outputLabel for="pais" value="País: " />
+				<p:selectOneMenu style="margin:5px; width:220px" id="pais" value="#{prospectoBean.countrySelected}" converter="#{prospectoBean.conversorCountry}">
+					<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+					<f:selectItems value="#{prospectoBean.lstCountry}" var="country" itemLabel="#{country.name}" itemValue="#{country}"/>
+					<p:ajax listener="#{prospectoBean.listarDepartamentos}" update="dep,prov,dist" />
+				</p:selectOneMenu>
+				
+				<h:outputLabel for="dep" value="Departamento: " />
+				<p:selectOneMenu style="margin:5px; width:220px" id="dep" value="#{prospectoBean.departmentSelected}" converter="#{prospectoBean.conversorDepartment}">
+					<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+					<f:selectItems value="#{prospectoBean.lstDepartment}" var="dep" itemLabel="#{dep.name}" itemValue="#{dep}"/>
+					<p:ajax listener="#{prospectoBean.listarProvincias}" update="prov,dist" /> 
+				</p:selectOneMenu>
+				
+				<h:outputLabel for="prov" value="Provincia: " />
+				<p:selectOneMenu style="margin:5px; width:220px" id="prov" value="#{prospectoBean.provinceSelected}" converter="#{prospectoBean.conversorProvince}">
+					<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+					<f:selectItems value="#{prospectoBean.lstProvince}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro}"/>
+					<p:ajax listener="#{prospectoBean.listarDistritos}" update="dist" />
+				</p:selectOneMenu>
+				
+				<h:outputLabel for="dist" value="Distrito: " />
+				<p:selectOneMenu style="margin:5px; width:220px" id="dist" value="#{prospectoBean.districtSelected}" converter="#{prospectoBean.conversorDistrict}">
+					<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+					<f:selectItems value="#{prospectoBean.lstDistrict}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro}"/>
 				</p:selectOneMenu>
 				
 			</h:panelGrid>

@@ -35,5 +35,18 @@ public class Country {
 	}
 	
 	
+	@Override
+    public boolean equals(Object other) {
+        return (other instanceof Country) && (id != null)
+            ? id.equals(((Country) other).id)
+            : (other == this);
+    }
+
+   @Override
+    public int hashCode() {
+        return (id != null)
+            ? (this.getClass().hashCode() + id.hashCode())
+            : super.hashCode();
+    }
 
 }

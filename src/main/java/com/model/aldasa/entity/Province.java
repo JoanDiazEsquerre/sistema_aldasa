@@ -54,6 +54,18 @@ public class Province {
 		this.department = department;
 	}
 	
-	
+	@Override
+    public boolean equals(Object other) {
+        return (other instanceof Province) && (id != null)
+            ? id.equals(((Province) other).id)
+            : (other == this);
+    }
+
+   @Override
+    public int hashCode() {
+        return (id != null)
+            ? (this.getClass().hashCode() + id.hashCode())
+            : super.hashCode();
+    }
 
 }

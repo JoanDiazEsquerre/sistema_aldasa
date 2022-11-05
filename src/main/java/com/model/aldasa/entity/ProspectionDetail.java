@@ -67,4 +67,21 @@ public class ProspectionDetail {
 	public void setScheduled(boolean scheduled) {
 		this.scheduled = scheduled;
 	}
+	
+	
+	@Override
+    public boolean equals(Object other) {
+        return (other instanceof ProspectionDetail) && (id != null)
+            ? id.equals(((ProspectionDetail) other).id)
+            : (other == this);
+    }
+
+
+
+   @Override
+    public int hashCode() {
+        return (id != null)
+            ? (this.getClass().hashCode() + id.hashCode())
+            : super.hashCode();
+    }
 }
