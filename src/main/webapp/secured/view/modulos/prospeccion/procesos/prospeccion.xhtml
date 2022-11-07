@@ -206,7 +206,7 @@
 						</p:column>
 						
 						<p:column width="10%" filterMatchMode="contains">
-							<p:commandButton  icon="pi pi-trash" process="@this" oncomplete="PF('deleteProductDialog').show()" >
+							<p:commandButton  icon="pi pi-trash" styleClass="rounded-button ui-button-danger" process="@this" oncomplete="PF('deleteProductDialog').show()" >
 								<f:setPropertyActionListener value="#{det}" target="#{prospeccionBean.prospectionDetailSelected}" />
 							</p:commandButton>
 						</p:column>
