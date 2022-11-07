@@ -359,23 +359,29 @@ public class ProspeccionBean {
 	}
 	
 	
-	public void completar() {
-
+	public void completarDatosPersona() {
 		Person buscarPorDni = personService.findByDni(personNew.getDni());
 		if(buscarPorDni!=null) {
-			personNew.setNames(buscarPorDni.getNames());
-			personNew.setSurnames(buscarPorDni.getSurnames());
-			personNew.setAddress(buscarPorDni.getAddress());
-//			personNew.setPhone(buscarPorDni.getPhone());
-//			personNew.setCellphone(buscarPorDni.getCellphone());
-			personNew.setStatus(true);
-			personNew.setCivilStatus(buscarPorDni.getCivilStatus());
-			personNew.setOccupation(buscarPorDni.getOccupation());
-			personNew.setGender(buscarPorDni.getGender());
-			personNew.setMonthEntry(buscarPorDni.getMonthEntry());
+			personNew = buscarPorDni;
+			personNew.setPhone("");
+			personNew.setCellphone("");
+			
+			cargarCuidadPersona(personNew);
+	
 		}	
-		
-		
+	}
+	
+	public void cargarCuidadPersona(Person person) {
+		if(person.getDistrict()!=null) {
+			countrySelected = person.getDistrict().getProvince().getDepartment().getCountry();
+			listarDepartamentos();
+			departmentSelected = person.getDistrict().getProvince().getDepartment();
+			listarProvincias();
+			provinceSelected = person.getDistrict().getProvince();
+			listarDistritos();
+			districtSelected = person.getDistrict();
+			
+		}
 	}
 	
 	public void iniciarLazy() {

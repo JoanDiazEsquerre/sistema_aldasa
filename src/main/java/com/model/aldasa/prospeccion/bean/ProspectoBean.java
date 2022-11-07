@@ -86,10 +86,10 @@ public class ProspectoBean  implements Serializable {
 	private Province provinceSelected;
 	private District districtSelected;
 	
-	private List<Country> lstCountry;
-	private List<Department> lstDepartment;
-	private List<Province> lstProvince;
-	private List<District> lstDistrict;
+	private List<Country> lstCountry= new ArrayList<>();
+	private List<Department> lstDepartment = new ArrayList<>();
+	private List<Province> lstProvince= new ArrayList<>();
+	private List<District> lstDistrict= new ArrayList<>();
 	
 	private String username,tituloDialog;
 	private Usuario usuarioLogin = new Usuario();
@@ -218,25 +218,34 @@ public class ProspectoBean  implements Serializable {
 	}
 	
 	public void updatePerson() {
+		limpiarDatosCiudades();
 		tituloDialog = "MODIFICAR PERSONA";
 		personNew=prospectSelected.getPerson();
+		cargarCuidadPersona(prospectSelected.getPerson());
 	}
 	
+	public void cargarCuidadPersona(Person person) {
+		if(person.getDistrict()!=null) {
+			countrySelected = person.getDistrict().getProvince().getDepartment().getCountry();
+			listarDepartamentos();
+			departmentSelected = person.getDistrict().getProvince().getDepartment();
+			listarProvincias();
+			provinceSelected = person.getDistrict().getProvince();
+			listarDistritos();
+			districtSelected = person.getDistrict();
+			
+		}
+	}
 
 	public void completar() {
 		if(tituloDialog.equals("NUEVA PERSONA")) {
 			Person buscarPorDni = personService.findByDni(personNew.getDni());
 			if(buscarPorDni!=null) {
-				personNew.setNames(buscarPorDni.getNames());
-				personNew.setSurnames(buscarPorDni.getSurnames());
-				personNew.setAddress(buscarPorDni.getAddress());
-//				personNew.setPhone(buscarPorDni.getPhone());
-//				personNew.setCellphone(buscarPorDni.getCellphone());
-				personNew.setStatus(true);
-				personNew.setCivilStatus(buscarPorDni.getCivilStatus());
-				personNew.setOccupation(buscarPorDni.getOccupation());
-				personNew.setGender(buscarPorDni.getGender());
-				personNew.setMonthEntry(buscarPorDni.getMonthEntry());
+				personNew = buscarPorDni;
+				personNew.setPhone("");
+				personNew.setCellphone("");
+				
+				cargarCuidadPersona(personNew);
 			}	
 		}
 		
@@ -348,8 +357,7 @@ public class ProspectoBean  implements Serializable {
 				}
 			}
 			
-			Person per = personService.save(personNew); 
-		    limpiarDatosCiudades();
+			personService.save(personNew); 
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
 		}
 		

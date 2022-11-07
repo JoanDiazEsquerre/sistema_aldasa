@@ -11,14 +11,14 @@
 
 		<h:panelGrid id="grid" columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
 			<h:outputLabel for="montoTotal" value="Monto total: " style="font-weight: bold;width:200px" />
-			<p:inputNumber id="montoTotal" value="#{simuladorBean.montoTotal}" modifyValueOnWheel="false" >
-				<p:ajax listener="#{simuladorBean.calcularMontoDeuda}" update=":form:grid" />
-			</p:inputNumber>
+			<p:inputText id="montoTotal" value="#{simuladorBean.montoTotalText}" minValue="0" decimalPlaces="0">
+				<p:ajax listener="#{simuladorBean.validaMontoTotal}" update=":form:grid ,idTableSimulador" />
+			</p:inputText>
 						
 			<h:outputLabel for="montoInicial" value="Monto inicial: " style="font-weight: bold;"/>
-			<p:inputNumber id="montoInicial" value="#{simuladorBean.montoInicial}" modifyValueOnWheel="false" >
-				<p:ajax listener="#{simuladorBean.calcularMontoDeuda}" update=":form:grid" />
-			</p:inputNumber>
+			<p:inputText id="montoInicial" value="#{simuladorBean.montoInicialText}" minValue="0" decimalPlaces="0" >
+				<p:ajax listener="#{simuladorBean.validaMontoInicial}" update=":form:grid, idTableSimulador" />
+			</p:inputText>
 			
 			<h:outputLabel for="montoDeuda" value="Monto deuda: " style="font-weight: bold;"/>
 			<h:outputLabel id="montoDeuda"  value="#{simuladorBean.textoDeuda}" />
