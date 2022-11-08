@@ -286,4 +286,24 @@
 		<managed-bean-class>com.model.aldasa.prospeccion.bean.SimuladorBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>manzanaBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.proyecto.bean.ManzanaBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope> 
+		<managed-property>
+			<property-name>manzanaService</property-name>
+			<value>#{manzanaService}</value>
+		</managed-property>
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>loteBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.proyecto.bean.LoteBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>loteService</property-name>
+			<value>#{loteService}</value>
+		</managed-property>
+	</managed-bean>
 </faces-config>

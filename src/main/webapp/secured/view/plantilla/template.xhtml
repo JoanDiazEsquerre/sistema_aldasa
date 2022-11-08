@@ -50,8 +50,13 @@
 							<p:menuitem value="Prospección" icon="pi pi-book" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoProspeccionPage()}" rendered="#{navegacionBean.subMenuProspeccion}" />
 							<p:menuitem value="Agenda" icon="pi pi-calendar" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoAgendaPage()}" rendered="#{navegacionBean.subMenuAgenda}"/>
 							<p:menuitem value="Simulador de cuotas" icon="pi pi-dollar" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoSimuladorPage()}" rendered="#{navegacionBean.subMenuSimulador}"/>
-							
 			            </p:submenu>
+			            
+			            <p:submenu label="Proyectos" rendered="#{navegacionBean.menuProyecto}">
+							<p:menuitem value="Manzanas" icon="pi pi-apple" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProyectoManzanasPage()}" rendered="#{navegacionBean.subMenuManzanas}" />
+							<p:menuitem value="Lotes" icon="pi pi-th-large" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProyectoLotesPage()}" rendered="#{navegacionBean.subMenuLotes}"/>
+			            </p:submenu>
+			            
 						<p:submenu label="Mantenimientos" rendered="#{navegacionBean.menuMantenimiento}">
 							<p:menuitem value="Personas" ajax="false" icon="pi pi-user-plus" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPersonasPage()}"  rendered="#{navegacionBean.subMenuPersonas}"/>						
 							<p:menuitem value="Usuarios" ajax="false" icon="pi pi-users"  actionListener="#{navegacionBean.getMantenimientoUsersPage()}" rendered="#{navegacionBean.subMenuUsuarios}"/>
@@ -60,6 +65,7 @@
 							<p:menuitem value="Equipos" ajax="false" icon="pi pi-sitemap" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoTeamPage()}" rendered="#{navegacionBean.subMenuEquipos}"/>
 							<p:menuitem value="Cambiar Contraseña" ajax="false" icon="pi pi-lock" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPasswordchangePage()}" rendered="#{navegacionBean.subMenuCambiarContrasenia}" />
 						</p:submenu>
+						
 						<p:submenu label="Reportes" rendered="#{navegacionBean.menuReporte}">
 							<p:menuitem value="Reporte Acciones"  icon="pi pi-upload" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoReporteProspeccionPage()}" rendered="#{navegacionBean.subMenuReporteAcciones}"/>
 						</p:submenu>

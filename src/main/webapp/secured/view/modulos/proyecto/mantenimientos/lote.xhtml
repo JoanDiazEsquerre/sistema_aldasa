@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	locale="#{localeBean.usedLocale}"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+	<h:form id="form">
+		<h2 style="color: #007d4c;">LOTE</h2>
+		<p:selectOneButton value="#{loteBean.estado}">
+			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
+			<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
+			<p:ajax update=":form:idTableLote"
+				listener="#{loteBean.listarLote()}" />
+		</p:selectOneButton>
+
+		<p:dataTable var="lote" id="idTableLote" value="#{loteBean.listLote}"
+			widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="15"
+			size="small" emptyMessage="No se encontraron lotes."
+			paginatorPosition="bottom" rowKey="#{lote.id}"
+			selection="#{loteBean.loteSelected}" selectionMode="single">
+			<f:facet name="header">
+				<div class="p-d-flex p-ai-center p-jc-between">
+					<span>Lista de Lotes</span>
+				</div>
+			</f:facet>
+			<p:ajax event="rowSelect" listener="#{lotesBean.modifyLote()}"
+				update=":formLoteDialog :dialogLote"
+				oncomplete="PF('loteDialog').show();" />
+
+			<p:column style="width:42px;text-align: left">
+				<f:facet name="header">
+					<p:commandLink action="#{loteBean.newLote()}"
+						update=":formLoteDialog :dialogLote"
+						oncomplete="PF('loteDialog').show();" title="NUEVO LOTE">
+						<p:graphicImage width="50" value="/recursos/images/anadir.png" />
+
+					</p:commandLink>
+				</f:facet>
+			</p:column>
+
+			<p:column width="25px">
+                      #{row +1}
+        </p:column>
+
+			<p:column headerText="Número de Lote" sortBy="#{lote.numberLote}"
+				filterBy="#{lote.numberLote}" filterMatchMode="contains">
+				<h:outputText value="#{lote.numberLote}" />
+			</p:column>
+		</p:dataTable>
+
+	</h:form>
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true"
+		id="dialogLote" header="#{loteBean.tituloDialog}"
+		widgetVar="loteDialog" resizable="false" closable="true"
+		appendTo="@(body)" style="width:auto">
+		<h:form id="formLoteDialog">
+			<p:messages id="messages" showDetail="true" closable="true">
+				<p:autoUpdate />
+			</p:messages>
+			<h:panelGrid id="grid" columns="2">
+				<h:outputLabel value="Número de Lote: " for="nombreLote" />
+				<p:inputText value="#{loteBean.loteSelected.numberLote}" id="nombreLote" />
+				<h:outputLabel for="option" value="Estado:" />
+				<p:selectOneMenu id="option" value="#{loteBean.loteSelected.status}"
+					style="margin:5px">
+					<f:selectItem itemLabel="ACTIVO" itemValue="#{true}" />
+					<f:selectItem itemLabel="INACTIVO" itemValue="#{false}" />
+				</p:selectOneMenu>
+				<p:commandButton value="Guardar" action="#{loteBean.saveLote()}"
+					update=":form:idTableLote :formLoteDialog" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+
+</ui:composition>

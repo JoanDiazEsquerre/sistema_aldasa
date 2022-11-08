@@ -31,8 +31,8 @@ public class NavegacionBean implements Serializable  {
 	private int idSupervisor = Perfiles.SUPERVISOR.getId();
 	private int idAsesor = Perfiles.ASESOR.getId();
 	
-	private boolean menuProspeccion, menuMantenimiento,menuReporte;
-	private boolean subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
+	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte;
+	private boolean subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
 					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones;
 	
 	private int[] permisoProspectos= {idAdministrador,idSupervisor,idAsesor};
@@ -46,7 +46,8 @@ public class NavegacionBean implements Serializable  {
 	private int[] permisoEquipos= {idAdministrador};
 	private int[] permisoCambiarConstrasenia= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoReporteAcciones= {idAdministrador,idSupervisor,idAsesor};
-
+	private int[] permisoManzanas= {idAdministrador};
+	private int[] permisoLotes= {idAdministrador};
 
 	@PostConstruct
 	public void init() {
@@ -59,7 +60,7 @@ public class NavegacionBean implements Serializable  {
 
 	
 	public void permisoPantallas() {
-		menuProspeccion=false; menuMantenimiento=false; menuReporte=false;
+		menuProspeccion=false; menuProyecto=false; menuMantenimiento=false; menuReporte=false;
 		
 		//*******************************************************************************
 		subMenuProspectos = validaPermiso(permisoProspectos);
@@ -69,6 +70,13 @@ public class NavegacionBean implements Serializable  {
 		
 		if(subMenuProspectos || subMenuProspeccion || subMenuAgenda || subMenuSimulador) {
 			menuProspeccion=true;
+		}
+		//*******************************************************************************
+		subMenuManzanas = validaPermiso(permisoManzanas);
+		subMenuLotes= validaPermiso(permisoLotes);
+				
+		if(subMenuManzanas || subMenuLotes ){
+			menuProyecto=true;
 		}
 		
 		//******************************************************************************
@@ -89,8 +97,8 @@ public class NavegacionBean implements Serializable  {
 		if(subMenuReporteAcciones) {
 			menuReporte=true;
 		}
+		//*******************************************************************************
 				
-		
 	}
 	
 	public boolean validaPermiso(int[] permiso) {
@@ -124,6 +132,14 @@ public class NavegacionBean implements Serializable  {
 		
 		public void getProcesoReporteProspeccionPage() {
 	       ruta="modulos/prospeccion/procesos/reporteProspeccion.xhtml";
+	    }
+		
+		public void getProyectoManzanasPage() {
+	        ruta = "modulos/proyecto/mantenimientos/manzana.xhtml";
+	    }
+		
+		public void getProyectoLotesPage() {
+	        ruta = "modulos/proyecto/mantenimientos/lote.xhtml";
 	    }
 		
 		public void getMantenimientoPersonasPage() {
@@ -401,6 +417,14 @@ public class NavegacionBean implements Serializable  {
 		this.subMenuSimulador = subMenuSimulador;
 	}
 
+	public boolean isMenuProyecto() {
+		return menuProyecto;
+	}
+
+	public void setMenuProyecto(boolean menuProyecto) {
+		this.menuProyecto = menuProyecto;
+	}
+
 	public int[] getPermisoSimulador() {
 		return permisoSimulador;
 	}
@@ -409,8 +433,38 @@ public class NavegacionBean implements Serializable  {
 		this.permisoSimulador = permisoSimulador;
 	}
 
+	public boolean isSubMenuManzanas() {
+		return subMenuManzanas;
+	}
 
-	
+	public void setSubMenuManzanas(boolean subMenuManzanas) {
+		this.subMenuManzanas = subMenuManzanas;
+	}
+
+	public boolean isSubMenuLotes() {
+		return subMenuLotes;
+	}
+
+	public void setSubMenuLotes(boolean subMenuLotes) {
+		this.subMenuLotes = subMenuLotes;
+	}
+
+	public int[] getPermisoManzanas() {
+		return permisoManzanas;
+	}
+
+	public void setPermisoManzanas(int[] permisoManzanas) {
+		this.permisoManzanas = permisoManzanas;
+	}
+
+	public int[] getPermisoLotes() {
+		return permisoLotes;
+	}
+
+	public void setPermisoLotes(int[] permisoLotes) {
+		this.permisoLotes = permisoLotes;
+	}
+
 	
 
 }
