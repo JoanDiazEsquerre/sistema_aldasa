@@ -108,6 +108,9 @@ public class PersonBean implements Serializable {
 	
 	public void limpiarDatosCuidades() {
 		countrySelected=null;
+		departmentSelected=null;
+		provinceSelected=null;
+		districtSelected=null;
 		lstDepartment = new ArrayList<>();
 		lstProvince = new ArrayList<>();
 		lstDistrict = new ArrayList<>();

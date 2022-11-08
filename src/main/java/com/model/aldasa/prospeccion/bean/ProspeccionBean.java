@@ -322,6 +322,9 @@ public class ProspeccionBean {
 	
 	public void limpiarDatosCiudades() {
 		countrySelected=null;
+		departmentSelected=null;
+		provinceSelected=null;
+		districtSelected=null;
 		lstDepartment.clear();
 		lstProvince.clear();
 		lstDistrict.clear();
