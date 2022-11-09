@@ -8,7 +8,7 @@
 	<!-- 				<p:growl autoUpdate="true" id="growl1" showDetail="true" sticky="true" /> -->
 
 	<h:form id="form">
-		<h2 style="color: #007d4c;">PROSPECCION > AGENDA</h2>
+		<h2 style="color: #007d4c;">PROSPECCIÓN > AGENDA</h2>
        	<p:schedule id="schedule" value="#{agendaBean.lazyEventModel}" widgetVar="myschedule" height="auto" locale="es" > 
            	<p:ajax event="eventSelect" listener="#{agendaBean.onEventSelect}" update=":formDialog:eventDetails :scheduleDialog" oncomplete="PF('myscheduleDialog').show();" />
        	</p:schedule>
