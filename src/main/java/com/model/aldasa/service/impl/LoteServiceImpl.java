@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Lote;
@@ -45,7 +47,13 @@ public class LoteServiceImpl implements LoteService {
 	@Override
 	public Optional<Lote> findById(Integer id) {
 		// TODO Auto-generated method stub
-		return null;
+		return loteRepository.findById(id);
+	}
+
+	@Override
+	public Page<Lote> findAllByNumberLoteLikeAndStatus(String numberLote,String status, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return loteRepository.findAllByNumberLoteLikeAndStatus(numberLote,status, pageable);
 	}
 	
 }

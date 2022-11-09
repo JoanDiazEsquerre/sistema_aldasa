@@ -305,5 +305,13 @@
 			<property-name>loteService</property-name>
 			<value>#{loteService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>manzanaService</property-name>
+			<value>#{manzanaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>projectService</property-name>
+			<value>#{projectService}</value>
+		</managed-property>
 	</managed-bean>
 </faces-config>

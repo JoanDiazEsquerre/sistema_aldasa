@@ -2,6 +2,7 @@ package com.model.aldasa.proyecto.bean;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +11,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -20,9 +23,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import com.model.aldasa.entity.Lote;
-import com.model.aldasa.entity.Prospect;
+import com.model.aldasa.entity.Manzana;
+import com.model.aldasa.entity.Project;
 import com.model.aldasa.service.LoteService;
-import com.model.aldasa.util.Perfiles;
+import com.model.aldasa.service.ManzanaService;
+import com.model.aldasa.service.ProjectService;
 
 @ManagedBean
 @ViewScoped
@@ -33,32 +38,48 @@ public class LoteBean implements Serializable{
 	@ManagedProperty(value = "#{loteService}")
 	private LoteService loteService;
 	
-	private List<Lote> listLote;
-	private Lote loteSelected;
-	private boolean estado = true;
-	private LazyDataModel<Lote> lstLoteLazy;
+	@ManagedProperty(value = "#{manzanaService}")
+	private ManzanaService manzanaService;
 	
+	@ManagedProperty(value = "#{projectService}")
+	private ProjectService projectService;
+	
+	private Lote loteSelected;
+	
+	private String status = "Disponible";
 	private String tituloDialog;
-
+	
+	private LazyDataModel<Lote> lstLoteLazy;
+	private List<Manzana> lstManzana = new ArrayList<>();
+	private List<Project> lstProject = new ArrayList<>();
 	
 	@PostConstruct
 	public void init() {
-		listarLote();
+		iniciarLazy();
 	}
-	public void listarLote (){
-		listLote=loteService.findByStatus(estado);
-	}
+
 	public void newLote() {
 		tituloDialog="NUEVO LOTE";
 		loteSelected=new Lote();
-		loteSelected.setStatus(true);
-		loteSelected.setNumberLote("");
+		loteSelected.setStatus("Disponible");
 		
+		listarManzanas();
+		listarProject();
 	}
 	
 	public void modifyLote( ) {
 		tituloDialog="MODIFICAR LOTE";
 		
+		listarManzanas();
+		listarProject();
+	}
+	
+	public void listarManzanas (){
+		lstManzana= manzanaService.findByStatus(true);
+	}
+	
+	public void listarProject(){
+		lstProject= projectService.findByStatus(true);
 	}
 	
 	public void iniciarLazy() {
@@ -93,42 +114,18 @@ public class LoteBean implements Serializable{
 			@Override
 			public List<Lote> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
 				
-				String dni="%"+ (filterBy.get("numberLote")!=null?filterBy.get("numberLote").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String numberLote="%"+ (filterBy.get("numberLote")!=null?filterBy.get("numberLote").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
 				
-				String surnamesPerson="%"+ (filterBy.get("person.surnames")!=null?filterBy.get("person.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
 //				String surnamesAssessor="%"+ (filterBy.get("personAssessor.surnames")!=null?filterBy.get("personAssessor.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
 
 				Pageable pageable = PageRequest.of(first/pageSize, pageSize);
 				
-				Page<Prospect> pageLote = null; 
-				
-				if(usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
-					// si es Administrador
-					if(!dni.equals("")) {
-						pagePerson= prospectService.findByPersonSurnamesLikeAndPersonDniLike(surnamesPerson,dni,pageable);
-					}else {
-						pagePerson= prospectService.findByPersonSurnamesLike(surnamesPerson,pageable);
-					}
-				}else if(usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
-					// si es asesor
-					if(!dni.equals("")) {
-						pagePerson= prospectService.findByPersonDniLikeAndPersonSurnamesLikeAndPersonAssessor(dni, surnamesPerson, usuarioLogin.getPerson(), pageable); 
-					}else {
-						pagePerson= prospectService.findByPersonSurnamesLikeAndPersonAssessor(surnamesPerson, usuarioLogin.getPerson(), pageable); 
-					}
+				Page<Lote> pageLote= loteService.findAllByNumberLoteLikeAndStatus(numberLote, status, pageable);
 					
-				}else if(usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())){
-					// Es supervisor
-					if(!dni.equals("")) {
-						pagePerson= prospectService.findByPersonDniLikeAndPersonSurnamesLikeAndPersonSupervisor(dni, surnamesPerson, usuarioLogin.getPerson(), pageable); 
-					}else {
-						pagePerson= prospectService.findByPersonSurnamesLikeAndPersonSupervisor(surnamesPerson, usuarioLogin.getPerson(), pageable); 
-					}
-				}
 				
 				
-				setRowCount((int) pagePerson.getTotalElements());
-				return datasource = pagePerson.getContent();
+				setRowCount((int) pageLote.getTotalElements());
+				return datasource = pageLote.getContent();
 			}
 		};
 	}
@@ -137,7 +134,6 @@ public class LoteBean implements Serializable{
 	public void saveLote() {
 		if(loteSelected.getNumberLote().equals("") || loteSelected.getNumberLote()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar número de lote."));
-			listarLote();
 			return ;
 		} 
 		if (tituloDialog.equals("NUEVO LOTE")) {
@@ -146,42 +142,92 @@ public class LoteBean implements Serializable{
 				loteService.save(loteSelected);
 				newLote();
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
-				listarLote();
 			} else { 
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya existe."));
-				listarLote();
 			}
 		} else {
 			Lote validarExistencia = loteService.findByNumberLoteException(loteSelected.getNumberLote(), loteSelected.getId());
 			if (validarExistencia == null) {
 				loteService.save(loteSelected);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
-				listarLote();
 			} else { 
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya existe."));
-				listarLote();
 			}
 		}
 		
 	}
+	
+	
+	public Converter getConversorManzana() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Manzana c = null;
+                    for (Manzana si : lstManzana) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Manzana) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorProject() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Project c = null;
+                    for (Project si : lstProject) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Project) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	
+	
+	
 	public LoteService getLoteService() {
 		return loteService;
 	}
 	public void setLoteService(LoteService loteService) {
 		this.loteService = loteService;
 	}
-	
 	public Lote getLoteSelected() {
 		return loteSelected;
 	}
 	public void setLoteSelected(Lote loteSelected) {
 		this.loteSelected = loteSelected;
-	}
-	public boolean isEstado() {
-		return estado;
-	}
-	public void setEstado(boolean estado) {
-		this.estado = estado;
 	}
 	public String getTituloDialog() {
 		return tituloDialog;
@@ -189,22 +235,45 @@ public class LoteBean implements Serializable{
 	public void setTituloDialog(String tituloDialog) {
 		this.tituloDialog = tituloDialog;
 	}
-	public List<Lote> getListLote() {
-		return listLote;
-	}
-	public void setListLote(List<Lote> listLote) {
-		this.listLote = listLote;
-	}
 	public LazyDataModel<Lote> getLstLoteLazy() {
 		return lstLoteLazy;
 	}
 	public void setLstLoteLazy(LazyDataModel<Lote> lstLoteLazy) {
 		this.lstLoteLazy = lstLoteLazy;
 	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public List<Manzana> getLstManzana() {
+		return lstManzana;
+	}
+	public void setLstManzana(List<Manzana> lstManzana) {
+		this.lstManzana = lstManzana;
+	}
+	public ManzanaService getManzanaService() {
+		return manzanaService;
+	}
+	public void setManzanaService(ManzanaService manzanaService) {
+		this.manzanaService = manzanaService;
+	}
+	public List<Project> getLstProject() {
+		return lstProject;
+	}
+	public void setLstProject(List<Project> lstProject) {
+		this.lstProject = lstProject;
+	}
+
+	public ProjectService getProjectService() {
+		return projectService;
+	}
+
+	public void setProjectService(ProjectService projectService) {
+		this.projectService = projectService;
+	}
 	
 
-	
-
-	
 	
 }

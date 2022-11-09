@@ -2,6 +2,8 @@ package com.model.aldasa.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -14,4 +16,6 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
 	
 	@Query(nativeQuery = true,value = "SELECT * FROM lote WHERE name=:name AND id <> :idLote ")
 	Lote findByNumberLoteException(String name, int idLote);
+	
+	Page<Lote> findAllByNumberLoteLikeAndStatus(String numberLote,String status, Pageable pageable);
 }

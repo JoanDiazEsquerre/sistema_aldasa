@@ -20,7 +20,7 @@ public class Lote {
 	@Column(name="numberlote")
 	private String numberLote;
 	
-	private boolean status;
+	private String status;
 	
 	@ManyToOne
 	@JoinColumn(name="idmanzana")
@@ -37,12 +37,6 @@ public class Lote {
 	}
 	public void setId(Integer id) {
 		this.id = id;
-	}
-	public boolean isStatus() {
-		return status;
-	}
-	public void setStatus(boolean status) {
-		this.status = status;
 	}
 	public String getNumberLote() {
 		return numberLote;
@@ -62,6 +56,13 @@ public class Lote {
 	public void setProject(Project project) {
 		this.project = project;
 	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
 	
 	
 	
