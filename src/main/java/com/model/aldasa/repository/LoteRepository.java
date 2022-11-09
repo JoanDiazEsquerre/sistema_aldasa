@@ -8,14 +8,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.model.aldasa.entity.Lote;
+import com.model.aldasa.entity.Manzana;
+import com.model.aldasa.entity.Project;
 
 public interface LoteRepository extends JpaRepository<Lote, Integer> {
 
 	List<Lote> findByStatus(boolean status);
-	Lote findByNumberLote(String name);
+	Lote findByNumberLoteAndManzanaAndProject (String name, Manzana manzana, Project project);
 	
-	@Query(nativeQuery = true,value = "SELECT * FROM lote WHERE name=:name AND id <> :idLote ")
-	Lote findByNumberLoteException(String name, int idLote);
+	@Query(nativeQuery = true,value = "SELECT * FROM lote WHERE numberLote=:name AND idManzana=:manzana AND idProject=:project AND id <> :idLote ")
+	Lote findByNumberLoteAndManzanaAndProjectException(String name, int manzana, int project, int idLote);
 	
-	Page<Lote> findAllByNumberLoteLikeAndStatus(String numberLote,String status, Pageable pageable);
+	Page<Lote> findAllByNumberLoteLikeAndProjectNameLikeAndStatus(String numberLote,String projectName ,String status,Pageable pageable);
+	Page<Lote> findAllByNumberLoteLikeAndStatus(String numberLote ,String status,Pageable pageable);
 }

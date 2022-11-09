@@ -17,18 +17,14 @@
 			<p:ajax update=":form:idTableLote" />
 		</p:selectOneButton>
 
-		<p:dataTable var="lote" id="idTableLote" value="#{loteBean.lstLoteLazy}"
-			widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="15"
-			size="small" emptyMessage="No se encontraron lotes."
-			paginatorPosition="bottom" rowKey="#{lote.id}"
-			selection="#{loteBean.loteSelected}" selectionMode="single">
+		<p:dataTable var="lote" id="idTableLote" value="#{loteBean.lstLoteLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="15"
+			size="small" emptyMessage="No se encontraron lotes." paginatorPosition="bottom" rowKey="#{lote.id}" selection="#{loteBean.loteSelected}" selectionMode="single">
 			<f:facet name="header">
 				<div class="p-d-flex p-ai-center p-jc-between">
 					<span>Lista de Lotes</span>
 				</div>
 			</f:facet>
-			<p:ajax event="rowSelect" listener="#{lotesBean.modifyLote()}"
-				update=":formLoteDialog :dialogLote"
+			<p:ajax event="rowSelect" listener="#{loteBean.modifyLote()}" update=":formLoteDialog :dialogLote"
 				oncomplete="PF('loteDialog').show();" />
 
 			<p:column style="width:42px;text-align: left">
@@ -50,6 +46,23 @@
 				filterBy="#{lote.numberLote}" filterMatchMode="contains">
 				<h:outputText value="#{lote.numberLote}" />
 			</p:column>
+			
+			<p:column headerText="Manzana" sortBy="#{lote.manzana.name}"
+				filterBy="#{lote.manzana.name}" filterMatchMode="contains">
+				<h:outputText value="#{lote.manzana.name}" />
+			</p:column>
+			
+			<p:column headerText="Proyecto" filterBy="#{lote.project.name}" sortBy="#{lote.project.name}"
+                      filterMatchMode="exact">
+                <f:facet name="filter">
+                    <p:selectOneMenu id="optionProject" value="#{loteBean.projectFilter}" style="width: 100%" > 
+						<f:selectItem itemLabel="[-- Todos --]" itemValue="" />
+						<f:selectItems value="#{prospeccionBean.lstProject}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro.name}"/> 
+						<p:ajax update=":form:idTableLote" />
+					</p:selectOneMenu>
+                </f:facet>
+                <h:outputText value="#{lote.project.name}" />
+            </p:column>
 		</p:dataTable>
 
 	</h:form>
@@ -66,8 +79,22 @@
 					</p:messages>
 					<h:panelGrid id="grid" columns="2">
 						<h:outputLabel value="Número de Lote: " for="nombreLote" />
-						<p:inputText value="#{loteBean.loteSelected.numberLote}" id="nombreLote" />
+						<p:inputText value="#{loteBean.loteSelected.numberLote}" id="nombreLote" ><p:ajax update="messages" /> </p:inputText>
 					
+						<h:outputLabel for="manzana" value="Manzana:" />
+						<p:selectOneMenu style="margin:5px; width:220px" id="manzana" value="#{loteBean.loteSelected.manzana}" converter="#{loteBean.conversorManzana}">
+							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+							<f:selectItems value="#{loteBean.lstManzana}" var="manz" itemLabel="#{manz.name}" itemValue="#{manz}"/>
+							<p:ajax update="messages" />
+						</p:selectOneMenu>
+					
+						<h:outputLabel for="proyecto" value="Proyecto:" />
+						<p:selectOneMenu style="margin:5px; width:220px" id="proyecto" value="#{loteBean.loteSelected.project}" converter="#{loteBean.conversorProject}">
+							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+							<f:selectItems value="#{loteBean.lstProject}" var="proy" itemLabel="#{proy.name}" itemValue="#{proy}"/>
+							<p:ajax update="messages" />
+						</p:selectOneMenu>
+						
 						<h:outputLabel for="option" value="Estado:" />
 						<p:selectOneMenu id="option" value="#{loteBean.loteSelected.status}"
 							style="margin:5px">
@@ -75,18 +102,7 @@
 							<f:selectItem itemLabel="Separados" itemValue="Separado"/>
 							<f:selectItem itemLabel="Vendidos" itemValue="Vendido"/>
 							<f:selectItem itemLabel="Inactivos" itemValue="Inactivo"/>
-						</p:selectOneMenu>
-					
-						<h:outputLabel for="manzana" value="Manzana:" />
-						<p:selectOneMenu style="margin:5px; width:220px" id="manzana" value="#{loteBean.loteSelected.manzana}" converter="#{loteBean.conversorManzana}">
-							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
-							<f:selectItems value="#{loteBean.lstManzana}" var="manz" itemLabel="#{manz.name}" itemValue="#{manz}"/>
-						</p:selectOneMenu>
-					
-						<h:outputLabel for="proyecto" value="Proyecto:" />
-						<p:selectOneMenu style="margin:5px; width:220px" id="proyecto" value="#{loteBean.loteSelected.project}" converter="#{loteBean.conversorProject}">
-							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
-							<f:selectItems value="#{loteBean.lstProject}" var="proy" itemLabel="#{proy.name}" itemValue="#{proy}"/>
+							<p:ajax update="messages" />
 						</p:selectOneMenu>
 					
 						<p:commandButton value="Guardar" action="#{loteBean.saveLote()}" update=":form:idTableLote :formLoteDialog" />

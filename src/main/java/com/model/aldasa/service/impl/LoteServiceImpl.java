@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Lote;
+import com.model.aldasa.entity.Manzana;
+import com.model.aldasa.entity.Project;
 import com.model.aldasa.repository.LoteRepository; 
 import com.model.aldasa.service.LoteService;
 
@@ -34,13 +36,13 @@ public class LoteServiceImpl implements LoteService {
 	}
 	
 	@Override
-	public Lote findByNumberLote(String name) {
-		return loteRepository.findByNumberLote(name);
+	public Lote findByNumberLoteAndManzanaAndProject (String name, Manzana manzana, Project project) {
+		return loteRepository.findByNumberLoteAndManzanaAndProject(name, manzana, project);
 	}
 	
 	@Override
-	public  Lote findByNumberLoteException(String name, int idLote) {
-		return loteRepository.findByNumberLoteException(name, idLote);
+	public Lote findByNumberLoteAndManzanaAndProjectException(String name, int manzana, int project, int idLote) {
+		return loteRepository.findByNumberLoteAndManzanaAndProjectException(name, manzana, project, idLote);
 	}
 
 
@@ -51,9 +53,15 @@ public class LoteServiceImpl implements LoteService {
 	}
 
 	@Override
-	public Page<Lote> findAllByNumberLoteLikeAndStatus(String numberLote,String status, Pageable pageable) {
+	public Page<Lote> findAllByNumberLoteLikeAndProjectNameLikeAndStatus(String numberLote, String projectName,String status,Pageable pageable) {
 		// TODO Auto-generated method stub
-		return loteRepository.findAllByNumberLoteLikeAndStatus(numberLote,status, pageable);
+		return loteRepository.findAllByNumberLoteLikeAndProjectNameLikeAndStatus(numberLote,projectName,status, pageable);
+	}
+
+	@Override
+	public Page<Lote> findAllByNumberLoteLikeAndStatus(String numberLote, String status, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return loteRepository.findAllByNumberLoteLikeAndStatus(numberLote, status, pageable);
 	}
 	
 }

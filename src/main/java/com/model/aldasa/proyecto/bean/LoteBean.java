@@ -45,6 +45,7 @@ public class LoteBean implements Serializable{
 	private ProjectService projectService;
 	
 	private Lote loteSelected;
+	private String projectFilter="";
 	
 	private String status = "Disponible";
 	private String tituloDialog;
@@ -120,10 +121,13 @@ public class LoteBean implements Serializable{
 
 				Pageable pageable = PageRequest.of(first/pageSize, pageSize);
 				
-				Page<Lote> pageLote= loteService.findAllByNumberLoteLikeAndStatus(numberLote, status, pageable);
-					
+				Page<Lote> pageLote=null;
+				if(projectFilter.equals("")) {
+					pageLote= loteService.findAllByNumberLoteLikeAndStatus(numberLote,status, pageable);
+				}else {
+					pageLote= loteService.findAllByNumberLoteLikeAndProjectNameLikeAndStatus(numberLote, projectFilter,status, pageable);
 				
-				
+				}
 				setRowCount((int) pageLote.getTotalElements());
 				return datasource = pageLote.getContent();
 			}
@@ -135,9 +139,21 @@ public class LoteBean implements Serializable{
 		if(loteSelected.getNumberLote().equals("") || loteSelected.getNumberLote()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar número de lote."));
 			return ;
+		}
+		
+		if(loteSelected.getManzana()==null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una manzana."));
+			return ;
 		} 
+		
+		if(loteSelected.getProject()==null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar un proyecto."));
+			return ;
+		} 
+		
+		
 		if (tituloDialog.equals("NUEVO LOTE")) {
-			Lote validarExistencia = loteService.findByNumberLote(loteSelected.getNumberLote());
+			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProject(loteSelected.getNumberLote(), loteSelected.getManzana(), loteSelected.getProject());
 			if (validarExistencia == null) {
 				loteService.save(loteSelected);
 				newLote();
@@ -146,7 +162,7 @@ public class LoteBean implements Serializable{
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya existe."));
 			}
 		} else {
-			Lote validarExistencia = loteService.findByNumberLoteException(loteSelected.getNumberLote(), loteSelected.getId());
+			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProjectException(loteSelected.getNumberLote(), loteSelected.getManzana().getId(), loteSelected.getProject().getId(), loteSelected.getId());
 			if (validarExistencia == null) {
 				loteService.save(loteSelected);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
@@ -265,14 +281,21 @@ public class LoteBean implements Serializable{
 	public void setLstProject(List<Project> lstProject) {
 		this.lstProject = lstProject;
 	}
-
 	public ProjectService getProjectService() {
 		return projectService;
 	}
-
 	public void setProjectService(ProjectService projectService) {
 		this.projectService = projectService;
 	}
+
+	public String getProjectFilter() {
+		return projectFilter;
+	}
+
+	public void setProjectFilter(String projectFilter) {
+		this.projectFilter = projectFilter;
+	}
+	
 	
 
 	

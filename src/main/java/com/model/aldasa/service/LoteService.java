@@ -7,7 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.model.aldasa.entity.Lote;
+import com.model.aldasa.entity.Manzana;
 import com.model.aldasa.entity.Person;
+import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Prospection;
 
 public interface LoteService {
@@ -16,9 +18,10 @@ public interface LoteService {
 	Lote save(Lote lote);
 	void delete(Lote lote);
 	List<Lote> findByStatus(boolean status);
-	Lote findByNumberLote (String name);
-	Lote findByNumberLoteException(String name, int idLote);
+	Lote findByNumberLoteAndManzanaAndProject (String name, Manzana manzana, Project project);
+	Lote findByNumberLoteAndManzanaAndProjectException(String name, int manzana, int project, int idLote);
 	
-	Page<Lote> findAllByNumberLoteLikeAndStatus(String numberLote,String status, Pageable pageable);
+	Page<Lote> findAllByNumberLoteLikeAndProjectNameLikeAndStatus(String numberLote,String projectName ,String status,Pageable pageable);
+	Page<Lote> findAllByNumberLoteLikeAndStatus(String numberLote ,String status,Pageable pageable);
 
 }
