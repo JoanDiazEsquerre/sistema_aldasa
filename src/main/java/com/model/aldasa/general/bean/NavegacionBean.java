@@ -72,10 +72,11 @@ public class NavegacionBean implements Serializable  {
 			menuProspeccion=true;
 		}
 		//*******************************************************************************
+		subMenuProyectos= validaPermiso(permisoProyectos);
 		subMenuManzanas = validaPermiso(permisoManzanas);
 		subMenuLotes= validaPermiso(permisoLotes);
 				
-		if(subMenuManzanas || subMenuLotes ){
+		if(subMenuManzanas || subMenuLotes || subMenuProyectos){
 			menuProyecto=true;
 		}
 		
@@ -83,11 +84,10 @@ public class NavegacionBean implements Serializable  {
 		subMenuPersonas = validaPermiso(permisoPersonas);
 		subMenuUsuarios= validaPermiso(permisoUsuarios);
 		subMenuPerfiles= validaPermiso(permisoPerfiles);
-		subMenuProyectos= validaPermiso(permisoProyectos);
 		subMenuEquipos= validaPermiso(permisoEquipos);
 		subMenuCambiarContrasenia= validaPermiso(permisoCambiarConstrasenia);
 		
-		if(subMenuPersonas || subMenuUsuarios || subMenuPerfiles || subMenuProyectos || subMenuEquipos || subMenuCambiarContrasenia) {
+		if(subMenuPersonas || subMenuUsuarios || subMenuPerfiles || subMenuEquipos || subMenuCambiarContrasenia) {
 			menuMantenimiento=true;
 		}
 		
@@ -134,6 +134,10 @@ public class NavegacionBean implements Serializable  {
 	       ruta="modulos/prospeccion/procesos/reporteProspeccion.xhtml";
 	    }
 		
+		public void getMantenimientoProjectPage() {
+	        ruta = "modulos/proyecto/mantenimientos/project.xhtml";
+	    }
+		
 		public void getProyectoManzanasPage() {
 	        ruta = "modulos/proyecto/mantenimientos/manzana.xhtml";
 	    }
@@ -153,9 +157,7 @@ public class NavegacionBean implements Serializable  {
 		public void getMantenimientoProfilePage() {
 	        ruta = "modulos/general/mantenimientos/profile.xhtml";
 	    }
-		public void getMantenimientoProjectPage() {
-	        ruta = "modulos/general/mantenimientos/project.xhtml";
-	    }
+	
 		
 		public void getMantenimientoTeamPage() {
 	        ruta = "modulos/general/mantenimientos/team.xhtml";
