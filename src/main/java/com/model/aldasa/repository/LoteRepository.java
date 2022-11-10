@@ -19,6 +19,6 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
 	@Query(nativeQuery = true,value = "SELECT * FROM lote WHERE numberLote=:name AND idManzana=:manzana AND idProject=:project AND id <> :idLote ")
 	Lote findByNumberLoteAndManzanaAndProjectException(String name, int manzana, int project, int idLote);
 	
-	Page<Lote> findAllByNumberLoteLikeAndProjectNameLikeAndStatus(String numberLote,String projectName ,String status,Pageable pageable);
-	Page<Lote> findAllByNumberLoteLikeAndStatus(String numberLote ,String status,Pageable pageable);
+	Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatus(String numberLote, String nameManzana,String projectName ,String status,Pageable pageable);
+	Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndStatus(String numberLote,  String nameManzana, String status,Pageable pageable);
 }

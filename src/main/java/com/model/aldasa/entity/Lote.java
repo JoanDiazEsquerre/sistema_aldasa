@@ -30,19 +30,19 @@ public class Lote {
 	
 	private String status;
 	
-	private double area, perimetro;
+	private Double area, perimetro;
 
 	@Column(name="medidafrontal")
-	private double medidaFrontal;
+	private Double medidaFrontal;
 	
 	@Column(name="medidafondo")
-	private double medidaFondo;
+	private Double medidaFondo;
 	
 	@Column(name="medidaderecha")
-	private double medidaDerecha;
+	private Double medidaDerecha;
 	
 	@Column(name="medidaizquierda")
-	private double medidaIzquierda;
+	private Double medidaIzquierda;
 	
 	@Column(name="limitefrontal")
 	private String limiteFrontal;
@@ -92,24 +92,6 @@ public class Lote {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public Double getMedidaFrontal() {
-		return medidaFrontal;
-	}
-	public void setMedidaFrontal(Double medidaFrontal) {
-		this.medidaFrontal = medidaFrontal;
-	}
-	public Double getMedidaFondo() {
-		return medidaFondo;
-	}
-	public void setMedidaFondo(Double medidaFondo) {
-		this.medidaFondo = medidaFondo;
-	}
-	public Double getMedidaDerecha() {
-		return medidaDerecha;
-	}
-	public void setMedidaDerecha(Double medidaDerecha) {
-		this.medidaDerecha = medidaDerecha;
-	}
 	public String getLimiteFondo() {
 		return limiteFondo;
 	}
@@ -134,6 +116,12 @@ public class Lote {
 	public void setComentario(String comentario) {
 		this.comentario = comentario;
 	}
+	public String getLimiteFrontal() {
+		return limiteFrontal;
+	}
+	public void setLimiteFrontal(String limiteFrontal) {
+		this.limiteFrontal = limiteFrontal;
+	}
 	public Double getArea() {
 		return area;
 	}
@@ -146,33 +134,33 @@ public class Lote {
 	public void setPerimetro(Double perimetro) {
 		this.perimetro = perimetro;
 	}
-	public double getMedidaIzquierda() {
-		return medidaIzquierda;
+	public Double getMedidaFrontal() {
+		return medidaFrontal;
 	}
-	public void setMedidaIzquierda(double medidaIzquierda) {
-		this.medidaIzquierda = medidaIzquierda;
-	}
-	public String getLimiteFrontal() {
-		return limiteFrontal;
-	}
-	public void setLimiteFrontal(String limiteFrontal) {
-		this.limiteFrontal = limiteFrontal;
-	}
-	public void setArea(double area) {
-		this.area = area;
-	}
-	public void setPerimetro(double perimetro) {
-		this.perimetro = perimetro;
-	}
-	public void setMedidaFrontal(double medidaFrontal) {
+	public void setMedidaFrontal(Double medidaFrontal) {
 		this.medidaFrontal = medidaFrontal;
 	}
-	public void setMedidaFondo(double medidaFondo) {
+	public Double getMedidaFondo() {
+		return medidaFondo;
+	}
+	public void setMedidaFondo(Double medidaFondo) {
 		this.medidaFondo = medidaFondo;
 	}
-	public void setMedidaDerecha(double medidaDerecha) {
+	public Double getMedidaDerecha() {
+		return medidaDerecha;
+	}
+	public void setMedidaDerecha(Double medidaDerecha) {
 		this.medidaDerecha = medidaDerecha;
 	}
+	public Double getMedidaIzquierda() {
+		return medidaIzquierda;
+	}
+	public void setMedidaIzquierda(Double medidaIzquierda) {
+		this.medidaIzquierda = medidaIzquierda;
+	}
+	
+	
+	
 	
 	
 	

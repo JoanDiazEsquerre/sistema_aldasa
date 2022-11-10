@@ -24,16 +24,11 @@
 					<span>Lista de Lotes</span>
 				</div>
 			</f:facet>
-			<p:ajax event="rowSelect" listener="#{loteBean.modifyLote()}" update=":formLoteDialog :dialogLote"
-				oncomplete="PF('loteDialog').show();" />
-
+			<p:ajax event="rowSelect" listener="#{loteBean.modifyLote()}" update=":formLoteDialog :dialogLote :form:idTableLote " oncomplete="PF('loteDialog').show();" />
 			<p:column style="width:42px;text-align: left">
 				<f:facet name="header">
-					<p:commandLink action="#{loteBean.newLote()}"
-						update=":formLoteDialog :dialogLote"
-						oncomplete="PF('loteDialog').show();" title="NUEVO LOTE">
+					<p:commandLink action="#{loteBean.newLote()}" update=":formLoteDialog :dialogLote" oncomplete="PF('loteDialog').show();" title="NUEVO LOTE">
 						<p:graphicImage width="50" value="/recursos/images/anadir.png" />
-
 					</p:commandLink>
 				</f:facet>
 			</p:column>
@@ -63,15 +58,39 @@
                 </f:facet>
                 <h:outputText value="#{lote.project.name}" />
             </p:column>
+            
+            <p:column headerText="Medida frontal(ML)" filterMatchMode="contains">
+				<h:outputText value="#{lote.medidaFrontal}" />
+			</p:column>
+			
+			<p:column headerText="Medida costado derecho (ML)" filterMatchMode="contains">
+				<h:outputText value="#{lote.medidaDerecha}" />
+			</p:column>
+			
+			<p:column headerText="Medida costado izquierdo (ML)" filterMatchMode="contains">
+				<h:outputText value="#{lote.medidaIzquierda}" />
+			</p:column>
+			
+			<p:column headerText="Medida fondo (ML)" filterMatchMode="contains">
+				<h:outputText value="#{lote.medidaFondo}" />
+			</p:column>
+			
+			<p:column headerText="Área de lote (M2)" filterMatchMode="contains">
+				<h:outputText value="#{lote.area}" />
+			</p:column>
+			
+			<p:column headerText="Perímetro (ML)" filterMatchMode="contains">
+				<h:outputText value="#{lote.perimetro}" />
+			</p:column>
 		</p:dataTable>
 
 	</h:form>
 	
-	<p:dialog modal="true" dynamic="true" closeOnEscape="true"
-		id="dialogLote" header="#{loteBean.tituloDialog}"
-		widgetVar="loteDialog" resizable="false" closable="true"
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogLote" header="#{loteBean.tituloDialog}" widgetVar="loteDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formLoteDialog">
+			<h:outputLabel value="#{loteBean.nombreLoteSelected}" style="color: #007d4c;font-weight: bolder;" id="nomLoteSelect" />
+		
 			<p:tabView id="tabOpciones"> 
 				<p:tab title="Descripción" >
 					<p:messages id="messages" showDetail="true" closable="true">
@@ -79,42 +98,74 @@
 					</p:messages>
 					<h:panelGrid id="grid" columns="2">
 						<h:outputLabel value="Número de Lote: " for="nombreLote" />
-						<p:inputText value="#{loteBean.loteSelected.numberLote}" id="nombreLote" ><p:ajax update="messages" /> </p:inputText>
+						<p:inputText value="#{loteBean.loteNew.numberLote}" style="margin:5px; width:220px" id="nombreLote" maxlength="10" disabled="#{!loteBean.modificar}" ><p:ajax update="messages" /> </p:inputText>
 					
 						<h:outputLabel for="manzana" value="Manzana:" />
-						<p:selectOneMenu style="margin:5px; width:220px" id="manzana" value="#{loteBean.loteSelected.manzana}" converter="#{loteBean.conversorManzana}">
+						<p:selectOneMenu style="margin:5px; width:220px" id="manzana" value="#{loteBean.loteNew.manzana}" disabled="#{!loteBean.modificar}" converter="#{loteBean.conversorManzana}"> 
 							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
 							<f:selectItems value="#{loteBean.lstManzana}" var="manz" itemLabel="#{manz.name}" itemValue="#{manz}"/>
 							<p:ajax update="messages" />
 						</p:selectOneMenu>
 					
 						<h:outputLabel for="proyecto" value="Proyecto:" />
-						<p:selectOneMenu style="margin:5px; width:220px" id="proyecto" value="#{loteBean.loteSelected.project}" converter="#{loteBean.conversorProject}">
+						<p:selectOneMenu style="margin:5px; width:220px" id="proyecto" value="#{loteBean.loteNew.project}" converter="#{loteBean.conversorProject}" disabled="#{!loteBean.modificar}">
 							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
 							<f:selectItems value="#{loteBean.lstProject}" var="proy" itemLabel="#{proy.name}" itemValue="#{proy}"/>
 							<p:ajax update="messages" />
 						</p:selectOneMenu>
 						
 						<h:outputLabel for="option" value="Estado:" />
-						<p:selectOneMenu id="option" value="#{loteBean.loteSelected.status}"
-							style="margin:5px">
-							<f:selectItem itemLabel="Disponibles" itemValue="Disponible" />
-							<f:selectItem itemLabel="Separados" itemValue="Separado"/>
-							<f:selectItem itemLabel="Vendidos" itemValue="Vendido"/>
-							<f:selectItem itemLabel="Inactivos" itemValue="Inactivo"/>
+						<p:selectOneMenu id="option" value="#{loteBean.loteNew.status}" style="margin:5px; width:220px" disabled="#{!loteBean.modificar}">
+							<f:selectItem itemLabel="Disponible" itemValue="Disponible" />
+							<f:selectItem itemLabel="Separado" itemValue="Separado"/>
+							<f:selectItem itemLabel="Vendido" itemValue="Vendido"/>
+							<f:selectItem itemLabel="Inactivo" itemValue="Inactivo"/>
 							<p:ajax update="messages" />
 						</p:selectOneMenu>
 					
-						<p:commandButton value="Guardar" action="#{loteBean.saveLote()}" update=":form:idTableLote :formLoteDialog" />
+						<p:commandButton value="Guardar" action="#{loteBean.saveLote()}" update=":form:idTableLote :formLoteDialog" rendered="#{loteBean.modificar}" />
 					</h:panelGrid>
 				</p:tab>
 				<p:tab title="Medidas" >
+					<h:panelGrid id="gridMedidas" columns="2">
+						<h:outputLabel value="Medida frontal (ML): " for="medidaFrontal" />
+						<p:inputNumber id="medidaFrontal" value="#{loteBean.loteNew.medidaFrontal}" modifyValueOnWheel="false" disabled="#{!loteBean.modificar}" ><p:ajax listener="#{loteBean.calcularAreaPerimetro}" update="messages,areaLote,perimetro" /> </p:inputNumber>
+						
+						<h:outputLabel value="Medida costado derecho (ML): " for="medidaCostDerecho" />
+						<p:inputNumber id="medidaCostDerecho" value="#{loteBean.loteNew.medidaDerecha}" modifyValueOnWheel="false" disabled="#{!loteBean.modificar}"><p:ajax listener="#{loteBean.calcularAreaPerimetro}" update="messages,areaLote,perimetro" /> </p:inputNumber>	
+						
+						<h:outputLabel value="Medida costado izquierdo (ML): " for="medidaCostIzq" />
+						<p:inputNumber id="medidaCostIzq" value="#{loteBean.loteNew.medidaIzquierda}" modifyValueOnWheel="false" disabled="#{!loteBean.modificar}"><p:ajax listener="#{loteBean.calcularAreaPerimetro}" update="messages,areaLote,perimetro" /></p:inputNumber>
+						
+						<h:outputLabel value="Medida fondo (ML): " for="medidaFondo" />
+						<p:inputNumber id="medidaFondo" value="#{loteBean.loteNew.medidaFondo}" modifyValueOnWheel="false" disabled="#{!loteBean.modificar}"><p:ajax listener="#{loteBean.calcularAreaPerimetro}" update="messages,areaLote,perimetro" /></p:inputNumber>
+						
+						<h:outputLabel value="Área de lote (M2): " for="areaLote" />
+						<p:inputNumber id="areaLote" value="#{loteBean.loteNew.area}" modifyValueOnWheel="false" disabled="#{!loteBean.modificar}"><p:ajax update="messages" /> </p:inputNumber>
+						
+						<h:outputLabel value="Perímetro (ML): " for="perimetro" />
+						<p:inputNumber id="perimetro" value="#{loteBean.loteNew.perimetro}" modifyValueOnWheel="false" disabled="#{!loteBean.modificar}"><p:ajax update="messages" /> </p:inputNumber>		
+					</h:panelGrid>
 				</p:tab>
 				<p:tab title="Límites" > 
+					<h:panelGrid id="gridLimites" columns="2">
+						<h:outputLabel value="Límite frontal: " for="limiteFrontal" />
+						<p:inputText id="limiteFrontal" value="#{loteBean.loteNew.limiteFrontal}" modifyValueOnWheel="false" maxlength="45" disabled="#{!loteBean.modificar}"><p:ajax update="messages" /> </p:inputText>
+						
+						<h:outputLabel value="Límite costado derecho (ML): " for="limiteCostDerecho" />
+						<p:inputText id="limiteCostDerecho" value="#{loteBean.loteNew.limiteDerecha}" modifyValueOnWheel="false" maxlength="45" disabled="#{!loteBean.modificar}"><p:ajax update="messages" /> </p:inputText>		
+						
+						<h:outputLabel value="Límite costado izquierdo (ML): " for="limiteCostIzq" />
+						<p:inputText id="limiteCostIzq" value="#{loteBean.loteNew.limiteIzquierda}" modifyValueOnWheel="false" maxlength="45" disabled="#{!loteBean.modificar}"><p:ajax update="messages" /> </p:inputText>
+						
+						<h:outputLabel value="Límite fondo (ML): " for="limiteFondo" />
+						<p:inputText id="limiteFondo" value="#{loteBean.loteNew.limiteFondo}" modifyValueOnWheel="false" maxlength="45" disabled="#{!loteBean.modificar}"><p:ajax update="messages" /> </p:inputText>
+						
+						<h:outputLabel value="Comentario: " for="comentario" />
+						<p:inputText id="comentario" value="#{loteBean.loteNew.comentario}" modifyValueOnWheel="false" maxlength="50" disabled="#{!loteBean.modificar}"><p:ajax update="messages" /> </p:inputText>
+					</h:panelGrid>
 				</p:tab>
-				
 			</p:tabView>	
-			
 		</h:form>
 	</p:dialog>
 

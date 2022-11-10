@@ -30,6 +30,7 @@ public class NavegacionBean implements Serializable  {
 	private int idAdministrador = Perfiles.ADMINISTRADOR.getId();
 	private int idSupervisor = Perfiles.SUPERVISOR.getId();
 	private int idAsesor = Perfiles.ASESOR.getId();
+	private int idAsistentenAdmin = Perfiles.ASISTENTE_ADMINISTRATIVO.getId();
 	
 	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte;
 	private boolean subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
@@ -42,12 +43,12 @@ public class NavegacionBean implements Serializable  {
 	private int[] permisoPersonas= {idAdministrador};
 	private int[] permisoUsuarios= {idAdministrador};
 	private int[] permisoPerfiles= {idAdministrador};
-	private int[] permisoProyectos= {idAdministrador};
+	private int[] permisoProyectos= {idAdministrador,idAsistentenAdmin};
 	private int[] permisoEquipos= {idAdministrador};
 	private int[] permisoCambiarConstrasenia= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoReporteAcciones= {idAdministrador,idSupervisor,idAsesor};
-	private int[] permisoManzanas= {idAdministrador};
-	private int[] permisoLotes= {idAdministrador};
+	private int[] permisoManzanas= {idAdministrador,idAsistentenAdmin};
+	private int[] permisoLotes= {idAdministrador,idSupervisor,idAsesor,idAsistentenAdmin};
 
 	@PostConstruct
 	public void init() {

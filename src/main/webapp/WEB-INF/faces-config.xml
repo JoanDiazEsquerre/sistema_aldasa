@@ -302,6 +302,10 @@
 		<managed-bean-class>com.model.aldasa.proyecto.bean.LoteBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
 		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
+		<managed-property>
 			<property-name>loteService</property-name>
 			<value>#{loteService}</value>
 		</managed-property>
