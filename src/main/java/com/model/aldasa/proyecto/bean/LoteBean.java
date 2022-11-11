@@ -21,6 +21,7 @@ import org.primefaces.model.SortMeta;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Manzana;
@@ -56,8 +57,9 @@ public class LoteBean implements Serializable{
 	private Usuario usuarioLogin;
 	
 	private String projectFilter="";
+	private String manzanaFilter="";
 	
-	private String status = "Disponible";
+	private String status = "";
 	private String tituloDialog;
 	private String nombreLoteSelected="";
 	private boolean modificar = false;
@@ -143,15 +145,27 @@ public class LoteBean implements Serializable{
 				
 				String numberLote="%"+ (filterBy.get("numberLote")!=null?filterBy.get("numberLote").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
 				
-				String nameManzana="%"+ (filterBy.get("manzana.name")!=null?filterBy.get("manzana.name").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
-
-				Pageable pageable = PageRequest.of(first/pageSize, pageSize);
 				
+                                
+                Sort sort=Sort.by("numberLote").ascending();
+                if(sortBy!=null) {
+                	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
+                	    System.out.println(entry.getKey() + "/" + entry.getValue());
+                	   if(entry.getValue().getOrder().isAscending()) {
+                		   sort = Sort.by(entry.getKey()).descending();
+                	   }else {
+                		   sort = Sort.by(entry.getKey()).ascending();
+                	   }
+                	}
+                }
+                
+                Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
+                
 				Page<Lote> pageLote;
 				if(projectFilter.equals("")) {
-					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndStatus(numberLote,nameManzana,status, pageable);
+					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndStatusLike(numberLote,"%"+manzanaFilter+"%","%"+status+"%", pageable);
 				}else {
-					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatus(numberLote, nameManzana,projectFilter,status, pageable);
+					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(numberLote, "%"+manzanaFilter+"%",projectFilter,"%"+status+"%", pageable);
 				
 				}
 				setRowCount((int) pageLote.getTotalElements());
@@ -192,7 +206,7 @@ public class LoteBean implements Serializable{
 			if (validarExistencia == null) {
 				loteService.save(loteNew);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
-				nombreLoteSelected="MANZANA " + loteNew.getManzana().getName()+"/ lote: "+loteNew.getNumberLote();
+				nombreLoteSelected="Manzana " + loteNew.getManzana().getName()+"/ lote: "+loteNew.getNumberLote();
 			} else { 
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya existe."));
 			}
@@ -270,6 +284,16 @@ public class LoteBean implements Serializable{
                 }
             }
         };
+    }
+	
+	public List<Manzana> completeManzana(String query) {
+        List<Manzana> lista = new ArrayList<>();
+        for (Manzana c : lstManzana) {
+            if (c.getName().toUpperCase().contains(query.toUpperCase()) ) {
+                lista.add(c);
+            }
+        }
+        return lista;
     }
 	
 	
@@ -360,13 +384,20 @@ public class LoteBean implements Serializable{
 	public void setNombreLoteSelected(String nombreLoteSelected) {
 		this.nombreLoteSelected = nombreLoteSelected;
 	}
-
 	public Lote getLoteNew() {
 		return loteNew;
 	}
-
 	public void setLoteNew(Lote loteNew) {
 		this.loteNew = loteNew;
 	}
+
+	public String getManzanaFilter() {
+		return manzanaFilter;
+	}
+
+	public void setManzanaFilter(String manzanaFilter) {
+		this.manzanaFilter = manzanaFilter;
+	}
+	
 	
 }

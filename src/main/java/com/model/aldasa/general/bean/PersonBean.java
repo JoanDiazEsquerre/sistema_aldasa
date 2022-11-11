@@ -20,6 +20,7 @@ import org.primefaces.model.SortMeta;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Country;
 import com.model.aldasa.entity.Department;
@@ -158,7 +159,21 @@ public class PersonBean implements Serializable {
 				String dni="%"+ (filterBy.get("dni")!=null?filterBy.get("dni").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
 				String names="%"+ (filterBy.get("surnames")!=null?filterBy.get("surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
 				
-				Pageable pageable = PageRequest.of(first/pageSize, pageSize);
+				 Sort sort=Sort.by("surnames").ascending();
+	                if(sortBy!=null) {
+	                	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
+	                	    System.out.println(entry.getKey() + "/" + entry.getValue());
+	                	   if(entry.getValue().getOrder().isAscending()) {
+	                		   sort = Sort.by(entry.getKey()).descending();
+	                	   }else {
+	                		   sort = Sort.by(entry.getKey()).ascending();
+	                		   
+	                	   }
+	                	    
+	                	}
+	                }
+				
+				Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
 				//Aqui llamo al servicio que a  su vez llama al repositorio que contiene la sentencia LIKE, 
 				//Aqui tu tienes que completar la query, yo solo lo he hecho para dni y nombre a modo de ejemplo
 				//Tu deberias preparar el metodo para cada filtro que tengas en la tabla

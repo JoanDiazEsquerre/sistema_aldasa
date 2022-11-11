@@ -20,6 +20,7 @@ import org.primefaces.model.SortMeta;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Profile;
@@ -122,8 +123,20 @@ public class UserBean implements Serializable {
                 String password="%"+ (filterBy.get("password")!=null?filterBy.get("password").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
                 String personSurnames="%"+ (filterBy.get("person.surnames")!=null?filterBy.get("person.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
                 String profileName="%"+ (filterBy.get("profile.name")!=null?filterBy.get("profile.name").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+                
+                Sort sort=Sort.by("username").ascending();
+                if(sortBy!=null) {
+                	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
+                	   if(entry.getValue().getOrder().isAscending()) {
+                		   sort = Sort.by(entry.getKey()).descending();
+                	   }else {
+                		   sort = Sort.by(entry.getKey()).ascending();
+                		   
+                	   }
+                	}
+                }
 //                
-                Pageable pageable = PageRequest.of(first/pageSize, pageSize);
+                Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
                 //Aqui llamo al servicio que a  su vez llama al repositorio que contiene la sentencia LIKE,
                 //Aqui tu tienes que completar la query, yo solo lo he hecho para dni y nombre a modo de ejemplo
                 //Tu deberias preparar el metodo para cada filtro que tengas en la tabla

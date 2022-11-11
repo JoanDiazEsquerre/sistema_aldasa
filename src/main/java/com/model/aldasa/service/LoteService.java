@@ -21,7 +21,7 @@ public interface LoteService {
 	Lote findByNumberLoteAndManzanaAndProject (String name, Manzana manzana, Project project);
 	Lote findByNumberLoteAndManzanaAndProjectException(String name, int manzana, int project, int idLote);
 	
-	Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatus(String numberLote, String nameManzana,String projectName ,String status,Pageable pageable);
-	Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndStatus(String numberLote,  String nameManzana, String status,Pageable pageable);
+	Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(String numberLote, String nameManzana,String projectName ,String status,Pageable pageable);
+	Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndStatusLike(String numberLote,  String nameManzana, String status,Pageable pageable);
 
 }

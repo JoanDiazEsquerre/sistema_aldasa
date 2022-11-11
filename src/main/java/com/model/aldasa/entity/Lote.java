@@ -56,7 +56,7 @@ public class Lote {
 	@Column(name="limitederecha")
 	private String limiteDerecha;
 	
-	private String comentario;
+	private String comentario,ampliacion;
 	
 	
 	
@@ -157,6 +157,13 @@ public class Lote {
 	}
 	public void setMedidaIzquierda(Double medidaIzquierda) {
 		this.medidaIzquierda = medidaIzquierda;
+	}
+	
+	public String getAmpliacion() {
+		return ampliacion;
+	}
+	public void setAmpliacion(String ampliacion) {
+		this.ampliacion = ampliacion;
 	}
 	
 	

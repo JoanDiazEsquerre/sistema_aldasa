@@ -53,15 +53,15 @@ public class LoteServiceImpl implements LoteService {
 	}
 
 	@Override
-	public Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatus(String numberLote, String nameManzana,String projectName ,String status,Pageable pageable) {
+	public Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(String numberLote, String nameManzana,String projectName ,String status,Pageable pageable) {
 		// TODO Auto-generated method stub
-		return loteRepository.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatus(numberLote, nameManzana, projectName, status, pageable);
+		return loteRepository.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(numberLote, nameManzana, projectName, status, pageable);
 	}
 
 	@Override
-	public Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndStatus(String numberLote,  String nameManzana, String status,Pageable pageable){
+	public Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndStatusLike(String numberLote,  String nameManzana, String status,Pageable pageable){
 		// TODO Auto-generated method stub
-		return loteRepository.findAllByNumberLoteLikeAndManzanaNameLikeAndStatus(numberLote, nameManzana, status, pageable);
+		return loteRepository.findAllByNumberLoteLikeAndManzanaNameLikeAndStatusLike(numberLote, nameManzana, status, pageable);
 	}
 	
 }

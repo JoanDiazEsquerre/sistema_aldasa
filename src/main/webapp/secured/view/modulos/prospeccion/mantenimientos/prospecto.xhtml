@@ -28,37 +28,37 @@
 			<p:column width="25px">
                       #{row +1}
         	</p:column>
-			<p:column headerText="DNI" filterBy="#{per.person.dni}" filterMatchMode="contains">
+			<p:column headerText="DNI" filterBy="#{per.person.dni}" sortBy="#{per.person.dni}" filterMatchMode="contains">
 				<h:outputText value="#{per.person.dni}" />
 			</p:column>
-			<p:column headerText="Apellidos y Nombres" filterBy="#{per.person.surnames}" filterMatchMode="contains">
+			<p:column headerText="Apellidos y Nombres" filterBy="#{per.person.surnames}" sortBy="#{per.person.surnames}" filterMatchMode="contains">
 				<h:outputText value="#{per.person.surnames} #{per.person.names}" />
 			</p:column>
-			<p:column headerText="Sexo" filterMatchMode="contains">
+			<p:column headerText="Sexo" filterMatchMode="contains" sortBy="#{per.person.gender}">
 				<h:outputText value="#{per.person.gender eq 'M'?'Masculino':per.person.gender eq'F'?'Femenino':''}" />
 			</p:column>
-			<p:column headerText="Dirección" filterMatchMode="contains">
+			<p:column headerText="Dirección" filterMatchMode="contains" sortBy="#{per.person.address}">
 				<h:outputText value="#{per.person.address}" />
 			</p:column>
-			<p:column headerText="Teléfono" filterMatchMode="contains">
+			<p:column headerText="Teléfono" filterMatchMode="contains" sortBy="#{per.person.phone}">
 				<h:outputText value="#{per.person.phone}" />
 			</p:column>
-			<p:column headerText="Celular" filterMatchMode="contains">
+			<p:column headerText="Celular" filterMatchMode="contains" sortBy="#{per.person.cellphone}">
 				<h:outputText value="#{per.person.cellphone}" />
 			</p:column>
-			<p:column headerText="Estado Civil" filterMatchMode="contains">
+			<p:column headerText="Estado Civil" filterMatchMode="contains" sortBy="#{per.person.civilStatus}">
 				<h:outputText value="#{per.person.civilStatus}" />
 			</p:column>
-			<p:column headerText="Ocupación" filterMatchMode="contains">
+			<p:column headerText="Ocupación" filterMatchMode="contains" sortBy="#{per.person.occupation}">
 				<h:outputText value="#{per.person.occupation}" />
 			</p:column>
-			<p:column headerText="Asesor" filterMatchMode="contains">
+			<p:column headerText="Asesor" filterMatchMode="contains" sortBy="#{per.personAssessor.surnames}">
 				<h:outputText value="#{per.personAssessor.surnames} #{per.personAssessor.names}" />
 			</p:column>
-			<p:column headerText="Supervisor" filterMatchMode="contains">
+			<p:column headerText="Supervisor" filterMatchMode="contains" sortBy="#{per.personSupervisor.surnames}">
 				<h:outputText value="#{per.personSupervisor.surnames} #{per.personSupervisor.names}" />
 			</p:column>
-			<p:column headerText="Entrada mensual soles" filterMatchMode="contains">
+			<p:column headerText="Entrada mensual soles" filterMatchMode="contains" sortBy="#{per.person.monthEntry}">
 				<h:outputText value="#{per.person.monthEntry}" />
 			</p:column>
 		</p:dataTable>
