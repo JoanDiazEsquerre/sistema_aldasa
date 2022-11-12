@@ -56,7 +56,7 @@ public class LoteBean implements Serializable{
 	private Lote loteNew;
 	private Usuario usuarioLogin;
 	
-	private String projectFilter="";
+	private Project projectFilter;
 	private Manzana manzanaFilter;
 	
 	private String status = "";
@@ -149,6 +149,11 @@ public class LoteBean implements Serializable{
 					manzana = manzanaFilter.getName();
 				}
 				
+				String proyecto = "";
+				if(projectFilter != null) {
+					proyecto = projectFilter.getName();
+				}
+				
                                 
                 Sort sort=Sort.by("numberLote").ascending();
                 if(sortBy!=null) {
@@ -165,12 +170,12 @@ public class LoteBean implements Serializable{
                 Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
                 
 				Page<Lote> pageLote;
-				if(projectFilter.equals("")) {
-					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndStatusLike(numberLote,"%"+manzana+"%","%"+status+"%", pageable);
-				}else {
-					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(numberLote, "%"+manzana+"%",projectFilter,"%"+status+"%", pageable);
+//				if(projectFilter.equals("")) {
+//					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndStatusLike(numberLote,"%"+manzana+"%","%"+status+"%", pageable);
+//				}else {
+					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(numberLote, "%"+manzana+"%","%"+proyecto+"%","%"+status+"%", pageable);
 				
-				}
+//				}
 				setRowCount((int) pageLote.getTotalElements());
 				return datasource = pageLote.getContent();
 			}
@@ -356,16 +361,16 @@ public class LoteBean implements Serializable{
 	public void setProjectService(ProjectService projectService) {
 		this.projectService = projectService;
 	}
-	public String getProjectFilter() {
+	public Project getProjectFilter() {
 		return projectFilter;
 	}
-	public void setProjectFilter(String projectFilter) {
+	public void setProjectFilter(Project projectFilter) {
 		this.projectFilter = projectFilter;
 	}
+
 	public NavegacionBean getNavegacionBean() {
 		return navegacionBean;
 	}
-
 	public void setNavegacionBean(NavegacionBean navegacionBean) {
 		this.navegacionBean = navegacionBean;
 	}
@@ -393,11 +398,9 @@ public class LoteBean implements Serializable{
 	public void setLoteNew(Lote loteNew) {
 		this.loteNew = loteNew;
 	}
-
 	public Manzana getManzanaFilter() {
 		return manzanaFilter;
 	}
-
 	public void setManzanaFilter(Manzana manzanaFilter) {
 		this.manzanaFilter = manzanaFilter;
 	}

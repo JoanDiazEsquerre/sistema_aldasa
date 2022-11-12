@@ -9,7 +9,7 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">PROYECTOS > LOTES</h2>
-		<h:panelGrid columns="6" width="50%">
+		<h:panelGrid columns="10" width="50%" id="panelFilter">
 			<h:outputLabel for="statusFilter" value="Estado: " style="text-align:right"/>
 			<p:selectOneMenu id="statusFilter" value="#{loteBean.status}">
 				<f:selectItem itemLabel="[--Todos--]" itemValue=""/>
@@ -17,23 +17,29 @@
 				<f:selectItem itemLabel="Separados" itemValue="Separado"/>
 				<f:selectItem itemLabel="Vendidos" itemValue="Vendido"/>
 				<f:selectItem itemLabel="Inactivos" itemValue="Inactivo"/>
-				<p:ajax update=":form:idTableLote" />
+				<p:ajax update="idTableLote" />
 			</p:selectOneMenu>
 			
 			<h:outputLabel for="optionProject" value="Proyecto: " style="text-align:right"/>
-			<p:selectOneMenu id="optionProject" value="#{loteBean.projectFilter}" style="width: 100%" > 
-				<f:selectItem itemLabel="[-- Todos --]" itemValue="" />
-				<f:selectItems value="#{prospeccionBean.lstProject}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro.name}"/> 
-				<p:ajax update=":form:idTableLote" />
+			<p:selectOneMenu id="optionProject" value="#{loteBean.projectFilter}" converter="#{loteBean.conversorProject}">
+				<f:selectItem itemLabel="[--Todos--]" itemValue="#{null}"/>
+				<f:selectItems value="#{loteBean.lstProject}" var="proy" itemLabel="#{proy.name}" itemValue="#{proy}"/>
+				<p:ajax update=":form:idTableLote :form:panelFilter" />
 			</p:selectOneMenu>
 			
 			<h:outputLabel for="optionManzana" value="Manzana: " style="text-align:right"/>
             <p:autoComplete scrollHeight="300" onkeyup="javascript:this.value=this.value.toUpperCase();" styleClass="ui-autocompV" value="#{loteBean.manzanaFilter}" converter="#{loteBean.conversorManzana}" id="optionManzana" completeMethod="#{loteBean.completeManzana}"  
                           var="ase" itemLabel="#{ase.name}" itemValue="#{ase}" forceSelection="true"  > 
-            	<p:ajax update=":form:idTableLote" />
+            	<p:ajax update="idTableLote" />
             </p:autoComplete>
+            
+            <p:commandButton id="images" icon="pi pi-image" rendered="#{loteBean.projectFilter != null}" oncomplete="PF('imagenDialog').show();" update="dialogImagen"/>
+            
+            <p:commandButton id="mapeo" icon="pi pi-th-large" rendered="#{loteBean.projectFilter != null}" oncomplete="PF('mapeoDialog').show();" update="dialogMapeo"/>
+            
 		
 		</h:panelGrid>
+		
 		
 
 		<p:dataTable var="lote" id="idTableLote" value="#{loteBean.lstLoteLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="15"
@@ -56,7 +62,7 @@
                       #{row +1}
         	</p:column>
 
-			<p:column headerText="Número de Lote" sortBy="#{lote.numberLote}" filterMatchMode="contains">
+			<p:column headerText="Número de Lote" sortBy="#{lote.numberLote}"  filterMatchMode="contains">
 				<h:outputText value="#{lote.numberLote}" />
 			</p:column>
 			
@@ -191,6 +197,20 @@
 					</h:panelGrid>
 				</p:tab>
 			</p:tabView>	
+		</h:form>
+	</p:dialog>
+	
+	<p:dialog modal="true" dynamic="true" height="500px" closeOnEscape="true" id="dialogImagen" header="Mapeo de lotes del proyecto: #{loteBean.projectFilter.name}" widgetVar="imagenDialog" resizable="false" closable="true"
+		appendTo="@(body)" style="width:auto">
+		<h:form id="formImagenDialog">
+			<p:graphicImage value="/recursos/images/proyectos/proyecto#{loteBean.projectFilter.id}.jpg" style="width: 660px;"/>
+		</h:form>
+	</p:dialog>
+	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogMapeo" header="Mapeo de lotes del proyecto: #{loteBean.projectFilter.name}" widgetVar="mapeoDialog" resizable="false" closable="true"
+		appendTo="@(body)" style="width:auto">
+		<h:form id="formMapeoDialog">
+			
 		</h:form>
 	</p:dialog>
 
