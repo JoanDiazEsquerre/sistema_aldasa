@@ -57,7 +57,7 @@ public class LoteBean implements Serializable{
 	private Usuario usuarioLogin;
 	
 	private String projectFilter="";
-	private String manzanaFilter="";
+	private Manzana manzanaFilter;
 	
 	private String status = "";
 	private String tituloDialog;
@@ -75,7 +75,7 @@ public class LoteBean implements Serializable{
 			modificar=true;
 		}
 		listarProject();
-
+		listarManzanas();
 		
 		iniciarLazy();
 		
@@ -144,7 +144,10 @@ public class LoteBean implements Serializable{
 			public List<Lote> load(int first, int pageSize, Map<String, SortMeta> sortBy,Map<String, FilterMeta> filterBy) {
 				
 				String numberLote="%"+ (filterBy.get("numberLote")!=null?filterBy.get("numberLote").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
-				
+				String manzana = "";
+				if(manzanaFilter != null) {
+					manzana = manzanaFilter.getName();
+				}
 				
                                 
                 Sort sort=Sort.by("numberLote").ascending();
@@ -163,9 +166,9 @@ public class LoteBean implements Serializable{
                 
 				Page<Lote> pageLote;
 				if(projectFilter.equals("")) {
-					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndStatusLike(numberLote,"%"+manzanaFilter+"%","%"+status+"%", pageable);
+					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndStatusLike(numberLote,"%"+manzana+"%","%"+status+"%", pageable);
 				}else {
-					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(numberLote, "%"+manzanaFilter+"%",projectFilter,"%"+status+"%", pageable);
+					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(numberLote, "%"+manzana+"%",projectFilter,"%"+status+"%", pageable);
 				
 				}
 				setRowCount((int) pageLote.getTotalElements());
@@ -391,11 +394,11 @@ public class LoteBean implements Serializable{
 		this.loteNew = loteNew;
 	}
 
-	public String getManzanaFilter() {
+	public Manzana getManzanaFilter() {
 		return manzanaFilter;
 	}
 
-	public void setManzanaFilter(String manzanaFilter) {
+	public void setManzanaFilter(Manzana manzanaFilter) {
 		this.manzanaFilter = manzanaFilter;
 	}
 	

@@ -28,18 +28,10 @@
 			</p:selectOneMenu>
 			
 			<h:outputLabel for="optionManzana" value="Manzana: " style="text-align:right"/>
-			<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{loteBean.manzanaFilter}"  id="optionManzana" completeMethod="#{loteBean.completeManzana}"  
-                          var="manzana" itemLabel="#{manzana.name}" itemValue="#{manzana}" forceSelection="true" style="margin:5px;" > 
+            <p:autoComplete scrollHeight="300" onkeyup="javascript:this.value=this.value.toUpperCase();" styleClass="ui-autocompV" value="#{loteBean.manzanaFilter}" converter="#{loteBean.conversorManzana}" id="optionManzana" completeMethod="#{loteBean.completeManzana}"  
+                          var="ase" itemLabel="#{ase.name}" itemValue="#{ase}" forceSelection="true"  > 
             	<p:ajax update=":form:idTableLote" />
             </p:autoComplete>
-		
-		
-			<p:selectOneMenu style="margin:5px; width:220px" id="manzana" value="#{loteBean.loteNew.manzana}" disabled="#{!loteBean.modificar}" converter="#{loteBean.conversorManzana}"> 
-							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
-							<f:selectItems value="#{loteBean.lstManzana}" var="manz" itemLabel="#{manz.name}" itemValue="#{manz}"/>
-							<p:ajax update="messages" />
-						</p:selectOneMenu>
-		
 		
 		</h:panelGrid>
 		
@@ -62,15 +54,13 @@
 
 			<p:column width="25px">
                       #{row +1}
-        </p:column>
+        	</p:column>
 
-			<p:column headerText="Número de Lote" sortBy="#{lote.numberLote}"
-				filterBy="#{lote.numberLote}" filterMatchMode="contains">
+			<p:column headerText="Número de Lote" sortBy="#{lote.numberLote}" filterMatchMode="contains">
 				<h:outputText value="#{lote.numberLote}" />
 			</p:column>
 			
-			<p:column headerText="Manzana" sortBy="#{lote.manzana.name}"
-				filterBy="#{lote.manzana.name}" filterMatchMode="contains">
+			<p:column headerText="Manzana" sortBy="#{lote.manzana.name}" filterMatchMode="contains">
 				<h:outputText value="#{lote.manzana.name}" />
 			</p:column>
 			
@@ -105,6 +95,10 @@
 			
 			<p:column headerText="Perímetro (ML)" filterMatchMode="contains">
 				<h:outputText value="#{lote.perimetro}" />
+			</p:column>
+			
+			<p:column headerText="Estado" filterMatchMode="contains">
+				<h:outputText value="#{lote.status}" style="font-weight: bold;color:#{lote.status eq 'Disponible'?'green':lote.status eq 'Separado'?'blue':lote.status eq 'Vendido'?'red':'black'}" />
 			</p:column>
 		</p:dataTable>
 
