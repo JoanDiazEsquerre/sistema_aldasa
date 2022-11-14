@@ -52,6 +52,8 @@ public class LoteBean implements Serializable{
 	@ManagedProperty(value = "#{projectService}")
 	private ProjectService projectService;
 	
+	private List<Lote> lstLotes;
+	
 	private Lote loteSelected;
 	private Lote loteNew;
 	private Usuario usuarioLogin;
@@ -78,8 +80,6 @@ public class LoteBean implements Serializable{
 		listarManzanas();
 		
 		iniciarLazy();
-		
-		
 	}
 
 	public void newLote() {
@@ -109,6 +109,10 @@ public class LoteBean implements Serializable{
 	
 	public void listarProject(){
 		lstProject= projectService.findByStatus(true);
+	}
+	
+	public void listarLotes(){
+		lstLotes= loteService.findByProject(projectFilter);
 	}
 	
 	public void iniciarLazy() {
@@ -403,6 +407,14 @@ public class LoteBean implements Serializable{
 	}
 	public void setManzanaFilter(Manzana manzanaFilter) {
 		this.manzanaFilter = manzanaFilter;
+	}
+
+	public List<Lote> getLstLotes() {
+		return lstLotes;
+	}
+
+	public void setLstLotes(List<Lote> lstLotes) {
+		this.lstLotes = lstLotes;
 	}
 	
 	

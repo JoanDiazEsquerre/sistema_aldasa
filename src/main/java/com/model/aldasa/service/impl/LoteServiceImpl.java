@@ -63,5 +63,11 @@ public class LoteServiceImpl implements LoteService {
 		// TODO Auto-generated method stub
 		return loteRepository.findAllByNumberLoteLikeAndManzanaNameLikeAndStatusLike(numberLote, nameManzana, status, pageable);
 	}
+
+	@Override
+	public List<Lote> findByProject(Project project) {
+		// TODO Auto-generated method stub
+		return loteRepository.findByProject(project);
+	}
 	
 }

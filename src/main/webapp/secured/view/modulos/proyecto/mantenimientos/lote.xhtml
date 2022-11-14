@@ -9,8 +9,8 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">PROYECTOS > LOTES</h2>
-		<h:panelGrid columns="10" width="50%" id="panelFilter">
-			<h:outputLabel for="statusFilter" value="Estado: " style="text-align:right"/>
+		<p:panelGrid  columns="4" id="panelFilter" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+			<p:outputLabel for="statusFilter" value="Estado: "/>
 			<p:selectOneMenu id="statusFilter" value="#{loteBean.status}">
 				<f:selectItem itemLabel="[--Todos--]" itemValue=""/>
 				<f:selectItem itemLabel="Disponibles" itemValue="Disponible" />
@@ -20,25 +20,25 @@
 				<p:ajax update="idTableLote" />
 			</p:selectOneMenu>
 			
-			<h:outputLabel for="optionProject" value="Proyecto: " style="text-align:right"/>
+			<p:outputLabel for="optionProject" value="Proyecto: " />
 			<p:selectOneMenu id="optionProject" value="#{loteBean.projectFilter}" converter="#{loteBean.conversorProject}">
 				<f:selectItem itemLabel="[--Todos--]" itemValue="#{null}"/>
 				<f:selectItems value="#{loteBean.lstProject}" var="proy" itemLabel="#{proy.name}" itemValue="#{proy}"/>
 				<p:ajax update=":form:idTableLote :form:panelFilter" />
 			</p:selectOneMenu>
 			
-			<h:outputLabel for="optionManzana" value="Manzana: " style="text-align:right"/>
-            <p:autoComplete scrollHeight="300" onkeyup="javascript:this.value=this.value.toUpperCase();" styleClass="ui-autocompV" value="#{loteBean.manzanaFilter}" converter="#{loteBean.conversorManzana}" id="optionManzana" completeMethod="#{loteBean.completeManzana}"  
+			<p:outputLabel for="optionManzana" value="Manzana: "/>
+            <p:autoComplete style="width:100%" scrollHeight="300" onkeyup="javascript:this.value=this.value.toUpperCase();" value="#{loteBean.manzanaFilter}" converter="#{loteBean.conversorManzana}" id="optionManzana" completeMethod="#{loteBean.completeManzana}"  
                           var="ase" itemLabel="#{ase.name}" itemValue="#{ase}" forceSelection="true"  > 
             	<p:ajax update="idTableLote" />
             </p:autoComplete>
             
             <p:commandButton id="images" icon="pi pi-image" rendered="#{loteBean.projectFilter != null}" oncomplete="PF('imagenDialog').show();" update="dialogImagen"/>
             
-            <p:commandButton id="mapeo" icon="pi pi-th-large" rendered="#{loteBean.projectFilter != null}" oncomplete="PF('mapeoDialog').show();" update="dialogMapeo"/>
+            <p:commandButton id="mapeo" icon="pi pi-th-large" rendered="#{loteBean.projectFilter != null}" oncomplete="PF('mapeoDialog').show();" update="dialogMapeo" actionListener="#{loteBean.listarLotes()}"/>
             
 		
-		</h:panelGrid>
+		</p:panelGrid>
 		
 		
 
@@ -62,55 +62,54 @@
                       #{row +1}
         	</p:column>
 
-			<p:column headerText="Número de Lote" sortBy="#{lote.numberLote}"  filterMatchMode="contains">
+			<p:column headerText="Número de Lote" sortBy="#{lote.numberLote}"  filterMatchMode="contains" responsivePriority="14">
 				<h:outputText value="#{lote.numberLote}" />
 			</p:column>
 			
-			<p:column headerText="Manzana" sortBy="#{lote.manzana.name}" filterMatchMode="contains">
+			<p:column headerText="Manzana" sortBy="#{lote.manzana.name}" filterMatchMode="contains" responsivePriority="13" >
 				<h:outputText value="#{lote.manzana.name}" />
 			</p:column>
 			
-			<p:column headerText="Ampliación" sortBy="#{lote.ampliacion}" filterMatchMode="contains">
+			<p:column headerText="Ampliación" sortBy="#{lote.ampliacion}" filterMatchMode="contains" responsivePriority="4">
 				<h:outputText value="#{lote.ampliacion eq 'S'?'Si':'No'}" />
 			</p:column>
 			
-			<p:column headerText="Proyecto" sortBy="#{lote.project.name}"
-                      filterMatchMode="exact">
+			<p:column headerText="Proyecto" sortBy="#{lote.project.name}" filterMatchMode="contains" responsivePriority="11">
                 <h:outputText value="#{lote.project.name}" />
             </p:column>
             
-            <p:column headerText="Medida frontal(ML)" filterMatchMode="contains">
+            <p:column headerText="Medida frontal(ML)" filterMatchMode="contains" responsivePriority="3">
 				<h:outputText value="#{lote.medidaFrontal}" />
 			</p:column>
 			
-			<p:column headerText="Medida costado derecho (ML)" filterMatchMode="contains">
+			<p:column headerText="Medida costado derecho (ML)" filterMatchMode="contains" responsivePriority="3">
 				<h:outputText value="#{lote.medidaDerecha}" />
 			</p:column>
 			
-			<p:column headerText="Medida costado izquierdo (ML)" filterMatchMode="contains">
+			<p:column headerText="Medida costado izquierdo (ML)" filterMatchMode="contains" responsivePriority="3">
 				<h:outputText value="#{lote.medidaIzquierda}" />
 			</p:column>
 			
-			<p:column headerText="Medida fondo (ML)" filterMatchMode="contains">
+			<p:column headerText="Medida fondo (ML)" filterMatchMode="contains" responsivePriority="3">
 				<h:outputText value="#{lote.medidaFondo}" />
 			</p:column>
 			
-			<p:column headerText="Área de lote (M2)" filterMatchMode="contains">
+			<p:column headerText="Área de lote (M2)" filterMatchMode="contains" responsivePriority="3">
 				<h:outputText value="#{lote.area}" />
 			</p:column>
 			
-			<p:column headerText="Perímetro (ML)" filterMatchMode="contains">
+			<p:column headerText="Perímetro (ML)" filterMatchMode="contains" responsivePriority="3">
 				<h:outputText value="#{lote.perimetro}" />
 			</p:column>
 			
-			<p:column headerText="Estado" filterMatchMode="contains">
+			<p:column headerText="Estado" filterMatchMode="contains" responsivePriority="12">
 				<h:outputText value="#{lote.status}" style="font-weight: bold;color:#{lote.status eq 'Disponible'?'green':lote.status eq 'Separado'?'blue':lote.status eq 'Vendido'?'red':'black'}" />
 			</p:column>
 		</p:dataTable>
 
 	</h:form>
 	
-	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogLote" header="#{loteBean.tituloDialog}" widgetVar="loteDialog" resizable="false" closable="true"
+	<p:dialog modal="true" responsive="true" dynamic="true" closeOnEscape="true" id="dialogLote" header="#{loteBean.tituloDialog}" widgetVar="loteDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formLoteDialog">
 			<h:outputLabel value="#{loteBean.nombreLoteSelected}" style="color: #007d4c;font-weight: bolder;" id="nomLoteSelect" />
@@ -210,6 +209,9 @@
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogMapeo" header="Mapeo de lotes del proyecto: #{loteBean.projectFilter.name}" widgetVar="mapeoDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formMapeoDialog">
+			<p:repeat value="#{loteBean.lstLotes}" var="lote">
+           		<p:button value="#{lote.manzana.name}#{lote.numberLote}"></p:button>
+        	</p:repeat>
 			
 		</h:form>
 	</p:dialog>
