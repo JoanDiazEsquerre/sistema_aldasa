@@ -35,7 +35,7 @@ public class ManzanaBean implements Serializable{
 		listarManzana();
 	}
 	public void listarManzana (){
-		listManzana= manzanaService.findByStatus(estado);
+		listManzana= manzanaService.findByStatusOrderByNameAsc(estado);
 	}
 	public void newManzana() {
 		tituloDialog="NUEVA MANZANA";

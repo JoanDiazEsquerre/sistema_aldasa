@@ -9,7 +9,7 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">PROYECTOS > LOTES</h2>
-		<p:panelGrid  columns="4" id="panelFilter" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+		<p:panelGrid  columns="4" id="panelFilter" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" style="width:auto">
 			<p:outputLabel for="statusFilter" value="Estado: "/>
 			<p:selectOneMenu id="statusFilter" value="#{loteBean.status}">
 				<f:selectItem itemLabel="[--Todos--]" itemValue=""/>
@@ -21,23 +21,17 @@
 			</p:selectOneMenu>
 			
 			<p:outputLabel for="optionProject" value="Proyecto: " />
-			<p:selectOneMenu id="optionProject" value="#{loteBean.projectFilter}" converter="#{loteBean.conversorProject}">
+			<p:selectOneMenu id="optionProject" value="#{loteBean.projectFilter}" converter="#{loteBean.conversorProject}" >
 				<f:selectItem itemLabel="[--Todos--]" itemValue="#{null}"/>
 				<f:selectItems value="#{loteBean.lstProject}" var="proy" itemLabel="#{proy.name}" itemValue="#{proy}"/>
 				<p:ajax update=":form:idTableLote :form:panelFilter" />
 			</p:selectOneMenu>
 			
 			<p:outputLabel for="optionManzana" value="Manzana: "/>
-            <p:autoComplete style="width:100%" scrollHeight="300" onkeyup="javascript:this.value=this.value.toUpperCase();" value="#{loteBean.manzanaFilter}" converter="#{loteBean.conversorManzana}" id="optionManzana" completeMethod="#{loteBean.completeManzana}"  
+            <p:autoComplete scrollHeight="300" onkeyup="javascript:this.value=this.value.toUpperCase();" value="#{loteBean.manzanaFilter}" converter="#{loteBean.conversorManzana}" id="optionManzana" completeMethod="#{loteBean.completeManzana}"  
                           var="ase" itemLabel="#{ase.name}" itemValue="#{ase}" forceSelection="true"  > 
             	<p:ajax update="idTableLote" />
             </p:autoComplete>
-            
-            <p:commandButton id="images" icon="pi pi-image" rendered="#{loteBean.projectFilter != null}" oncomplete="PF('imagenDialog').show();" update="dialogImagen"/>
-            
-            <p:commandButton id="mapeo" icon="pi pi-th-large" rendered="#{loteBean.projectFilter != null}" oncomplete="PF('mapeoDialog').show();" update="dialogMapeo" actionListener="#{loteBean.listarLotes()}"/>
-            
-		
 		</p:panelGrid>
 		
 		
@@ -46,7 +40,13 @@
 			size="small" emptyMessage="No se encontraron lotes." paginatorPosition="bottom" rowKey="#{lote.id}" selection="#{loteBean.loteSelected}" selectionMode="single">
 			<f:facet name="header">
 				<div class="p-d-flex p-ai-center p-jc-between">
-					<span>Lista de Lotes</span>
+					<span>
+						<p:commandButton id="images" icon="pi pi-image" rendered="#{loteBean.projectFilter != null}" style="margin-right:10px" title="Descargar maqueta" actionListener="#{loteBean.fileDownloadView}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+				            <p:fileDownload value="#{loteBean.file}"/>
+				        </p:commandButton>
+			            
+			            <p:commandButton id="mapeo" icon="pi pi-th-large" rendered="#{loteBean.projectFilter != null}" oncomplete="PF('mapeoDialog').show();" update="dialogMapeo" actionListener="#{loteBean.listarLotes()}"/>
+					</span>
 				</div>
 			</f:facet>
 			<p:ajax event="rowSelect" listener="#{loteBean.modifyLote()}" update=":formLoteDialog :dialogLote :form:idTableLote " oncomplete="PF('loteDialog').show();" />
@@ -199,22 +199,48 @@
 		</h:form>
 	</p:dialog>
 	
-	<p:dialog modal="true" dynamic="true" height="500px" closeOnEscape="true" id="dialogImagen" header="Mapeo de lotes del proyecto: #{loteBean.projectFilter.name}" widgetVar="imagenDialog" resizable="false" closable="true"
+	<p:dialog modal="true" dynamic="true" responsive="true" height="auto" closeOnEscape="true" id="dialogImagen" header="Mapeo de lotes del proyecto: #{loteBean.projectFilter.name}" widgetVar="imagenDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formImagenDialog">
 			<p:graphicImage value="/recursos/images/proyectos/proyecto#{loteBean.projectFilter.id}.jpg" style="width: 660px;"/>
 		</h:form>
 	</p:dialog>
 	
-	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogMapeo" header="Mapeo de lotes del proyecto: #{loteBean.projectFilter.name}" widgetVar="mapeoDialog" resizable="false" closable="true"
+	<p:dialog modal="true" responsive="true" dynamic="true" closeOnEscape="true" id="dialogMapeo" width="auto" height="400px" header="Mapeo de lotes" widgetVar="mapeoDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formMapeoDialog">
-			<p:repeat value="#{loteBean.lstLotes}" var="lote">
-           		<p:button value="#{lote.manzana.name}#{lote.numberLote}"></p:button>
-        	</p:repeat>
+		
+		
+			<p:outputLabel value="Proyecto: #{loteBean.projectFilter.name}" style="color: #007d4c;font-weight: bold" /><br> </br>
+			
+			<p:outputLabel for="filterMapeo" value="Manzana: " style="font-size: 25px;" />
+			<p:selectOneMenu id="filterMapeo" value="#{loteBean.manzanaFilterMapeo}" converter="#{loteBean.conversorManzana}" >
+				<f:selectItems value="#{loteBean.lstManzana}" var="proy" itemLabel="#{proy.name}" itemValue="#{proy}"/>
+				<p:ajax event="change" update=":formMapeoDialog:grdLotes" listener="#{loteBean.listarLotes()}"/>
+			</p:selectOneMenu>
+			
+			<p:panelGrid style="margin-bottom: 20px" id="grdLotes" columns="5" layout="grid">
+				<p:outputLabel value="No se ha registrado lotes" rendered="#{loteBean.cantidadLotes eq 0}"  />
+				<p:repeat value="#{loteBean.lstLotes}" var="lote">
+           			<p:button value="#{lote.manzana.name}-#{lote.numberLote}" disabled="true" style="margin:5px;background:#{lote.status eq 'Vendido'?'red':lote.status eq 'Separado'?'blue':lote.status eq 'Disponible'?'green':'black'}"> </p:button>
+        		</p:repeat>
+			</p:panelGrid>
+			
+			Leyenda:
+			<p:panelGrid  columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"> 
+				<p:button value="Disponible" style="background: green" disabled="true"/>
+				<p:button value="Separado" style="background: blue" disabled="true"/>
+				<p:button value="Vendido" style="background: red" disabled="true"/>
+				<p:button value="Inactivo" style="background: black" disabled="true"/>
+			</p:panelGrid>
 			
 		</h:form>
 	</p:dialog>
+	
+	<p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false"
+              resizable="false">
+              <i class="pi pi-spinner pi-spin" style="font-size:3rem"></i>
+    </p:dialog>
 
 
 </ui:composition>

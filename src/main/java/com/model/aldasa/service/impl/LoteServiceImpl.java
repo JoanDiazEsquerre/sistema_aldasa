@@ -65,9 +65,9 @@ public class LoteServiceImpl implements LoteService {
 	}
 
 	@Override
-	public List<Lote> findByProject(Project project) {
+	public List<Lote> findByProjectAndManzanaOrderByManzanaNameAscNumberLoteAsc(Project project, Manzana manzana) {
 		// TODO Auto-generated method stub
-		return loteRepository.findByProject(project);
+		return loteRepository.findByProjectAndManzanaOrderByManzanaNameAscNumberLoteAsc(project, manzana);
 	}
 	
 }

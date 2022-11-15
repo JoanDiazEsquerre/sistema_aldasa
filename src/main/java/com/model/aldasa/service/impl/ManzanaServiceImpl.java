@@ -27,8 +27,8 @@ public class ManzanaServiceImpl implements ManzanaService {
 	}
 	
 	@Override
-	public List<Manzana> findByStatus(boolean status) {
-		return manzanaRepository.findByStatus(status);
+	public List<Manzana> findByStatusOrderByNameAsc(boolean status) {
+		return manzanaRepository.findByStatusOrderByNameAsc(status);
 	}
 	
 	@Override

@@ -9,7 +9,7 @@ import com.model.aldasa.entity.Manzana;
 
 public interface ManzanaRepository extends JpaRepository<Manzana, Integer> {
 
-	List<Manzana> findByStatus(boolean status);
+	List<Manzana> findByStatusOrderByNameAsc(boolean status);
 	Manzana findByName(String name);
 	
 	@Query(nativeQuery = true,value = "SELECT * FROM manzana WHERE name=:name AND id <> :idManzana ")

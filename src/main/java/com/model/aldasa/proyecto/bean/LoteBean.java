@@ -15,9 +15,11 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
+import org.primefaces.model.StreamedContent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -54,17 +56,21 @@ public class LoteBean implements Serializable{
 	
 	private List<Lote> lstLotes;
 	
+	private StreamedContent file;
+	
 	private Lote loteSelected;
 	private Lote loteNew;
 	private Usuario usuarioLogin;
 	
 	private Project projectFilter;
 	private Manzana manzanaFilter;
+	private Manzana manzanaFilterMapeo;
 	
 	private String status = "";
 	private String tituloDialog;
 	private String nombreLoteSelected="";
 	private boolean modificar = false;
+	private int cantidadLotes=0;
 	
 	private LazyDataModel<Lote> lstLoteLazy;
 	private List<Manzana> lstManzana = new ArrayList<>();
@@ -104,7 +110,8 @@ public class LoteBean implements Serializable{
 	}
 	
 	public void listarManzanas (){
-		lstManzana= manzanaService.findByStatus(true);
+		lstManzana= manzanaService.findByStatusOrderByNameAsc(true);
+		manzanaFilterMapeo = lstManzana.get(0);
 	}
 	
 	public void listarProject(){
@@ -112,7 +119,11 @@ public class LoteBean implements Serializable{
 	}
 	
 	public void listarLotes(){
-		lstLotes= loteService.findByProject(projectFilter);
+		lstLotes= loteService.findByProjectAndManzanaOrderByManzanaNameAscNumberLoteAsc(projectFilter,manzanaFilterMapeo);
+		cantidadLotes=0;
+		if(!lstLotes.isEmpty()) {
+			cantidadLotes = lstLotes.size();
+		}
 	}
 	
 	public void iniciarLazy() {
@@ -153,7 +164,7 @@ public class LoteBean implements Serializable{
 					manzana = manzanaFilter.getName();
 				}
 				
-				String proyecto = "";
+				String proyecto = "%%";
 				if(projectFilter != null) {
 					proyecto = projectFilter.getName();
 				}
@@ -177,7 +188,7 @@ public class LoteBean implements Serializable{
 //				if(projectFilter.equals("")) {
 //					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndStatusLike(numberLote,"%"+manzana+"%","%"+status+"%", pageable);
 //				}else {
-					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(numberLote, "%"+manzana+"%","%"+proyecto+"%","%"+status+"%", pageable);
+					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(numberLote, "%"+manzana+"%",proyecto,"%"+status+"%", pageable);
 				
 //				}
 				setRowCount((int) pageLote.getTotalElements());
@@ -308,6 +319,13 @@ public class LoteBean implements Serializable{
         return lista;
     }
 	
+	public void fileDownloadView() {
+        file = DefaultStreamedContent.builder()
+                .name("proyecto"+projectFilter.getId()+".jpg")
+                .contentType("image/jpg")
+                .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/recursos/images/proyectos/proyecto"+projectFilter.getId()+".jpg"))
+                .build();
+    }
 	
 	
 	
@@ -415,6 +433,29 @@ public class LoteBean implements Serializable{
 
 	public void setLstLotes(List<Lote> lstLotes) {
 		this.lstLotes = lstLotes;
+	}
+
+	public StreamedContent getFile() {
+		return file;
+	}
+
+	public void setFile(StreamedContent file) {
+		this.file = file;
+	}
+	public Manzana getManzanaFilterMapeo() {
+		return manzanaFilterMapeo;
+	}
+
+	public void setManzanaFilterMapeo(Manzana manzanaFilterMapeo) {
+		this.manzanaFilterMapeo = manzanaFilterMapeo;
+	}
+
+	public int getCantidadLotes() {
+		return cantidadLotes;
+	}
+
+	public void setCantidadLotes(int cantidadLotes) {
+		this.cantidadLotes = cantidadLotes;
 	}
 	
 	
