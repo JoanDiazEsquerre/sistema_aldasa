@@ -1,5 +1,7 @@
 package com.model.aldasa.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -58,8 +60,14 @@ public class Lote {
 	
 	private String comentario,ampliacion;
 	
+	@Column(name="fechaseparacion")
+	private Date fechaSeparacion;
 	
+	@Column(name="fechavencimiento")
+	private Date fechaVencimiento;
 	
+	@Column(name="fechavendido")
+	private Date fechaVendido;
 	
 	
 	public Integer getId() {
@@ -165,9 +173,26 @@ public class Lote {
 	public void setAmpliacion(String ampliacion) {
 		this.ampliacion = ampliacion;
 	}
+	public Date getFechaVencimiento() {
+		return fechaVencimiento;
+	}
+	public void setFechaVencimiento(Date fechaVencimiento) {
+		this.fechaVencimiento = fechaVencimiento;
+	}
 	
+	public Date getFechaVendido() {
+		return fechaVendido;
+	}
+	public void setFechaVendido(Date fechaVendido) {
+		this.fechaVendido = fechaVendido;
+	}
 	
-	
+	public Date getFechaSeparacion() {
+		return fechaSeparacion;
+	}
+	public void setFechaSeparacion(Date fechaSeparacion) {
+		this.fechaSeparacion = fechaSeparacion;
+	}
 	
 	
 	

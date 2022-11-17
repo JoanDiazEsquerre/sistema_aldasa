@@ -232,12 +232,12 @@ public class ReporteProspeccionBean  implements Serializable {
 		fechaFin.setHours(23);
 		fechaFin.setMinutes(59);
 		
-		if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
-			lstProspectionDetailReporte = prospectionDetailService.findByScheduledAndDateBetweenAndProspectionProspectPersonSurnamesLikeAndProspectionPersonAssessorDniLikeAndProspectionPersonSupervisorDniLikeAndActionDescriptionLikeAndProspectionOriginContactLikeAndProspectionProjectNameLike(false, fechaIni,fechaFin,personSurnames,assessorDni,"%%",action,originContact,project);
-		}else if(usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
+		if(usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
 			lstProspectionDetailReporte = prospectionDetailService.findByScheduledAndDateBetweenAndProspectionProspectPersonSurnamesLikeAndProspectionPersonAssessorDniLikeAndProspectionPersonSupervisorDniLikeAndActionDescriptionLikeAndProspectionOriginContactLikeAndProspectionProjectNameLike(false, fechaIni,fechaFin,personSurnames,"%"+usuarioLogin.getPerson().getDni()+"%","%%",action,originContact,project);
 		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
 			lstProspectionDetailReporte = prospectionDetailService.findByScheduledAndDateBetweenAndProspectionProspectPersonSurnamesLikeAndProspectionPersonAssessorDniLikeAndProspectionPersonSupervisorDniLikeAndActionDescriptionLikeAndProspectionOriginContactLikeAndProspectionProjectNameLike(false, fechaIni,fechaFin,personSurnames,assessorDni,"%"+usuarioLogin.getPerson().getDni()+"%",action,originContact,project);
+		}else {
+			lstProspectionDetailReporte = prospectionDetailService.findByScheduledAndDateBetweenAndProspectionProspectPersonSurnamesLikeAndProspectionPersonAssessorDniLikeAndProspectionPersonSupervisorDniLikeAndActionDescriptionLikeAndProspectionOriginContactLikeAndProspectionProjectNameLike(false, fechaIni,fechaFin,personSurnames,assessorDni,"%%",action,originContact,project);
 		}
 	}
 	

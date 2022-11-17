@@ -36,7 +36,7 @@
 		
 		
 
-		<p:dataTable var="lote" id="idTableLote" value="#{loteBean.lstLoteLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="15"
+		<p:dataTable var="lote" id="idTableLote" value="#{loteBean.lstLoteLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="15" style="width:120%"
 			size="small" emptyMessage="No se encontraron lotes." paginatorPosition="bottom" rowKey="#{lote.id}" selection="#{loteBean.loteSelected}" selectionMode="single">
 			<f:facet name="header">
 				<div class="p-d-flex p-ai-center p-jc-between">
@@ -102,6 +102,24 @@
 				<h:outputText value="#{lote.perimetro}" />
 			</p:column>
 			
+			<p:column headerText="Fecha Separación" filterMatchMode="contains" responsivePriority="3">
+				<h:outputText value="#{lote.fechaSeparacion}" > 
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column headerText="Fecha Vencimiento" filterMatchMode="contains" responsivePriority="3">
+				<h:outputText value="#{lote.fechaVencimiento}" > 
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column headerText="Fecha Venta" filterMatchMode="contains" responsivePriority="3">
+				<h:outputText value="#{lote.fechaVendido}"> 
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			
 			<p:column headerText="Estado" filterMatchMode="contains" responsivePriority="12">
 				<h:outputText value="#{lote.status}" style="font-weight: bold;color:#{lote.status eq 'Disponible'?'green':lote.status eq 'Separado'?'blue':lote.status eq 'Vendido'?'red':'black'}" />
 			</p:column>
@@ -150,8 +168,20 @@
 							<f:selectItem itemLabel="Separado" itemValue="Separado"/>
 							<f:selectItem itemLabel="Vendido" itemValue="Vendido"/>
 							<f:selectItem itemLabel="Inactivo" itemValue="Inactivo"/>
-							<p:ajax update="messages" />
+							<p:ajax update="tabOpciones" listener="#{loteBean.changeCmbEstado}" />
 						</p:selectOneMenu>
+						
+						<h:outputLabel id="lblFechaSep" for="fechaSeparado" value="Fecha Separación:" rendered="#{loteBean.loteNew.status eq 'Separado'}"/>
+						<p:datePicker id="fechaSeparado" style="margin:5px; width:220px" value="#{loteBean.fechaSeparacion}" rendered="#{loteBean.loteNew.status eq 'Separado'}"> 
+							<p:ajax listener="#{loteBean.calcularFechaVencimiento}" update=":formLoteDialog:tabOpciones:venc" />
+						</p:datePicker>
+						
+						<h:outputLabel id="lblFechaVenc" for="venc" value="Fecha Vencimiento:" rendered="#{loteBean.loteNew.status eq 'Separado'}"/>
+						<p:datePicker id="venc" style="margin:5px; width:220px" value="#{loteBean.fechaVencimiento}" rendered="#{loteBean.loteNew.status eq 'Separado'}"/>
+						
+						<h:outputLabel id="lblFechaVend" for="vend" value="Fecha venta:" rendered="#{loteBean.loteNew.status eq 'Vendido'}"/>
+						<p:datePicker id="vend" style="margin:5px; width:220px" value="#{loteBean.fechaVendido}" rendered="#{loteBean.loteNew.status eq 'Vendido'}"/>
+				
 					
 						<p:commandButton value="Guardar" action="#{loteBean.saveLote()}" update=":form:idTableLote :formLoteDialog" rendered="#{loteBean.modificar}" />
 					</h:panelGrid>

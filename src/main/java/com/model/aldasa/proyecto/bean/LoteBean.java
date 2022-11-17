@@ -3,6 +3,8 @@ package com.model.aldasa.proyecto.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +73,7 @@ public class LoteBean implements Serializable{
 	private String nombreLoteSelected="";
 	private boolean modificar = false;
 	private int cantidadLotes=0;
+	private Date fechaSeparacion, fechaVencimiento,fechaVendido;
 	
 	private LazyDataModel<Lote> lstLoteLazy;
 	private List<Manzana> lstManzana = new ArrayList<>();
@@ -104,9 +107,52 @@ public class LoteBean implements Serializable{
 		nombreLoteSelected="Manzana " + loteSelected.getManzana().getName()+" / Lote: "+loteSelected.getNumberLote();
 		
 		loteNew = loteSelected;
+		
+		fechaSeparacion = loteNew.getFechaSeparacion();
+		fechaVencimiento = loteNew.getFechaVencimiento();
+		fechaVendido = loteNew.getFechaVendido();
 				
 		listarManzanas();
 		listarProject();
+	}
+	
+	public void changeCmbEstado() {
+		if(loteNew.getStatus().equals("Separado")) {
+			if(fechaSeparacion == null) {
+				fechaSeparacion = new Date(); 
+				fechaVencimiento=sumarDiasAFecha(new Date(), 7);
+			}else {
+				
+			}
+		}
+		
+		if(loteNew.getStatus().equals("Vendido")) {
+			if(fechaVendido == null) {
+				fechaVendido=new Date();
+			}
+		}
+		
+//		if(tituloDialog.equals("NUEVO LOTE")) {
+//			if(!loteNew.getStatus().equals("Separado") && loteNew.getStatus().equals("Vendido")) {
+//				loteNew.setFechaSeparacion(null); 
+//				loteNew.setFechaVencimiento(null);
+//				loteNew.setFechaVencimiento(null);
+//			}
+//		}
+	}
+	
+	public void calcularFechaVencimiento() {
+		if(fechaSeparacion != null) {
+			fechaVencimiento = sumarDiasAFecha(fechaSeparacion, 7);
+		}
+	}
+	
+	public Date sumarDiasAFecha(Date fecha, int dias){
+	      if (dias==0) return fecha;
+	      Calendar calendar = Calendar.getInstance();
+	      calendar.setTime(fecha); 
+	      calendar.add(Calendar.DAY_OF_YEAR, dias);  
+	      return calendar.getTime(); 
 	}
 	
 	public void listarManzanas (){
@@ -214,6 +260,36 @@ public class LoteBean implements Serializable{
 			return ;
 		} 
 		
+		if(loteNew.getStatus().equals("Separado") && fechaSeparacion == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una fecha separación."));
+			return ;
+		}
+		
+		if(loteNew.getStatus().equals("Separado") && fechaVencimiento == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una fecha vencimiento."));
+			return ;
+		}
+		
+		if(loteNew.getStatus().equals("Vendido") && fechaVendido == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una fecha vendido."));
+			return ;
+		}
+		
+		
+		
+		//*********************************
+		if(loteNew.getStatus().equals("Vendido")) {
+			loteNew.setFechaVendido(fechaVendido); 
+		}else if(loteNew.getStatus().equals("Separado")) {
+			loteNew.setFechaSeparacion(fechaSeparacion);
+			loteNew.setFechaVencimiento(fechaVencimiento); 
+		}else {
+			loteNew.setFechaSeparacion(null);
+			loteNew.setFechaVencimiento(null); 
+			loteNew.setFechaVendido(null); 
+		}
+		
+		
 		
 		if (tituloDialog.equals("NUEVO LOTE")) {
 			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProject(loteNew.getNumberLote(), loteNew.getManzana(), loteNew.getProject());
@@ -221,6 +297,9 @@ public class LoteBean implements Serializable{
 				loteService.save(loteNew);
 				newLote();
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				fechaSeparacion = null;
+				fechaVencimiento = null;
+				fechaVendido=null;
 			} else { 
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya existe."));
 			}
@@ -389,7 +468,6 @@ public class LoteBean implements Serializable{
 	public void setProjectFilter(Project projectFilter) {
 		this.projectFilter = projectFilter;
 	}
-
 	public NavegacionBean getNavegacionBean() {
 		return navegacionBean;
 	}
@@ -426,36 +504,47 @@ public class LoteBean implements Serializable{
 	public void setManzanaFilter(Manzana manzanaFilter) {
 		this.manzanaFilter = manzanaFilter;
 	}
-
 	public List<Lote> getLstLotes() {
 		return lstLotes;
 	}
-
 	public void setLstLotes(List<Lote> lstLotes) {
 		this.lstLotes = lstLotes;
 	}
-
 	public StreamedContent getFile() {
 		return file;
 	}
-
 	public void setFile(StreamedContent file) {
 		this.file = file;
 	}
 	public Manzana getManzanaFilterMapeo() {
 		return manzanaFilterMapeo;
 	}
-
 	public void setManzanaFilterMapeo(Manzana manzanaFilterMapeo) {
 		this.manzanaFilterMapeo = manzanaFilterMapeo;
 	}
-
 	public int getCantidadLotes() {
 		return cantidadLotes;
 	}
-
 	public void setCantidadLotes(int cantidadLotes) {
 		this.cantidadLotes = cantidadLotes;
+	}
+	public Date getFechaSeparacion() {
+		return fechaSeparacion;
+	}
+	public void setFechaSeparacion(Date fechaSeparacion) {
+		this.fechaSeparacion = fechaSeparacion;
+	}
+	public Date getFechaVencimiento() {
+		return fechaVencimiento;
+	}
+	public void setFechaVencimiento(Date fechaVencimiento) {
+		this.fechaVencimiento = fechaVencimiento;
+	}
+	public Date getFechaVendido() {
+		return fechaVendido;
+	}
+	public void setFechaVendido(Date fechaVendido) {
+		this.fechaVendido = fechaVendido;
 	}
 	
 	
