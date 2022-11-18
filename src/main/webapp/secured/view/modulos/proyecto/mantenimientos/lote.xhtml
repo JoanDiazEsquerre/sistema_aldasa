@@ -78,6 +78,10 @@
                 <h:outputText value="#{lote.project.name}" />
             </p:column>
             
+            <p:column headerText="Estado" filterMatchMode="contains" responsivePriority="12">
+				<h:outputText value="#{lote.status}" style="font-weight: bold;color:#{lote.status eq 'Disponible'?'green':lote.status eq 'Separado'?'blue':lote.status eq 'Vendido'?'red':'black'}" />
+			</p:column>
+            
             <p:column headerText="Medida frontal(ML)" filterMatchMode="contains" responsivePriority="3">
 				<h:outputText value="#{lote.medidaFrontal}" />
 			</p:column>
@@ -118,10 +122,6 @@
 				<h:outputText value="#{lote.fechaVendido}"> 
 					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
-			</p:column>
-			
-			<p:column headerText="Estado" filterMatchMode="contains" responsivePriority="12">
-				<h:outputText value="#{lote.status}" style="font-weight: bold;color:#{lote.status eq 'Disponible'?'green':lote.status eq 'Separado'?'blue':lote.status eq 'Vendido'?'red':'black'}" />
 			</p:column>
 		</p:dataTable>
 
@@ -172,15 +172,28 @@
 						</p:selectOneMenu>
 						
 						<h:outputLabel id="lblFechaSep" for="fechaSeparado" value="Fecha Separación:" rendered="#{loteBean.loteNew.status eq 'Separado'}"/>
-						<p:datePicker id="fechaSeparado" style="margin:5px; width:220px" value="#{loteBean.fechaSeparacion}" rendered="#{loteBean.loteNew.status eq 'Separado'}"> 
+						<p:datePicker id="fechaSeparado" style="margin:5px; width:220px" value="#{loteBean.fechaSeparacion}" rendered="#{loteBean.loteNew.status eq 'Separado'}" disabled="#{!loteBean.modificar}"> 
 							<p:ajax listener="#{loteBean.calcularFechaVencimiento}" update=":formLoteDialog:tabOpciones:venc" />
 						</p:datePicker>
 						
+						<h:outputLabel for="optionPerson" value="Persona Venta:" />
+		                <p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{loteBean.personVenta}" converter="#{loteBean.conversorPerson}" id="optionPerson" completeMethod="#{loteBean.completePerson}"  
+		                          var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:10px" >
+		                          <p:column width="400px">
+	                        <h:outputLabel value="#{per.surnames} #{per.names}" /> 
+	                        </p:column>
+	                        <p:column width="400px">
+	                        	<h:outputLabel value="#{per.dni}" /> 
+	                        </p:column> 
+	                         
+	                        <p:ajax update="messages" />
+	                    </p:autoComplete>
+						
 						<h:outputLabel id="lblFechaVenc" for="venc" value="Fecha Vencimiento:" rendered="#{loteBean.loteNew.status eq 'Separado'}"/>
-						<p:datePicker id="venc" style="margin:5px; width:220px" value="#{loteBean.fechaVencimiento}" rendered="#{loteBean.loteNew.status eq 'Separado'}"/>
+						<p:datePicker id="venc" style="margin:5px; width:220px" value="#{loteBean.fechaVencimiento}" rendered="#{loteBean.loteNew.status eq 'Separado'}" disabled="#{!loteBean.modificar}"/>
 						
 						<h:outputLabel id="lblFechaVend" for="vend" value="Fecha venta:" rendered="#{loteBean.loteNew.status eq 'Vendido'}"/>
-						<p:datePicker id="vend" style="margin:5px; width:220px" value="#{loteBean.fechaVendido}" rendered="#{loteBean.loteNew.status eq 'Vendido'}"/>
+						<p:datePicker id="vend" style="margin:5px; width:220px" value="#{loteBean.fechaVendido}" rendered="#{loteBean.loteNew.status eq 'Vendido'}" disabled="#{!loteBean.modificar}"/>
 				
 					</h:panelGrid>
 					<p:commandButton value="Guardar" action="#{loteBean.saveLote()}" update=":form:idTableLote :formLoteDialog" rendered="#{loteBean.modificar}" />

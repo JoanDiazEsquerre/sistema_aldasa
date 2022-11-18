@@ -25,6 +25,10 @@ public class Lote {
 	@ManyToOne
 	@JoinColumn(name="idmanzana")
 	private Manzana manzana;
+	
+	@ManyToOne
+	@JoinColumn(name="idpersonventa")
+	private Person personVenta;
 
 	@ManyToOne
 	@JoinColumn(name="idproject")
@@ -193,6 +197,15 @@ public class Lote {
 	public void setFechaSeparacion(Date fechaSeparacion) {
 		this.fechaSeparacion = fechaSeparacion;
 	}
+	public Person getPersonVenta() {
+		return personVenta;
+	}
+	public void setPersonVenta(Person personVenta) {
+		this.personVenta = personVenta;
+	}
+	
+	
+	
 	
 	
 	

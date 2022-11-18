@@ -35,6 +35,7 @@ import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.ManzanaService;
+import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.util.Perfiles;
 
@@ -56,7 +57,11 @@ public class LoteBean implements Serializable{
 	@ManagedProperty(value = "#{projectService}")
 	private ProjectService projectService;
 	
+	@ManagedProperty(value = "#{personService}")
+	private PersonService personService;
+	
 	private List<Lote> lstLotes;
+	private List<Person> lstPerson;
 	
 	private StreamedContent file;
 	
@@ -67,6 +72,7 @@ public class LoteBean implements Serializable{
 	private Project projectFilter;
 	private Manzana manzanaFilter;
 	private Manzana manzanaFilterMapeo;
+	private Person personVenta;
 	
 	private String status = "";
 	private String tituloDialog;
@@ -87,8 +93,12 @@ public class LoteBean implements Serializable{
 		}
 		listarProject();
 		listarManzanas();
-		
+		listarPersonas();
 		iniciarLazy();
+	}
+	
+	public void listarPersonas() {
+		lstPerson=personService.findByStatus(true);
 	}
 
 	public void newLote() {
@@ -161,8 +171,12 @@ public class LoteBean implements Serializable{
 		}else {
 			lstManzana= manzanaService.findByProject(projectFilter.getId());
 		}
-		 
-		manzanaFilterMapeo = lstManzana.get(0);
+		
+		manzanaFilterMapeo = null;
+		if(!lstManzana.isEmpty() && lstManzana != null) {
+			manzanaFilterMapeo = lstManzana.get(0);
+		}
+		
 	}
 	
 	public void listarProject(){
@@ -393,10 +407,48 @@ public class LoteBean implements Serializable{
         };
     }
 	
+	public Converter getConversorPerson() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                    Person c = null;
+                    for (Person si : lstPerson) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Person) value).getId() + "";
+                }
+            }
+        };
+    }
+	
 	public List<Manzana> completeManzana(String query) {
         List<Manzana> lista = new ArrayList<>();
         for (Manzana c : lstManzana) {
             if (c.getName().toUpperCase().contains(query.toUpperCase()) ) {
+                lista.add(c);
+            }
+        }
+        return lista;
+    }
+	
+	public List<Person> completePerson(String query) {
+        List<Person> lista = new ArrayList<>();
+        for (Person c : getLstPerson()) {
+            if (c.getSurnames().toUpperCase().contains(query.toUpperCase()) || c.getNames().toUpperCase().contains(query.toUpperCase()) || c.getDni().toUpperCase().contains(query.toUpperCase())) {
                 lista.add(c);
             }
         }
@@ -550,6 +602,30 @@ public class LoteBean implements Serializable{
 	}
 	public void setFechaVendido(Date fechaVendido) {
 		this.fechaVendido = fechaVendido;
+	}
+
+	public List<Person> getLstPerson() {
+		return lstPerson;
+	}
+
+	public void setLstPerson(List<Person> lstPerson) {
+		this.lstPerson = lstPerson;
+	}
+
+	public PersonService getPersonService() {
+		return personService;
+	}
+
+	public void setPersonService(PersonService personService) {
+		this.personService = personService;
+	}
+
+	public Person getPersonVenta() {
+		return personVenta;
+	}
+
+	public void setPersonVenta(Person personVenta) {
+		this.personVenta = personVenta;
 	}
 	
 	
