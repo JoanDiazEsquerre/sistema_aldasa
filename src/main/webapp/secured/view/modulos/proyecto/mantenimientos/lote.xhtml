@@ -24,13 +24,13 @@
 			<p:selectOneMenu id="optionProject" value="#{loteBean.projectFilter}" converter="#{loteBean.conversorProject}" >
 				<f:selectItem itemLabel="[--Todos--]" itemValue="#{null}"/>
 				<f:selectItems value="#{loteBean.lstProject}" var="proy" itemLabel="#{proy.name}" itemValue="#{proy}"/>
-				<p:ajax update=":form:idTableLote :form:panelFilter" />
+				<p:ajax update=":form:idTableLote :form:panelFilter" listener="#{loteBean.listarManzanas}" />
 			</p:selectOneMenu>
 			
 			<p:outputLabel for="optionManzana" value="Manzana: "/>
             <p:autoComplete scrollHeight="300" onkeyup="javascript:this.value=this.value.toUpperCase();" value="#{loteBean.manzanaFilter}" converter="#{loteBean.conversorManzana}" id="optionManzana" completeMethod="#{loteBean.completeManzana}"  
                           var="ase" itemLabel="#{ase.name}" itemValue="#{ase}" forceSelection="true"  > 
-            	<p:ajax update="idTableLote" />
+            	<p:ajax update="idTableLote"/>
             </p:autoComplete>
 		</p:panelGrid>
 		
@@ -137,7 +137,7 @@
 					<p:messages id="messages" showDetail="true" closable="true">
 						<p:autoUpdate />
 					</p:messages>
-					<h:panelGrid id="grid" columns="2">
+					<h:panelGrid id="grid" columns="4">
 						<h:outputLabel value="Número de Lote: " for="nombreLote" />
 						<p:inputText value="#{loteBean.loteNew.numberLote}" style="margin:5px; width:220px" id="nombreLote" maxlength="10" disabled="#{!loteBean.modificar}" ><p:ajax update="messages" /> </p:inputText>
 					
@@ -182,9 +182,8 @@
 						<h:outputLabel id="lblFechaVend" for="vend" value="Fecha venta:" rendered="#{loteBean.loteNew.status eq 'Vendido'}"/>
 						<p:datePicker id="vend" style="margin:5px; width:220px" value="#{loteBean.fechaVendido}" rendered="#{loteBean.loteNew.status eq 'Vendido'}"/>
 				
-					
-						<p:commandButton value="Guardar" action="#{loteBean.saveLote()}" update=":form:idTableLote :formLoteDialog" rendered="#{loteBean.modificar}" />
 					</h:panelGrid>
+					<p:commandButton value="Guardar" action="#{loteBean.saveLote()}" update=":form:idTableLote :formLoteDialog" rendered="#{loteBean.modificar}" />
 				</p:tab>
 				<p:tab title="Medidas" >
 					<h:panelGrid id="gridMedidas" columns="2">

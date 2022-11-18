@@ -156,7 +156,12 @@ public class LoteBean implements Serializable{
 	}
 	
 	public void listarManzanas (){
-		lstManzana= manzanaService.findByStatusOrderByNameAsc(true);
+		if(projectFilter == null) {
+			lstManzana = manzanaService.findByStatusOrderByNameAsc(true);
+		}else {
+			lstManzana= manzanaService.findByProject(projectFilter.getId());
+		}
+		 
 		manzanaFilterMapeo = lstManzana.get(0);
 	}
 	
@@ -164,8 +169,8 @@ public class LoteBean implements Serializable{
 		lstProject= projectService.findByStatus(true);
 	}
 	
-	public void listarLotes(){
-		lstLotes= loteService.findByProjectAndManzanaOrderByManzanaNameAscNumberLoteAsc(projectFilter,manzanaFilterMapeo);
+	public void listarLotes(){		
+		lstLotes= loteService.findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(projectFilter,manzanaFilterMapeo, "%%");
 		cantidadLotes=0;
 		if(!lstLotes.isEmpty()) {
 			cantidadLotes = lstLotes.size();

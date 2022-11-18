@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
 import com.model.aldasa.entity.Action;
+import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Prospect;
@@ -34,12 +36,16 @@ import com.model.aldasa.entity.ProspectionDetail;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.ActionService;
+import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.ProspectionDetailService;
 import com.model.aldasa.service.UsuarioService;
+import com.model.aldasa.util.EstadoLote;
+import com.model.aldasa.util.EstadoProspeccion;
 import com.model.aldasa.util.Perfiles;
 import com.model.aldasa.util.UtilXls;
+import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -71,6 +77,9 @@ public class ReporteProspeccionBean  implements Serializable {
 	@ManagedProperty(value = "#{prospectionDetailService}")
 	private ProspectionDetailService prospectionDetailService;
 	
+	@ManagedProperty(value = "#{loteService}")
+	private LoteService loteService;
+	
 	private Usuario usuarioLogin = new Usuario();
 	
 	private List<SelectItem> countriesGroup;
@@ -83,10 +92,13 @@ public class ReporteProspeccionBean  implements Serializable {
 	private String origenContactoSelected,prospectSurnames="";
 	private String nombreArchivo = "Reporte de Acciones.xlsx";
 	
+	private boolean permisoSepararVender = false;
+	
 	private Prospect prospectSelected;
 	private Person personAssessorSelected;
 	private Action actionSelected;
 	private Project projectSelected;
+	private ProspectionDetail prospectionDetailSelected;
 	
 	private StreamedContent fileDes;
 
@@ -114,7 +126,50 @@ public class ReporteProspeccionBean  implements Serializable {
         
         listarActions();
         listarProject();
+        
+        if(usuarioLogin.getProfile().getId() == Perfiles.ADMINISTRADOR.getId() || usuarioLogin.getProfile().getId() == Perfiles.ASISTENTE_ADMINISTRATIVO.getId()) {
+        	permisoSepararVender = true;
+        }
 	}
+	
+	public void separarLote() {
+		List<Lote> loteSeparar = loteService.findById(prospectionDetailSelected.getLote().getId());
+		Lote lote = loteSeparar.get(0);
+		if(lote.getStatus().equals(EstadoLote.SEPARADO.getName())) {
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se completó la accion, el lote se encuentra separado.");
+			PrimeFaces.current().dialog().showMessageDynamic(message);
+		}else if(lote.getStatus().equals(EstadoLote.VENDIDO.getName())) {
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se completó la accion, el lote se encuentra Vendido.");
+			PrimeFaces.current().dialog().showMessageDynamic(message);
+		}else if(lote.getStatus().equals(EstadoLote.INACTIVO.getName())) {
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se completó la accion, el lote se encuentra Inactivo.");
+			PrimeFaces.current().dialog().showMessageDynamic(message);
+		}else {
+			lote.setStatus(EstadoLote.SEPARADO.getName());
+			lote.setFechaSeparacion(new Date());
+			lote.setFechaVencimiento(sumarDiasAFecha(new Date(), 7));
+			
+			lote = loteService.save(lote);
+			if(lote != null) {
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Confirmación", "Lote separado correctamente");
+				PrimeFaces.current().dialog().showMessageDynamic(message);
+			}else {
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Confirmación", "No se pudo separar el lote");
+				PrimeFaces.current().dialog().showMessageDynamic(message);
+			}
+		}
+		
+		
+	}
+	
+	public Date sumarDiasAFecha(Date fecha, int dias){
+	      if (dias==0) return fecha;
+	      Calendar calendar = Calendar.getInstance();
+	      calendar.setTime(fecha); 
+	      calendar.add(Calendar.DAY_OF_YEAR, dias);  
+	      return calendar.getTime(); 
+	}
+	
 	
 	public void procesarExcel() {
 
@@ -387,195 +442,164 @@ public class ReporteProspeccionBean  implements Serializable {
 	public NavegacionBean getNavegacionBean() {
 		return navegacionBean;
 	}
-
 	public void setNavegacionBean(NavegacionBean navegacionBean) {
 		this.navegacionBean = navegacionBean;
 	}
-
 	public UsuarioService getUsuarioService() {
 		return usuarioService;
 	}
-
 	public void setUsuarioService(UsuarioService usuarioService) {
 		this.usuarioService = usuarioService;
 	}
-
 	public Usuario getUsuarioLogin() {
 		return usuarioLogin;
 	}
-
 	public void setUsuarioLogin(Usuario usuarioLogin) {
 		this.usuarioLogin = usuarioLogin;
 	}
-
 	public List<SelectItem> getCountriesGroup() {
 		return countriesGroup;
 	}
-
 	public void setCountriesGroup(List<SelectItem> countriesGroup) {
 		this.countriesGroup = countriesGroup;
 	}
-
 	public Date getFechaIni() {
 		return fechaIni;
 	}
-
 	public void setFechaIni(Date fechaIni) {
 		this.fechaIni = fechaIni;
 	}
-
 	public Date getFechaFin() {
 		return fechaFin;
 	}
-
 	public void setFechaFin(Date fechaFin) {
 		this.fechaFin = fechaFin;
 	}
-
 	public ProspectService getProspectService() {
 		return prospectService;
 	}
-
 	public void setProspectService(ProspectService prospectService) {
 		this.prospectService = prospectService;
 	}
-
 	public Prospect getProspectSelected() {
 		return prospectSelected;
 	}
-
 	public void setProspectSelected(Prospect prospectSelected) {
 		this.prospectSelected = prospectSelected;
 	}
-
 	public List<Person> getLstPersonAssessor() {
 		return lstPersonAssessor;
 	}
-
 	public void setLstPersonAssessor(List<Person> lstPersonAssessor) {
 		this.lstPersonAssessor = lstPersonAssessor;
 	}
-
 	public Person getPersonAssessorSelected() {
 		return personAssessorSelected;
 	}
-
 	public void setPersonAssessorSelected(Person personAssessorSelected) {
 		this.personAssessorSelected = personAssessorSelected;
 	}
-
 	public Action getActionSelected() {
 		return actionSelected;
 	}
-
 	public void setActionSelected(Action actionSelected) {
 		this.actionSelected = actionSelected;
 	}
-
 	public ActionService getActionService() {
 		return actionService;
 	}
-
 	public void setActionService(ActionService actionService) {
 		this.actionService = actionService;
 	}
-
 	public List<Action> getLstActions() {
 		return lstActions;
 	}
-
 	public void setLstActions(List<Action> lstActions) {
 		this.lstActions = lstActions;
 	}
-
 	public String getOrigenContactoSelected() {
 		return origenContactoSelected;
 	}
-
 	public void setOrigenContactoSelected(String origenContactoSelected) {
 		this.origenContactoSelected = origenContactoSelected;
 	}
-
 	public ProjectService getProjectService() {
 		return projectService;
 	}
-
 	public void setProjectService(ProjectService projectService) {
 		this.projectService = projectService;
 	}
-
 	public List<Project> getLstProject() {
 		return lstProject;
 	}
-
 	public void setLstProject(List<Project> lstProject) {
 		this.lstProject = lstProject;
 	}
-
 	public Project getProjectSelected() {
 		return projectSelected;
 	}
-
 	public void setProjectSelected(Project projectSelected) {
 		this.projectSelected = projectSelected;
 	}
-
 	public List<ProspectionDetail> getLstProspectionDetailReporte() {
 		return lstProspectionDetailReporte;
 	}
-
 	public void setLstProspectionDetailReporte(List<ProspectionDetail> lstProspectionDetailReporte) {
 		this.lstProspectionDetailReporte = lstProspectionDetailReporte;
 	}
-
 	public ProspectionDetailService getProspectionDetailService() {
 		return prospectionDetailService;
 	}
-
 	public void setProspectionDetailService(ProspectionDetailService prospectionDetailService) {
 		this.prospectionDetailService = prospectionDetailService;
 	}
-
 	public String getProspectSurnames() {
 		return prospectSurnames;
 	}
-
 	public void setProspectSurnames(String prospectSurnames) {
 		this.prospectSurnames = prospectSurnames;
 	}
-
-
-
 	public StreamedContent getFileDes() {
 		return fileDes;
 	}
-
 	public void setFileDes(StreamedContent fileDes) {
 		this.fileDes = fileDes;
 	}
-
 	public SimpleDateFormat getSdf() {
 		return sdf;
 	}
-
 	public void setSdf(SimpleDateFormat sdf) {
 		this.sdf = sdf;
 	}
-
 	public String getNombreArchivo() {
 		return nombreArchivo;
 	}
-
 	public void setNombreArchivo(String nombreArchivo) {
 		this.nombreArchivo = nombreArchivo;
 	}
-
 	public SimpleDateFormat getSdfFull() {
 		return sdfFull;
 	}
-
 	public void setSdfFull(SimpleDateFormat sdfFull) {
 		this.sdfFull = sdfFull;
+	}
+	public ProspectionDetail getProspectionDetailSelected() {
+		return prospectionDetailSelected;
+	}
+	public void setProspectionDetailSelected(ProspectionDetail prospectionDetailSelected) {
+		this.prospectionDetailSelected = prospectionDetailSelected;
+	}
+	public boolean isPermisoSepararVender() {
+		return permisoSepararVender;
+	}
+	public void setPermisoSepararVender(boolean permisoSepararVender) {
+		this.permisoSepararVender = permisoSepararVender;
+	}
+	public LoteService getLoteService() {
+		return loteService;
+	}
+	public void setLoteService(LoteService loteService) {
+		this.loteService = loteService;
 	}
 	
 	

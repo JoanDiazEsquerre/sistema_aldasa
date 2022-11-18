@@ -147,7 +147,7 @@
 		</p:tabView>
 	</h:form>
 	
-	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPro" header="#{prospeccionBean.titleDialog}" widgetVar="dialogProspecto" resizable="false" closable="true" height="500px"
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPro" header="#{prospeccionBean.titleDialog}" widgetVar="dialogProspecto" resizable="false" closable="true" height="600px"
 		appendTo="@(body)" width="90%" >
 		<h:form id="formEvents" >
 			<p:tabView id="tabOpciones"> 
@@ -159,7 +159,23 @@
 						<h:outputLabel for="accion" value="Acción: " />
 						<p:selectOneMenu id="accion" value="#{prospeccionBean.prospectionDetailNew.action}" converter="#{prospeccionBean.conversorAction}" style="margin:5px; width:220px" > 
 							<f:selectItems value="#{prospeccionBean.lstActions}" var="act" itemLabel="#{act.description}" itemValue="#{act}"/> 
-							
+							<p:ajax update=":formEvents:tabOpciones:messagesAction  :formEvents:tabOpciones:gridAcciones" />
+						</p:selectOneMenu>
+						
+						<h:outputLabel value="Proyecto: " rendered="#{prospeccionBean.prospectionDetailNew.action.description eq 'Separado' or prospeccionBean.prospectionDetailNew.action.description eq 'Vendido'}" />
+						<h:outputLabel value="#{prospeccionBean.prospectionSelected.project.name}" rendered="#{prospeccionBean.prospectionDetailNew.action.description eq 'Separado' or prospeccionBean.prospectionDetailNew.action.description eq 'Vendido'}" />
+						
+						<h:outputLabel id="lblManzana" for="manzana" value="Manzana: " rendered="#{prospeccionBean.prospectionDetailNew.action.description eq 'Separado' or prospeccionBean.prospectionDetailNew.action.description eq 'Vendido'}" />
+						<p:selectOneMenu style="margin:5px; width:220px" id="manzana" value="#{prospeccionBean.manzanaSelected}" converter="#{prospeccionBean.conversorManzana}" rendered="#{prospeccionBean.prospectionDetailNew.action.description eq 'Separado' or prospeccionBean.prospectionDetailNew.action.description eq 'Vendido'}"> 
+							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+							<f:selectItems value="#{prospeccionBean.lstManzana}" var="manz" itemLabel="#{manz.name}" itemValue="#{manz}"/>
+							<p:ajax update=":formEvents:tabOpciones:messagesAction :formEvents:tabOpciones:gridAcciones" listener="#{prospeccionBean.listarLotes}"/>
+						</p:selectOneMenu>
+						
+						<h:outputLabel id="lblLote" for="lote" value="Lote: " rendered="#{prospeccionBean.prospectionDetailNew.action.description eq 'Separado' or prospeccionBean.prospectionDetailNew.action.description eq 'Vendido'}" />
+						<p:selectOneMenu style="margin:5px; width:220px" id="lote" value="#{prospeccionBean.loteSelected}" converter="#{prospeccionBean.conversorLote}" rendered="#{prospeccionBean.prospectionDetailNew.action.description eq 'Separado' or prospeccionBean.prospectionDetailNew.action.description eq 'Vendido'}"> 
+							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+							<f:selectItems value="#{prospeccionBean.lstLote}" var="manz" itemLabel="#{manz.numberLote}" itemValue="#{manz}"/>
 							<p:ajax update=":formEvents:tabOpciones:messagesAction" />
 						</p:selectOneMenu>
 						
@@ -196,8 +212,12 @@
 							<h:outputText value="#{det.action.description}" />
 						</p:column>
 						<p:column headerText="Fecha y Hora" sortBy="#{det.date}" filterMatchMode="contains">
-							<h:outputText value="#{det.date}" />
+							<h:outputText value="#{det. date}" />
 						</p:column>
+						<p:column headerText="Manzana y Lote" filterMatchMode="contains">
+							<h:outputText value="#{det.lote.manzana.name}-#{det.lote.numberLote}" />
+						</p:column>
+						
 						<p:column headerText="Comentario" >
 							<h:outputText value="#{det.comment}" />
 						</p:column>

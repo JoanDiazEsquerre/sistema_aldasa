@@ -30,6 +30,8 @@ import com.model.aldasa.entity.Action;
 import com.model.aldasa.entity.Country;
 import com.model.aldasa.entity.Department;
 import com.model.aldasa.entity.District;
+import com.model.aldasa.entity.Lote;
+import com.model.aldasa.entity.Manzana;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Prospect;
@@ -42,6 +44,8 @@ import com.model.aldasa.service.ActionService;
 import com.model.aldasa.service.CountryService;
 import com.model.aldasa.service.DepartmentService;
 import com.model.aldasa.service.DistrictService;
+import com.model.aldasa.service.LoteService;
+import com.model.aldasa.service.ManzanaService;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.ProspectService;
@@ -91,6 +95,14 @@ public class ProspeccionBean {
 	@ManagedProperty(value = "#{prospectService}")
 	private ProspectService prospectService;
 	
+	@ManagedProperty(value = "#{loteService}")
+	private LoteService loteService;
+	
+	
+	
+	@ManagedProperty(value = "#{manzanaService}")
+	private ManzanaService manzanaService;
+	
 	private LazyDataModel<Prospection> lstProspectionLazy;
 	
 	private Prospection prospectionSelected;
@@ -104,14 +116,6 @@ public class ProspeccionBean {
 	private Department departmentSelected;
 	private Province provinceSelected;
 	private District districtSelected;
-	
-	public Country getCountrySelected() {
-		return countrySelected;
-	}
-
-	public void setCountrySelected(Country countrySelected) {
-		this.countrySelected = countrySelected;
-	}
 
 	private String status = "En seguimiento";
 	private String titleDialog,statusSelected, resultSelected;
@@ -128,6 +132,12 @@ public class ProspeccionBean {
 	private List<Department> lstDepartment;
 	private List<Province> lstProvince;
 	private List<District> lstDistrict;
+	private List<Manzana> lstManzana = new ArrayList<>();
+	private List<Lote> lstLote = new ArrayList<>();
+	
+	
+	private Manzana manzanaSelected;
+	private Lote loteSelected;
 	
 	@PostConstruct
 	public void init() {
@@ -188,6 +198,15 @@ public class ProspeccionBean {
 			lstDistrict = districtService.findByProvince(provinceSelected); 
 		}
 	}
+	
+	public void cargarManzanasByProyecto() {
+		lstManzana = manzanaService.findByProject(prospectionSelected.getProject().getId());
+	}
+	
+	public void listarLotes() {
+		lstLote = loteService.findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(prospectionSelected.getProject(), manzanaSelected, "Disponible");
+	}
+	
 	
 	public void listarProspect() {		
 		if (Perfiles.ADMINISTRADOR.getName().equals(usuarioLogin.getProfile().getName()) ) {
@@ -537,13 +556,48 @@ public class ProspeccionBean {
 		
 		newProspectionDetail();
 		newProspectionDetailAgenda();
+		cargarManzanasByProyecto();
 	}
 	
 	public void saveActionProspection() {
+		prospectionDetailNew.setLote(loteSelected); 
+		if(prospectionDetailNew.getAction().getDescription().equals("Separado")) {
+			if(loteSelected == null) {
+				FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar Manzana y Lote."));
+				return;
+			}else {
+				for(ProspectionDetail detalle: lstProspectionDetail) {
+					if(detalle.getLote() != null) {
+						if(loteSelected.getId() == detalle.getLote().getId() && detalle.getAction().getDescription().equals("Separado")) {
+							FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya seleccionó el lote "+ loteSelected.getNumberLote()+" de la Manzana "+manzanaSelected.getName()+ "como separado"));
+							return;
+						}
+					}
+				}
+			}
+		}else if(prospectionDetailNew.getAction().getDescription().equals("Vendido")){
+			if(loteSelected == null) {
+				FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar Manzana y Lote."));
+				return;
+			}else {
+				for(ProspectionDetail detalle: lstProspectionDetail) {
+					if(detalle.getLote() != null) {
+						if(loteSelected.getId() == detalle.getLote().getId() && detalle.getAction().getDescription().equals("Vendido")) {
+							FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya seleccionó el lote "+ loteSelected.getNumberLote()+" de la Manzana "+manzanaSelected.getName()+ "como vendido"));
+							return;
+						}
+					}
+				}
+			}
+		}else {
+			prospectionDetailNew.setLote(null);
+		}
+		
 		if(prospectionDetailNew.getDate()==null) {
 			FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Selecciona Fecha y Hora."));
 			return;
 		}
+		
 		
 		prospectionDetailNew.setScheduled(false); 
 		
@@ -642,6 +696,62 @@ public class ProspeccionBean {
                     return "";
                 } else {
                     return ((Prospect) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorManzana() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Manzana c = null;
+                    for (Manzana si : lstManzana) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Manzana) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorLote() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Lote c = null;
+                    for (Lote si : lstLote) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Lote) value).getId() + "";
                 }
             }
         };
@@ -869,314 +979,280 @@ public class ProspeccionBean {
 	public LazyDataModel<Prospection> getLstProspectionLazy() {
 		return lstProspectionLazy;
 	}
-
 	public void setLstProspectionLazy(LazyDataModel<Prospection> lstProspectionLazy) {
 		this.lstProspectionLazy = lstProspectionLazy;
 	}
-
 	public Prospection getProspectionSelected() {
 		return prospectionSelected;
 	}
-
 	public void setProspectionSelected(Prospection prospectionSelected) {
 		this.prospectionSelected = prospectionSelected;
 	}
-
 	public ProspectionService getProspectionService() {
 		return prospectionService;
 	}
-
 	public void setProspectionService(ProspectionService prospectionService) {
 		this.prospectionService = prospectionService;
 	}
-
 	public String getStatus() {
 		return status;
 	}
-
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
 	public PersonService getPersonService() {
 		return personService;
 	}
-
 	public void setPersonService(PersonService personService) {
 		this.personService = personService;
 	}
-
 	public List<Prospect> getLstProspect() {
 		return lstProspect;
 	}
-
 	public void setLstProspect(List<Prospect> lstProspect) {
 		this.lstProspect = lstProspect;
 	}
-
 	public UsuarioService getUsuarioService() {
 		return usuarioService;
 	}
-
 	public void setUsuarioService(UsuarioService usuarioService) {
 		this.usuarioService = usuarioService;
 	}
-
 	public List<Person> getLstPersonAssessor() {
 		return lstPersonAssessor;
 	}
-
 	public void setLstPersonAssessor(List<Person> lstPersonAssessor) {
 		this.lstPersonAssessor = lstPersonAssessor;
 	}
-
 	public List<SelectItem> getCountriesGroup() {
 		return countriesGroup;
 	}
-
 	public void setCountriesGroup(List<SelectItem> countriesGroup) {
 		this.countriesGroup = countriesGroup;
 	}
-
 	public ProjectService getProjectService() {
 		return projectService;
 	}
-
 	public void setProjectService(ProjectService projectService) {
 		this.projectService = projectService;
 	}
-
 	public List<Project> getLstProject() {
 		return lstProject;
 	}
-
 	public void setLstProject(List<Project> lstProject) {
 		this.lstProject = lstProject;
 	}
-
 	public Prospection getProspectionNew() {
 		return prospectionNew;
 	}
-
 	public void setProspectionNew(Prospection prospectionNew) {
 		this.prospectionNew = prospectionNew;
 	}
-
 	public String getTitleDialog() {
 		return titleDialog;
 	}
-
 	public void setTitleDialog(String titleDialog) {
 		this.titleDialog = titleDialog;
 	}
-
 	public List<ProspectionDetail> getLstProspectionDetail() {
 		return lstProspectionDetail;
 	}
-
 	public void setLstProspectionDetail(List<ProspectionDetail> lstProspectionDetail) {
 		this.lstProspectionDetail = lstProspectionDetail;
 	}
-
 	public ProspectionDetailService getProspectionDetailService() {
 		return prospectionDetailService;
 	}
-
 	public void setProspectionDetailService(ProspectionDetailService prospectionDetailService) {
 		this.prospectionDetailService = prospectionDetailService;
 	}
-
 	public ProspectionDetail getProspectionDetailSelected() {
 		return prospectionDetailSelected;
 	}
-
 	public void setProspectionDetailSelected(ProspectionDetail prospectionDetailSelected) {
 		this.prospectionDetailSelected = prospectionDetailSelected;
 	}
-
 	public ActionService getActionService() {
 		return actionService;
 	}
-
 	public void setActionService(ActionService actionService) {
 		this.actionService = actionService;
 	}
-
 	public List<Action> getLstActions() {
 		return lstActions;
 	}
-
 	public void setLstActions(List<Action> lstActions) {
 		this.lstActions = lstActions;
 	}
-
 	public ProspectionDetail getProspectionDetailNew() {
 		return prospectionDetailNew;
 	}
-
 	public void setProspectionDetailNew(ProspectionDetail prospectionDetailNew) {
 		this.prospectionDetailNew = prospectionDetailNew;
 	}
-
 	public NavegacionBean getNavegacionBean() {
 		return navegacionBean;
 	}
-
 	public void setNavegacionBean(NavegacionBean navegacionBean) {
 		this.navegacionBean = navegacionBean;
 	}
-
 	public ProspectService getProspectService() {
 		return prospectService;
 	}
-
 	public void setProspectService(ProspectService prospectService) {
 		this.prospectService = prospectService;
 	}
-
 	public Usuario getUsuarioLogin() {
 		return usuarioLogin;
 	}
-
 	public void setUsuarioLogin(Usuario usuarioLogin) {
 		this.usuarioLogin = usuarioLogin;
 	}
-
 	public Person getPersonNew() {
 		return personNew;
 	}
-
 	public void setPersonNew(Person personNew) {
 		this.personNew = personNew;
 	}
-
 	public boolean isMostrarBotonCambioEstado() {
 		return mostrarBotonCambioEstado;
 	}
-
 	public void setMostrarBotonCambioEstado(boolean mostrarBotonCambioEstado) {
 		this.mostrarBotonCambioEstado = mostrarBotonCambioEstado;
 	}
-
 	public ProspectionDetail getProspectionDetailAgendaNew() {
 		return prospectionDetailAgendaNew;
 	}
-
 	public void setProspectionDetailAgendaNew(ProspectionDetail prospectionDetailAgendaNew) {
 		this.prospectionDetailAgendaNew = prospectionDetailAgendaNew;
 	}
-
 	public List<ProspectionDetail> getLstProspectionDetailAgenda() {
 		return lstProspectionDetailAgenda;
 	}
-
 	public void setLstProspectionDetailAgenda(List<ProspectionDetail> lstProspectionDetailAgenda) {
 		this.lstProspectionDetailAgenda = lstProspectionDetailAgenda;
 	}
-
 	public String getStatusSelected() {
 		return statusSelected;
 	}
-
 	public void setStatusSelected(String statusSelected) {
 		this.statusSelected = statusSelected;
 	}
-
 	public String getResultSelected() {
 		return resultSelected;
 	}
-
 	public void setResultSelected(String resultSelected) {
 		this.resultSelected = resultSelected;
 	}
-
 	public CountryService getCountryService() {
 		return countryService;
 	}
-
 	public void setCountryService(CountryService countryService) {
 		this.countryService = countryService;
 	}
-
 	public DepartmentService getDepartmentService() {
 		return departmentService;
 	}
-
 	public void setDepartmentService(DepartmentService departmentService) {
 		this.departmentService = departmentService;
 	}
-
 	public ProvinceService getProvinceService() {
 		return provinceService;
 	}
-
 	public void setProvinceService(ProvinceService provinceService) {
 		this.provinceService = provinceService;
 	}
-
 	public DistrictService getDistrictService() {
 		return districtService;
 	}
-
 	public void setDistrictService(DistrictService districtService) {
 		this.districtService = districtService;
 	}
-
 	public List<Country> getLstCountry() {
 		return lstCountry;
 	}
-
 	public void setLstCountry(List<Country> lstCountry) {
 		this.lstCountry = lstCountry;
 	}
-
 	public List<Department> getLstDepartment() {
 		return lstDepartment;
 	}
-
 	public void setLstDepartment(List<Department> lstDepartment) {
 		this.lstDepartment = lstDepartment;
 	}
-
 	public List<Province> getLstProvince() {
 		return lstProvince;
 	}
-
 	public void setLstProvince(List<Province> lstProvince) {
 		this.lstProvince = lstProvince;
 	}
-
 	public List<District> getLstDistrict() {
 		return lstDistrict;
 	}
-
 	public void setLstDistrict(List<District> lstDistrict) {
 		this.lstDistrict = lstDistrict;
 	}
-
 	public Department getDepartmentSelected() {
 		return departmentSelected;
 	}
-
 	public void setDepartmentSelected(Department departmentSelected) {
 		this.departmentSelected = departmentSelected;
 	}
-
 	public Province getProvinceSelected() {
 		return provinceSelected;
 	}
-
 	public void setProvinceSelected(Province provinceSelected) {
 		this.provinceSelected = provinceSelected;
 	}
-
 	public District getDistrictSelected() {
 		return districtSelected;
 	}
-
 	public void setDistrictSelected(District districtSelected) {
 		this.districtSelected = districtSelected;
 	}
-
+	public List<Manzana> getLstManzana() {
+		return lstManzana;
+	}
+	public void setLstManzana(List<Manzana> lstManzana) {
+		this.lstManzana = lstManzana;
+	}
+	public Country getCountrySelected() {
+		return countrySelected;
+	}
+	public void setCountrySelected(Country countrySelected) {
+		this.countrySelected = countrySelected;
+	}
+	public LoteService getLoteService() {
+		return loteService;
+	}
+	public void setLoteService(LoteService loteService) {
+		this.loteService = loteService;
+	}
+	public ManzanaService getManzanaService() {
+		return manzanaService;
+	}
+	public void setManzanaService(ManzanaService manzanaService) {
+		this.manzanaService = manzanaService;
+	}
+	public Manzana getManzanaSelected() {
+		return manzanaSelected;
+	}
+	public void setManzanaSelected(Manzana manzanaSelected) {
+		this.manzanaSelected = manzanaSelected;
+	}
+	public Lote getLoteSelected() {
+		return loteSelected;
+	}
+	public void setLoteSelected(Lote loteSelected) {
+		this.loteSelected = loteSelected;
+	}
+	public List<Lote> getLstLote() {
+		return lstLote;
+	}
+	public void setLstLote(List<Lote> lstLote) {
+		this.lstLote = lstLote;
+	}
 	
+	
+
 }

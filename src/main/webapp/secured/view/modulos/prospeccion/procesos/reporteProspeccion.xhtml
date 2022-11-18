@@ -28,6 +28,7 @@
 			<p:selectOneMenu id="accion" value="#{reporteProspeccionBean.actionSelected}" converter="#{reporteProspeccionBean.conversorAction}" > 
 				<f:selectItem itemLabel="[-- TODOS --]" itemValue="#{null}" />
 				<f:selectItems value="#{reporteProspeccionBean.lstActions}" var="act" itemLabel="#{act.description}" itemValue="#{act}"/>  
+				<p:ajax update="menuOpciones" />
 			</p:selectOneMenu>
 
 
@@ -53,8 +54,8 @@
         </p:commandButton>
 		</h:panelGrid>
 		
-		<p:dataTable var="det" id="idTableDet" value="#{reporteProspeccionBean.lstProspectionDetailReporte}" rowIndexVar="row" paginator="true" rows="5" size="small" 
-		emptyMessage="No se encontraron registros." paginatorPosition="bottom" rowKey="#{det.id}" > 
+		<p:dataTable var="det" id="idTableDet" value="#{reporteProspeccionBean.lstProspectionDetailReporte}" rowIndexVar="row" paginator="true" rows="5" size="small" style="width:120%"
+		emptyMessage="No se encontraron registros." paginatorPosition="bottom" rowKey="#{det.id}" selection="#{reporteProspeccionBean.prospectionDetailSelected}" selectionMode="single"> 
 			<f:facet name="header">
 				<div class="p-d-flex p-ai-center p-jc-between">
 					<span>Lista de Prospecciones</span>
@@ -101,14 +102,28 @@
 			<p:column headerText="Origen contacto" sortBy="#{det.prospection.originContact}" filterMatchMode="contains">
 				<h:outputText value="#{det.prospection.originContact}" />
 			</p:column>
+			<p:column headerText="Comentario"  filterMatchMode="contains">
+				<h:outputText value="#{det.comment}" />
+			</p:column>
+			
 			<p:column headerText="Proyecto" sortBy="#{det.prospection.project.name}" filterMatchMode="contains">
 				<h:outputText value="#{det.prospection.project.name}" />
 			</p:column>
+			
+			<p:column headerText="Manzana y Lote" sortBy="#{det.prospection.project.name}" filterMatchMode="contains">
+				<h:outputText value="#{det.lote.manzana.name}-#{det.lote.numberLote}" />
+			</p:column>
+			
 			<p:column headerText="Resultado" sortBy="#{det.prospection.result}" filterMatchMode="contains">
 				<h:outputText value="#{det.prospection.result}" />
 			</p:column>
 
 		</p:dataTable>
+		
+		<p:contextMenu for="idTableDet" id="menuOpciones">
+            <p:menuitem value="Pasar a Separado" icon="pi pi-sign-in" actionListener="#{reporteProspeccionBean.separarLote}" rendered="#{reporteProspeccionBean.permisoSepararVender and reporteProspeccionBean.actionSelected.description eq 'Separado'}"/>
+            <p:menuitem value="Pasar a vendido" icon="pi pi-sign-in" rendered="#{reporteProspeccionBean.permisoSepararVender and reporteProspeccionBean.actionSelected.description eq 'Vendido'}"/>
+        </p:contextMenu>
 
 	</h:form>
 	

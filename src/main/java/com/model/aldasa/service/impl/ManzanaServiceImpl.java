@@ -44,8 +44,12 @@ public class ManzanaServiceImpl implements ManzanaService {
 
 	@Override
 	public Optional<Manzana> findById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		return manzanaRepository.findById(id);
+	}
+
+	@Override
+	public List<Manzana> findByProject(int idProject) {
+		return manzanaRepository.findByProject(idProject);
 	}
 	
 }

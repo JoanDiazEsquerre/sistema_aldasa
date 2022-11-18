@@ -13,4 +13,6 @@ public interface ManzanaService {
 	List<Manzana> findByStatusOrderByNameAsc(boolean status);
 	Manzana findByName (String name);
 	Manzana findByNameException(String name, int idManzana);
+	
+	List<Manzana> findByProject(int idProject);
 }

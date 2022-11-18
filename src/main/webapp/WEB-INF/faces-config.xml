@@ -207,6 +207,14 @@
 			<property-name>prospectService</property-name>
 			<value>#{prospectService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>manzanaService</property-name>
+			<value>#{manzanaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>loteService</property-name>
+			<value>#{loteService}</value>
+		</managed-property>
 	</managed-bean>
 
 	<managed-bean>
@@ -278,6 +286,10 @@
 		<managed-property>
 			<property-name>prospectionDetailService</property-name>
 			<value>#{prospectionDetailService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>loteService</property-name>
+			<value>#{loteService}</value>
 		</managed-property>
 	</managed-bean>
 

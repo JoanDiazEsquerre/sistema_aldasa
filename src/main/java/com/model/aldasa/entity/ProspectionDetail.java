@@ -26,6 +26,10 @@ public class ProspectionDetail {
 	@JoinColumn(name="idaction")
 	private Action action;
 	
+	@ManyToOne
+	@JoinColumn(name="idlote")
+	private Lote lote;
+	
 	private Date date;
 	private String comment;
 	private boolean scheduled;
@@ -67,6 +71,15 @@ public class ProspectionDetail {
 	public void setScheduled(boolean scheduled) {
 		this.scheduled = scheduled;
 	}
+	public Lote getLote() {
+		return lote;
+	}
+	public void setLote(Lote lote) {
+		this.lote = lote;
+	}
+	
+	
+	
 	
 	
 	@Override

@@ -14,4 +14,7 @@ public interface ManzanaRepository extends JpaRepository<Manzana, Integer> {
 	
 	@Query(nativeQuery = true,value = "SELECT * FROM manzana WHERE name=:name AND id <> :idManzana ")
 	Manzana findByNameException(String name, int idManzana);
+	
+	@Query(nativeQuery = true,value = "SELECT DISTINCT m.*  from lote l LEFT JOIN manzana m on l.idManzana = m.id where idProject =:idProject ORDER BY m.name ASC;")
+	List<Manzana> findByProject(int idProject);
 }

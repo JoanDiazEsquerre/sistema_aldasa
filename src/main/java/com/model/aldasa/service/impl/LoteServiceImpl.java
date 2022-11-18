@@ -47,7 +47,7 @@ public class LoteServiceImpl implements LoteService {
 
 
 	@Override
-	public Optional<Lote> findById(Integer id) {
+	public List<Lote> findById(int id) {
 		// TODO Auto-generated method stub
 		return loteRepository.findById(id);
 	}
@@ -65,9 +65,9 @@ public class LoteServiceImpl implements LoteService {
 	}
 
 	@Override
-	public List<Lote> findByProjectAndManzanaOrderByManzanaNameAscNumberLoteAsc(Project project, Manzana manzana) {
+	public List<Lote> findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(Project project, Manzana manzana, String status) {
 		// TODO Auto-generated method stub
-		return loteRepository.findByProjectAndManzanaOrderByManzanaNameAscNumberLoteAsc(project, manzana);
+		return loteRepository.findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(project, manzana,status);
 	}
 	
 }

@@ -14,11 +14,11 @@ import com.model.aldasa.entity.Prospection;
 
 public interface LoteService {
  
-	Optional<Lote> findById(Integer id);
+	List<Lote> findById(int id);
 	Lote save(Lote lote);
 	void delete(Lote lote);
 	List<Lote> findByStatus(boolean status);
-	List<Lote> findByProjectAndManzanaOrderByManzanaNameAscNumberLoteAsc(Project project, Manzana manzana);
+	List<Lote> findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(Project project, Manzana manzana, String Status);
 	Lote findByNumberLoteAndManzanaAndProject (String name, Manzana manzana, Project project);
 	Lote findByNumberLoteAndManzanaAndProjectException(String name, int manzana, int project, int idLote);
 	
