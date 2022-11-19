@@ -122,7 +122,7 @@
 		
 		<p:contextMenu for="idTableDet" id="menuOpciones">
             <p:menuitem value="Pasar a Separado" icon="pi pi-sign-in" actionListener="#{reporteProspeccionBean.separarLote}" rendered="#{reporteProspeccionBean.permisoSepararVender and reporteProspeccionBean.actionSelected.description eq 'Separado'}"/>
-            <p:menuitem value="Pasar a vendido" icon="pi pi-sign-in" rendered="#{reporteProspeccionBean.permisoSepararVender and reporteProspeccionBean.actionSelected.description eq 'Vendido'}"/>
+            <p:menuitem value="Pasar a vendido"  icon="pi pi-sign-in" actionListener="#{reporteProspeccionBean.venderLote}" rendered="#{reporteProspeccionBean.permisoSepararVender and reporteProspeccionBean.actionSelected.description eq 'Vendido'}"/>
         </p:contextMenu>
 
 	</h:form>

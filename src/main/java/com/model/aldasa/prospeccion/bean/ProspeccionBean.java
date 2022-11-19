@@ -53,6 +53,7 @@ import com.model.aldasa.service.ProspectionDetailService;
 import com.model.aldasa.service.ProspectionService;
 import com.model.aldasa.service.ProvinceService;
 import com.model.aldasa.service.UsuarioService;
+import com.model.aldasa.util.EstadoLote;
 import com.model.aldasa.util.Perfiles;
 
 @ManagedBean
@@ -204,7 +205,7 @@ public class ProspeccionBean {
 	}
 	
 	public void listarLotes() {
-		lstLote = loteService.findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(prospectionSelected.getProject(), manzanaSelected, "Disponible");
+		lstLote = loteService.findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(prospectionSelected.getProject(), manzanaSelected, "%%");
 	}
 	
 	
@@ -374,6 +375,7 @@ public class ProspeccionBean {
 	public void newProspectionDetail() {
 		prospectionDetailNew = new ProspectionDetail();
 		prospectionDetailNew.setProspection(prospectionSelected);
+		prospectionDetailNew.setDate(new Date()); 
 	}
 	
 	public void newProspectionDetailAgenda() {
@@ -566,10 +568,22 @@ public class ProspeccionBean {
 				FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar Manzana y Lote."));
 				return;
 			}else {
+				int idLote = loteSelected.getId();
+				List<Lote> lotesBusqueda = loteService.findById(idLote);
+				Lote loteBusqueda = lotesBusqueda.get(0);
+				
+				if(loteBusqueda.getStatus().equals(EstadoLote.SEPARADO.getName())) {
+					FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra separado."));
+					return;
+				}else if(loteBusqueda.getStatus().equals(EstadoLote.VENDIDO.getName())) {
+					FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra Vendido."));
+					return;
+				}
+				
 				for(ProspectionDetail detalle: lstProspectionDetail) {
 					if(detalle.getLote() != null) {
-						if(loteSelected.getId() == detalle.getLote().getId() && detalle.getAction().getDescription().equals("Separado")) {
-							FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya seleccionó el lote "+ loteSelected.getNumberLote()+" de la Manzana "+manzanaSelected.getName()+ "como separado"));
+						if(loteSelected.getId() == detalle.getLote().getId() && detalle.getAction().getDescription().equals(EstadoLote.SEPARADO.getName())) {
+							FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya seleccionó el lote "+ loteSelected.getNumberLote()+" de la Manzana "+manzanaSelected.getName()+ " como separado"));
 							return;
 						}
 					}
@@ -580,6 +594,22 @@ public class ProspeccionBean {
 				FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar Manzana y Lote."));
 				return;
 			}else {
+				int idLote = loteSelected.getId();
+				List<Lote> lotesBusqueda = loteService.findById(idLote);
+				Lote loteBusqueda = lotesBusqueda.get(0);
+				
+				if(loteBusqueda.getStatus().equals(EstadoLote.SEPARADO.getName())) {
+					if(loteBusqueda.getPersonVenta().getId() != prospectionDetailNew.getProspection().getProspect().getPerson().getId()) {
+						FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra separado."));
+						return;
+					}
+					
+				}else if(loteBusqueda.getStatus().equals(EstadoLote.VENDIDO.getName())) {
+					FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra Vendido."));
+					return;
+				}
+				
+				
 				for(ProspectionDetail detalle: lstProspectionDetail) {
 					if(detalle.getLote() != null) {
 						if(loteSelected.getId() == detalle.getLote().getId() && detalle.getAction().getDescription().equals("Vendido")) {

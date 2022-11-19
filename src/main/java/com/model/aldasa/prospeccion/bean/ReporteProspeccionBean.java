@@ -148,18 +148,46 @@ public class ReporteProspeccionBean  implements Serializable {
 			lote.setStatus(EstadoLote.SEPARADO.getName());
 			lote.setFechaSeparacion(new Date());
 			lote.setFechaVencimiento(sumarDiasAFecha(new Date(), 7));
+			lote.setPersonVenta(prospectionDetailSelected.getProspection().getProspect().getPerson());
 			
 			lote = loteService.save(lote);
 			if(lote != null) {
 				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Confirmación", "Lote separado correctamente");
 				PrimeFaces.current().dialog().showMessageDynamic(message);
 			}else {
-				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Confirmación", "No se pudo separar el lote");
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo separar el lote");
 				PrimeFaces.current().dialog().showMessageDynamic(message);
 			}
 		}
+	}
+	
+	public void venderLote() {
+		List<Lote> loteSeparar = loteService.findById(prospectionDetailSelected.getLote().getId());
+		Lote lote = loteSeparar.get(0);
 		
-		
+		if(lote.getStatus().equals(EstadoLote.VENDIDO.getName())) {
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se completó la accion, el lote se encuentra Vendido.");
+			PrimeFaces.current().dialog().showMessageDynamic(message);
+		}else if(lote.getStatus().equals(EstadoLote.INACTIVO.getName())) {
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se completó la accion, el lote se encuentra Inactivo.");
+			PrimeFaces.current().dialog().showMessageDynamic(message);
+		} else if(lote.getStatus().equals(EstadoLote.SEPARADO.getName()) && lote.getPersonVenta().getId() != prospectionDetailSelected.getProspection().getProspect().getPerson().getId()) {
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se completó la accion, el lote se encuentra Separado por otra persona.");
+			PrimeFaces.current().dialog().showMessageDynamic(message);
+		}else {
+			lote.setStatus(EstadoLote.VENDIDO.getName());
+			lote.setFechaVendido(prospectionDetailSelected.getDate());
+			lote.setPersonVenta(prospectionDetailSelected.getProspection().getProspect().getPerson());
+			
+			lote = loteService.save(lote);
+			if(lote != null) {
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Confirmación", "Lote pasó a vendido correctamente");
+				PrimeFaces.current().dialog().showMessageDynamic(message);
+			}else {
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo vender el lote");
+				PrimeFaces.current().dialog().showMessageDynamic(message);
+			}
+		}
 	}
 	
 	public Date sumarDiasAFecha(Date fecha, int dias){

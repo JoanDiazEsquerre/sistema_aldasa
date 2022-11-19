@@ -121,6 +121,7 @@ public class LoteBean implements Serializable{
 		fechaSeparacion = loteNew.getFechaSeparacion();
 		fechaVencimiento = loteNew.getFechaVencimiento();
 		fechaVendido = loteNew.getFechaVendido();
+		personVenta = loteNew.getPersonVenta();
 				
 		listarManzanas();
 		listarProject();
@@ -294,11 +295,16 @@ public class LoteBean implements Serializable{
 			return ;
 		}
 		
+		if(loteNew.getStatus().equals("Vendido") && personVenta == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una persona de venta."));
+			return ;
+		}
 		
 		
 		//*********************************
 		if(loteNew.getStatus().equals("Vendido")) {
 			loteNew.setFechaVendido(fechaVendido); 
+			loteNew.setPersonVenta(personVenta);
 		}else if(loteNew.getStatus().equals("Separado")) {
 			loteNew.setFechaSeparacion(fechaSeparacion);
 			loteNew.setFechaVencimiento(fechaVencimiento); 
@@ -306,6 +312,7 @@ public class LoteBean implements Serializable{
 			loteNew.setFechaSeparacion(null);
 			loteNew.setFechaVencimiento(null); 
 			loteNew.setFechaVendido(null); 
+			loteNew.setPersonVenta(null); 
 		}
 		
 		
