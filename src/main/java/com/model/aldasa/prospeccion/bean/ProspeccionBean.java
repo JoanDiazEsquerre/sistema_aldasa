@@ -53,12 +53,13 @@ import com.model.aldasa.service.ProspectionDetailService;
 import com.model.aldasa.service.ProspectionService;
 import com.model.aldasa.service.ProvinceService;
 import com.model.aldasa.service.UsuarioService;
+import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.EstadoLote;
 import com.model.aldasa.util.Perfiles;
 
 @ManagedBean
 @ViewScoped
-public class ProspeccionBean {
+public class ProspeccionBean extends BaseBean{
 	
 	@ManagedProperty(value = "#{navegacionBean}")
 	private NavegacionBean navegacionBean;
@@ -166,6 +167,7 @@ public class ProspeccionBean {
         });
         countriesGroup.add(europeCountries);
         prospectionNew = new Prospection();
+        prospectionNew.setDateStart(new Date());
         newPerson();
 	}
 	
@@ -536,8 +538,9 @@ public class ProspeccionBean {
 			prospectActualiza.setPersonSupervisor(userAsesor.getTeam().getPersonSupervisor());
 			prospectService.save(prospectActualiza);
 			
-			mensajeINFO("Se registró correctamente el prospecto \n"+ nuevo.getProspect().getPerson().getSurnames()+" "+ nuevo.getProspect().getPerson().getNames());
+			addInfoMessage("Se registró correctamente el prospecto \n"+ nuevo.getProspect().getPerson().getSurnames()+" "+ nuevo.getProspect().getPerson().getNames());
 			prospectionNew = new Prospection();
+			prospectionNew.setDateStart(new Date());
 			lstDepartment = new ArrayList<>();
 			lstProvince = new ArrayList<>();
 			lstDistrict = new ArrayList<>();
@@ -986,7 +989,7 @@ public class ProspeccionBean {
 	public List<Prospect> completeProspect(String query) {
         List<Prospect> lista = new ArrayList<>();
         for (Prospect c : lstProspect) {
-            if (c.getPerson().getSurnames().toUpperCase().contains(query.toUpperCase()) || c.getPerson().getNames().toUpperCase().contains(query.toUpperCase())) {
+            if (c.getPerson().getSurnames().toUpperCase().contains(query.toUpperCase()) || c.getPerson().getNames().toUpperCase().contains(query.toUpperCase()) || c.getPerson().getDni().toUpperCase().contains(query.toUpperCase())) {
                 lista.add(c);
             }
         }

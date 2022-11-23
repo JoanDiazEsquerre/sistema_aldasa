@@ -41,6 +41,7 @@ import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.ProspectionDetailService;
 import com.model.aldasa.service.UsuarioService;
+import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.EstadoLote;
 import com.model.aldasa.util.EstadoProspeccion;
 import com.model.aldasa.util.Perfiles;
@@ -55,7 +56,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 @ManagedBean
 @ViewScoped
-public class ReporteProspeccionBean  implements Serializable {
+public class ReporteProspeccionBean extends BaseBean implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -321,6 +322,10 @@ public class ReporteProspeccionBean  implements Serializable {
 			lstProspectionDetailReporte = prospectionDetailService.findByScheduledAndDateBetweenAndProspectionProspectPersonSurnamesLikeAndProspectionPersonAssessorDniLikeAndProspectionPersonSupervisorDniLikeAndActionDescriptionLikeAndProspectionOriginContactLikeAndProspectionProjectNameLike(false, fechaIni,fechaFin,personSurnames,assessorDni,"%"+usuarioLogin.getPerson().getDni()+"%",action,originContact,project);
 		}else {
 			lstProspectionDetailReporte = prospectionDetailService.findByScheduledAndDateBetweenAndProspectionProspectPersonSurnamesLikeAndProspectionPersonAssessorDniLikeAndProspectionPersonSupervisorDniLikeAndActionDescriptionLikeAndProspectionOriginContactLikeAndProspectionProjectNameLike(false, fechaIni,fechaFin,personSurnames,assessorDni,"%%",action,originContact,project);
+		}
+		
+		if(lstProspectionDetailReporte.isEmpty()) {
+			addWarnMessage("No se encontraron registros.");
 		}
 	}
 	
