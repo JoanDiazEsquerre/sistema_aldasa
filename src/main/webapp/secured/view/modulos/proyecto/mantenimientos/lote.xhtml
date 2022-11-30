@@ -17,20 +17,20 @@
 				<f:selectItem itemLabel="Separados" itemValue="Separado"/>
 				<f:selectItem itemLabel="Vendidos" itemValue="Vendido"/>
 				<f:selectItem itemLabel="Inactivos" itemValue="Inactivo"/>
-				<p:ajax update="idTableLote" />
+				<p:ajax update="idTableLote" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();" />
 			</p:selectOneMenu>
 			
 			<p:outputLabel for="optionProject" value="Proyecto: " />
 			<p:selectOneMenu id="optionProject" value="#{loteBean.projectFilter}" converter="#{loteBean.conversorProject}" >
 				<f:selectItem itemLabel="[--Todos--]" itemValue="#{null}"/>
 				<f:selectItems value="#{loteBean.lstProject}" var="proy" itemLabel="#{proy.name}" itemValue="#{proy}"/>
-				<p:ajax update=":form:idTableLote :form:panelFilter" listener="#{loteBean.listarManzanas}" />
+				<p:ajax update=":form:idTableLote :form:panelFilter" listener="#{loteBean.listarManzanas}" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
 			</p:selectOneMenu>
 			
 			<p:outputLabel for="optionManzana" value="Manzana: "/>
             <p:autoComplete scrollHeight="300" onkeyup="javascript:this.value=this.value.toUpperCase();" value="#{loteBean.manzanaFilter}" converter="#{loteBean.conversorManzana}" id="optionManzana" completeMethod="#{loteBean.completeManzana}"  
                           var="ase" itemLabel="#{ase.name}" itemValue="#{ase}" forceSelection="true"  > 
-            	<p:ajax update="idTableLote"/>
+            	<p:ajax update="idTableLote" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
             </p:autoComplete>
 		</p:panelGrid>
 		
@@ -49,7 +49,7 @@
 					</span>
 				</div>
 			</f:facet>
-			<p:ajax event="rowSelect" listener="#{loteBean.modifyLote()}" update=":formLoteDialog :dialogLote :form:idTableLote " oncomplete="PF('loteDialog').show();" />
+			<p:ajax event="rowSelect" listener="#{loteBean.modifyLote()}" update=":formLoteDialog :dialogLote :form:idTableLote " onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('loteDialog').show();" />
 			<p:column style="width:42px;text-align: left">
 				<f:facet name="header">
 					<p:commandLink action="#{loteBean.newLote()}" update=":formLoteDialog :dialogLote" oncomplete="PF('loteDialog').show();" title="NUEVO LOTE">
@@ -182,7 +182,7 @@
 						<h:outputLabel id="lblFechaVend" for="vend" value="Fecha venta:" rendered="#{loteBean.loteNew.status eq 'Vendido'}"/>
 						<p:datePicker id="vend" style="margin:5px; width:220px" value="#{loteBean.fechaVendido}" rendered="#{loteBean.loteNew.status eq 'Vendido'}" disabled="#{!loteBean.modificar}"/>
 				
-						<h:outputLabel for="optionPerson" value="Comprador:" />
+						<h:outputLabel for="optionPerson" value="Comprador:" rendered="#{loteBean.loteNew.status eq 'Vendido' or loteBean.loteNew.status eq 'Separado'}"/>
 		                <p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{loteBean.personVenta}" converter="#{loteBean.conversorPerson}" id="optionPerson" completeMethod="#{loteBean.completePerson}"  disabled="#{!loteBean.modificar}"
 		                          var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px" rendered="#{loteBean.loteNew.status eq 'Vendido' or loteBean.loteNew.status eq 'Separado'}">
 		                          <p:column width="400px">
@@ -236,6 +236,8 @@
 						<p:inputText id="comentario" value="#{loteBean.loteNew.comentario}" modifyValueOnWheel="false" maxlength="50" disabled="#{!loteBean.modificar}"><p:ajax update="messages" /> </p:inputText>
 					</h:panelGrid>
 				</p:tab>
+				<p:tab title="Datos de venta">
+				</p:tab> 
 			</p:tabView>	
 		</h:form>
 	</p:dialog>
@@ -247,7 +249,7 @@
 		</h:form>
 	</p:dialog>
 	
-	<p:dialog modal="true" responsive="true" dynamic="true" closeOnEscape="true" id="dialogMapeo" width="auto" height="400px" header="Mapeo de lotes" widgetVar="mapeoDialog" resizable="false" closable="true"
+	<p:dialog modal="true" responsive="true" dynamic="true" closeOnEscape="true" id="dialogMapeo" width="80%" height="400px" header="Mapeo de lotes" widgetVar="mapeoDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formMapeoDialog">
 		
@@ -282,6 +284,13 @@
               resizable="false">
               <i class="pi pi-spinner pi-spin" style="font-size:3rem"></i>
     </p:dialog>
+    
+    <pe:blockUI widgetVar="blockUIWidget">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+        
+    </pe:blockUI>
 
 
 </ui:composition>

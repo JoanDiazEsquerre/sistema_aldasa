@@ -30,7 +30,17 @@ public class Person {
     @JoinColumn(name="iddistrict")
     private District district;
 	
+	@ManyToOne
+    @JoinColumn(name="idpersonconyuge")
+    private Person personconyuge;
 	
+	
+	public Person getPersonconyuge() {
+		return personconyuge;
+	}
+	public void setPersonconyuge(Person personconyuge) {
+		this.personconyuge = personconyuge;
+	}
 	public String getOccupation() {
 		return occupation;
 	}
