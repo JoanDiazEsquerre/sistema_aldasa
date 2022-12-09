@@ -31,12 +31,15 @@ import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Manzana;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Project;
+import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.ManzanaService;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProjectService;
+import com.model.aldasa.service.TeamService;
+import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.Perfiles;
 
 @ManagedBean
@@ -60,12 +63,20 @@ public class LoteBean implements Serializable{
 	@ManagedProperty(value = "#{personService}")
 	private PersonService personService;
 	
+	@ManagedProperty(value = "#{usuarioService}")
+	private UsuarioService usuarioService; 
+	
+	@ManagedProperty(value = "#{teamService}")
+	private TeamService teamService; 
+	
 	private List<Lote> lstLotes;
 	private List<Person> lstPerson;
 	
 	private StreamedContent file;
 	
+	private Person personAsesorSelected;
 	private Lote loteSelected;
+	private Team teamSelected;
 	private Lote loteNew;
 	private Usuario usuarioLogin;
 	
@@ -84,6 +95,9 @@ public class LoteBean implements Serializable{
 	private LazyDataModel<Lote> lstLoteLazy;
 	private List<Manzana> lstManzana = new ArrayList<>();
 	private List<Project> lstProject = new ArrayList<>();
+	private List<Team> lstTeam;
+	private List<Person> lstPersonAsesor = new ArrayList<>();
+
 	
 	@PostConstruct
 	public void init() {
@@ -95,6 +109,9 @@ public class LoteBean implements Serializable{
 		listarManzanas();
 		listarPersonas();
 		iniciarLazy();
+		cargarAsesorPorEquipo();
+		lstTeam=teamService.findByStatus(true);
+
 	}
 	
 	public void listarPersonas() {
@@ -122,6 +139,11 @@ public class LoteBean implements Serializable{
 		fechaVencimiento = loteNew.getFechaVencimiento();
 		fechaVendido = loteNew.getFechaVendido();
 		personVenta = loteNew.getPersonVenta();
+		
+		teamSelected = teamService.findByPersonSupervisor(loteNew.getPersonSupervisor());
+		cargarAsesorPorEquipo();
+		personAsesorSelected = loteNew.getPersonAssessor();
+
 				
 		listarManzanas();
 		listarProject();
@@ -138,6 +160,7 @@ public class LoteBean implements Serializable{
 		}
 		
 		if(loteNew.getStatus().equals("Vendido")) {
+			loteNew.setTipoPago("Contado");
 			if(fechaVendido == null) {
 				fechaVendido=new Date();
 			}
@@ -262,7 +285,6 @@ public class LoteBean implements Serializable{
 			}
 		};
 	}
-
 	
 	public void saveLote() {
 		if(loteNew.getNumberLote().equals("") || loteNew.getNumberLote()==null) {
@@ -280,42 +302,84 @@ public class LoteBean implements Serializable{
 			return ;
 		} 
 		
+		loteNew.setFechaSeparacion(fechaSeparacion);
 		if(loteNew.getStatus().equals("Separado") && fechaSeparacion == null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una fecha separación."));
 			return ;
 		}
 		
+		loteNew.setFechaVencimiento(fechaVencimiento);
 		if(loteNew.getStatus().equals("Separado") && fechaVencimiento == null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una fecha vencimiento."));
 			return ;
 		}
 		
-		if(loteNew.getStatus().equals("Vendido") && fechaVendido == null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una fecha vendido."));
+		loteNew.setPersonSupervisor(null);
+		if(loteNew.getStatus().equals("Separado") && teamSelected == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar equipo."));
 			return ;
+		}else if (loteNew.getStatus().equals("Separado") && teamSelected != null) {
+			loteNew.setPersonSupervisor(teamSelected.getPersonSupervisor());
 		}
 		
+		loteNew.setPersonAssessor(null);
+		if (loteNew.getStatus().equals("Separado") && personAsesorSelected == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar asesor."));
+			return ;
+		}else if (loteNew.getStatus().equals("Separado") && personAsesorSelected != null) {
+			loteNew.setPersonAssessor(personAsesorSelected);
+		}
+		
+		loteNew.setPersonVenta(null);
 		if(loteNew.getStatus().equals("Vendido") && personVenta == null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una persona de venta."));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
 			return ;
+		}else if (loteNew.getStatus().equals("Vendido") && personVenta != null) {
+			loteNew.setPersonVenta(personVenta);
 		}
 		
+		loteNew.setPersonSupervisor(null);
+		if(loteNew.getStatus().equals("Vendido") && teamSelected == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
+			return ;
+		}else if (loteNew.getStatus().equals("Vendido") && teamSelected != null) {
+			loteNew.setPersonSupervisor(teamSelected.getPersonSupervisor());
+		}
+		
+		loteNew.setPersonAssessor(null);
+		if (loteNew.getStatus().equals("Vendido") && personAsesorSelected == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
+			return ;
+		}else if (loteNew.getStatus().equals("Vendido") && personAsesorSelected != null) {
+			loteNew.setPersonAssessor(personAsesorSelected);
+		}
+		
+		loteNew.setFechaVendido(null);
+		if(loteNew.getStatus().equals("Vendido") && fechaVendido == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
+			return ;
+		}else if (loteNew.getStatus().equals("Vendido") && fechaVendido !=null) {
+			loteNew.setFechaVendido(fechaVendido);
+		}
+		
+		
+		if(loteNew.getStatus().equals("Vendido") && loteNew.getTipoPago().equals("Contado")) {
+			loteNew.setMontoInicial(null);
+			loteNew.setNumeroCuota(null);
+			if (loteNew.getMontoVenta() == null) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
+				return ;
+			}
+			
+		}
+		if(loteNew.getStatus().equals("Vendido") && loteNew.getTipoPago().equals("Crédito")) {
+			if (loteNew.getMontoVenta() == null || loteNew.getMontoInicial() == null || loteNew.getNumeroCuota() == null) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
+				return ;
+			}
+		}
 		
 		//*********************************
-		if(loteNew.getStatus().equals("Vendido")) {
-			loteNew.setFechaVendido(fechaVendido); 
-			loteNew.setPersonVenta(personVenta);
-		}else if(loteNew.getStatus().equals("Separado")) {
-			loteNew.setFechaSeparacion(fechaSeparacion);
-			loteNew.setFechaVencimiento(fechaVencimiento); 
-		}else {
-			loteNew.setFechaSeparacion(null);
-			loteNew.setFechaVencimiento(null); 
-			loteNew.setFechaVendido(null); 
-			loteNew.setPersonVenta(null); 
-		}
-		
-		
 		
 		if (tituloDialog.equals("NUEVO LOTE")) {
 			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProject(loteNew.getNumberLote(), loteNew.getManzana(), loteNew.getProject());
@@ -357,6 +421,34 @@ public class LoteBean implements Serializable{
 			}
 		}
 	}
+	
+	public Converter getConversorTeam() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                    Team c = null;
+                    for (Team si : lstTeam) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Team) value).getId() + "";
+                }
+            }
+        };
+    }
 	
 	public Converter getConversorManzana() {
         return new Converter() {
@@ -470,6 +562,59 @@ public class LoteBean implements Serializable{
                 .build();
     }
 	
+	public void cargarAsesorPorEquipo() {
+		lstPersonAsesor = new ArrayList<>();
+		List<Usuario> lstUsuarios = new ArrayList<>();
+		
+    	personAsesorSelected = null;
+		if(teamSelected!= null) {
+			lstUsuarios = usuarioService.findByTeam(teamSelected);
+		}
+		
+		if(!lstUsuarios.isEmpty()){
+			for(Usuario user : lstUsuarios) {
+				lstPersonAsesor.add(user.getPerson());
+			}
+		}
+	}
+	
+	public Converter getConversorPersonAsesor() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Person c = null;
+                    for (Person si : lstPersonAsesor) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Person) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public List<Person> completePersonAsesor(String query) {
+        List<Person> lista = new ArrayList<>();
+        for (Person c : lstPersonAsesor) {
+            if (c.getSurnames().toUpperCase().contains(query.toUpperCase()) || c.getNames().toUpperCase().contains(query.toUpperCase())) {
+                lista.add(c);
+            }
+        }
+        return lista;
+    }
 	
 	
 	public LoteService getLoteService() {
@@ -633,6 +778,54 @@ public class LoteBean implements Serializable{
 
 	public void setPersonVenta(Person personVenta) {
 		this.personVenta = personVenta;
+	}
+
+	public Team getTeamSelected() {
+		return teamSelected;
+	}
+
+	public void setTeamSelected(Team teamSelected) {
+		this.teamSelected = teamSelected;
+	}
+
+	public List<Team> getLstTeam() {
+		return lstTeam;
+	}
+
+	public void setLstTeam(List<Team> lstTeam) {
+		this.lstTeam = lstTeam;
+	}
+
+	public UsuarioService getUsuarioService() {
+		return usuarioService;
+	}
+
+	public void setUsuarioService(UsuarioService usuarioService) {
+		this.usuarioService = usuarioService;
+	}
+
+	public Person getPersonAsesorSelected() {
+		return personAsesorSelected;
+	}
+
+	public void setPersonAsesorSelected(Person personAsesorSelected) {
+		this.personAsesorSelected = personAsesorSelected;
+	}
+
+	public List<Person> getLstPersonAsesor() {
+		return lstPersonAsesor;
+	}
+
+	public void setLstPersonAsesor(List<Person> lstPersonAsesor) {
+		this.lstPersonAsesor = lstPersonAsesor;
+	}
+
+	public TeamService getTeamService() {
+		return teamService;
+	}
+
+	public void setTeamService(TeamService teamService) {
+		this.teamService = teamService;
 	}
 	
 	

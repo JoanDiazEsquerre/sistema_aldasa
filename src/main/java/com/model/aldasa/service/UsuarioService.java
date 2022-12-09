@@ -7,7 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.model.aldasa.entity.Person;
+import com.model.aldasa.entity.Profile;
 import com.model.aldasa.entity.Prospection;
+import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 
 public interface UsuarioService {
@@ -23,6 +25,8 @@ public interface UsuarioService {
 	Usuario findByPersonException(int idPersona, int idUser);
 	List<Usuario> findByProfileIdAndStatus(Integer idProfile,boolean status);
 	List<Usuario> findByTeamPersonSupervisorAndStatus(Person personSupervisor,boolean status);
+	List<Usuario> findByTeam(Team team);
+	List<Usuario> findByProfileId(int idProfile);
 	
 	 Page<Usuario> findByProfileNameLikeAndPersonSurnamesLikeAndPasswordLikeAndUsernameLikeAndStatus(String profileName, String personSurnames, String password, String username, boolean status, Pageable pageable);
 	

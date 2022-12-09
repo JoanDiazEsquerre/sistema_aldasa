@@ -73,6 +73,26 @@ public class Lote {
 	@Column(name="fechavendido")
 	private Date fechaVendido;
 	
+	@Column(name="montoventa")
+	private Double montoVenta;
+	
+	@Column(name="tipopago")
+	private String tipoPago;
+	
+	@Column(name="numerocuota")
+	private Integer numeroCuota;
+	
+	@Column(name="montoinicial")
+	private Double montoInicial;
+	
+	@ManyToOne
+	@JoinColumn(name="idpersonassessor")
+	private Person personAssessor;
+	
+	@ManyToOne
+	@JoinColumn(name="idpersonsupervisor")
+	private Person personSupervisor;
+	
 	
 	public Integer getId() {
 		return id;
@@ -170,7 +190,6 @@ public class Lote {
 	public void setMedidaIzquierda(Double medidaIzquierda) {
 		this.medidaIzquierda = medidaIzquierda;
 	}
-	
 	public String getAmpliacion() {
 		return ampliacion;
 	}
@@ -183,14 +202,12 @@ public class Lote {
 	public void setFechaVencimiento(Date fechaVencimiento) {
 		this.fechaVencimiento = fechaVencimiento;
 	}
-	
 	public Date getFechaVendido() {
 		return fechaVendido;
 	}
 	public void setFechaVendido(Date fechaVendido) {
 		this.fechaVendido = fechaVendido;
 	}
-	
 	public Date getFechaSeparacion() {
 		return fechaSeparacion;
 	}
@@ -203,12 +220,42 @@ public class Lote {
 	public void setPersonVenta(Person personVenta) {
 		this.personVenta = personVenta;
 	}
-	
-	
-	
-	
-	
-	
+	public Double getMontoVenta() {
+		return montoVenta;
+	}
+	public void setMontoVenta(Double montoVenta) {
+		this.montoVenta = montoVenta;
+	}
+	public String getTipoPago() {
+		return tipoPago;
+	}
+	public void setTipoPago(String tipoPago) {
+		this.tipoPago = tipoPago;
+	}
+	public Integer getNumeroCuota() {
+		return numeroCuota;
+	}
+	public void setNumeroCuota(Integer numeroCuota) {
+		this.numeroCuota = numeroCuota;
+	}
+	public Double getMontoInicial() {
+		return montoInicial;
+	}
+	public void setMontoInicial(Double montoInicial) {
+		this.montoInicial = montoInicial;
+	}
+	public Person getPersonAssessor() {
+		return personAssessor;
+	}
+	public void setPersonAssessor(Person personAssessor) {
+		this.personAssessor = personAssessor;
+	}
+	public Person getPersonSupervisor() {
+		return personSupervisor;
+	}
+	public void setPersonSupervisor(Person personSupervisor) {
+		this.personSupervisor = personSupervisor;
+	}
 	
 	
 	@Override

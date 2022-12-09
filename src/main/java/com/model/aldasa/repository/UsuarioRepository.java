@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.model.aldasa.entity.Person;
+import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
@@ -34,6 +35,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
     
     List<Usuario> findByProfileIdAndStatus(Integer idProfile,boolean status);
     List<Usuario> findByTeamPersonSupervisorAndStatus(Person personSupervisor, boolean status);
+    List<Usuario> findByTeam(Team team);
+	List<Usuario> findByProfileId(int idProfile);
     
     Page<Usuario> findByProfileNameLikeAndPersonSurnamesLikeAndPasswordLikeAndUsernameLikeAndStatus(String profileName, String personSurnames, String password, String username, boolean status, Pageable pageable);
 	

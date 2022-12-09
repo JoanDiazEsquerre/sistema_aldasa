@@ -1,5 +1,6 @@
 package com.model.aldasa.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,26 +49,29 @@ public class LoteServiceImpl implements LoteService {
 
 	@Override
 	public List<Lote> findById(int id) {
-		// TODO Auto-generated method stub
 		return loteRepository.findById(id);
 	}
 
 	@Override
 	public Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(String numberLote, String nameManzana,String projectName ,String status,Pageable pageable) {
-		// TODO Auto-generated method stub
 		return loteRepository.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(numberLote, nameManzana, projectName, status, pageable);
 	}
 
 	@Override
 	public Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndStatusLike(String numberLote,  String nameManzana, String status,Pageable pageable){
-		// TODO Auto-generated method stub
 		return loteRepository.findAllByNumberLoteLikeAndManzanaNameLikeAndStatusLike(numberLote, nameManzana, status, pageable);
 	}
 
 	@Override
 	public List<Lote> findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(Project project, Manzana manzana, String status) {
-		// TODO Auto-generated method stub
 		return loteRepository.findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(project, manzana,status);
+	}
+
+	@Override
+	public Page<Lote> findAllByStatusLikeAndPersonSupervisorDniLikeAndPersonAssessorDniLikeAndFechaVendidoBetween(
+			String status, String idPersonSupervisor, String idPersonAsesor, Date fechaIni, Date fechaFin,
+			Pageable pageable) {
+		return loteRepository.findAllByStatusLikeAndPersonSupervisorDniLikeAndPersonAssessorDniLikeAndFechaVendidoBetween(status, idPersonSupervisor, idPersonAsesor, fechaIni, fechaFin, pageable); 
 	}
 	
 }

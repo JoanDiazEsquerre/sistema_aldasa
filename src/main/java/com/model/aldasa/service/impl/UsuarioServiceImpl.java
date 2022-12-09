@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Person;
+import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.repository.UsuarioRepository;
 import com.model.aldasa.service.UsuarioService;
@@ -78,6 +79,16 @@ public class UsuarioServiceImpl implements UsuarioService {
     public Page<Usuario> findByProfileNameLikeAndPersonSurnamesLikeAndPasswordLikeAndUsernameLikeAndStatus(String profileName,String personSurnames, String password, String username, boolean status, Pageable pageable) {
         return usuarioRepository.findByProfileNameLikeAndPersonSurnamesLikeAndPasswordLikeAndUsernameLikeAndStatus(profileName,personSurnames, password, username, status, pageable);
     }
+
+	@Override
+	public List<Usuario> findByTeam(Team team) {
+		return usuarioRepository.findByTeam(team);
+	}
+
+	@Override
+	public List<Usuario> findByProfileId(int idProfile) {
+		return usuarioRepository.findByProfileId(idProfile);
+	}
 	
 
 }

@@ -179,21 +179,18 @@
 						<h:outputLabel id="lblFechaVenc" for="venc" value="Fecha Vencimiento:" rendered="#{loteBean.loteNew.status eq 'Separado'}"/>
 						<p:datePicker id="venc" style="margin:5px; width:220px" value="#{loteBean.fechaVencimiento}" rendered="#{loteBean.loteNew.status eq 'Separado'}" disabled="#{!loteBean.modificar}"/>
 						
-						<h:outputLabel id="lblFechaVend" for="vend" value="Fecha venta:" rendered="#{loteBean.loteNew.status eq 'Vendido'}"/>
-						<p:datePicker id="vend" style="margin:5px; width:220px" value="#{loteBean.fechaVendido}" rendered="#{loteBean.loteNew.status eq 'Vendido'}" disabled="#{!loteBean.modificar}"/>
-				
-						<h:outputLabel for="optionPerson" value="Comprador:" rendered="#{loteBean.loteNew.status eq 'Vendido' or loteBean.loteNew.status eq 'Separado'}"/>
-		                <p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{loteBean.personVenta}" converter="#{loteBean.conversorPerson}" id="optionPerson" completeMethod="#{loteBean.completePerson}"  disabled="#{!loteBean.modificar}"
-		                          var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px" rendered="#{loteBean.loteNew.status eq 'Vendido' or loteBean.loteNew.status eq 'Separado'}">
-		                          <p:column width="400px">
-	                        <h:outputLabel value="#{per.surnames} #{per.names}" /> 
-	                        </p:column>
-	                        <p:column width="400px">
-	                        	<h:outputLabel value="#{per.dni}" /> 
-	                        </p:column> 
-	                         
-	                        <p:ajax update="messages" />
-	                    </p:autoComplete>
+						<h:outputLabel for="optionTeam" value="Equipo:" rendered="#{loteBean.loteNew.status eq 'Separado' or loteBean.loteNew.status eq 'Vendido'}" />						
+						<p:selectOneMenu id="optionTeam" value="#{loteBean.teamSelected}" rendered="#{loteBean.loteNew.status eq 'Separado' or loteBean.loteNew.status eq 'Vendido'}" converter="#{loteBean.conversorTeam}" style="margin:5px; width:220px">
+							<f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}" />
+							<f:selectItems value="#{loteBean.lstTeam}" var="prof" itemLabel="#{prof.name} / #{prof.personSupervisor.surnames} #{prof.personSupervisor.names}" itemValue="#{prof}" />
+							<p:ajax listener="#{loteBean.cargarAsesorPorEquipo}"	update="optionAsesor" />
+						</p:selectOneMenu>
+
+						<h:outputLabel for="optionAsesor" value="Asesor:" rendered="#{loteBean.loteNew.status eq 'Separado' or loteBean.loteNew.status eq 'Vendido'}" />
+						<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{loteBean.personAsesorSelected}" rendered="#{loteBean.loteNew.status eq 'Separado' or loteBean.loteNew.status eq 'Vendido'}" converter="#{loteBean.conversorPersonAsesor}" 
+						   	id="optionAsesor" completeMethod="#{loteBean.completePersonAsesor}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" 
+						   	forceSelection="true" style="margin:5px; width:220px" />
+						   	
 					</h:panelGrid>
 					<p:commandButton value="Guardar" action="#{loteBean.saveLote()}" update=":form:idTableLote :formLoteDialog" rendered="#{loteBean.modificar}" />
 				</p:tab>
@@ -236,7 +233,42 @@
 						<p:inputText id="comentario" value="#{loteBean.loteNew.comentario}" modifyValueOnWheel="false" maxlength="50" disabled="#{!loteBean.modificar}"><p:ajax update="messages" /> </p:inputText>
 					</h:panelGrid>
 				</p:tab>
-				<p:tab title="Datos de venta">
+				<p:tab title="Datos de venta" rendered="#{loteBean.loteNew.status eq 'Vendido'}">
+					<h:panelGrid id="gridDatosVenta" columns="2">
+					
+					   	<h:outputLabel for="optionPerson" value="Comprador:" rendered="#{loteBean.loteNew.status eq 'Separado' or loteBean.loteNew.status eq 'Vendido'}" />
+		                <p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{loteBean.personVenta}" converter="#{loteBean.conversorPerson}" id="optionPerson"  completeMethod="#{loteBean.completePerson}"  disabled="#{!loteBean.modificar}"
+		                          var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px" rendered="#{loteBean.loteNew.status eq 'Separado' or loteBean.loteNew.status eq 'Vendido'}" >
+							<p:column width="400px">
+								<h:outputLabel value="#{per.surnames} #{per.names}" />
+							</p:column>
+							<p:column width="400px">
+								<h:outputLabel value="#{per.dni}" />
+							</p:column>
+
+							<p:ajax update="messages" />
+						</p:autoComplete>
+
+						<h:outputLabel id="lblFechaVend" for="vend" value="Fecha venta:" />
+						<p:datePicker id="vend" style="margin:5px; width:220px" value="#{loteBean.fechaVendido}" disabled="#{!loteBean.modificar}"/>
+						
+						<h:outputLabel value="Tipo de Pago:" for="optionPago" />
+						<p:selectOneMenu id="optionPago" value="#{loteBean.loteNew.tipoPago}" style="margin:5px; width:220px" disabled="#{!loteBean.modificar}">
+							<f:selectItem itemLabel="Contado" itemValue="Contado" />
+							<f:selectItem itemLabel="Crédito" itemValue="Crédito"/>
+							<p:ajax update="gridDatosVenta messages" />
+						</p:selectOneMenu>
+											
+						<h:outputLabel value="Monto Venta:" for="montoVenta" />
+						<p:inputNumber id="montoVenta" value="#{loteBean.loteNew.montoVenta}" style="margin:5px; width:220px" modifyValueOnWheel="false" > <p:ajax update="messages" /> </p:inputNumber>
+						
+						
+						<h:outputLabel value="Monto Inicial: " id="lblMontoInicial" for="montoIni" rendered="#{loteBean.loteNew.tipoPago eq 'Crédito'}" />
+						<p:inputNumber id="montoIni" value="#{loteBean.loteNew.montoInicial}" style="margin:5px; width:220px" modifyValueOnWheel="false" rendered="#{loteBean.loteNew.tipoPago eq 'Crédito'}"> <p:ajax update="messages" /> </p:inputNumber>
+											
+						<h:outputLabel value="Nro. de Cuotas: " id="lblNroCuota" for="nroCuota" rendered="#{loteBean.loteNew.tipoPago eq 'Crédito'}"/>
+						<p:inputNumber id="nroCuota" value="#{loteBean.loteNew.numeroCuota}" style="margin:5px; width:220px" minValue="1" decimalPlaces="0" rendered="#{loteBean.loteNew.tipoPago eq 'Crédito'}"> <p:ajax update="messages" /> </p:inputNumber>
+					</h:panelGrid>
 				</p:tab> 
 			</p:tabView>	
 		</h:form>

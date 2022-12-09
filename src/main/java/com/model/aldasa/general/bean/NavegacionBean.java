@@ -33,14 +33,14 @@ public class NavegacionBean implements Serializable  {
 	private int idAsistentenAdmin = Perfiles.ASISTENTE_ADMINISTRATIVO.getId();
 	
 	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte;
-	private boolean subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
+	private boolean subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
 					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones;
 	
 	private int[] permisoProspectos= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoProspeccion= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoAgenda= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoSimulador= {idAdministrador,idSupervisor,idAsesor};
-	private int[] permisoPersonas= {idAdministrador};
+	private int[] permisoPersonas= {idAdministrador,idAsistentenAdmin};
 	private int[] permisoUsuarios= {idAdministrador};
 	private int[] permisoPerfiles= {idAdministrador};
 	private int[] permisoProyectos= {idAdministrador,idAsistentenAdmin};
@@ -49,6 +49,9 @@ public class NavegacionBean implements Serializable  {
 	private int[] permisoReporteAcciones= {idAdministrador,idSupervisor,idAsesor,idAsistentenAdmin};
 	private int[] permisoManzanas= {idAdministrador,idAsistentenAdmin};
 	private int[] permisoLotes= {idAdministrador,idSupervisor,idAsesor,idAsistentenAdmin};
+	private int[] permisoComisiones= {idAdministrador};
+	private int[] permisoComision= {idAdministrador};
+
 
 	@PostConstruct
 	public void init() {
@@ -76,8 +79,9 @@ public class NavegacionBean implements Serializable  {
 		subMenuProyectos= validaPermiso(permisoProyectos);
 		subMenuManzanas = validaPermiso(permisoManzanas);
 		subMenuLotes= validaPermiso(permisoLotes);
+		subMenuComisiones= validaPermiso(permisoComisiones);
 				
-		if(subMenuManzanas || subMenuLotes || subMenuProyectos){
+		if(subMenuManzanas || subMenuLotes || subMenuProyectos || subMenuComisiones){
 			menuProyecto=true;
 		}
 		
@@ -86,9 +90,10 @@ public class NavegacionBean implements Serializable  {
 		subMenuUsuarios= validaPermiso(permisoUsuarios);
 		subMenuPerfiles= validaPermiso(permisoPerfiles);
 		subMenuEquipos= validaPermiso(permisoEquipos);
+		subMenuComision= validaPermiso(permisoComision);
 		subMenuCambiarContrasenia= validaPermiso(permisoCambiarConstrasenia);
 		
-		if(subMenuPersonas || subMenuUsuarios || subMenuPerfiles || subMenuEquipos || subMenuCambiarContrasenia) {
+		if(subMenuPersonas || subMenuUsuarios || subMenuPerfiles || subMenuEquipos || subMenuComision || subMenuCambiarContrasenia) {
 			menuMantenimiento=true;
 		}
 		
@@ -147,6 +152,10 @@ public class NavegacionBean implements Serializable  {
 	        ruta = "modulos/proyecto/mantenimientos/lote.xhtml";
 	    }
 		
+		public void getProyectoComisionesPage() {
+	        ruta = "modulos/proyecto/procesos/comision.xhtml";
+	    }
+		
 		public void getMantenimientoPersonasPage() {
 	        ruta = "modulos/general/mantenimientos/personas.xhtml";
 	    }
@@ -162,6 +171,10 @@ public class NavegacionBean implements Serializable  {
 		
 		public void getMantenimientoTeamPage() {
 	        ruta = "modulos/general/mantenimientos/team.xhtml";
+	    }
+		
+		public void getMantenimientoComisionPage() {
+	        ruta = "modulos/general/mantenimientos/comision.xhtml";
 	    }
 		
 		public void getMantenimientoPasswordchangePage() {
@@ -466,6 +479,47 @@ public class NavegacionBean implements Serializable  {
 
 	public void setPermisoLotes(int[] permisoLotes) {
 		this.permisoLotes = permisoLotes;
+	}
+
+	public int getIdAsistentenAdmin() {
+		return idAsistentenAdmin;
+	}
+
+	public void setIdAsistentenAdmin(int idAsistentenAdmin) {
+		this.idAsistentenAdmin = idAsistentenAdmin;
+	}
+
+	public boolean isSubMenuComisiones() {
+		return subMenuComisiones;
+	}
+
+	public void setSubMenuComisiones(boolean subMenuComisiones) {
+		this.subMenuComisiones = subMenuComisiones;
+	}
+
+	public int[] getPermisoComisiones() {
+		return permisoComisiones;
+	}
+
+	public void setPermisoComisiones(int[] permisoComisiones) {
+		this.permisoComisiones = permisoComisiones;
+	}
+
+	public boolean isSubMenuComision() {
+		return subMenuComision;
+	}
+
+	public void setSubMenuComision(boolean subMenuComision) {
+		this.subMenuComision = subMenuComision;
+	}
+
+	public int[] getPermisoComision() {
+		return permisoComision;
+	}
+
+
+	public void setPermisoComision(int[] permisoComision) {
+		this.permisoComision = permisoComision;
 	}
 
 	

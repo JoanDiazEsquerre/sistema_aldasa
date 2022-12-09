@@ -1,5 +1,6 @@
 package com.model.aldasa.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -10,6 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Manzana;
 import com.model.aldasa.entity.Project;
+import com.model.aldasa.entity.Team;
+import com.model.aldasa.entity.Person;
 
 public interface LoteRepository extends JpaRepository<Lote, Integer> {
 
@@ -24,4 +27,8 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
 	
 	Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(String numberLote, String nameManzana,String projectName ,String status,Pageable pageable);
 	Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndStatusLike(String numberLote,  String nameManzana, String status,Pageable pageable);
+	
+	//Para mod. comisiones
+	Page<Lote> findAllByStatusLikeAndPersonSupervisorDniLikeAndPersonAssessorDniLikeAndFechaVendidoBetween(String status, String dniPersonSupervisor,String dniPersonAsesor, Date fechaIni, Date fechaFin ,Pageable pageable);
+
 }

@@ -56,6 +56,8 @@
 			            	<p:menuitem value="Proyectos" ajax="false" icon="pi pi-home" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoProjectPage()}" rendered="#{navegacionBean.subMenuProyectos}"/>
 							<p:menuitem value="Manzanas" icon="pi pi-table" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProyectoManzanasPage()}" rendered="#{navegacionBean.subMenuManzanas}" />
 							<p:menuitem value="Lotes" icon="pi pi-th-large" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProyectoLotesPage()}" rendered="#{navegacionBean.subMenuLotes}"/>
+			            	<p:menuitem value="Comisiones" icon="pi pi-th-large" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProyectoComisionesPage()}" rendered="#{navegacionBean.subMenuComisiones}"/>
+			            
 			            </p:submenu>
 			            
 						<p:submenu label="Mantenimientos" rendered="#{navegacionBean.menuMantenimiento}">
@@ -63,6 +65,7 @@
 							<p:menuitem value="Usuarios" ajax="false" icon="pi pi-users"  actionListener="#{navegacionBean.getMantenimientoUsersPage()}" rendered="#{navegacionBean.subMenuUsuarios}"/>
 							<p:menuitem value="Perfiles" ajax="false" icon="pi pi-unlock" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoProfilePage()}" rendered="#{navegacionBean.subMenuPerfiles}" />
 							<p:menuitem value="Equipos" ajax="false" icon="pi pi-sitemap" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoTeamPage()}" rendered="#{navegacionBean.subMenuEquipos}"/>
+							<p:menuitem value="Comisión" icon="pi pi-th-large" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoComisionPage()}" rendered="#{navegacionBean.subMenuComision}"/>
 							<p:menuitem value="Cambiar Contraseña" ajax="false" icon="pi pi-lock" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPasswordchangePage()}" rendered="#{navegacionBean.subMenuCambiarContrasenia}" />
 						</p:submenu>
 						

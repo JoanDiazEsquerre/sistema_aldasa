@@ -11,7 +11,8 @@ import javax.persistence.Table;
 public class Usuario {
 	
 	@Id
-	int id;
+	Integer id;
+	
 	String username;
 	String password;
 	boolean status;
@@ -30,10 +31,11 @@ public class Usuario {
 	
 	
 	
-	public int getId() {
+	
+	public Integer getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getUsername() {

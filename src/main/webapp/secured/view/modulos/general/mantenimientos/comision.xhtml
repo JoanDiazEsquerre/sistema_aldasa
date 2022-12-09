@@ -1,0 +1,44 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	locale="#{localeBean.usedLocale}"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+	<h:form id="form">
+		<h2 style="color: #007d4c;">MANTENIMIENTOS > COMISIÓN</h2>
+		
+		<p:dataTable var="comision" id="idTableComision" value="#{comisionBean.listComision}" widgetVar="comisionTable" rowIndexVar="row" paginator="true" rows="15" size="small"
+		emptyMessage="No se encontraron comisiones."	paginatorPosition="bottom" rowKey="#{comision.id}" selection="#{comisionBean.comisionSelected}" selectionMode="single">
+		<f:facet name="header">
+			<div class="p-d-flex p-ai-center p-jc-between">
+				<span>Lista de comisiones</span>
+			</div>
+		</f:facet>
+		<p:ajax event="rowSelect" listener="#{comisionBean.modifyComision()}" oncomplete="PF('comisionDialog').show();" />
+
+		<p:column style="width:42px;text-align: left">
+			<f:facet name="header">
+				<p:commandLink action="#{comisionBean.newComision()}"
+					oncomplete="PF('comisionDialog').show();"
+					title="NUEVA COMISIÓN">
+					<p:graphicImage width="50" value="/recursos/images/anadir.png" />
+
+				</p:commandLink>
+			</f:facet>
+		</p:column>
+
+		<p:column width="25px">
+                      #{row +1}
+        </p:column>
+        
+		<p:column headerText="Nombre de Comisión" sortBy="#{comision.name}"
+			filterBy="#{comision.name}" filterMatchMode="contains">
+			<h:outputText value="#{comision.name}" />
+		</p:column>
+		</p:dataTable>
+	
+	</h:form>
+</ui:composition>

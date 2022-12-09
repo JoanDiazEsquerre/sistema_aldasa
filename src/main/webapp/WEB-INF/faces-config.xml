@@ -333,5 +333,42 @@
 			<property-name>personService</property-name>
 			<value>#{personService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>usuarioService</property-name>
+			<value>#{usuarioService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>teamService</property-name>
+			<value>#{teamService}</value>
+		</managed-property>
+	</managed-bean>
+	   
+	<managed-bean>
+		<managed-bean-name>comisionesBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.proyecto.bean.ComisionesBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope> 
+		<managed-property>
+			<property-name>teamService</property-name>
+			<value>#{teamService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>usuarioService</property-name>
+			<value>#{usuarioService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>loteService</property-name>
+			<value>#{loteService}</value>
+		</managed-property>
+		
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>comisionBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.general.bean.ComisionBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope> 
+		<managed-property>
+			<property-name>comisionService</property-name>
+			<value>#{comisionService}</value>
+		</managed-property>
+		
 	</managed-bean>
 </faces-config>
