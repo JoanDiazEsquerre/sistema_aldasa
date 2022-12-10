@@ -153,7 +153,7 @@ public class NavegacionBean implements Serializable  {
 	    }
 		
 		public void getProyectoComisionesPage() {
-	        ruta = "modulos/proyecto/procesos/comision.xhtml";
+	        ruta = "modulos/proyecto/procesos/comisiones.xhtml";
 	    }
 		
 		public void getMantenimientoPersonasPage() {

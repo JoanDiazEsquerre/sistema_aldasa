@@ -9,36 +9,109 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">MANTENIMIENTOS > COMISIÓN</h2>
-		
-		<p:dataTable var="comision" id="idTableComision" value="#{comisionBean.listComision}" widgetVar="comisionTable" rowIndexVar="row" paginator="true" rows="15" size="small"
-		emptyMessage="No se encontraron comisiones."	paginatorPosition="bottom" rowKey="#{comision.id}" selection="#{comisionBean.comisionSelected}" selectionMode="single">
-		<f:facet name="header">
-			<div class="p-d-flex p-ai-center p-jc-between">
-				<span>Lista de comisiones</span>
-			</div>
-		</f:facet>
-		<p:ajax event="rowSelect" listener="#{comisionBean.modifyComision()}" oncomplete="PF('comisionDialog').show();" />
 
-		<p:column style="width:42px;text-align: left">
+		<p:dataTable var="comision" id="idTableComision" value="#{comisionBean.listComision}" widgetVar="comisionTable"
+			rowIndexVar="row" paginator="true" rows="15" size="small" emptyMessage="No se encontraron comisiones."
+			paginatorPosition="bottom" rowKey="#{comision.id}" selection="#{comisionBean.comisionSelected}" selectionMode="single">
 			<f:facet name="header">
-				<p:commandLink action="#{comisionBean.newComision()}"
-					oncomplete="PF('comisionDialog').show();"
-					title="NUEVA COMISIÓN">
-					<p:graphicImage width="50" value="/recursos/images/anadir.png" />
-
-				</p:commandLink>
+				<div class="p-d-flex p-ai-center p-jc-between">
+					<span>Lista de comisiones</span>
+				</div>
 			</f:facet>
-		</p:column>
+			<p:ajax event="rowSelect" update="dialogComision" listener="#{comisionBean.modifyComision()}" oncomplete="PF('comisionDialog').show();" />
 
-		<p:column width="25px">
+			<p:column style="width:42px;text-align: left">
+				<f:facet name="header">
+					<p:commandLink action="#{comisionBean.newComision()}" update="dialogComision" oncomplete="PF('comisionDialog').show();" title="NUEVA COMISIÓN">
+						<p:graphicImage width="50"  value="/recursos/images/anadir.png" />
+
+					</p:commandLink>
+				</f:facet>
+			</p:column>
+
+			<p:column width="25px">
                       #{row +1}
-        </p:column>
-        
-		<p:column headerText="Nombre de Comisión" sortBy="#{comision.name}"
-			filterBy="#{comision.name}" filterMatchMode="contains">
-			<h:outputText value="#{comision.name}" />
-		</p:column>
+       		</p:column>
+
+			<p:column headerText="Fecha Inicio" filterMatchMode="contains">
+				<h:outputText value="#{comision.fechaIni}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Fecha Cierre" filterMatchMode="contains">
+				<h:outputText value="#{comision.fechaCierre}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column headerText="% Contado" filterMatchMode="contains">
+				<h:outputText value="#{comision.contado}"/> 
+			</p:column>
+			
+			<p:column headerText="% Crédito" filterMatchMode="contains">
+				<h:outputText value="#{comision.credito}"/> 
+			</p:column>
+			
+			<p:column headerText="Meta" filterMatchMode="contains">
+				<h:outputText value="#{comision.meta}"/> 
+			</p:column>
+			
+			<p:column headerText="Meta Supervisor" filterMatchMode="contains">
+				<h:outputText value="#{comision.metaSupervisor}"/> 
+			</p:column>
+			
+			<p:column headerText="Supervisor" filterMatchMode="contains">
+				<h:outputText value="#{comision.supervisor}"/> 
+			</p:column>
+			
+			<p:column headerText="Subgerente" filterMatchMode="contains">
+				<h:outputText value="#{comision.subgerente}"/> 
+			</p:column>
 		</p:dataTable>
-	
+
 	</h:form>
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogComision" header="#{comisionBean.tituloDialog}" widgetVar="comisionDialog" resizable="false" closable="true"
+		appendTo="@(body)" style="width:auto">
+		<h:form id="formComisionDialog">
+			<p:tabView id="tabOpciones">
+				<p:tab title="General" >
+					<h:panelGrid columns="4" width="100%"> 
+						<h:outputLabel value="Fecha inicio:" style="text-align:right"/>
+						<p:datePicker value="#{comisionBean.comisionSelected.fechaIni}" readonlyInput="true"/> 
+					
+						<h:outputLabel value="Fecha cierre:" style="text-align:right"/>
+						<p:datePicker value="#{comisionBean.comisionSelected.fechaCierre}" readonlyInput="true" /> 
+					</h:panelGrid>
+				
+				</p:tab> 
+				<p:tab title="Asesor" > 
+					<h:panelGrid columns="4" width="100%"> 
+					
+						<h:outputLabel for="comCont" value="% Contado: " />
+						<p:inputNumber id="comCont" value="#{comisionBean.comisionSelected.contado}" symbol="%" symbolPosition="s" emptyValue="always" />  
+				
+						<h:outputLabel for="comCont1" value="% Crédito: " />
+						<p:inputNumber id="comCont1" value="#{comisionBean.comisionSelected.credito}" symbol="%" symbolPosition="s" emptyValue="always" />
+						
+						<h:outputLabel for="comCont2" value="Meta: " />
+						<p:inputNumber id="comCont2" value="#{comisionBean.comisionSelected.meta}" symbol="%" symbolPosition="s" emptyValue="always" />
+						
+						<h:outputLabel for="comCont3" value="Meta Supervisor: " />
+						<p:inputNumber id="comCont3" value="#{comisionBean.comisionSelected.metaSupervisor}" symbol="%" symbolPosition="s" emptyValue="always" />
+					
+						<h:outputLabel for="comCont4" value="Supervisor: "/>
+						<p:inputNumber id="comCont4" value="#{comisionBean.comisionSelected.supervisor}" symbol="%" symbolPosition="s" emptyValue="always" />
+						
+						<h:outputLabel for="comCont5" value="Subgerente: "/>
+						<p:inputNumber id="comCont5" value="#{comisionBean.comisionSelected.subgerente}" symbol="%" symbolPosition="s" emptyValue="always" />
+					</h:panelGrid>
+			    </p:tab>
+			    <p:tab title="Supervisor" > </p:tab>
+			    <p:tab title="Online" > </p:tab>
+			    <p:tab title="Subgerente" > </p:tab>
+			</p:tabView>
+			<p:commandButton value="Guardar" action="#{manzanaBean.saveManzana()}" />
+		</h:form>
+	</p:dialog>
 </ui:composition>

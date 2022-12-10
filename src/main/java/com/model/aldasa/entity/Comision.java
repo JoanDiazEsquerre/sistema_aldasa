@@ -1,12 +1,12 @@
 package com.model.aldasa.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -17,15 +17,22 @@ public class Comision {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	int contado;
-	int credito;
+	@Column(name="fechaini")
+	private Date fechaIni;
+	
+	@Column(name="fechacierre")
+	private Date fechaCierre;
+	
+	private int contado;
+	private int credito;
 	
 	@Column(name="metasupervisor")
-	int metaSupervisor;	
+	private int metaSupervisor;	
 	
-	int supervisor;
-	int subgerente;
-	int meta;
+	private int supervisor;
+	private int subgerente;
+	private int meta;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -68,10 +75,18 @@ public class Comision {
 	public void setMeta(int meta) {
 		this.meta = meta;
 	}
-
-	
-	
-	
+	public Date getFechaIni() {
+		return fechaIni;
+	}
+	public void setFechaIni(Date fechaIni) {
+		this.fechaIni = fechaIni;
+	}
+	public Date getFechaCierre() {
+		return fechaCierre;
+	}
+	public void setFechaCierre(Date fechaCierre) {
+		this.fechaCierre = fechaCierre;
+	}
 	@Override
     public boolean equals(Object other) {
         return (other instanceof Comision) && (id != null)
