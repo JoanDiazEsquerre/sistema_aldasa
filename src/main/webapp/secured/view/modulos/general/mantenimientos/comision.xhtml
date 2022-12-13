@@ -6,12 +6,29 @@
 	locale="#{localeBean.usedLocale}"
 	xmlns:f="http://java.sun.com/jsf/core">
 
-
 	<h:form id="form">
 		<h2 style="color: #007d4c;">MANTENIMIENTOS > COMISIÓN</h2>
+		<h:panelGrid id="grid" columns="8" width="95%">
 
-		<p:dataTable var="comision" id="idTableComision" value="#{comisionBean.listComision}" widgetVar="comisionTable"
-			rowIndexVar="row" paginator="true" rows="15" size="small" emptyMessage="No se encontraron comisiones."
+			<h:outputLabel for="años" value="Año:" />
+			<p:selectOneMenu id="años" value="#{comisionBean.anio}" style="margin:10px">
+				<f:selectItem itemLabel="2021" itemValue="2021" />
+				<f:selectItem itemLabel="2022" itemValue="2022" />
+				<f:selectItem itemLabel="2023" itemValue="2023" />
+				<f:selectItem itemLabel="2024" itemValue="2024" />
+				<f:selectItem itemLabel="2025" itemValue="2025" />
+				<f:selectItem itemLabel="2026" itemValue="2026" />
+				<f:selectItem itemLabel="2027" itemValue="2027" />
+				<f:selectItem itemLabel="2028" itemValue="2028" />
+				<f:selectItem itemLabel="2029" itemValue="2029" />
+				<f:selectItem itemLabel="2030" itemValue="2030" />
+				<p:ajax update=":form:idTableComision" />
+			</p:selectOneMenu>
+			
+		</h:panelGrid>
+		
+		<p:dataTable reflow="true" var="comision" id="idTableComision" value="#{comisionBean.lstComisionLazy}" widgetVar="comisionTable"
+			rowIndexVar="row" style="width:130%"  paginator="true" rows="15" size="small" emptyMessage="No se encontraron comisiones."
 			paginatorPosition="bottom" rowKey="#{comision.id}" selection="#{comisionBean.comisionSelected}" selectionMode="single">
 			<f:facet name="header">
 				<div class="p-d-flex p-ai-center p-jc-between">
@@ -46,27 +63,75 @@
 			</p:column>
 			
 			<p:column headerText="% Contado" filterMatchMode="contains">
-				<h:outputText value="#{comision.contado}"/> 
+				<h:outputText value="#{comision.comisionContado}"/> 
 			</p:column>
 			
 			<p:column headerText="% Crédito" filterMatchMode="contains">
-				<h:outputText value="#{comision.credito}"/> 
+				<h:outputText value="#{comision.comisionCredito}"/> 
+			</p:column>
+			
+			<p:column headerText="Básico Junior" filterMatchMode="contains">
+				<h:outputText value="#{comision.basicoJunior}"/> 
+			</p:column>
+			
+			<p:column headerText="Bono Junior" filterMatchMode="contains">
+				<h:outputText value="#{comision.bonoJunior}"/> 
+			</p:column>
+			
+			<p:column headerText="Básico Senior" filterMatchMode="contains">
+				<h:outputText value="#{comision.basicoSenior}"/> 
+			</p:column>
+			
+			<p:column headerText="Bono Senior" filterMatchMode="contains">
+				<h:outputText value="#{comision.bonoSenior}"/> 
+			</p:column>
+			
+			<p:column headerText="Básico Master" filterMatchMode="contains">
+				<h:outputText value="#{comision.basicoMaster}"/> 
+			</p:column>
+			
+			<p:column headerText="Bono Master" filterMatchMode="contains">
+				<h:outputText value="#{comision.bonoMaster}"/> 
 			</p:column>
 			
 			<p:column headerText="Meta" filterMatchMode="contains">
 				<h:outputText value="#{comision.meta}"/> 
 			</p:column>
 			
-			<p:column headerText="Meta Supervisor" filterMatchMode="contains">
-				<h:outputText value="#{comision.metaSupervisor}"/> 
+			<p:column headerText="Comisión Supervisor" filterMatchMode="contains">
+				<h:outputText value="#{comision.comisionSupervisor}"/> 
 			</p:column>
 			
-			<p:column headerText="Supervisor" filterMatchMode="contains">
-				<h:outputText value="#{comision.supervisor}"/> 
+			<p:column headerText="Comisión Meta Supervisor" filterMatchMode="contains">
+				<h:outputText value="#{comision.comisionMetaSupervisor}"/> 
+			</p:column>
+			
+			<p:column headerText="Bono Meta Supervisor" filterMatchMode="contains">
+				<h:outputText value="#{comision.bonoMetaSupervisor}"/> 
 			</p:column>
 			
 			<p:column headerText="Subgerente" filterMatchMode="contains">
 				<h:outputText value="#{comision.subgerente}"/> 
+			</p:column>
+			
+			<p:column headerText="Meta Online" filterMatchMode="contains">
+				<h:outputText value="#{comision.metaOnline}"/> 
+			</p:column>
+			
+			<p:column headerText="Primera Venta Crédito Online" filterMatchMode="contains">
+				<h:outputText value="#{comision.primeraVentaCreditoOnline}"/> 
+			</p:column>
+			
+			<p:column headerText="Primera Venta Contado Online" filterMatchMode="contains">
+				<h:outputText value="#{comision.primeraVentaContadoOnline}"/> 
+			</p:column>
+			
+			<p:column headerText="Bono Crédito Online" filterMatchMode="contains">
+				<h:outputText value="#{comision.bonoCreditoOnline}"/> 
+			</p:column>
+			
+			<p:column headerText="Bono Contado Online" filterMatchMode="contains">
+				<h:outputText value="#{comision.bonoContadoOnline}"/> 
 			</p:column>
 		</p:dataTable>
 
@@ -74,44 +139,131 @@
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogComision" header="#{comisionBean.tituloDialog}" widgetVar="comisionDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formComisionDialog">
+			<p:messages id="messagesDialogComision" showDetail="true" closable="true">
+	            <p:autoUpdate/>
+	        </p:messages>
 			<p:tabView id="tabOpciones">
 				<p:tab title="General" >
 					<h:panelGrid columns="4" width="100%"> 
 						<h:outputLabel value="Fecha inicio:" style="text-align:right"/>
-						<p:datePicker value="#{comisionBean.comisionSelected.fechaIni}" readonlyInput="true"/> 
+						<p:datePicker value="#{comisionBean.comisionSelected.fechaIni}" readonlyInput="true"> 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:datePicker> 
 					
 						<h:outputLabel value="Fecha cierre:" style="text-align:right"/>
-						<p:datePicker value="#{comisionBean.comisionSelected.fechaCierre}" readonlyInput="true" /> 
+						<p:datePicker value="#{comisionBean.comisionSelected.fechaCierre}" readonlyInput="true"> 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:datePicker> 					
 					</h:panelGrid>
-				
 				</p:tab> 
 				<p:tab title="Asesor" > 
 					<h:panelGrid columns="4" width="100%"> 
 					
-						<h:outputLabel for="comCont" value="% Contado: " />
-						<p:inputNumber id="comCont" value="#{comisionBean.comisionSelected.contado}" symbol="%" symbolPosition="s" emptyValue="always" />  
+						<h:outputLabel for="comCont" value="Comisión Contado: " />  
+						<p:inputNumber id="interes" value="#{comisionBean.comisionSelected.comisionContado}" symbol="%" symbolPosition="s" emptyValue="always"> 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
 				
-						<h:outputLabel for="comCont1" value="% Crédito: " />
-						<p:inputNumber id="comCont1" value="#{comisionBean.comisionSelected.credito}" symbol="%" symbolPosition="s" emptyValue="always" />
+						<h:outputLabel for="comCred" value="Comisión Crédito: " />
+						<p:inputNumber id="comCred" value="#{comisionBean.comisionSelected.comisionCredito}" symbol="%"  symbolPosition="s"> 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
 						
-						<h:outputLabel for="comCont2" value="Meta: " />
-						<p:inputNumber id="comCont2" value="#{comisionBean.comisionSelected.meta}" symbol="%" symbolPosition="s" emptyValue="always" />
+						<h:outputLabel for="basJun" value="Básico Junior(2-4 ventas): " />
+						<p:inputNumber id="basJun" value="#{comisionBean.comisionSelected.basicoJunior}" > 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
 						
-						<h:outputLabel for="comCont3" value="Meta Supervisor: " />
-						<p:inputNumber id="comCont3" value="#{comisionBean.comisionSelected.metaSupervisor}" symbol="%" symbolPosition="s" emptyValue="always" />
-					
-						<h:outputLabel for="comCont4" value="Supervisor: "/>
-						<p:inputNumber id="comCont4" value="#{comisionBean.comisionSelected.supervisor}" symbol="%" symbolPosition="s" emptyValue="always" />
+						<h:outputLabel for="bonJun" value="Bono Junior: " />
+						<p:inputNumber id="bonJun" value="#{comisionBean.comisionSelected.bonoJunior}" > 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
 						
-						<h:outputLabel for="comCont5" value="Subgerente: "/>
-						<p:inputNumber id="comCont5" value="#{comisionBean.comisionSelected.subgerente}" symbol="%" symbolPosition="s" emptyValue="always" />
+						<h:outputLabel for="basSen" value="Básico Senior(5-8 ventas): " />
+						<p:inputNumber id="basSen" value="#{comisionBean.comisionSelected.basicoSenior}" > 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
+						
+						<h:outputLabel for="bonSen" value="Bono Senior: " />
+						<p:inputNumber id="bonSen" value="#{comisionBean.comisionSelected.bonoSenior}" > 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
+						
+						<h:outputLabel for="basMst" value="Básico Master(9 a más ventas): " />
+						<p:inputNumber id="basMst" value="#{comisionBean.comisionSelected.basicoMaster}" > 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
+						
+						<h:outputLabel for="bonMst" value="Bono Master: " />
+						<p:inputNumber id="bonMst" value="#{comisionBean.comisionSelected.bonoMaster}" > 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
 					</h:panelGrid>
 			    </p:tab>
-			    <p:tab title="Supervisor" > </p:tab>
-			    <p:tab title="Online" > </p:tab>
-			    <p:tab title="Subgerente" > </p:tab>
+			    <p:tab title="Supervisor" > 
+			    	<h:panelGrid columns="4" width="100%">
+			    		<h:outputLabel for="comSpv" value="Comisión Supervisor: " />
+						<p:inputNumber id="comSpv" value="#{comisionBean.comisionSelected.comisionSupervisor}" symbol="%" symbolPosition="s" emptyValue="always"> 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
+						
+						<h:outputLabel for="met" value="Meta: " />
+						<p:inputNumber id="met" value="#{comisionBean.comisionSelected.meta}" > 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
+						
+						<h:outputLabel for="comMetSpv" value="Comisión Meta Supervisor: " />
+						<p:inputNumber id="comMetSpv" value="#{comisionBean.comisionSelected.comisionMetaSupervisor}"> 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
+						
+						<h:outputLabel for="bonMetSpv" value="Bono Meta Supervisor: " />
+						<p:inputNumber id="bonMetSpv" value="#{comisionBean.comisionSelected.bonoMetaSupervisor}"> 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
+						
+					</h:panelGrid>
+				</p:tab>
+				
+			    <p:tab title="Online" > 
+			    	<h:panelGrid columns="4" width="100%">
+						<h:outputLabel for="metOnl" value="Meta Online: " />
+						<p:inputNumber id="metOnl" value="#{comisionBean.comisionSelected.metaOnline}"> 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber> 
+						
+						<h:outputLabel for="priVenCreOnl" value="Primera Venta Crédito Online: " />
+						<p:inputNumber id="priVenCreOnl" value="#{comisionBean.comisionSelected.primeraVentaCreditoOnline}"> 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
+						
+						<h:outputLabel for="priVenConOnl" value="Primera Venta Contado Online: " />
+						<p:inputNumber id="priVenConOnl" value="#{comisionBean.comisionSelected.primeraVentaContadoOnline}"> 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
+						
+						<h:outputLabel for="bonCredOnl" value="Bono Crédito Online(2 a más ventas): " />
+						<p:inputNumber id="bonCredOnl" value="#{comisionBean.comisionSelected.bonoCreditoOnline}"> 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
+						
+						<h:outputLabel for="bonContOnl" value="Bono Contado Online(2 a más ventas): " />
+						<p:inputNumber id="bonContOnl" value="#{comisionBean.comisionSelected.bonoContadoOnline}"> 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber> 
+					</h:panelGrid>
+			    </p:tab>
+			    
+			    <p:tab title="Subgerente" > 
+			    	<h:panelGrid columns="4" width="100%">
+						<h:outputLabel for="comSub" value="Comisión Subgerente: " />
+						<p:inputNumber id="comSub" value="#{comisionBean.comisionSelected.subgerente}" symbol="%" symbolPosition="s" emptyValue="always"> 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>
+					</h:panelGrid>
+			    </p:tab>
 			</p:tabView>
-			<p:commandButton value="Guardar" action="#{manzanaBean.saveManzana()}" />
+			<p:commandButton value="Guardar" action="#{comisionBean.saveComision()}" update=":form:idTableComision" />
 		</h:form>
 	</p:dialog>
 </ui:composition>

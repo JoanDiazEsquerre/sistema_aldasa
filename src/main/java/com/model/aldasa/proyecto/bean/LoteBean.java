@@ -127,6 +127,7 @@ public class LoteBean implements Serializable{
 		
 		listarManzanas();
 		listarProject();
+		listarPersonas();
 	}
 	
 	public void modifyLote( ) {
@@ -147,6 +148,7 @@ public class LoteBean implements Serializable{
 				
 		listarManzanas();
 		listarProject();
+		listarPersonas();
 	}
 	
 	public void changeCmbEstado() {

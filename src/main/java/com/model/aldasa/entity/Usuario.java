@@ -1,6 +1,8 @@
 package com.model.aldasa.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -11,23 +13,24 @@ import javax.persistence.Table;
 public class Usuario {
 	
 	@Id
-	Integer id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 	
-	String username;
-	String password;
+	private String username;
+	private String password;
 	boolean status;
 	
 	@ManyToOne
 	@JoinColumn(name="idperson")
-	Person person;
+	private Person person;
 	
 	@ManyToOne
 	@JoinColumn(name="idprofile")
-	Profile profile;
+	private Profile profile;
 	
 	@ManyToOne
 	@JoinColumn(name="idteam")
-	Team team;
+	private Team team;
 	
 	
 	
