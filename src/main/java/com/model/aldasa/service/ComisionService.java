@@ -13,7 +13,9 @@ public interface ComisionService {
 	Comision save(Comision entity);
 	void delete(Comision entity);
 	
-	List<Comision> findAll();
+	List<Comision> findByEstado(Boolean estado);
+	Comision findByEstadoAndCodigo(Boolean estado, String codigo);
+
 	Page<Comision> findByEstadoAndFechaIniBetween(Boolean estado,Date fechaIni, Date fechaFin, Pageable pageable);
 
 }

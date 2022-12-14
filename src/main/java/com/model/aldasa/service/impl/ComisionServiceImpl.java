@@ -38,15 +38,21 @@ public class ComisionServiceImpl  implements ComisionService {
 	}
 	
 	@Override
-	public List<Comision> findAll() {
+	public List<Comision> findByEstado(Boolean estado){
 		// TODO Auto-generated method stub
-		return comisionRepository.findAll();
+		return comisionRepository.findByEstado(estado);
 	}
 
 	@Override
 	public Page<Comision> findByEstadoAndFechaIniBetween(Boolean estado,Date fechaIni, Date fechaFin, Pageable pageable) {
 		// TODO Auto-generated method stub
 		return comisionRepository.findByEstadoAndFechaIniBetween(estado, fechaIni, fechaFin, pageable); 
+	}
+
+	@Override
+	public Comision findByEstadoAndCodigo(Boolean estado, String codigo) {
+		// TODO Auto-generated method stub
+		return comisionRepository.findByEstadoAndCodigo(estado, codigo);
 	}
 
 	

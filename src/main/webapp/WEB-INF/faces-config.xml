@@ -359,7 +359,10 @@
 			<property-name>loteService</property-name>
 			<value>#{loteService}</value>
 		</managed-property>
-		
+		<managed-property>
+			<property-name>comisionService</property-name>
+			<value>#{comisionService}</value>
+		</managed-property>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>comisionBean</managed-bean-name>

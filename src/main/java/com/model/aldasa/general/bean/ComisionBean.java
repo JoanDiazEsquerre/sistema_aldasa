@@ -46,7 +46,8 @@ public class ComisionBean implements Serializable {
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
 	SimpleDateFormat sdfM = new SimpleDateFormat("MM");  
-	SimpleDateFormat sdfY = new SimpleDateFormat("yyyy");  
+	SimpleDateFormat sdfY = new SimpleDateFormat("yyyy");
+	SimpleDateFormat sdfY2 = new SimpleDateFormat("yy");
 	
 	@PostConstruct
 	public void init() {
@@ -76,6 +77,15 @@ public class ComisionBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos generales."));
 			return ;
 		}
+		
+		comisionSelected.setCodigo(sdfM.format(comisionSelected.getFechaIni())+""+sdfY2.format(comisionSelected.getFechaIni())); 
+		Comision buscaComision = comisionService.findByEstadoAndCodigo(true, comisionSelected.getCodigo());
+		if(buscaComision!=null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya se programado una comision con el mismo rango de fechas."));
+			return ;
+		}
+		
+		
 		if(comisionSelected.getComisionContado()==null || comisionSelected.getComisionCredito()==null || comisionSelected.getBasicoJunior()==null || comisionSelected.getBonoJunior()==null || comisionSelected.getBasicoSenior()==null || comisionSelected.getBonoSenior()==null || comisionSelected.getBasicoMaster()==null || comisionSelected.getBonoMaster()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar los datos del asesor."));
 			return ;
@@ -92,6 +102,8 @@ public class ComisionBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar los datos del subgerente."));
 			return ;
 		}
+		
+		
 		comisionService.save(comisionSelected);
 		if (tituloDialog.equals("NUEVA COMISIÓN")) {
 			newComision();

@@ -10,26 +10,18 @@
 	<h:form id="form">
 		<h2 style="color: #007d4c;">PROYECTOS > COMISIONES</h2>
 		<h:panelGrid id="grid" columns="8" width="95%">
+			<h:outputLabel for="optionComision" value="Comision:" />
+			<p:selectOneMenu id="optionComision" value="#{comisionesBean.comisionSelected}" converter="#{comisionesBean.conversorComision}" style="margin:10px">
+				<f:selectItems value="#{comisionesBean.lstComision}" var="com" itemLabel="#{com.codigo} : #{comisionesBean.sdf.format(com.fechaIni)}-#{comisionesBean.sdf.format(com.fechaCierre)}" itemValue="#{prof}" />
+				<p:ajax listener="#{comisionesBean.cambiarComision}" update="idTableLote, comCont, comCred" />
+			</p:selectOneMenu>
 			
-			<h:outputLabel value="Fecha inicio:" style="text-align:right"/>
-			<p:datePicker value="#{comisionesBean.fechaIni}" readonlyInput="true"> 
-				<p:ajax update="idTableLote"/>
-			</p:datePicker>
+			<h:outputLabel for="comCont" value="Comisión Contado: "  />
+			<h:outputLabel id="comCont" value="#{comisionesBean.comisionSelected.comisionContado}%" style="font-weight: bold;"/>  
+				 
 			
-			<h:outputLabel value="Fecha cierre:" style="text-align:right"/>
-			<p:datePicker value="#{comisionesBean.fechaFin}" readonlyInput="true" > 
-				<p:ajax update="idTableLote"/>
-			</p:datePicker>
-			
-			<h:outputLabel for="comCont" value="Comisión Contado: " style="font-weight: bold;" />
-			<p:inputNumber id="comCont" value="#{comisionesBean.comisionContado}" symbol="%" symbolPosition="s" emptyValue="always" >  
-				<p:ajax update="idTableLote"/>
-			</p:inputNumber> 
-			
-			<h:outputLabel for="comCred" value="Comisión Crédito: " style="font-weight: bold;" />
-			<p:inputNumber id="comCred" value="#{comisionesBean.comisionCredito}" symbol="%" symbolPosition="s" emptyValue="always" >
-				<p:ajax update="idTableLote"/>
-			</p:inputNumber>
+			<h:outputLabel for="comCred" value="Comisión Crédito: " />
+			<h:outputLabel id="comCred" value="#{comisionesBean.comisionSelected.comisionCredito}%" style="font-weight: bold;" />
 
 			<h:outputLabel for="optionTeam" value="Equipo:" />
 			<p:selectOneMenu id="optionTeam" value="#{comisionesBean.teamSelected}" converter="#{comisionesBean.conversorTeam}" style="margin:10px">

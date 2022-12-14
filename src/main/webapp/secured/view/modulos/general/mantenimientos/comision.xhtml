@@ -49,6 +49,10 @@
 			<p:column width="25px">
                       #{row +1}
        		</p:column>
+       		
+       		<p:column headerText="Codigo" filterMatchMode="contains">
+				<h:outputText value="#{comision.codigo}"/> 
+			</p:column>
 
 			<p:column headerText="Fecha Inicio" filterMatchMode="contains">
 				<h:outputText value="#{comision.fechaIni}">

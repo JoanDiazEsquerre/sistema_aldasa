@@ -17,6 +17,9 @@ public class Comision {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
+	@Column(name="codigo")
+	private String codigo;
+	
 	@Column(name="fechaini")
 	private Date fechaIni;
 	
@@ -209,6 +212,12 @@ public class Comision {
 	}
 	public void setEstado(Boolean estado) {
 		this.estado = estado;
+	}
+	public String getCodigo() {
+		return codigo;
+	}
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 	@Override
     public boolean equals(Object other) {
