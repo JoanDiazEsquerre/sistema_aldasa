@@ -86,7 +86,7 @@ public class ComisionesBean implements Serializable {
 		lstTeam=teamService.findByStatus(true);
 		lstComision = comisionService.findByEstado(true);
 		
-		iniciarLazy();
+		iniciarLazyTeam();
 	}
 	
 	public void cambiarComision() {
@@ -194,8 +194,8 @@ public class ComisionesBean implements Serializable {
 	}
 	
 	public void iniciarLazyTeam() {
-		lstLoteLazy = new LazyDataModel<Lote>() {
-			private List<Lote> datasource;
+		lstTeamLazy = new LazyDataModel<Team>() {
+			private List<Team> datasource;
 
             @Override
             public void setRowIndex(int rowIndex) {
@@ -207,33 +207,26 @@ public class ComisionesBean implements Serializable {
             }
 
             @Override
-            public Lote getRowData(String rowKey) {
+            public Team getRowData(String rowKey) {
                 int intRowKey = Integer.parseInt(rowKey);
-                for (Lote lote : datasource) {
-                    if (lote.getId() == intRowKey) {
-                        return lote;
+                for (Team team : datasource) {
+                    if (team.getId() == intRowKey) {
+                        return team;
                     }
                 }
                 return null;
             }
 
             @Override
-            public String getRowKey(Lote lote) {
-                return String.valueOf(lote.getId());
+            public String getRowKey(Team team) {
+                return String.valueOf(team.getId());
             }
 
 			@Override
-			public List<Lote> load(int first, int pageSize, Map<String, SortMeta> sortBy,Map<String, FilterMeta> filterBy) {
+			public List<Team> load(int first, int pageSize, Map<String, SortMeta> sortBy,Map<String, FilterMeta> filterBy) {				
+				String name="%"+ (filterBy.get("name")!=null?filterBy.get("name").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
 				
-//				String numberLote="%"+ (filterBy.get("numberLote")!=null?filterBy.get("numberLote").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
-				String status = "%Vendido%";
-				String dniAsesor = "%%";
-				String dniSupervisor = "%%";
-				
-				if(teamSelected!=null)dniSupervisor ="%"+ teamSelected.getPersonSupervisor().getDni()+"%";
-				if(personAsesorSelected!=null)dniAsesor = "%"+personAsesorSelected.getDni()+"%";
-            
-                Sort sort=Sort.by("fechaVendido").ascending();
+                Sort sort=Sort.by("name").ascending();
                 if(sortBy!=null) {
                 	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
                 	    System.out.println(entry.getKey() + "/" + entry.getValue());
@@ -247,11 +240,11 @@ public class ComisionesBean implements Serializable {
                 
                 Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
                 
-				Page<Lote> pageLote;
-				pageLote= loteService.findAllByStatusLikeAndPersonSupervisorDniLikeAndPersonAssessorDniLikeAndFechaVendidoBetween(status,dniSupervisor,dniAsesor,fechaIni,fechaFin, pageable);
+				Page<Team> pageTeam;
+				pageTeam= teamService.findByNameLikeAndStatus(name, true, pageable);
 				
-				setRowCount((int) pageLote.getTotalElements());
-				return datasource = pageLote.getContent();
+				setRowCount((int) pageTeam.getTotalElements());
+				return datasource = pageTeam.getContent();
 			}
 		};
 	}
@@ -499,21 +492,16 @@ public class ComisionesBean implements Serializable {
 	public void setComisionSelected(Comision comisionSelected) {
 		this.comisionSelected = comisionSelected;
 	}
-
 	public LazyDataModel<Team> getLstTeamLazy() {
 		return lstTeamLazy;
 	}
-
 	public void setLstTeamLazy(LazyDataModel<Team> lstTeamLazy) {
 		this.lstTeamLazy = lstTeamLazy;
 	}
-
 	public SimpleDateFormat getSdfY2() {
 		return sdfY2;
 	}
-
 	public void setSdfY2(SimpleDateFormat sdfY2) {
 		this.sdfY2 = sdfY2;
 	}
-	
 }
