@@ -203,12 +203,8 @@ public class PersonBean implements Serializable {
 				// Aqui capturo cada filtro(Si en caso existe), le pongo % al principiio y al
 				// final y reemplazo los espacios por %, para hacer el LIKE
 				// Si debageas aqui te vas a dar cuenta como lo captura
-				String dni = "%" + (filterBy.get("dni") != null
-						? filterBy.get("dni").getFilterValue().toString().trim().replaceAll(" ", "%")
-						: "") + "%";
-				String names = "%" + (filterBy.get("surnames") != null
-						? filterBy.get("surnames").getFilterValue().toString().trim().replaceAll(" ", "%")
-						: "") + "%";
+				String dni = "%" + (filterBy.get("dni") != null ? filterBy.get("dni").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+				String names = "%" + (filterBy.get("surnames") != null ? filterBy.get("surnames").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
 
 				Sort sort = Sort.by("surnames").ascending();
 				if (sortBy != null) {

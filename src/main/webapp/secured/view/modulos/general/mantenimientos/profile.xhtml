@@ -12,10 +12,10 @@
 		<p:selectOneButton value="#{profileBean.estado}">
 			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
 			<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
-			<p:ajax update=":form:idTableProfile"
-				listener="#{profileBean.listarProfiles()}" />
-		</p:selectOneButton>      
-		<p:dataTable var="profile" id="idTableProfile" value="#{profileBean.listProfile}" widgetVar="profileTable" rowIndexVar="row" paginator="true" rows="15" size="small"
+			<p:ajax update=":form:idTableProfile" />
+		</p:selectOneButton>  
+		    
+		<p:dataTable var="profile" id="idTableProfile" value="#{profileBean.lstProfileLazy}" widgetVar="profileTable" rowIndexVar="row" paginator="true" rows="15" size="small"
 		emptyMessage="No se encontraron perfiles."	paginatorPosition="bottom" rowKey="#{profile.id}" selection="#{profileBean.profileSelected}" selectionMode="single">
 		<f:facet name="header">
 			<div class="p-d-flex p-ai-center p-jc-between">
@@ -55,15 +55,18 @@
 	        </p:messages>
 			<h:panelGrid id="grid" columns="2">
 				<h:outputLabel value="Nombre de Perfil: " for="nombrePerfil" />
-				<p:inputText value="#{profileBean.profileSelected.name}"
-					id="nombrePerfil" />
-				<h:outputLabel for="option" value="Estado:" />
+				<p:inputText value="#{profileBean.profileSelected.name}" id="nombrePerfil" > 
+							<p:ajax event="keyup" update="messages" />
+				</p:inputText>
+				
+				<h:outputLabel for="option" value="Estado:" /> 
 				<p:selectOneMenu id="option" value="#{profileBean.profileSelected.status}" style="margin:5px">
 					<f:selectItem itemLabel="ACTIVO" itemValue="#{true}" />
 					<f:selectItem itemLabel="INACTIVO" itemValue="#{false}" />
+						<p:ajax event="change" update="messages" />
 				</p:selectOneMenu>	
 				<p:commandButton value="Guardar" action="#{profileBean.saveProfile()}" 
-					update=":form:idTableProfile"/>
+					update=":form:idTableProfile :formProfileDialog"/>
 			</h:panelGrid>
 		</h:form>
 	</p:dialog>

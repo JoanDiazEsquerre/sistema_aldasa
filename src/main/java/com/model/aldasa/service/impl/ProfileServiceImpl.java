@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Profile;
+import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.repository.ProfileRepository; 
 import com.model.aldasa.service.ProfileService;
 
@@ -45,6 +48,13 @@ public class ProfileServiceImpl implements ProfileService {
 	@Override
 	public  Profile findByNameException(String name, int idProfile) {
 		return profileRepository.findByNameException(name, idProfile);
+	}
+
+
+	@Override
+	public Page<Profile> findByNameLikeAndStatus(String name, boolean status, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return profileRepository.findByNameLikeAndStatus(name, status, pageable);
 	}
 	
 }
