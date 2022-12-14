@@ -1,5 +1,6 @@
 package com.model.aldasa.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,9 +44,9 @@ public class ComisionServiceImpl  implements ComisionService {
 	}
 
 	@Override
-	public Page<Comision> findByEstadoAndFechaIniYear(Boolean estado, int anio, Pageable pageable) {
+	public Page<Comision> findByEstadoAndFechaIniBetween(Boolean estado,Date fechaIni, Date fechaFin, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return null;
+		return comisionRepository.findByEstadoAndFechaIniBetween(estado, fechaIni, fechaFin, pageable); 
 	}
 
 	

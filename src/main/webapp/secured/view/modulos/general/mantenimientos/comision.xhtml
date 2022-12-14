@@ -22,7 +22,7 @@
 				<f:selectItem itemLabel="2028" itemValue="2028" />
 				<f:selectItem itemLabel="2029" itemValue="2029" />
 				<f:selectItem itemLabel="2030" itemValue="2030" />
-				<p:ajax update=":form:idTableComision" />
+				<p:ajax update=":form:idTableComision" listener="#{comisionBean.getListaLazyComision}" />
 			</p:selectOneMenu>
 			
 		</h:panelGrid>

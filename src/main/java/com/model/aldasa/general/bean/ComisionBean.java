@@ -1,6 +1,7 @@
 package com.model.aldasa.general.bean;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,13 +41,33 @@ public class ComisionBean implements Serializable {
 	
 	private String tituloDialog, anio;
 	
-	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");  
+	private Date fechaIniFilter, fechaFinFilter;
+	
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
 	SimpleDateFormat sdfM = new SimpleDateFormat("MM");  
 	SimpleDateFormat sdfY = new SimpleDateFormat("yyyy");  
 	
 	@PostConstruct
 	public void init() {
 		anio=sdfY.format(new Date());
+		getListaLazyComision();
+	}
+	
+	public void getListaLazyComision() {
+		try {
+			fechaIniFilter = sdf2.parse(anio+"-01-01");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			fechaFinFilter = sdf2.parse(anio+"-12-01");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		iniciarLazy();
 	}
 	
@@ -113,7 +134,6 @@ public class ComisionBean implements Serializable {
 	public void setfechaInicioFin() {
 		try {
 			Calendar calendar = Calendar.getInstance(); 
-			System.out.println("Fecha Actual:" + sdf.format(calendar.getTime()));
 
 			//A la fecha actual le pongo el día 1
 			calendar.set(Calendar.DAY_OF_MONTH,1);
@@ -179,8 +199,9 @@ public class ComisionBean implements Serializable {
                 Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
                
                 Page<Comision> pageComision=null;
-                int anioConver=Integer.parseInt(anio);
-                pageComision= comisionService.findByEstadoAndFechaIniYear(true, anioConver, pageable);
+               
+                
+                pageComision= comisionService.findByEstadoAndFechaIniBetween(true, fechaIniFilter,fechaFinFilter, pageable);
                 
                 setRowCount((int) pageComision.getTotalElements());
                 return datasource = pageComision.getContent();
@@ -218,6 +239,39 @@ public class ComisionBean implements Serializable {
 	}
 	public void setAnio(String anio) {
 		this.anio = anio;
+	}
+	public Date getFechaIniFilter() {
+		return fechaIniFilter;
+	}
+	public void setFechaIniFilter(Date fechaIniFilter) {
+		this.fechaIniFilter = fechaIniFilter;
+	}
+	public Date getFechaFinFilter() {
+		return fechaFinFilter;
+	}
+	public void setFechaFinFilter(Date fechaFinFilter) {
+		this.fechaFinFilter = fechaFinFilter;
+	}
+	public SimpleDateFormat getSdf() {
+		return sdf;
+	}
+	public void setSdf(SimpleDateFormat sdf) {
+		this.sdf = sdf;
+	}
+	public SimpleDateFormat getSdfM() {
+		return sdfM;
+	}
+	public void setSdfM(SimpleDateFormat sdfM) {
+		this.sdfM = sdfM;
+	}
+	public SimpleDateFormat getSdfY() {
+		return sdfY;
+	}
+	public void setSdfY(SimpleDateFormat sdfY) {
+		this.sdfY = sdfY;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 	
 	
