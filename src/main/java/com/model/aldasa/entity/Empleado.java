@@ -10,32 +10,23 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "user")
-public class Usuario {
+@Table(name = "empleado")
+public class Empleado {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	private String username;
-	private String password;
-	boolean status;
 	
 	@ManyToOne
 	@JoinColumn(name="idperson")
 	private Person person;
 	
-	@ManyToOne
-	@JoinColumn(name="idprofile")
-	private Profile profile;
-	
-	@ManyToOne
-	@JoinColumn(name="idteam")
-	private Team team;
-	
 	@Column(name="sueldobasico")
 	private Double sueldoBasico;
 	
+	private boolean estado;
+
 	
 	
 	public Integer getId() {
@@ -44,41 +35,18 @@ public class Usuario {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public boolean isStatus() {
-		return status;
-	}
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
 	public Person getPerson() {
 		return person;
 	}
 	public void setPerson(Person person) {
 		this.person = person;
 	}
-	public Profile getProfile() {
-		return profile;
+	public boolean isEstado() {
+		return estado;
 	}
-	public void setProfile(Profile profile) {
-		this.profile = profile;
-	}
-	public Team getTeam() {
-		return team;
-	}
-	public void setTeam(Team team) {
-		this.team = team;
+
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 	public Double getSueldoBasico() {
 		return sueldoBasico;
@@ -86,8 +54,6 @@ public class Usuario {
 	public void setSueldoBasico(Double sueldoBasico) {
 		this.sueldoBasico = sueldoBasico;
 	}
-	
-	
-	
-	
+
+
 }

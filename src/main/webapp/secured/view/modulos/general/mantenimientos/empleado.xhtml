@@ -1,0 +1,83 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	locale="#{localeBean.usedLocale}"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+	<h:form id="form">
+		<h2 style="color: #007d4c;">MANTENIMIENTOS > EMPLEADO</h2>
+		<p:selectOneButton value="#{empleadoBean.estado}">
+			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
+			<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
+		</p:selectOneButton>  
+		
+		<p:dataTable var="empleado" id="idTableEmpleado" value="#{empleadoBean.lstEmpleadoLazy}" widgetVar="empleadoTable" rowIndexVar="row" paginator="true" rows="15" size="small"
+		emptyMessage="No se encontraron empleados."	paginatorPosition="bottom" rowKey="#{empleado.id}" selection="#{empleadoBean.empleadoSelected}" selectionMode="single">
+			<p:ajax event="rowSelect" listener="#{empleadoBean.modifyEmpleado()}" update=":formEmpleadoDialog :dialogEmpleado" oncomplete="PF('empleadoDialog').show();" />
+		
+			<f:facet name="header">
+				<div class="p-d-flex p-ai-center p-jc-between">
+					<span>Lista de Empleados</span>
+				</div>
+			</f:facet>
+		
+			<p:column style="width:42px;text-align: left">
+				<f:facet name="header">
+					<p:commandLink action="#{empleadoBean.newEmpleado()}"
+						update=":formEmpleadoDialog :dialogEmpleado"
+						oncomplete="PF('empleadoDialog').show();"
+						title="NUEVO EMPLEADO">
+						<p:graphicImage width="50" value="/recursos/images/anadir.png" />
+	
+					</p:commandLink>
+				</f:facet>
+			</p:column>
+	
+			<p:column width="25px">
+	                      #{row +1}
+	        </p:column>
+	        
+			<p:column headerText="Nombre del empleado" sortBy="#{empleado.person.surnames}"
+				filterBy="#{empleado.person.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{empleado.person.surnames} #{empleado.person.names}" />
+			</p:column>
+			<p:column headerText="Sueldo Básico" sortBy="#{empleado.sueldoBasico}"
+				filterMatchMode="contains">
+				<h:outputText value="#{empleado.sueldoBasico}" />
+			</p:column>
+		</p:dataTable>
+	
+	</h:form>
+	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogEmpleado" header="#{empleadoBean.tituloDialog}" widgetVar="empleadoDialog" resizable="false" closable="true"
+		appendTo="@(body)" style="width:auto">
+		<h:form id="formEmpleadoDialog">
+		    <p:messages id="messages" showDetail="true" closable="true">
+	            <p:autoUpdate/>
+	        </p:messages>
+			<h:panelGrid id="grid" columns="2"> 
+			
+				<h:outputLabel for="optionPerson" value="Persona:" />
+				<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{empleadoBean.empleadoSelected.person}" 
+				converter="#{empleadoBean.conversorPersonSurnames}" id="optionPerson" completeMethod="#{empleadoBean.completePersonSurnames}"  
+                var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:10px" />
+			
+				<h:outputLabel value="Sueldo básico:" for="sueldoBasico" />
+						<p:inputNumber id="sueldoBasico" value="#{empleadoBean.empleadoSelected.sueldoBasico}" style="margin:5px; width:220px" modifyValueOnWheel="false" > 
+						<p:ajax update="messages" /> 
+						</p:inputNumber>
+				
+				<h:outputLabel for="option" value="Estado:" />
+				<p:selectOneMenu id="option" value="#{empleadoBean.empleadoSelected.estado}" style="margin:10px">
+					<f:selectItem itemLabel="ACTIVO" itemValue="#{true}" />
+					<f:selectItem itemLabel="INACTIVO" itemValue="#{false}" />
+				</p:selectOneMenu>	
+			</h:panelGrid>
+			<p:commandButton value="Guardar" action="#{empleadoBean.saveEmpleado()}" update=":form:idTableEmpleado :formEmpleadoDialog" />
+		</h:form>
+	</p:dialog>
+
+</ui:composition>

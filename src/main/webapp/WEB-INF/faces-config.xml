@@ -374,4 +374,17 @@
 		</managed-property>
 		
 	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>empleadoBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.general.bean.EmpleadoBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope> 
+		<managed-property>
+			<property-name>empleadoService</property-name>
+			<value>#{empleadoService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>personService</property-name>
+			<value>#{personService}</value>
+		</managed-property>
+	</managed-bean>
 </faces-config>

@@ -129,7 +129,7 @@ public class TeamBean  implements Serializable {
             }
         }
         return lista;
-    }
+    }	
 	public PersonService getPersonService() {
 		return personService;
 	}
