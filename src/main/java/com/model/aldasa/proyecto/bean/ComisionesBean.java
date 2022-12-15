@@ -58,11 +58,12 @@ public class ComisionesBean implements Serializable {
 	
 	private Team teamSelected;
 	private Person personAsesorSelected;
+	private Comision comisionSelected;
 	
 	private Date fechaIni,fechaFin;
 	private Integer comisionContado=8;
 	private Integer comisionCredito=4; 
-	private Comision comisionSelected;
+	
 	
 	private List<Person> lstPersonAsesor = new ArrayList<>();
 	private List<Comision> lstComision;
@@ -96,49 +97,40 @@ public class ComisionesBean implements Serializable {
 			sizeLotes = (int) calculo;
 			return sizeLotes;
 		}
-		
-		
 		return porc;
 	}
-	
 	
 	public void cambiarComision() {
 		fechaIni = comisionSelected.getFechaIni();
 		fechaFin = comisionSelected.getFechaCierre();
 	}
 	
-	public double calcularComisionSubgerente (Lote lote) {
-		
-		 double comision = 0;
-				double porcentaje = 1;
-				double  porcSubgerente = (porcentaje/100);
-				comision = lote.getMontoVenta()*porcSubgerente;
-			
-			return  comision;
+	public double calcularComisionSubgerente(Lote lote) {
+
+		double comision = 0;
+		double porcSubgerente =  Double.parseDouble(comisionSelected.getSubgerente()+"")  / 100;
+		comision = lote.getMontoVenta() * porcSubgerente;
+
+		return comision;
 	}
 	
-	public double calcularComisionSupervior (Lote lote) {
-		
-		 double comision = 0;
-				double porcentaje = 1;
-				double  porcSupervisor = (porcentaje/100);
-				comision = lote.getMontoVenta()*porcSupervisor;
-			
-			return  comision;
+	public double calcularComisionSupervior(Lote lote) {
+		double comision = 0;
+		double porcSupervisor = Double.parseDouble(comisionSelected.getComisionSupervisor()+"") / 100;
+		comision = lote.getMontoVenta() * porcSupervisor;
+
+		return comision;
 	}
 	
-	public double calcularComision (Lote lote) {
-		
+	public double calcularComisionAsesor(Lote lote) {
 		 double comision = 0;
 		if (lote.getTipoPago().equals("Contado")) {
-			double porcentaje = comisionContado;
-			double  porcContado = (porcentaje/100);
-			comision = lote.getMontoVenta()*porcContado;
+			double porcentaje = Double.parseDouble(comisionSelected.getComisionContado()+"") /100;
+			comision = porcentaje * lote.getMontoVenta();
 		}
 		if(lote.getTipoPago().equals("Crédito")) {
-			double porcentaje = comisionCredito;
-			double  porcCredito = (porcentaje/100);
-			comision = lote.getMontoVenta()*porcCredito;
+			double porcentaje = Double.parseDouble(comisionSelected.getComisionCredito()+"") /100;
+			comision = porcentaje * lote.getMontoVenta();
 		}
 		return  comision;
 	}
