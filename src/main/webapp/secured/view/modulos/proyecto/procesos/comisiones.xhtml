@@ -22,26 +22,17 @@
 			
 			<h:outputLabel for="comCred" value="Comisión Crédito: " />
 			<h:outputLabel id="comCred" value="#{comisionesBean.comisionSelected.comisionCredito}%" style="font-weight: bold;" />
-
-			<h:outputLabel for="optionTeam" value="Equipo:" />
-			<p:selectOneMenu id="optionTeam" value="#{comisionesBean.teamSelected}" converter="#{comisionesBean.conversorTeam}" style="margin:10px">
-				<f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}" />
-				<f:selectItems value="#{comisionesBean.lstTeam}" var="prof" itemLabel="#{prof.name} / #{prof.personSupervisor.surnames} #{prof.personSupervisor.names}" itemValue="#{prof}" />
-				<p:ajax listener="#{comisionesBean.cargarAsesorPorEquipo}" update="optionAsesor,idTeamTable" />
-			</p:selectOneMenu>
 			
-			<h:outputLabel for="optionAsesor" value="Asesor:" />
-                <p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{comisionesBean.personAsesorSelected}" converter="#{comisionesBean.conversorPersonAsesor}" id="optionAsesor" completeMethod="#{comisionesBean.completePersonAsesor}"  
-                          var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:10px"> 
-                   <p:ajax update="idTeamTable"/>
-                </p:autoComplete>
-                 	
+			<h:outputLabel for="meta" value="Meta: " />
+			<h:outputLabel id="meta" value="#{comisionesBean.comisionSelected.meta}" style="font-weight: bold;" />
+
            	
 		</h:panelGrid>
 		
 		<p:dataTable var="team" id="idTeamTable" value="#{comisionesBean.lstTeamLazy}" widgetVar="idTeamTable" rowIndexVar="row" paginator="true" rows="15" style="width:100%"
-			size="small" emptyMessage="No se encontraron lotes." paginatorPosition="bottom" rowKey="#{lote.id}" selection="#{loteBean.loteSelected}" selectionMode="single">
+			size="small" emptyMessage="No se encontraron lotes." paginatorPosition="bottom" rowKey="#{lote.id}" selection="#{comisionesBean.teamSelected}" selectionMode="single">
 			
+			<p:ajax event="rowSelect" update="dialogComision" listener="#{comisionesBean.iniciarLazyLotes}" oncomplete="PF('comisionDialog').show();" />
 			<p:column width="25px">
                       #{row +1}
         	</p:column>
@@ -51,7 +42,43 @@
 			<p:column headerText="Supervisor" sortBy="#{team.personSupervisor.surnames}"  filterMatchMode="contains" >
 				<h:outputText value="#{team.personSupervisor.surnames} #{team.personSupervisor.names}" />
 			</p:column>
+			<p:column headerText="Lotes vendidos" filterMatchMode="contains" >
+				<h:outputText value="#{comisionesBean.calcularProcentajeMeta(team,'SI')}" />
+			</p:column>
+			
+			<p:column headerText="% Meta" filterMatchMode="contains">
+				 <p:progressBar value="#{comisionesBean.calcularProcentajeMeta(team,'NO')}" labelTemplate="{value}%" displayOnly="true"/>
+			</p:column>
 		</p:dataTable>
-
 	</h:form>
+	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogComision" header="Equipo: #{comisionesBean.teamSelected.name}" widgetVar="comisionDialog" resizable="false" closable="true"
+		appendTo="@(body)" style="width:auto">
+		<h:form id="formComisionDialog">
+			<p:dataTable var="lote" id="idTableLote" value="#{comisionesBean.lstLoteLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="15"
+				size="small" emptyMessage="No se encontraron lotes." paginatorPosition="bottom" rowKey="#{lote.id}" selectionMode="single">
+	
+				<p:column width="25px">
+	                      #{row +1}
+	        	</p:column>
+	
+				<p:column headerText="Manzana-Lote" sortBy="#{lote.numberLote}"  filterMatchMode="contains" responsivePriority="14">
+					<h:outputText value="#{lote.manzana.name}-#{lote.numberLote}" />
+				</p:column>
+				<p:column headerText="Proyecto" sortBy="#{lote.project.name}" filterMatchMode="contains" responsivePriority="11">
+	                <h:outputText value="#{lote.project.name}" />
+	            </p:column>
+	            
+	            <p:column headerText="Estado" filterMatchMode="contains" responsivePriority="12">
+					<h:outputText value="#{lote.status}" style="font-weight: bold;color:#{lote.status eq 'Disponible'?'green':lote.status eq 'Separado'?'blue':lote.status eq 'Vendido'?'red':'black'}" />
+				</p:column>
+				<p:column headerText="Fecha Venta" filterMatchMode="contains" responsivePriority="3">
+					<h:outputText value="#{lote.fechaVendido}"> 
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+			</p:dataTable>
+			
+		</h:form>
+	</p:dialog>
 </ui:composition>

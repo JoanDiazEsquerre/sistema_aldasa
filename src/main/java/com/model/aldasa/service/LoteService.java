@@ -11,7 +11,6 @@ import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Manzana;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Project;
-import com.model.aldasa.entity.Prospection;
 
 public interface LoteService {
  
@@ -29,4 +28,5 @@ public interface LoteService {
 	//Para mod. comisiones
 	Page<Lote> findAllByStatusLikeAndPersonSupervisorDniLikeAndPersonAssessorDniLikeAndFechaVendidoBetween(String status, String dniPersonSupervisor,String dniPersonAsesor, Date fechaIni, Date fechaFin ,Pageable pageable);
 
+	List<Lote> findByStatusAndPersonSupervisorAndFechaVendidoBetween(String Status, Person personSupervisor, Date fechaIni, Date fechaFin);
 }

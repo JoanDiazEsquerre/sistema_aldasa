@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Manzana;
+import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.repository.LoteRepository; 
 import com.model.aldasa.service.LoteService;
@@ -73,5 +74,11 @@ public class LoteServiceImpl implements LoteService {
 			Pageable pageable) {
 		return loteRepository.findAllByStatusLikeAndPersonSupervisorDniLikeAndPersonAssessorDniLikeAndFechaVendidoBetween(status, idPersonSupervisor, idPersonAsesor, fechaIni, fechaFin, pageable); 
 	}
+
+	@Override
+	public List<Lote> findByStatusAndPersonSupervisorAndFechaVendidoBetween(String Status, Person personSupervisor,
+			Date fechaIni, Date fechaFin) {
+		return loteRepository.findByStatusAndPersonSupervisorAndFechaVendidoBetween(Status, personSupervisor, fechaIni, fechaFin);
+	} 
 	
 }

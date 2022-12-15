@@ -31,4 +31,6 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
 	//Para mod. comisiones
 	Page<Lote> findAllByStatusLikeAndPersonSupervisorDniLikeAndPersonAssessorDniLikeAndFechaVendidoBetween(String status, String dniPersonSupervisor,String dniPersonAsesor, Date fechaIni, Date fechaFin ,Pageable pageable);
 
+	
+	List<Lote> findByStatusAndPersonSupervisorAndFechaVendidoBetween(String Status, Person personSupervisor, Date fechaIni, Date fechaFin);
 }

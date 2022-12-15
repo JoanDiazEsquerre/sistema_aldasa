@@ -1,12 +1,8 @@
 package com.model.aldasa.proyecto.bean;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +32,7 @@ import com.model.aldasa.service.ComisionService;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.TeamService;
 import com.model.aldasa.service.UsuarioService;
+import com.model.aldasa.util.EstadoLote;
 import com.model.aldasa.util.Perfiles;
 
 @ManagedBean
@@ -67,7 +64,6 @@ public class ComisionesBean implements Serializable {
 	private Integer comisionCredito=4; 
 	private Comision comisionSelected;
 	
-	private List<Team> lstTeam;
 	private List<Person> lstPersonAsesor = new ArrayList<>();
 	private List<Comision> lstComision;
 	
@@ -81,13 +77,30 @@ public class ComisionesBean implements Serializable {
 	public void init() {
 		comisionSelected = comisionService.findByEstadoAndCodigo(true, sdfM.format(new Date())+sdfY2.format(new Date()));
 		cambiarComision();
-		cargarAsesorPorEquipo();
-		
-		lstTeam=teamService.findByStatus(true);
+		cargarAsesorPorEquipo();		
 		lstComision = comisionService.findByEstado(true);
 		
 		iniciarLazyTeam();
 	}
+	
+	public int calcularProcentajeMeta(Team team, String size) {
+		int porc=0;
+		List<Lote> listLotesVendido = loteService.findByStatusAndPersonSupervisorAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(), comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+		if(listLotesVendido != null && !listLotesVendido.isEmpty()) {
+			if(size.equals("SI")) {
+				return listLotesVendido.size();
+			}
+			
+			int sizeLotes = listLotesVendido.size();
+			double calculo = (sizeLotes*100)/comisionSelected.getMeta();
+			sizeLotes = (int) calculo;
+			return sizeLotes;
+		}
+		
+		
+		return porc;
+	}
+	
 	
 	public void cambiarComision() {
 		fechaIni = comisionSelected.getFechaIni();
@@ -130,7 +143,7 @@ public class ComisionesBean implements Serializable {
 		return  comision;
 	}
 	
-	public void iniciarLazy() {
+	public void iniciarLazyLotes() {
 		lstLoteLazy = new LazyDataModel<Lote>() {
 			private List<Lote> datasource;
 
@@ -168,9 +181,8 @@ public class ComisionesBean implements Serializable {
 				String dniSupervisor = "%%";
 				
 				if(teamSelected!=null)dniSupervisor ="%"+ teamSelected.getPersonSupervisor().getDni()+"%";
-				if(personAsesorSelected!=null)dniAsesor = "%"+personAsesorSelected.getDni()+"%";
             
-                Sort sort=Sort.by("fechaVendido").ascending();
+                Sort sort=Sort.by("personAssessor.surnames").ascending();
                 if(sortBy!=null) {
                 	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
                 	    System.out.println(entry.getKey() + "/" + entry.getValue());
@@ -299,34 +311,6 @@ public class ComisionesBean implements Serializable {
         return lista;
     }
 	
-	public Converter getConversorTeam() {
-        return new Converter() {
-            @Override
-            public Object getAsObject(FacesContext context, UIComponent component, String value) {
-                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
-                    return null;
-                } else {
-                    Team c = null;
-                    for (Team si : lstTeam) {
-                        if (si.getId().toString().equals(value)) {
-                            c = si;
-                        }
-                    }
-                    return c;
-                }
-            }
-
-            @Override
-            public String getAsString(FacesContext context, UIComponent component, Object value) {
-                if (value == null || value.equals("")) {
-                    return "";
-                } else {
-                    return ((Team) value).getId() + "";
-                }
-            }
-        };
-    }
-	
 	public Converter getConversorComision() {
         return new Converter() {
             @Override
@@ -432,12 +416,6 @@ public class ComisionesBean implements Serializable {
 	public void setTeamSelected(Team teamSelected) {
 		this.teamSelected = teamSelected;
 	}
-	public List<Team> getLstTeam() {
-		return lstTeam;
-	}
-	public void setLstTeam(List<Team> lstTeam) {
-		this.lstTeam = lstTeam;
-	}
 	public TeamService getTeamService() {
 		return teamService;
 	}
@@ -504,4 +482,5 @@ public class ComisionesBean implements Serializable {
 	public void setSdfY2(SimpleDateFormat sdfY2) {
 		this.sdfY2 = sdfY2;
 	}
+	
 }
