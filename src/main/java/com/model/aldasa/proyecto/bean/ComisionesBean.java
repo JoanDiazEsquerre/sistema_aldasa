@@ -62,7 +62,9 @@ public class ComisionesBean implements Serializable {
 	
 	private Date fechaIni,fechaFin;
 	private Integer comisionContado=8;
-	private Integer comisionCredito=4; 
+	private Integer comisionCredito=4;
+	
+	private boolean metaEquipo;
 	
 	
 	private List<Person> lstPersonAsesor = new ArrayList<>();
@@ -83,6 +85,16 @@ public class ComisionesBean implements Serializable {
 		
 		iniciarLazyTeam();
 	}
+	
+	public void verDetalleLotes() {
+		iniciarLazyLotes();
+		double metaPorEquipo = calcularProcentajeMeta(teamSelected, "NO");
+		metaEquipo = false;
+		if(metaPorEquipo >= 100) {
+			metaEquipo = true;
+		}
+	}
+	
 	
 	public int calcularProcentajeMeta(Team team, String size) {
 		int porc=0;
@@ -117,7 +129,14 @@ public class ComisionesBean implements Serializable {
 	public double calcularComisionSupervior(Lote lote) {
 		double comision = 0;
 		double porcSupervisor = Double.parseDouble(comisionSelected.getComisionSupervisor()+"") / 100;
-		comision = lote.getMontoVenta() * porcSupervisor;
+		double porcSupervisorMeta = Double.parseDouble(comisionSelected.getComisionMetaSupervisor()+"") / 100;
+		
+		if(metaEquipo) {
+			comision = lote.getMontoVenta() * porcSupervisorMeta;
+		}else {
+			comision = lote.getMontoVenta() * porcSupervisor;
+		}
+		
 
 		return comision;
 	}
@@ -473,6 +492,12 @@ public class ComisionesBean implements Serializable {
 	}
 	public void setSdfY2(SimpleDateFormat sdfY2) {
 		this.sdfY2 = sdfY2;
+	}
+	public boolean isMetaEquipo() {
+		return metaEquipo;
+	}
+	public void setMetaEquipo(boolean metaEquipo) {
+		this.metaEquipo = metaEquipo;
 	}
 	
 }

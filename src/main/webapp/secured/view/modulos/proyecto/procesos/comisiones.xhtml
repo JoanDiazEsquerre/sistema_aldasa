@@ -32,7 +32,6 @@
 		<p:dataTable var="team" id="idTeamTable" value="#{comisionesBean.lstTeamLazy}" widgetVar="idTeamTable" rowIndexVar="row" paginator="true" rows="15" style="width:100%"
 			size="small" emptyMessage="No se encontraron lotes." paginatorPosition="bottom" rowKey="#{lote.id}" selection="#{comisionesBean.teamSelected}" selectionMode="single">
 			
-			<p:ajax event="rowSelect" update="dialogComision" listener="#{comisionesBean.iniciarLazyLotes}" oncomplete="PF('comisionDialog').show();" />
 			<p:column width="25px">
                       #{row +1}
         	</p:column>
@@ -50,23 +49,29 @@
 				 <p:progressBar value="#{comisionesBean.calcularProcentajeMeta(team,'NO')}" labelTemplate="{value}%" displayOnly="true"/>
 			</p:column>
 		</p:dataTable>
+		<p:contextMenu for="idTeamTable">
+            <p:menuitem value="Detalle Lotes" update="dialogComision" action="#{comisionesBean.verDetalleLotes}" icon="pi pi-search" oncomplete="PF('comisionDialog').show()"/>
+            <p:menuitem value="Detalle Asesores" icon="pi pi-search" />
+        </p:contextMenu>
 	</h:form>
 	
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogComision" header="Equipo: #{comisionesBean.teamSelected.name}" widgetVar="comisionDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formComisionDialog">
-			<p:dataTable var="lote" id="idTableLote" value="#{comisionesBean.lstLoteLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="12"
+			<h:outputText value="¡El equipo a completado la meta!"  style="color: red;font-weight: bolder;" rendered="#{comisionesBean.metaEquipo}"/>
+			
+			<p:dataTable var="lote" id="idTableLote" value="#{comisionesBean.lstLoteLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="12" style="width:130%"
 				size="small" emptyMessage="No se encontraron lotes." paginatorPosition="bottom" rowKey="#{lote.id}" selectionMode="single">
 	
 				<p:column width="25px">
 	                      #{row +1}
 	        	</p:column>
 	        	
-	        	<p:column headerText="Asesor" sortBy="#{lote.personAssessor.surnames}"  filterMatchMode="contains">
+	        	<p:column headerText="Asesor" sortBy="#{lote.personAssessor.surnames}"  filterMatchMode="contains" style="width: 200px">
 					<h:outputText value="#{lote.personAssessor.surnames} #{lote.personAssessor.names}" />
 				</p:column>
 				
-				<p:column headerText="DNI / Comprador" sortBy="#{lote.personVenta.surnames}"  filterMatchMode="contains">
+				<p:column headerText="DNI / Comprador" sortBy="#{lote.personVenta.surnames}"  filterMatchMode="contains" style="width: 400px">
 					<h:outputText value="#{lote.personVenta.dni} / #{lote.personVenta.surnames} #{lote.personVenta.names}" />
 				</p:column>				
 				<p:column headerText="Fecha Venta" filterMatchMode="contains">
@@ -83,7 +88,7 @@
 	            <p:column headerText="% Comisión" filterMatchMode="contains" style="text-align: center">
 	                <h:outputText value="#{lote.tipoPago eq 'Contado'?comisionesBean.comisionSelected.comisionContado:comisionesBean.comisionSelected.comisionCredito}" />
 	            </p:column>
-	            <p:column headerText="Proyecto" sortBy="#{lote.project.name}" filterMatchMode="contains">
+	            <p:column headerText="Proyecto" sortBy="#{lote.project.name}" filterMatchMode="contains" style="width: 300px">
 	                <h:outputText value="#{lote.project.name}" />
 	            </p:column>
 	            <p:column headerText="Manz-Lote" sortBy="#{lote.numberLote}"  filterMatchMode="contains" style="text-align: center">
@@ -108,7 +113,7 @@
 				<p:column headerText="Comisión Supervisor" filterMatchMode="contains" style="text-align: center">
 					<h:outputText value="#{comisionesBean.calcularComisionSupervior(lote)}" >
 	                    <f:convertNumber currencySymbol="" type="currency"  />
-	                </h:outputText>
+	                </h:outputText> 
 				</p:column>
 				<p:column headerText="Comisión Subgerente" filterMatchMode="contains" style="text-align: center">
 					<h:outputText value="#{comisionesBean.calcularComisionSubgerente(lote)}" >
