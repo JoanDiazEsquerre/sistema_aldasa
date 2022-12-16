@@ -122,7 +122,6 @@ public class ComisionesBean implements Serializable {
 			}
 			
 			for(Person asesor:lstPersonAsesor) {
-				
 				for(Lote lote : lstLotes) {
 					if(asesor.equals(lote.getPersonAssessor())) {
 						int nro = asesor.getLotesVendidos()+1;
