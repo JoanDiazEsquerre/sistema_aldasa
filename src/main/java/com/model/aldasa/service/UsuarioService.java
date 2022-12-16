@@ -7,8 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.model.aldasa.entity.Person;
-import com.model.aldasa.entity.Profile;
-import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 

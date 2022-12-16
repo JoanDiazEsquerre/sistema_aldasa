@@ -76,9 +76,9 @@ public class LoteServiceImpl implements LoteService {
 	}
 
 	@Override
-	public List<Lote> findByStatusAndPersonSupervisorAndFechaVendidoBetween(String Status, Person personSupervisor,
+	public List<Lote> findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(String Status, Person personSupervisor,String dniAsesor,
 			Date fechaIni, Date fechaFin) {
-		return loteRepository.findByStatusAndPersonSupervisorAndFechaVendidoBetween(Status, personSupervisor, fechaIni, fechaFin);
+		return loteRepository.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(Status, personSupervisor, dniAsesor,fechaIni, fechaFin);
 	} 
 	
 }

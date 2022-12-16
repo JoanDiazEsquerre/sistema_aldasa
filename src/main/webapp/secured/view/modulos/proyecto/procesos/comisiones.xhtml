@@ -51,7 +51,7 @@
 		</p:dataTable>
 		<p:contextMenu for="idTeamTable">
             <p:menuitem value="Detalle Lotes" update="dialogComision" action="#{comisionesBean.verDetalleLotes}" icon="pi pi-search" oncomplete="PF('comisionDialog').show()"/>
-            <p:menuitem value="Detalle Asesores" icon="pi pi-search" />
+            <p:menuitem value="Detalle Asesores" update="dialogAsesor" action="#{comisionesBean.verDetalleAsesores}" icon="pi pi-search" oncomplete="PF('asesorDialog').show()"/>
         </p:contextMenu>
 	</h:form>
 	
@@ -61,7 +61,7 @@
 			<h:outputText value="¡El equipo a completado la meta!"  style="color: red;font-weight: bolder;" rendered="#{comisionesBean.metaEquipo}"/>
 			
 			<p:dataTable var="lote" id="idTableLote" value="#{comisionesBean.lstLoteLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="12" style="width:130%"
-				size="small" emptyMessage="No se encontraron lotes." paginatorPosition="bottom" rowKey="#{lote.id}" selectionMode="single">
+				size="small" emptyMessage="No se encontraron lotes vendidos." paginatorPosition="bottom" rowKey="#{lote.id}" selectionMode="single">
 	
 				<p:column width="25px">
 	                      #{row +1}
@@ -123,6 +123,30 @@
 				
 			</p:dataTable>
 			
+		</h:form>
+	</p:dialog>
+	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogAsesor" header="Detalle asesores: #{comisionesBean.teamSelected.name}" widgetVar="asesorDialog" resizable="false" closable="true"
+		appendTo="@(body)" style="width:auto">
+		<h:form id="formAsesorDialog">
+			<p:dataTable var="asesor" id="idTableLote" value="#{comisionesBean.lstPersonAsesor}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="12"
+				size="small" emptyMessage="No se encontraron resultados." paginatorPosition="bottom" rowKey="#{asesor.id}" selectionMode="single">
+	
+				<p:column width="25px">
+	                      #{row +1}
+	        	</p:column>
+	        	
+	        	<p:column headerText="Asesor" sortBy="#{asesor.surnames}"  filterMatchMode="contains">
+					<h:outputText value="#{asesor.surnames} #{asesor.names}" />
+				</p:column>
+				
+				<p:column headerText="Lotes Vendidos"   filterMatchMode="contains" >
+					<h:outputText value="#{asesor.lotesVendidos}" />
+				</p:column>
+				
+				
+			</p:dataTable>
+	
 		</h:form>
 	</p:dialog>
 </ui:composition>

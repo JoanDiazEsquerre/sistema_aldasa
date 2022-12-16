@@ -28,5 +28,5 @@ public interface LoteService {
 	//Para mod. comisiones
 	Page<Lote> findAllByStatusLikeAndPersonSupervisorDniLikeAndPersonAssessorDniLikeAndFechaVendidoBetween(String status, String dniPersonSupervisor,String dniPersonAsesor, Date fechaIni, Date fechaFin ,Pageable pageable);
 
-	List<Lote> findByStatusAndPersonSupervisorAndFechaVendidoBetween(String Status, Person personSupervisor, Date fechaIni, Date fechaFin);
+	List<Lote> findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(String Status, Person personSupervisor,String dniAsesor, Date fechaIni, Date fechaFin);
 }

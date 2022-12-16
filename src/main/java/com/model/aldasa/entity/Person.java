@@ -34,6 +34,8 @@ public class Person {
     @JoinColumn(name="idpersonconyuge")
     private Person personconyuge;
 	
+	private transient int lotesVendidos;
+	
 	
 	public Person getPersonconyuge() {
 		return personconyuge;
@@ -126,6 +128,13 @@ public class Person {
 	public void setDistrict(District district) {
 		this.district = district;
 	}
+	public int getLotesVendidos() {
+		return lotesVendidos;
+	}
+	public void setLotesVendidos(int lotesVendidos) {
+		this.lotesVendidos = lotesVendidos;
+	}
+	
 	
 	
 	@Override

@@ -55,6 +55,7 @@ public class ComisionesBean implements Serializable {
 	
 	private LazyDataModel<Lote> lstLoteLazy;
 	private LazyDataModel<Team> lstTeamLazy;
+	private LazyDataModel<Usuario> lstUsuarioLazy;
 	
 	private Team teamSelected;
 	private Person personAsesorSelected;
@@ -67,8 +68,9 @@ public class ComisionesBean implements Serializable {
 	private boolean metaEquipo;
 	
 	
-	private List<Person> lstPersonAsesor = new ArrayList<>();
+	private List<Person> lstPersonAsesor;
 	private List<Comision> lstComision;
+	
 	
 	
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");  
@@ -80,7 +82,6 @@ public class ComisionesBean implements Serializable {
 	public void init() {
 		comisionSelected = comisionService.findByEstadoAndCodigo(true, sdfM.format(new Date())+sdfY2.format(new Date()));
 		cambiarComision();
-		cargarAsesorPorEquipo();		
 		lstComision = comisionService.findByEstado(true);
 		
 		iniciarLazyTeam();
@@ -95,10 +96,50 @@ public class ComisionesBean implements Serializable {
 		}
 	}
 	
+	public void verDetalleAsesores() {
+		lstPersonAsesor = new ArrayList<>();
+		List<Lote> lstLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), teamSelected.getPersonSupervisor(), "%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+		int contador = 0;
+		if(!lstLotes.isEmpty()) {
+			for(Lote lote : lstLotes) {
+				Person personAsesor = lote.getPersonAssessor();
+				
+				if(contador == 0) {
+					lstPersonAsesor.add(personAsesor);
+				}else {
+					boolean encuentra = false;
+					for(Person asesor:lstPersonAsesor) {
+						if(asesor.equals(lote.getPersonAssessor())) {
+							encuentra=true;
+						}
+					}
+					
+					if(!encuentra) {
+						lstPersonAsesor.add(personAsesor);
+					}
+				}
+				contador++;
+			}
+			
+			for(Person asesor:lstPersonAsesor) {
+				
+				for(Lote lote : lstLotes) {
+					if(asesor.equals(lote.getPersonAssessor())) {
+						int nro = asesor.getLotesVendidos()+1;
+						asesor.setLotesVendidos(nro); 
+						
+					}
+				}
+			}
+			
+		}
+		
+	}
+	
 	
 	public int calcularProcentajeMeta(Team team, String size) {
 		int porc=0;
-		List<Lote> listLotesVendido = loteService.findByStatusAndPersonSupervisorAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(), comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+		List<Lote> listLotesVendido = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(), "%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
 		if(listLotesVendido != null && !listLotesVendido.isEmpty()) {
 			if(size.equals("SI")) {
 				return listLotesVendido.size();
@@ -216,6 +257,68 @@ public class ComisionesBean implements Serializable {
 		};
 	}
 	
+	public void iniciarLazyUsuarioAsesor() {
+		lstUsuarioLazy = new LazyDataModel<Usuario>() {
+			private List<Usuario> datasource;
+
+            @Override
+            public void setRowIndex(int rowIndex) {
+                if (rowIndex == -1 || getPageSize() == 0) {
+                    super.setRowIndex(-1);
+                } else {
+                    super.setRowIndex(rowIndex % getPageSize());
+                }
+            }
+
+            @Override
+            public Usuario getRowData(String rowKey) {
+                int intRowKey = Integer.parseInt(rowKey);
+                for (Usuario usuario : datasource) {
+                    if (usuario.getId() == intRowKey) {
+                        return usuario;
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public String getRowKey(Usuario usuario) {
+                return String.valueOf(usuario.getId());
+            }
+
+			@Override
+			public List<Usuario> load(int first, int pageSize, Map<String, SortMeta> sortBy,Map<String, FilterMeta> filterBy) {
+				
+//				String numberLote="%"+ (filterBy.get("numberLote")!=null?filterBy.get("numberLote").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String status = "%Vendido%";
+				String dniAsesor = "%%";
+				String dniSupervisor = "%%";
+				
+				if(teamSelected!=null)dniSupervisor ="%"+ teamSelected.getPersonSupervisor().getDni()+"%";
+            
+                Sort sort=Sort.by("personAssessor.surnames").ascending();
+                if(sortBy!=null) {
+                	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
+                	    System.out.println(entry.getKey() + "/" + entry.getValue());
+                	   if(entry.getValue().getOrder().isAscending()) {
+                		   sort = Sort.by(entry.getKey()).descending();
+                	   }else {
+                		   sort = Sort.by(entry.getKey()).ascending();
+                	   }
+                	}
+                }
+                
+                Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
+                
+				Page<Usuario> pageUsuario;
+				pageUsuario= usuarioService.findByProfileNameLikeAndPersonSurnamesLikeAndPasswordLikeAndUsernameLikeAndStatus("%%", "", "", "", true, pageable);
+				
+				setRowCount((int) pageUsuario.getTotalElements());
+				return datasource = pageUsuario.getContent();
+			}
+		};
+	}
+	
 	public void iniciarLazyTeam() {
 		lstTeamLazy = new LazyDataModel<Team>() {
 			private List<Team> datasource;
@@ -272,56 +375,6 @@ public class ComisionesBean implements Serializable {
 		};
 	}
 	
-	public void cargarAsesorPorEquipo() {
-		personAsesorSelected = null;
-		lstPersonAsesor = new ArrayList<>();
-		List<Usuario> lstUsuarios = new ArrayList<>();
-		
-		if(teamSelected!= null) {
-			lstUsuarios = usuarioService.findByTeam(teamSelected);
-		}else {
-			lstUsuarios = usuarioService.findByProfileId(Perfiles.ASESOR.getId());
-		}
-		
-		if(!lstUsuarios.isEmpty()){
-			for(Usuario user : lstUsuarios) {
-				lstPersonAsesor.add(user.getPerson());
-			}
-		}
-	}
-	
-//	public void setfechaInicioFin() {
-//		try {
-//			Calendar calendar = Calendar.getInstance(); 
-//			System.out.println("Fecha Actual:" + sdf.format(calendar.getTime()));
-//
-//			//A la fecha actual le pongo el día 1
-//			calendar.set(Calendar.DAY_OF_MONTH,1);
-//			fechaIni = calendar.getTime() ;
-//
-//			calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH));
-//			
-//			int ultimoDiaMes=calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-//			int mesActual = Integer.parseInt(sdfM.format(new Date())) ;
-//			int anioActual = Integer.parseInt(sdfY.format(new Date())) ;
-//			String fechaFinn=ultimoDiaMes + "/"+mesActual+"/"+anioActual;
-//			fechaFin = sdf.parse(fechaFinn);
-//			
-//		} catch (Exception e) {
-//			System.out.println("Error: "+e);
-//		}
-//	}
-
-	public List<Person> completePersonAsesor(String query) {
-        List<Person> lista = new ArrayList<>();
-        for (Person c : lstPersonAsesor) {
-            if (c.getSurnames().toUpperCase().contains(query.toUpperCase()) || c.getNames().toUpperCase().contains(query.toUpperCase())) {
-                lista.add(c);
-            }
-        }
-        return lista;
-    }
-	
 	public Converter getConversorComision() {
         return new Converter() {
             @Override
@@ -349,35 +402,6 @@ public class ComisionesBean implements Serializable {
             }
         };
     }
-	
-	public Converter getConversorPersonAsesor() {
-        return new Converter() {
-            @Override
-            public Object getAsObject(FacesContext context, UIComponent component, String value) {
-                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
-                    return null;
-                } else {
-                	Person c = null;
-                    for (Person si : lstPersonAsesor) {
-                        if (si.getId().toString().equals(value)) {
-                            c = si;
-                        }
-                    }
-                    return c;
-                }
-            }
-
-            @Override
-            public String getAsString(FacesContext context, UIComponent component, Object value) {
-                if (value == null || value.equals("")) {
-                    return "";
-                } else {
-                    return ((Person) value).getId() + "";
-                }
-            }
-        };
-    }
-	
 	
 	public Date getFechaIni() {
 		return fechaIni;
