@@ -60,13 +60,11 @@
 		<h:form id="formComisionDialog">
 			<h:outputText value="¡El equipo a completado la meta!"  style="color: red;font-weight: bolder;" rendered="#{comisionesBean.metaEquipo}"/>
 			
-			<p:dataTable var="lote" id="idTableLote" value="#{comisionesBean.lstLoteLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="12" style="width:130%"
+			<p:dataTable var="lote" id="idTableLote" value="#{comisionesBean.lstLoteLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="10" style="width:130%"
 				size="small" emptyMessage="No se encontraron lotes vendidos." paginatorPosition="bottom" rowKey="#{lote.id}" selectionMode="single">
-	
 				<p:column width="25px">
 	                      #{row +1}
 	        	</p:column>
-	        	
 	        	<p:column headerText="Asesor" sortBy="#{lote.personAssessor.surnames}"  filterMatchMode="contains" style="width: 200px">
 					<h:outputText value="#{lote.personAssessor.surnames} #{lote.personAssessor.names}" />
 				</p:column>
@@ -104,7 +102,6 @@
 	                    <f:convertNumber currencySymbol="" type="currency"  />
 	                </h:outputText>
 				</p:column>
-				
 				<p:column headerText="Comisión Asesor" filterMatchMode="contains" style="text-align: center">
 					<h:outputText value="#{comisionesBean.calcularComisionAsesor(lote)}" >
 	                    <f:convertNumber currencySymbol="" type="currency"  />
@@ -120,33 +117,40 @@
 	                    <f:convertNumber currencySymbol="" type="currency"  />
 	                </h:outputText>
 				</p:column>
-				
 			</p:dataTable>
-			
 		</h:form>
 	</p:dialog>
 	
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogAsesor" header="Detalle asesores: #{comisionesBean.teamSelected.name}" widgetVar="asesorDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formAsesorDialog">
-			<p:dataTable var="asesor" id="idTableLote" value="#{comisionesBean.lstPersonAsesor}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="12"
+			<p:dataTable var="asesor" id="idTableLote" value="#{comisionesBean.lstPersonAsesor}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="10"
 				size="small" emptyMessage="No se encontraron resultados." paginatorPosition="bottom" rowKey="#{asesor.id}" selectionMode="single">
-	
 				<p:column width="25px">
 	                      #{row +1}
 	        	</p:column>
-	        	
 	        	<p:column headerText="Asesor" sortBy="#{asesor.surnames}"  filterMatchMode="contains">
 					<h:outputText value="#{asesor.surnames} #{asesor.names}" />
 				</p:column>
-				
-				<p:column headerText="Lotes Vendidos"   filterMatchMode="contains" >
+				<p:column headerText="Lotes Vendidos"   filterMatchMode="contains"  style="text-align: center">
 					<h:outputText value="#{asesor.lotesVendidos}" />
 				</p:column>
-				
-				
+				<p:column headerText="Sueldo Básico" filterMatchMode="contains" style="text-align: center" >
+					<h:outputText value="#{comisionesBean.obtenerSueldoBasicoAsesor(asesor)}" />
+				</p:column>
+				<p:column headerText="Tipo de Bono"   filterMatchMode="contains" style="text-align: center" >
+					<h:outputText value="#{comisionesBean.asignarTipoBono(asesor)}" />
+				</p:column>
+				<p:column headerText="Sueldo Básico Bono"   filterMatchMode="contains" style="text-align: center" >
+					<h:outputText value="#{comisionesBean.obtenerSueldoBasicoAsesorBono(asesor)}" />
+				</p:column>
+				<p:column headerText="Bono" filterMatchMode="contains" style="text-align: center" >
+					<h:outputText value="#{comisionesBean.obtenerBonoAsesor(asesor)}" />
+				</p:column>
+				<p:column headerText="Pago del Mes" filterMatchMode="contains" style="text-align: center" >
+					<h:outputText value="#{comisionesBean.obtenerBonoAsesor(asesor)}" />
+				</p:column>
 			</p:dataTable>
-	
 		</h:form>
 	</p:dialog>
 </ui:composition>

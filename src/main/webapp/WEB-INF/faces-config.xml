@@ -363,7 +363,12 @@
 			<property-name>comisionService</property-name>
 			<value>#{comisionService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>empleadoService</property-name>
+			<value>#{empleadoService}</value>
+		</managed-property>
 	</managed-bean>
+	
 	<managed-bean>
 		<managed-bean-name>comisionBean</managed-bean-name>
 		<managed-bean-class>com.model.aldasa.general.bean.ComisionBean</managed-bean-class>

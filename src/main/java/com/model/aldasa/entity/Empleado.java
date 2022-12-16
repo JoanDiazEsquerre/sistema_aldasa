@@ -44,7 +44,6 @@ public class Empleado {
 	public boolean isEstado() {
 		return estado;
 	}
-
 	public void setEstado(boolean estado) {
 		this.estado = estado;
 	}
@@ -54,6 +53,4 @@ public class Empleado {
 	public void setSueldoBasico(Double sueldoBasico) {
 		this.sueldoBasico = sueldoBasico;
 	}
-
-
 }

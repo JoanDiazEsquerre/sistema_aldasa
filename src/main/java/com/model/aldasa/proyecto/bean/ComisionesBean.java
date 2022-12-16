@@ -24,11 +24,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Comision;
+import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.service.ComisionService;
+import com.model.aldasa.service.EmpleadoService;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.TeamService;
 import com.model.aldasa.service.UsuarioService;
@@ -52,6 +54,9 @@ public class ComisionesBean implements Serializable {
 	
 	@ManagedProperty(value = "#{comisionService}")
 	private ComisionService comisionService;
+	
+	@ManagedProperty(value = "#{empleadoService}")
+	private EmpleadoService empleadoService;
 	
 	private LazyDataModel<Lote> lstLoteLazy;
 	private LazyDataModel<Team> lstTeamLazy;
@@ -126,15 +131,83 @@ public class ComisionesBean implements Serializable {
 					if(asesor.equals(lote.getPersonAssessor())) {
 						int nro = asesor.getLotesVendidos()+1;
 						asesor.setLotesVendidos(nro); 
-						
 					}
 				}
 			}
-			
 		}
+	}
+	
+	public String asignarTipoBono(Person asesor) {
+		String tipoBono = "Ninguno";
+		if(asesor.getLotesVendidos()>=2 && asesor.getLotesVendidos()<=4) {
+			tipoBono = "Bono Junior";
+		}
+		if(asesor.getLotesVendidos()>=5 && asesor.getLotesVendidos()<=8) {
+			tipoBono = "Bono Senior";
+		}
+		if(asesor.getLotesVendidos()>=9) {
+			tipoBono = "Bono Master";
+		}
+		return tipoBono;
 		
 	}
 	
+	public double obtenerSueldoBasicoAsesor(Person asesor) {
+		double sueldo = 0.0;
+		Empleado empleado = empleadoService.findByPerson(asesor);
+		if(empleado != null) {
+			sueldo = empleado.getSueldoBasico();
+		}
+	
+		return sueldo;
+		
+	}
+	
+	public double obtenerSueldoBasicoAsesorBono(Person asesor) {
+		double sueldo = 0.0;
+		if(asesor.getLotesVendidos()>=2 && asesor.getLotesVendidos()<=4) {
+			sueldo = comisionSelected.getBasicoJunior();
+		}
+		if(asesor.getLotesVendidos()>=5 && asesor.getLotesVendidos()<=8) {
+			sueldo = comisionSelected.getBasicoSenior();
+		}
+		if(asesor.getLotesVendidos()>=9) {
+			sueldo = comisionSelected.getBasicoMaster();
+		}
+	
+		return sueldo;
+		
+	}
+	
+	public double obtenerBonoAsesor(Person asesor) {
+		double bono = 0.0;
+		if(asesor.getLotesVendidos()>=2 && asesor.getLotesVendidos()<=4) {
+			bono = comisionSelected.getBonoJunior();
+		}
+		if(asesor.getLotesVendidos()>=5 && asesor.getLotesVendidos()<=8) {
+			bono = comisionSelected.getBonoSenior();
+		}
+		if(asesor.getLotesVendidos()>=9) {
+			bono = comisionSelected.getBonoMaster();
+		}
+	
+		return bono;
+	}
+	
+	public double calcularSueldoMesAsesor(Person asesor) {
+		double sueldoMes = 0.0;
+		if(asesor.getLotesVendidos()>=2 && asesor.getLotesVendidos()<=4) {
+			sueldoMes = comisionSelected.getBonoJunior();
+		}
+		if(asesor.getLotesVendidos()>=5 && asesor.getLotesVendidos()<=8) {
+			sueldoMes = comisionSelected.getBonoSenior();
+		}
+		if(asesor.getLotesVendidos()>=9) {
+			sueldoMes = comisionSelected.getBonoMaster();
+		}
+	
+		return sueldoMes;
+	}
 	
 	public int calcularProcentajeMeta(Team team, String size) {
 		int porc=0;
@@ -521,6 +594,26 @@ public class ComisionesBean implements Serializable {
 	}
 	public void setMetaEquipo(boolean metaEquipo) {
 		this.metaEquipo = metaEquipo;
+	}
+
+	public EmpleadoService getEmpleadoService() {
+		return empleadoService;
+	}
+
+	public void setEmpleadoService(EmpleadoService empleadoService) {
+		this.empleadoService = empleadoService;
+	}
+
+	public LazyDataModel<Usuario> getLstUsuarioLazy() {
+		return lstUsuarioLazy;
+	}
+
+	public void setLstUsuarioLazy(LazyDataModel<Usuario> lstUsuarioLazy) {
+		this.lstUsuarioLazy = lstUsuarioLazy;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 	
 }
