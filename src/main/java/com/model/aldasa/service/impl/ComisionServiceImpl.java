@@ -55,6 +55,12 @@ public class ComisionServiceImpl  implements ComisionService {
 		return comisionRepository.findByEstadoAndCodigo(estado, codigo);
 	}
 
+	@Override
+	public Comision findByCodigoAndIdException(String codigo, int idComision) {
+		// TODO Auto-generated method stub
+		return comisionRepository.findByCodigoAndIdException(codigo, idComision);
+	}
+
 	
 
 	

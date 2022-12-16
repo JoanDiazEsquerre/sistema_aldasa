@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Comision;
+import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.service.ComisionService;
 
 @ManagedBean
@@ -79,12 +80,6 @@ public class ComisionBean implements Serializable {
 		}
 		
 		comisionSelected.setCodigo(sdfM.format(comisionSelected.getFechaIni())+""+sdfY2.format(comisionSelected.getFechaIni())); 
-		Comision buscaComision = comisionService.findByEstadoAndCodigo(true, comisionSelected.getCodigo());
-		if(buscaComision!=null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya se programado una comision con el mismo rango de fechas."));
-			return ;
-		}
-		
 		
 		if(comisionSelected.getComisionContado()==null || comisionSelected.getComisionCredito()==null || comisionSelected.getBasicoJunior()==null || comisionSelected.getBonoJunior()==null || comisionSelected.getBasicoSenior()==null || comisionSelected.getBonoSenior()==null || comisionSelected.getBasicoMaster()==null || comisionSelected.getBonoMaster()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar los datos del asesor."));
@@ -103,12 +98,24 @@ public class ComisionBean implements Serializable {
 			return ;
 		}
 		
-		
-		comisionService.save(comisionSelected);
 		if (tituloDialog.equals("NUEVA COMISIÓN")) {
-			newComision();
+			Comision validarExistencia = comisionService.findByEstadoAndCodigo(true, comisionSelected.getCodigo());
+			if (validarExistencia == null) {
+				comisionService.save(comisionSelected);
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				newComision();
+			}else { 
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya se programado una comision con el mismo rango de fechas."));
+			}
+		} else {
+			Comision validarExistencia = comisionService.findByCodigoAndIdException(comisionSelected.getCodigo(), comisionSelected.getId());
+			if (validarExistencia == null) {
+				comisionService.save(comisionSelected);
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+			} else { 
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya se programado una comision con el mismo rango de fechas."));
+			}
 		}
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Confirmación", "Se guardó correctamente."));
 		
 	}
 

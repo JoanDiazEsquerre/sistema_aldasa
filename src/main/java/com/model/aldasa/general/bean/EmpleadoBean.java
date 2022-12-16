@@ -152,7 +152,7 @@ public class EmpleadoBean implements Serializable {
                 Page<Empleado> pageEmpleado=null;
                
                 
-                pageEmpleado= empleadoService.findByPersonSurnamesLikeAndEstado(names, true, pageable);
+                pageEmpleado= empleadoService.findByPersonSurnamesLikeAndEstado(names, estado, pageable);
                 
                 setRowCount((int) pageEmpleado.getTotalElements());
                 return datasource = pageEmpleado.getContent();

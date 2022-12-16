@@ -12,6 +12,7 @@
 		<p:selectOneButton value="#{empleadoBean.estado}">
 			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
 			<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
+			<p:ajax update=":form:idTableEmpleado" />
 		</p:selectOneButton>  
 		
 		<p:dataTable var="empleado" id="idTableEmpleado" value="#{empleadoBean.lstEmpleadoLazy}" widgetVar="empleadoTable" rowIndexVar="row" paginator="true" rows="15" size="small"
