@@ -64,7 +64,7 @@ public class ComisionBean implements Serializable {
 			e.printStackTrace();
 		}
 		try {
-			fechaFinFilter = sdf2.parse(anio+"-12-01");
+			fechaFinFilter = sdf2.parse(anio+"-12-31");
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

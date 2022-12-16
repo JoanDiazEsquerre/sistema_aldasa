@@ -35,6 +35,11 @@ public class Person {
     private Person personconyuge;
 	
 	private transient int lotesVendidos;
+	private transient int lotesContado;
+	private transient int lotesCredito;
+	private transient double totalComision;
+	private transient double comisionContado;
+	private transient double comisionCredito;
 	
 	
 	public Person getPersonconyuge() {
@@ -134,9 +139,36 @@ public class Person {
 	public void setLotesVendidos(int lotesVendidos) {
 		this.lotesVendidos = lotesVendidos;
 	}
-	
-	
-	
+	public int getLotesContado() {
+		return lotesContado;
+	}
+	public void setLotesContado(int lotesContado) {
+		this.lotesContado = lotesContado;
+	}
+	public int getLotesCredito() {
+		return lotesCredito;
+	}
+	public void setLotesCredito(int lotesCredito) {
+		this.lotesCredito = lotesCredito;
+	}
+	public double getTotalComision() {
+		return totalComision;
+	}
+	public void setTotalComision(double totalComision) {
+		this.totalComision = totalComision;
+	}
+	public double getComisionContado() {
+		return comisionContado;
+	}
+	public void setComisionContado(double comisionContado) {
+		this.comisionContado = comisionContado;
+	}
+	public double getComisionCredito() {
+		return comisionCredito;
+	}
+	public void setComisionCredito(double comisionCredito) {
+		this.comisionCredito = comisionCredito;
+	}
 	@Override
     public boolean equals(Object other) {
         return (other instanceof Person) && (id != null)

@@ -132,11 +132,23 @@
 	        	<p:column headerText="Asesor" sortBy="#{asesor.surnames}"  filterMatchMode="contains">
 					<h:outputText value="#{asesor.surnames} #{asesor.names}" />
 				</p:column>
-				<p:column headerText="Lotes Vendidos"   filterMatchMode="contains"  style="text-align: center">
-					<h:outputText value="#{asesor.lotesVendidos}" />
-				</p:column>
 				<p:column headerText="Sueldo Básico" filterMatchMode="contains" style="text-align: center" >
 					<h:outputText value="#{comisionesBean.obtenerSueldoBasicoAsesor(asesor)}" />
+				</p:column>
+				<p:column headerText="Total Vendido"   filterMatchMode="contains"  style="text-align: center">
+					<h:outputText value="#{asesor.lotesVendidos}" />
+				</p:column>
+				<p:column headerText="Total Vendido Contado"   filterMatchMode="contains"  style="text-align: center">
+					<h:outputText value="#{asesor.lotesContado}" />
+				</p:column>
+				<p:column headerText="Total Comisión Contado"   filterMatchMode="contains"  style="text-align: center">
+					<h:outputText value="#{asesor.comisionContado}" />
+				</p:column>
+				<p:column headerText="Total Vendido Crédito"   filterMatchMode="contains"  style="text-align: center">
+					<h:outputText value="#{asesor.lotesCredito}" />
+				</p:column>
+				<p:column headerText="Total Comisión Crédito"   filterMatchMode="contains"  style="text-align: center">
+					<h:outputText value="#{asesor.comisionCredito}" />
 				</p:column>
 				<p:column headerText="Tipo de Bono"   filterMatchMode="contains" style="text-align: center" >
 					<h:outputText value="#{comisionesBean.asignarTipoBono(asesor)}" />
@@ -147,8 +159,11 @@
 				<p:column headerText="Bono" filterMatchMode="contains" style="text-align: center" >
 					<h:outputText value="#{comisionesBean.obtenerBonoAsesor(asesor)}" />
 				</p:column>
+				<p:column headerText="Total Comisiones" filterMatchMode="contains" style="text-align: center" >
+					<h:outputText value="#{asesor.totalComision}" />
+				</p:column>
 				<p:column headerText="Pago del Mes" filterMatchMode="contains" style="text-align: center" >
-					<h:outputText value="#{comisionesBean.obtenerBonoAsesor(asesor)}" />
+					<h:outputText value="#{comisionesBean.pagoMesAsesor(asesor)}" style="color:blue;"/>
 				</p:column>
 			</p:dataTable>
 		</h:form>

@@ -127,10 +127,31 @@ public class ComisionesBean implements Serializable {
 			}
 			
 			for(Person asesor:lstPersonAsesor) {
+				int nroContado = 0;
+				int nroCredito = 0;
+				double comisionContado = 0.0;
+				double comisionCredito = 0.0;
+				double totalComision = 0.0;
+				
 				for(Lote lote : lstLotes) {
 					if(asesor.equals(lote.getPersonAssessor())) {
 						int nro = asesor.getLotesVendidos()+1;
+						if(lote.getTipoPago().equals("Contado")) {
+							nroContado = nroContado+1;
+							totalComision = totalComision + calcularComisionAsesor(lote);
+							comisionContado = comisionContado+ calcularComisionAsesor(lote);
+						}else {
+							nroCredito = nroCredito+1;
+							totalComision = totalComision + calcularComisionAsesor(lote);
+							comisionCredito = comisionCredito+ calcularComisionAsesor(lote);
+						}
+						
 						asesor.setLotesVendidos(nro); 
+						asesor.setLotesContado(nroContado);
+						asesor.setLotesCredito(nroCredito);
+						asesor.setTotalComision(totalComision); 
+						asesor.setComisionContado(comisionContado);
+						asesor.setComisionCredito(comisionCredito); 
 					}
 				}
 			}
@@ -176,7 +197,6 @@ public class ComisionesBean implements Serializable {
 		}
 	
 		return sueldo;
-		
 	}
 	
 	public double obtenerBonoAsesor(Person asesor) {
@@ -194,6 +214,18 @@ public class ComisionesBean implements Serializable {
 		return bono;
 	}
 	
+	public double pagoMesAsesor(Person person) {
+		double pagoMes = 0.0;
+		String tipoBono = asignarTipoBono(person);
+		if(tipoBono.equals("Ninguno")) {
+			pagoMes = obtenerSueldoBasicoAsesor(person)+ person.getTotalComision();
+		}else {
+			pagoMes = person.getTotalComision()+ obtenerBonoAsesor(person)+obtenerSueldoBasicoAsesorBono(person);
+		}
+		
+		return pagoMes;
+	}
+	
 	public double calcularSueldoMesAsesor(Person asesor) {
 		double sueldoMes = 0.0;
 		if(asesor.getLotesVendidos()>=2 && asesor.getLotesVendidos()<=4) {
@@ -207,6 +239,17 @@ public class ComisionesBean implements Serializable {
 		}
 	
 		return sueldoMes;
+	}
+	
+	public double obtenerTotoalComisionesAsesor(Person asesor) {
+		double sueldo = 0.0;
+		Empleado empleado = empleadoService.findByPerson(asesor);
+		if(empleado != null) {
+			sueldo = empleado.getSueldoBasico();
+		}
+	
+		return sueldo;
+		
 	}
 	
 	public int calcularProcentajeMeta(Team team, String size) {
