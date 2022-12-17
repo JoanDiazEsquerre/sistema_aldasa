@@ -32,6 +32,8 @@
 		<p:dataTable var="team" id="idTeamTable" value="#{comisionesBean.lstTeamLazy}" widgetVar="idTeamTable" rowIndexVar="row" paginator="true" rows="15" style="width:100%"
 			size="small" emptyMessage="No se encontraron lotes." paginatorPosition="bottom" rowKey="#{lote.id}" selection="#{comisionesBean.teamSelected}" selectionMode="single">
 			
+			<p:ajax event="rowSelect" listener="#{comisionesBean.verDetalleAsesores}" update="dialogAsesor " onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('asesorDialog').show();" />
+			
 			<p:column width="25px">
                       #{row +1}
         	</p:column>
@@ -45,87 +47,54 @@
 				<h:outputText value="#{comisionesBean.calcularProcentajeMeta(team,'SI')}" />
 			</p:column>
 			
+			<p:column headerText="Monto Contado" filterMatchMode="contains" >
+				<h:outputText value="#{comisionesBean.calcularSolesContado(team)}" >
+                    <f:convertNumber currencySymbol="" type="currency"  />
+                </h:outputText> 
+			</p:column>
+			
+			<p:column headerText="Monto Inicial" filterMatchMode="contains" >
+				<h:outputText value="#{comisionesBean.calcularSolesInicial(team)}" >
+                    <f:convertNumber currencySymbol="" type="currency"  />
+                </h:outputText> 
+			</p:column>
+			
 			<p:column headerText="% Meta" filterMatchMode="contains">
 				 <p:progressBar value="#{comisionesBean.calcularProcentajeMeta(team,'NO')}" labelTemplate="{value}%" displayOnly="true"/>
 			</p:column>
+			
+			
+			<p:columnGroup type="footer">
+                <p:row>
+                    <p:column colspan="4" style="text-align:right" footerText="Totales:"/>
+                    <p:column>
+                        <f:facet name="footer">
+                            <h:outputText value="#{comisionesBean.totalSolesContado}">
+			                    <f:convertNumber currencySymbol="" type="currency"  />
+			                </h:outputText> 
+                        </f:facet>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="footer">
+                            <h:outputText value="#{comisionesBean.totalSolesInicial}">
+			                    <f:convertNumber currencySymbol="" type="currency"  />
+			                </h:outputText> 
+                        </f:facet>
+                    </p:column>
+                    <p:column /> 
+                </p:row>
+            </p:columnGroup>
 		</p:dataTable>
-		<p:contextMenu for="idTeamTable">
-            <p:menuitem value="Detalle Lotes" update="dialogComision" action="#{comisionesBean.verDetalleLotes}" icon="pi pi-search" oncomplete="PF('comisionDialog').show()"/>
-            <p:menuitem value="Detalle Asesores" update="dialogAsesor" action="#{comisionesBean.verDetalleAsesores}" icon="pi pi-search" oncomplete="PF('asesorDialog').show()"/>
-        </p:contextMenu>
 	</h:form>
 	
-	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogComision" header="Equipo: #{comisionesBean.teamSelected.name}" widgetVar="comisionDialog" resizable="false" closable="true"
-		appendTo="@(body)" style="width:auto">
-		<h:form id="formComisionDialog">
-			<h:outputText value="¡El equipo a completado la meta!"  style="color: red;font-weight: bolder;" rendered="#{comisionesBean.metaEquipo}"/>
-			
-			<p:dataTable var="lote" id="idTableLote" value="#{comisionesBean.lstLoteLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="10" style="width:130%"
-				size="small" emptyMessage="No se encontraron lotes vendidos." paginatorPosition="bottom" rowKey="#{lote.id}" selectionMode="single">
-				<p:column width="25px">
-	                      #{row +1}
-	        	</p:column>
-	        	<p:column headerText="Asesor" sortBy="#{lote.personAssessor.surnames}"  filterMatchMode="contains" style="width: 200px">
-					<h:outputText value="#{lote.personAssessor.surnames} #{lote.personAssessor.names}" />
-				</p:column>
-				
-				<p:column headerText="DNI / Comprador" sortBy="#{lote.personVenta.surnames}"  filterMatchMode="contains" style="width: 400px">
-					<h:outputText value="#{lote.personVenta.dni} / #{lote.personVenta.surnames} #{lote.personVenta.names}" />
-				</p:column>				
-				<p:column headerText="Fecha Venta" filterMatchMode="contains">
-					<h:outputText value="#{lote.fechaVendido}"> 
-						<f:convertDateTime pattern="dd/MM/yyyy" />
-					</h:outputText>
-				</p:column>
-				<p:column headerText="Tipo Pago" sortBy="#{lote.tipoPago}" filterMatchMode="contains" style="text-align: center">
-	                <h:outputText value="#{lote.tipoPago}" />
-	            </p:column>
-	            <p:column headerText="Cuotas" sortBy="#{lote.numeroCuota}" filterMatchMode="contains" style="text-align: center">
-	                <h:outputText value="#{lote.numeroCuota}" />
-	            </p:column>
-	            <p:column headerText="% Comisión" filterMatchMode="contains" style="text-align: center">
-	                <h:outputText value="#{lote.tipoPago eq 'Contado'?comisionesBean.comisionSelected.comisionContado:comisionesBean.comisionSelected.comisionCredito}" />
-	            </p:column>
-	            <p:column headerText="Proyecto" sortBy="#{lote.project.name}" filterMatchMode="contains" style="width: 300px">
-	                <h:outputText value="#{lote.project.name}" />
-	            </p:column>
-	            <p:column headerText="Manz-Lote" sortBy="#{lote.numberLote}"  filterMatchMode="contains" style="text-align: center">
-					<h:outputText value="#{lote.manzana.name}-#{lote.numberLote}" />
-				</p:column>
-				<p:column headerText="Precio Final" sortBy="#{lote.montoVenta}"  filterMatchMode="contains" style="text-align: center">
-					<h:outputText value="#{lote.montoVenta}" >
-	                    <f:convertNumber currencySymbol="" type="currency"  />
-	                </h:outputText>
-				</p:column>
-				<p:column headerText="Inicial" sortBy="#{lote.montoInicial}"  filterMatchMode="contains" style="text-align: center">
-					<h:outputText value="#{lote.montoInicial}" >
-	                    <f:convertNumber currencySymbol="" type="currency"  />
-	                </h:outputText>
-				</p:column>
-				<p:column headerText="Comisión Asesor" filterMatchMode="contains" style="text-align: center">
-					<h:outputText value="#{comisionesBean.calcularComisionAsesor(lote)}" >
-	                    <f:convertNumber currencySymbol="" type="currency"  />
-	                </h:outputText>
-				</p:column>
-				<p:column headerText="Comisión Supervisor" filterMatchMode="contains" style="text-align: center">
-					<h:outputText value="#{comisionesBean.calcularComisionSupervior(lote)}" >
-	                    <f:convertNumber currencySymbol="" type="currency"  />
-	                </h:outputText> 
-				</p:column>
-				<p:column headerText="Comisión Subgerente" filterMatchMode="contains" style="text-align: center">
-					<h:outputText value="#{comisionesBean.calcularComisionSubgerente(lote)}" >
-	                    <f:convertNumber currencySymbol="" type="currency"  />
-	                </h:outputText>
-				</p:column>
-			</p:dataTable>
-		</h:form>
-	</p:dialog>
-	
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogAsesor" header="Detalle asesores: #{comisionesBean.teamSelected.name}" widgetVar="asesorDialog" resizable="false" closable="true"
-		appendTo="@(body)" style="width:auto">
+		appendTo="@(body)" width="100%" height="800px" fitViewport="true">
 		<h:form id="formAsesorDialog">
 			<p:dataTable var="asesor" id="idTableLote" value="#{comisionesBean.lstPersonAsesor}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="10"
 				size="small" emptyMessage="No se encontraron resultados." paginatorPosition="bottom" rowKey="#{asesor.id}" selectionMode="single">
+				<p:column style="width:2rem">
+	                <p:rowToggler/> 
+	            </p:column>
 				<p:column width="25px">
 	                      #{row +1}
 	        	</p:column>
@@ -133,7 +102,9 @@
 					<h:outputText value="#{asesor.surnames} #{asesor.names}" />
 				</p:column>
 				<p:column headerText="Sueldo Básico" filterMatchMode="contains" style="text-align: center" >
-					<h:outputText value="#{comisionesBean.obtenerSueldoBasicoAsesor(asesor)}" />
+					<h:outputText value="#{comisionesBean.obtenerSueldoBasicoAsesor(asesor)}"  >
+	                    <f:convertNumber currencySymbol="" type="currency"  />
+	                </h:outputText> 
 				</p:column>
 				<p:column headerText="Total Vendido"   filterMatchMode="contains"  style="text-align: center">
 					<h:outputText value="#{asesor.lotesVendidos}" />
@@ -142,30 +113,107 @@
 					<h:outputText value="#{asesor.lotesContado}" />
 				</p:column>
 				<p:column headerText="Total Comisión Contado"   filterMatchMode="contains"  style="text-align: center">
-					<h:outputText value="#{asesor.comisionContado}" />
+					<h:outputText value="#{asesor.comisionContado}"  >
+	                    <f:convertNumber currencySymbol="" type="currency"  />
+	                </h:outputText> 
 				</p:column>
 				<p:column headerText="Total Vendido Crédito"   filterMatchMode="contains"  style="text-align: center">
 					<h:outputText value="#{asesor.lotesCredito}" />
 				</p:column>
 				<p:column headerText="Total Comisión Crédito"   filterMatchMode="contains"  style="text-align: center">
-					<h:outputText value="#{asesor.comisionCredito}" />
+					<h:outputText value="#{asesor.comisionCredito}"  >
+	                    <f:convertNumber currencySymbol="" type="currency"  />
+	                </h:outputText> 
 				</p:column>
 				<p:column headerText="Tipo de Bono"   filterMatchMode="contains" style="text-align: center" >
 					<h:outputText value="#{comisionesBean.asignarTipoBono(asesor)}" />
 				</p:column>
 				<p:column headerText="Sueldo Básico Bono"   filterMatchMode="contains" style="text-align: center" >
-					<h:outputText value="#{comisionesBean.obtenerSueldoBasicoAsesorBono(asesor)}" />
+					<h:outputText value="#{comisionesBean.obtenerSueldoBasicoAsesorBono(asesor)}"  >
+	                    <f:convertNumber currencySymbol="" type="currency"  />
+	                </h:outputText> 
 				</p:column>
 				<p:column headerText="Bono" filterMatchMode="contains" style="text-align: center" >
-					<h:outputText value="#{comisionesBean.obtenerBonoAsesor(asesor)}" />
+					<h:outputText value="#{comisionesBean.obtenerBonoAsesor(asesor)}"  >
+	                    <f:convertNumber currencySymbol="" type="currency"  />
+	                </h:outputText> 
 				</p:column>
 				<p:column headerText="Total Comisiones" filterMatchMode="contains" style="text-align: center" >
-					<h:outputText value="#{asesor.totalComision}" />
+					<h:outputText value="#{asesor.totalComision}"  >
+	                    <f:convertNumber currencySymbol="" type="currency"  />
+	                </h:outputText> 
 				</p:column>
 				<p:column headerText="Pago del Mes" filterMatchMode="contains" style="text-align: center" >
-					<h:outputText value="#{comisionesBean.pagoMesAsesor(asesor)}" style="color:blue;"/>
+					<h:outputText value="#{comisionesBean.pagoMesAsesor(asesor)}" style="color:blue;" >
+	                    <f:convertNumber currencySymbol="" type="currency"  />
+	                </h:outputText> 
 				</p:column>
+				
+				<p:rowExpansion>
+	                <div>
+	                    <p:dataTable var="lote" value="#{comisionesBean.listaLotesVendidoPorAsesor(asesor)}" rowIndexVar="row" paginator="true" rows="10"
+							size="small" emptyMessage="No se encontraron lotes vendidos." paginatorPosition="bottom" rowKey="#{lote.id}" selectionMode="single">
+							<p:column width="25px">
+				                      #{row +1}
+				        	</p:column>
+							<p:column headerText="DNI / Comprador" sortBy="#{lote.personVenta.surnames}"  filterMatchMode="contains" style="width: 400px">
+								<h:outputText value="#{lote.personVenta.dni} / #{lote.personVenta.surnames} #{lote.personVenta.names}" />
+							</p:column>				
+							<p:column headerText="Fecha Venta" filterMatchMode="contains" style="text-align: center; width: 100px" >
+								<h:outputText value="#{lote.fechaVendido}"> 
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Tipo Pago" sortBy="#{lote.tipoPago}" filterMatchMode="contains" style="text-align: center">
+				                <h:outputText value="#{lote.tipoPago}" />
+				            </p:column>
+				            <p:column headerText="Cuotas" sortBy="#{lote.numeroCuota}" filterMatchMode="contains" style="text-align: center">
+				                <h:outputText value="#{lote.numeroCuota}" />
+				            </p:column>
+				            <p:column headerText="% Comisión" filterMatchMode="contains" style="text-align: center">
+				                <h:outputText value="#{lote.tipoPago eq 'Contado'?comisionesBean.comisionSelected.comisionContado:comisionesBean.comisionSelected.comisionCredito}" />
+				            </p:column>
+				            <p:column headerText="Proyecto" sortBy="#{lote.project.name}" filterMatchMode="contains" style="width: 300px">
+				                <h:outputText value="#{lote.project.name}" />
+				            </p:column>
+				            <p:column headerText="Manz-Lote" sortBy="#{lote.numberLote}"  filterMatchMode="contains" style="text-align: center">
+								<h:outputText value="#{lote.manzana.name}-#{lote.numberLote}" />
+							</p:column>
+							<p:column headerText="Precio Final" sortBy="#{lote.montoVenta}"  filterMatchMode="contains" style="text-align: center">
+								<h:outputText value="#{lote.montoVenta}" >
+				                    <f:convertNumber currencySymbol="" type="currency"  />
+				                </h:outputText>
+							</p:column>
+							<p:column headerText="Inicial" sortBy="#{lote.montoInicial}"  filterMatchMode="contains" style="text-align: center">
+								<h:outputText value="#{lote.montoInicial}" >
+				                    <f:convertNumber currencySymbol="" type="currency"  />
+				                </h:outputText>
+							</p:column>
+							<p:column headerText="Comisión Asesor" filterMatchMode="contains" style="text-align: center;width: 100px">
+								<h:outputText value="#{comisionesBean.calcularComisionAsesor(lote)}" >
+				                    <f:convertNumber currencySymbol="" type="currency"  />
+				                </h:outputText>
+							</p:column>
+							<p:column headerText="Comisión Supervisor" filterMatchMode="contains" style="text-align: center">
+								<h:outputText value="#{comisionesBean.calcularComisionSupervior(lote)}" >
+				                    <f:convertNumber currencySymbol="" type="currency"  />
+				                </h:outputText> 
+							</p:column>
+							<p:column headerText="Comisión Subgerente" filterMatchMode="contains" style="text-align: center">
+								<h:outputText value="#{comisionesBean.calcularComisionSubgerente(lote)}" >
+				                    <f:convertNumber currencySymbol="" type="currency"  />
+				                </h:outputText>
+							</p:column>
+						</p:dataTable>
+	                </div>
+	            </p:rowExpansion>
 			</p:dataTable>
 		</h:form>
 	</p:dialog>
+	
+	<pe:blockUI widgetVar="blockUIWidget">          
+		<h:form style="background: white">           
+			<h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/>           
+		</h:form>            
+	</pe:blockUI>
 </ui:composition>

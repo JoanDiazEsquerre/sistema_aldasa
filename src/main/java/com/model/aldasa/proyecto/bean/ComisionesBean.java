@@ -58,7 +58,6 @@ public class ComisionesBean implements Serializable {
 	@ManagedProperty(value = "#{empleadoService}")
 	private EmpleadoService empleadoService;
 	
-	private LazyDataModel<Lote> lstLoteLazy;
 	private LazyDataModel<Team> lstTeamLazy;
 	private LazyDataModel<Usuario> lstUsuarioLazy;
 	
@@ -71,6 +70,9 @@ public class ComisionesBean implements Serializable {
 	private Integer comisionCredito=4;
 	
 	private boolean metaEquipo;
+	
+	private double totalSolesContado = 0;
+	private double totalSolesInicial = 0;
 	
 	
 	private List<Person> lstPersonAsesor;
@@ -90,15 +92,6 @@ public class ComisionesBean implements Serializable {
 		lstComision = comisionService.findByEstado(true);
 		
 		iniciarLazyTeam();
-	}
-	
-	public void verDetalleLotes() {
-		iniciarLazyLotes();
-		double metaPorEquipo = calcularProcentajeMeta(teamSelected, "NO");
-		metaEquipo = false;
-		if(metaPorEquipo >= 100) {
-			metaEquipo = true;
-		}
 	}
 	
 	public void verDetalleAsesores() {
@@ -271,6 +264,9 @@ public class ComisionesBean implements Serializable {
 	public void cambiarComision() {
 		fechaIni = comisionSelected.getFechaIni();
 		fechaFin = comisionSelected.getFechaCierre();
+		
+		totalSolesContado = 0;
+		totalSolesInicial = 0;
 	}
 	
 	public double calcularComisionSubgerente(Lote lote) {
@@ -297,6 +293,14 @@ public class ComisionesBean implements Serializable {
 		return comision;
 	}
 	
+	public List<Lote> listaLotesVendidoPorAsesor(Person asesor){
+		List<Lote> listaLotes = new ArrayList<>();
+		listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), teamSelected.getPersonSupervisor(), asesor.getDni(), comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+		
+		return listaLotes;
+		
+	}
+	
 	public double calcularComisionAsesor(Lote lote) {
 		 double comision = 0;
 		if (lote.getTipoPago().equals("Contado")) {
@@ -310,66 +314,32 @@ public class ComisionesBean implements Serializable {
 		return  comision;
 	}
 	
-	public void iniciarLazyLotes() {
-		lstLoteLazy = new LazyDataModel<Lote>() {
-			private List<Lote> datasource;
-
-            @Override
-            public void setRowIndex(int rowIndex) {
-                if (rowIndex == -1 || getPageSize() == 0) {
-                    super.setRowIndex(-1);
-                } else {
-                    super.setRowIndex(rowIndex % getPageSize());
-                }
-            }
-
-            @Override
-            public Lote getRowData(String rowKey) {
-                int intRowKey = Integer.parseInt(rowKey);
-                for (Lote lote : datasource) {
-                    if (lote.getId() == intRowKey) {
-                        return lote;
-                    }
-                }
-                return null;
-            }
-
-            @Override
-            public String getRowKey(Lote lote) {
-                return String.valueOf(lote.getId());
-            }
-
-			@Override
-			public List<Lote> load(int first, int pageSize, Map<String, SortMeta> sortBy,Map<String, FilterMeta> filterBy) {
-				
-//				String numberLote="%"+ (filterBy.get("numberLote")!=null?filterBy.get("numberLote").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
-				String status = "%Vendido%";
-				String dniAsesor = "%%";
-				String dniSupervisor = "%%";
-				
-				if(teamSelected!=null)dniSupervisor ="%"+ teamSelected.getPersonSupervisor().getDni()+"%";
-            
-                Sort sort=Sort.by("personAssessor.surnames").ascending();
-                if(sortBy!=null) {
-                	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
-                	    System.out.println(entry.getKey() + "/" + entry.getValue());
-                	   if(entry.getValue().getOrder().isAscending()) {
-                		   sort = Sort.by(entry.getKey()).descending();
-                	   }else {
-                		   sort = Sort.by(entry.getKey()).ascending();
-                	   }
-                	}
-                }
-                
-                Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
-                
-				Page<Lote> pageLote;
-				pageLote= loteService.findAllByStatusLikeAndPersonSupervisorDniLikeAndPersonAssessorDniLikeAndFechaVendidoBetween(status,dniSupervisor,dniAsesor,fechaIni,fechaFin, pageable);
-				
-				setRowCount((int) pageLote.getTotalElements());
-				return datasource = pageLote.getContent();
+	public double calcularSolesContado(Team team) {
+		double solesContado = 0;
+		List<Lote> listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(),"%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+		if(!listaLotes.isEmpty()) {
+			for(Lote lote : listaLotes){
+				if(lote.getTipoPago().equals("Contado")) {
+					solesContado = solesContado + lote.getMontoVenta();
+				}
 			}
-		};
+		}
+		totalSolesContado = totalSolesContado +solesContado;
+		return solesContado;
+	}
+	
+	public double calcularSolesInicial(Team team) {
+		double solesCredito = 0;
+		List<Lote> listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(),"%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+		if(!listaLotes.isEmpty()) {
+			for(Lote lote : listaLotes){
+				if(lote.getTipoPago().equals("Crédito")) {
+					solesCredito = solesCredito + lote.getMontoInicial();
+				}
+			}
+		}
+		totalSolesInicial = totalSolesInicial + solesCredito;
+		return solesCredito;
 	}
 	
 	public void iniciarLazyUsuarioAsesor() {
@@ -596,12 +566,6 @@ public class ComisionesBean implements Serializable {
 	public void setLoteService(LoteService loteService) {
 		this.loteService = loteService;
 	}
-	public LazyDataModel<Lote> getLstLoteLazy() {
-		return lstLoteLazy;
-	}
-	public void setLstLoteLazy(LazyDataModel<Lote> lstLoteLazy) {
-		this.lstLoteLazy = lstLoteLazy;
-	}
 	public ComisionService getComisionService() {
 		return comisionService;
 	}
@@ -657,6 +621,22 @@ public class ComisionesBean implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public double getTotalSolesContado() {
+		return totalSolesContado;
+	}
+
+	public void setTotalSolesContado(double totalSolesContado) {
+		this.totalSolesContado = totalSolesContado;
+	}
+
+	public double getTotalSolesInicial() {
+		return totalSolesInicial;
+	}
+
+	public void setTotalSolesInicial(double totalSolesInicial) {
+		this.totalSolesInicial = totalSolesInicial;
 	}
 	
 }
