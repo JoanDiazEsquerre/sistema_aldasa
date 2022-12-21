@@ -33,7 +33,7 @@ public class NavegacionBean implements Serializable  {
 	private int idAsistentenAdmin = Perfiles.ASISTENTE_ADMINISTRATIVO.getId();
 	
 	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte;
-	private boolean subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
+	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
 					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones;
 	
 	private int[] permisoProspectos= {idAdministrador,idSupervisor,idAsesor};
@@ -52,6 +52,7 @@ public class NavegacionBean implements Serializable  {
 	private int[] permisoComisiones= {idAdministrador};
 	private int[] permisoComision= {idAdministrador};
 	private int[] permisoEmpleado= {idAdministrador};
+	private int[] permisoReporteLotes= {idAdministrador};
 
 
 	@PostConstruct
@@ -101,8 +102,9 @@ public class NavegacionBean implements Serializable  {
 		
 		//*******************************************************************************
 		subMenuReporteAcciones = validaPermiso(permisoReporteAcciones);
+		subMenuReporteLotes = validaPermiso(permisoReporteLotes);
 		
-		if(subMenuReporteAcciones) {
+		if(subMenuReporteAcciones || subMenuReporteLotes) {
 			menuReporte=true;
 		}
 		//*******************************************************************************
@@ -148,6 +150,9 @@ public class NavegacionBean implements Serializable  {
 	    }
 		public void getProyectoComisionesPage() {
 	        ruta = "modulos/proyecto/procesos/comisiones.xhtml";
+	    }
+		public void getProcesoReporteLotesPage() {
+	        ruta = "modulos/proyecto/procesos/reporteLotes.xhtml";
 	    }
 		public void getMantenimientoPersonasPage() {
 	        ruta = "modulos/general/mantenimientos/personas.xhtml";
@@ -440,6 +445,18 @@ public class NavegacionBean implements Serializable  {
 	}
 	public void setPermisoEmpleado(int[] permisoEmpleado) {
 		this.permisoEmpleado = permisoEmpleado;
+	}
+	public boolean isSubMenuReporteLotes() {
+		return subMenuReporteLotes;
+	}
+	public void setSubMenuReporteLotes(boolean subMenuReporteLotes) {
+		this.subMenuReporteLotes = subMenuReporteLotes;
+	}
+	public int[] getPermisoReporteLotes() {
+		return permisoReporteLotes;
+	}
+	public void setPermisoReporteLotes(int[] permisoReporteLotes) {
+		this.permisoReporteLotes = permisoReporteLotes;
 	}
 	
 	

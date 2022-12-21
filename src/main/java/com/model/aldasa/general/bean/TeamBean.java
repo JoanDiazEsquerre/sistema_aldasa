@@ -55,11 +55,13 @@ public class TeamBean  implements Serializable {
 		teamSelected=new Team();
 		teamSelected.setStatus(true);
 		teamSelected.setName("");
+		listarPersonas();
 		
 	}
 	
 	public void modifyTeam( ) {
 		tituloDialog="MODIFICAR EQUIPO";
+		listarPersonas();
 		
 	}
 	

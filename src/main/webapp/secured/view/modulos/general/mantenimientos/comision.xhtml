@@ -217,7 +217,7 @@
 						</p:inputNumber>  
 						
 						<h:outputLabel for="comMetSpv" value="Comisión Meta Supervisor: " />
-						<p:inputNumber id="comMetSpv" value="#{comisionBean.comisionSelected.comisionMetaSupervisor}"> 
+						<p:inputNumber id="comMetSpv" value="#{comisionBean.comisionSelected.comisionMetaSupervisor}"  symbol="%" symbolPosition="s" emptyValue="always"> 
 							<p:ajax update=":formComisionDialog:messagesDialogComision" />
 						</p:inputNumber>  
 						
@@ -258,6 +258,19 @@
 					</h:panelGrid>
 			    </p:tab>
 			    
+			    <p:tab title="Externos" > 
+			    	<h:panelGrid columns="4" width="100%">
+						<h:outputLabel for="comCred" value="Comisión Crédito: " />
+						<p:inputNumber id="comCred" value="#{comisionBean.comisionSelected.comisionCredito}" symbol="%"  symbolPosition="s"> 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
+						
+						<h:outputLabel for="basJun" value="Básico Junior(2-4 ventas): " />
+						<p:inputNumber id="basJun" value="#{comisionBean.comisionSelected.basicoJunior}" > 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
+					</h:panelGrid>
+			    </p:tab>
 			    <p:tab title="Subgerente" > 
 			    	<h:panelGrid columns="4" width="100%">
 						<h:outputLabel for="comSub" value="Comisión Subgerente: " />

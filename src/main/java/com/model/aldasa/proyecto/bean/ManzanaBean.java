@@ -41,7 +41,7 @@ public class ManzanaBean implements Serializable{
 		tituloDialog="NUEVA MANZANA";
 		manzanaSelected=new Manzana();
 		manzanaSelected.setStatus(true);
-		manzanaSelected.setName("");
+		manzanaSelected.setName(""); 
 		
 	}
 	

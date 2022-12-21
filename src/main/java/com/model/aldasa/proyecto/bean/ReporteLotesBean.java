@@ -45,7 +45,7 @@ import com.model.aldasa.util.Perfiles;
 
 @ManagedBean
 @ViewScoped
-public class LoteBean implements Serializable{
+public class ReporteLotesBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	

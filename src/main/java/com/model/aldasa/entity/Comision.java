@@ -79,6 +79,12 @@ public class Comision {
 	private Double bonoContadoOnline;
 	
 	private Boolean estado;
+	
+	@Column(name="metaasesorexterno")
+	private Integer metaAsesorExterno;
+	
+	@Column(name="basicoasesorexterno")
+	private Double basicoAsesorExterno;
 
 	
 	public Integer getId() {

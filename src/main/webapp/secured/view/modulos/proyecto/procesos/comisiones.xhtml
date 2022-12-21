@@ -43,17 +43,17 @@
 			<p:column headerText="Supervisor" sortBy="#{team.personSupervisor.surnames}"  filterMatchMode="contains" >
 				<h:outputText value="#{team.personSupervisor.surnames} #{team.personSupervisor.names}" />
 			</p:column>
-			<p:column headerText="Lotes vendidos" filterMatchMode="contains" >
+			<p:column headerText="Lotes vendidos" filterMatchMode="contains" style="text-align: center">
 				<h:outputText value="#{comisionesBean.calcularProcentajeMeta(team,'SI')}" />
 			</p:column>
 			
-			<p:column headerText="Monto Contado" filterMatchMode="contains" >
+			<p:column headerText="Monto Contado Ingresado" filterMatchMode="contains" style="text-align: center">
 				<h:outputText value="#{comisionesBean.calcularSolesContado(team)}" >
                     <f:convertNumber currencySymbol="" type="currency"  />
                 </h:outputText> 
 			</p:column>
 			
-			<p:column headerText="Monto Inicial" filterMatchMode="contains" >
+			<p:column headerText="Monto Inicial Ingresado" filterMatchMode="contains" style="text-align: center">
 				<h:outputText value="#{comisionesBean.calcularSolesInicial(team)}" >
                     <f:convertNumber currencySymbol="" type="currency"  />
                 </h:outputText> 
@@ -151,7 +151,7 @@
 				
 				<p:rowExpansion>
 	                <div>
-	                    <p:dataTable var="lote" value="#{comisionesBean.listaLotesVendidoPorAsesor(asesor)}" rowIndexVar="row" paginator="true" rows="10"
+	                    <p:dataTable var="lote" value="#{comisionesBean.listaLotesVendidoPorAsesor(asesor)}" rowIndexVar="row"
 							size="small" emptyMessage="No se encontraron lotes vendidos." paginatorPosition="bottom" rowKey="#{lote.id}" selectionMode="single">
 							<p:column width="25px">
 				                      #{row +1}

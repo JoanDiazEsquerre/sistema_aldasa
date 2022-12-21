@@ -33,10 +33,6 @@ public class Usuario {
 	@JoinColumn(name="idteam")
 	private Team team;
 	
-	@Column(name="sueldobasico")
-	private Double sueldoBasico;
-	
-	
 	
 	public Integer getId() {
 		return id;
@@ -79,15 +75,6 @@ public class Usuario {
 	}
 	public void setTeam(Team team) {
 		this.team = team;
-	}
-	public Double getSueldoBasico() {
-		return sueldoBasico;
-	}
-	public void setSueldoBasico(Double sueldoBasico) {
-		this.sueldoBasico = sueldoBasico;
-	}
-	
-	
-	
+	}	
 	
 }
