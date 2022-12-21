@@ -90,9 +90,15 @@ public class ComisionBean implements Serializable {
 			return ;
 		}
 		if(comisionSelected.getMetaOnline()==null || comisionSelected.getPrimeraVentaContadoOnline()==null || comisionSelected.getPrimeraVentaCreditoOnline()==null || comisionSelected.getBonoContadoOnline()==null || comisionSelected.getBonoCreditoOnline()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar los datos de Online."));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar los datos Online."));
 			return ;
 		}
+		
+		if(comisionSelected.getMetaAsesorExterno()==null || comisionSelected.getBasicoAsesorExterno()==null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar los datos Externos."));
+			return ;
+		}
+		
 		if(comisionSelected.getSubgerente()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar los datos del subgerente."));
 			return ;
@@ -143,6 +149,8 @@ public class ComisionBean implements Serializable {
 		comisionSelected.setBonoCreditoOnline(400.00);
 		comisionSelected.setBonoContadoOnline(400.00);
 		comisionSelected.setEstado(true);
+		comisionSelected.setMetaAsesorExterno(5); 
+		comisionSelected.setBasicoAsesorExterno(1025.00); 
 	}
 	
 	public void modifyComision( ) {

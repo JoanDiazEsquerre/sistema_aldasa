@@ -225,6 +225,18 @@ public class Comision {
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
 	}
+	public Integer getMetaAsesorExterno() {
+		return metaAsesorExterno;
+	}
+	public void setMetaAsesorExterno(Integer metaAsesorExterno) {
+		this.metaAsesorExterno = metaAsesorExterno;
+	}
+	public Double getBasicoAsesorExterno() {
+		return basicoAsesorExterno;
+	}
+	public void setBasicoAsesorExterno(Double basicoAsesorExterno) {
+		this.basicoAsesorExterno = basicoAsesorExterno;
+	}
 	@Override
     public boolean equals(Object other) {
         return (other instanceof Comision) && (id != null)

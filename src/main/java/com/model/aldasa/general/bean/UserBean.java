@@ -15,6 +15,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
 import org.apache.tomcat.jni.User;
+import org.eclipse.jdt.internal.compiler.env.IModule.IService;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
@@ -68,16 +69,8 @@ public class UserBean implements Serializable {
 	private List<Profile> lstProfile;
 	private List<Team> lstTeam;
 	
-	private String userNameSelected;
-	private String passwordSelected;
-	private Boolean statusSelected	;
-	
 	private Usuario userSelected;
-	private Team teamSelected;
-	private Profile profileSelected;
-	private Person personSelected;
 
-	
 	private boolean estado=true;
 	private boolean validaUsuario;
 	
@@ -182,12 +175,8 @@ public class UserBean implements Serializable {
 		listarPersonas();
 		listarPerfiles();
 		
-		teamSelected=null;
-		profileSelected=null;
-		personSelected=null;
-		userNameSelected="";
-		passwordSelected="";
-		statusSelected=true;
+		userSelected = new Usuario();
+		userSelected.setStatus(true); 
 	}
 	
 	public void updateUser() {
@@ -195,54 +184,23 @@ public class UserBean implements Serializable {
 		listarPersonas();
 		listarPerfiles();
 		listarTeam();
-		
 	}
 	
 	
 	public void saveUpdateUser() {
 		
-		if(userNameSelected.equals("") || userNameSelected==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Nombre de usuario."));
-			return ;
-		}else {
-			if(tituloDialog.equals("NUEVO USUARIO")) {
-				Usuario buscaUsername = usuarioService.findByUsername(userNameSelected);
-				if(buscaUsername!=null ) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya existe el nombre de usuario."));
-					return;
-				}
-			}else {
-				Usuario buscaUsername = usuarioService.findByUsernameException(userNameSelected, userSelected.getId());
-				if(buscaUsername!=null ) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya existe el nombre de usuario."));
-					return ;
-				}
-			}
-			
-		}
-		
-		if(passwordSelected.equals("") || passwordSelected==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar contraseña."));
-			return ;
-		}
-		
-		if(profileSelected==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar perfil."));
-			return ;
-		}
-		
-		if(personSelected==null) {
+		if(userSelected.getPerson()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta asignar una persona."));
 			return ;
 		}else {
 			if(tituloDialog.equals("NUEVO USUARIO")) {
-				Usuario buscarPorPersona =usuarioService.findByPerson(personSelected);
+				Usuario buscarPorPersona =usuarioService.findByPerson(userSelected.getPerson());
 				if(buscarPorPersona!=null) {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La persona esta asignada en otro Usuario."));
 					return;
 				}
 			}else {
-				Usuario buscaUsername = usuarioService.findByPersonException(personSelected.getId(), userSelected.getId());
+				Usuario buscaUsername = usuarioService.findByPersonException(userSelected.getPerson().getId(), userSelected.getId());
 				if(buscaUsername!=null ) {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La persona esta asignada en otro Usuario.."));
 					return;
@@ -252,69 +210,76 @@ public class UserBean implements Serializable {
 			
 		}
 		
-		if(profileSelected==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta asignar Perfil."));
-			return;
-		}		
+		if(userSelected.getUsername() == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Nombre de usuario."));
+			return ;
+		}else {
+			if(tituloDialog.equals("NUEVO USUARIO")) {
+				Usuario buscaUsername = usuarioService.findByUsername(userSelected.getUsername());
+				if(buscaUsername!=null ) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya existe el nombre de usuario."));
+					return;
+				}
+			}else {
+				Usuario buscaUsername = usuarioService.findByUsernameException(userSelected.getUsername(), userSelected.getId());
+				if(buscaUsername!=null ) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya existe el nombre de usuario."));
+					return ;
+				}
+			}
+			
+		}
+		
+		if(userSelected.getPassword().equals("") || userSelected.getPassword()==null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar contraseña."));
+			return ;
+		}
+		
+		if(userSelected.getProfile()==null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar perfil."));
+			return ;
+		}
+			
 		
 		if(tituloDialog.equals("NUEVO USUARIO")) {
-			Usuario usuario = new Usuario();
-			usuario.setPerson(personSelected);
-			usuario.setUsername(userNameSelected);
-			usuario.setPassword(passwordSelected);
-			usuario.setProfile(profileSelected);
-			usuario.setTeam(teamSelected);
-			usuario.setStatus(statusSelected);
 			
-			Usuario usu = usuarioService.save(usuario);
+			
+			Usuario usu = usuarioService.save(userSelected);
 			if(usu==null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se puede guardar."));
 				return ;
 			}
 		}else {
-			userSelected.setPerson(personSelected);
-			userSelected.setUsername(userNameSelected);
-			userSelected.setPassword(passwordSelected);
-			userSelected.setProfile(profileSelected);
-			userSelected.setTeam(teamSelected);
-			userSelected.setStatus(statusSelected);
-			
 			Usuario usu = usuarioService.save(userSelected); 
 			if(usu==null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se puede guardar."));
 				return ;
 			}
 		}
-		
-		
-		
-		
-			
 				
 				
-				List<Prospect> lstProspectAsesor = prospectService.findByPersonAssessor(personSelected);		
-				if(!lstProspectAsesor.isEmpty()) {
-					for (Prospect prospect:lstProspectAsesor) {
-						prospect.setPersonSupervisor(teamSelected.getPersonSupervisor());
-						prospectService.save(prospect);
-						
-						List<Prospection> lstProspection = prospectionService.findByProspect(prospect);
-						for (Prospection prospection:lstProspection) {
-							if(prospection.getStatus().equals(EstadoProspeccion.EN_SEGUIMIENTO.getName())) {
-								prospection.setPersonSupervisor(teamSelected.getPersonSupervisor());
-								prospectionService.save(prospection);
-							}
-						}
-						
+		List<Prospect> lstProspectAsesor = prospectService.findByPersonAssessor(userSelected.getPerson());
+		if (!lstProspectAsesor.isEmpty()) {
+			for (Prospect prospect : lstProspectAsesor) {
+				prospect.setPersonSupervisor(userSelected.getTeam().getPersonSupervisor());
+				prospectService.save(prospect);
+
+				List<Prospection> lstProspection = prospectionService.findByProspect(prospect);
+				for (Prospection prospection : lstProspection) {
+					if (prospection.getStatus().equals(EstadoProspeccion.EN_SEGUIMIENTO.getName())) {
+						prospection.setPersonSupervisor(userSelected.getTeam().getPersonSupervisor());
+						prospectionService.save(prospection);
 					}
 				}
-				
-				
-				
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente."));
-				if(tituloDialog.equals("NUEVO USUARIO")) {
-					newUser();
-				}
+
+			}
+		}
+
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente."));
+		if (tituloDialog.equals("NUEVO USUARIO")) {
+			newUser();
+		}
 			
 		
 		
@@ -503,42 +468,6 @@ public class UserBean implements Serializable {
 	}
 	public void setLstUsuarioLazy(LazyDataModel<Usuario> lstUsuarioLazy) {
 		this.lstUsuarioLazy = lstUsuarioLazy;
-	}
-	public Team getTeamSelected() {
-		return teamSelected;
-	}
-	public void setTeamSelected(Team teamSelected) {
-		this.teamSelected = teamSelected;
-	}
-	public Profile getProfileSelected() {
-		return profileSelected;
-	}
-	public void setProfileSelected(Profile profileSelected) {
-		this.profileSelected = profileSelected;
-	}
-	public Person getPersonSelected() {
-		return personSelected;
-	}
-	public void setPersonSelected(Person personSelected) {
-		this.personSelected = personSelected;
-	}
-	public String getUserNameSelected() {
-		return userNameSelected;
-	}
-	public void setUserNameSelected(String userNameSelected) {
-		this.userNameSelected = userNameSelected;
-	}
-	public String getPasswordSelected() {
-		return passwordSelected;
-	}
-	public void setPasswordSelected(String passwordSelected) {
-		this.passwordSelected = passwordSelected;
-	}
-	public Boolean getStatusSelected() {
-		return statusSelected;
-	}
-	public void setStatusSelected(Boolean statusSelected) {
-		this.statusSelected = statusSelected;
 	}
 
 	

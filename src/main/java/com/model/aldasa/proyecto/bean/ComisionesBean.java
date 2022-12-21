@@ -247,17 +247,72 @@ public class ComisionesBean implements Serializable {
 	
 	public int calcularProcentajeMeta(Team team, String size) {
 		int porc=0;
-		List<Lote> listLotesVendido = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(), "%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
-		if(listLotesVendido != null && !listLotesVendido.isEmpty()) {
-			if(size.equals("SI")) {
-				return listLotesVendido.size();
+		if(team.getName().equals("INTERNOS")) {
+			List<Lote> listLotesVendido = new ArrayList<>();
+			List<Usuario> listUsuInternos = usuarioService.findByTeam(team);
+			if(!listUsuInternos.isEmpty()) {
+				for(Usuario usuInt : listUsuInternos) {
+					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+					if(!listLotesVendidoInt.isEmpty()) {
+						for(Lote lote : listLotesVendidoInt) {
+							listLotesVendido.add(lote);
+						}
+					}
+				}
 			}
 			
-			int sizeLotes = listLotesVendido.size();
-			double calculo = (sizeLotes*100)/comisionSelected.getMeta();
-			sizeLotes = (int) calculo;
-			return sizeLotes;
+			if(listLotesVendido != null && !listLotesVendido.isEmpty()) {
+				if(size.equals("SI")) {
+					return listLotesVendido.size();
+				}
+				
+				int sizeLotes = listLotesVendido.size();
+				double calculo = (sizeLotes*100)/comisionSelected.getMeta();
+				sizeLotes = (int) calculo;
+				return sizeLotes;
+			}
+			
+		}else if(team.getName().equals("EXTERNOS")) {
+			List<Lote> listLotesVendido = new ArrayList<>();
+			List<Usuario> listUsuIxternos = usuarioService.findByTeam(team);
+			if(!listUsuIxternos.isEmpty()) {
+				for(Usuario usuExt : listUsuIxternos) {
+					List<Lote> listLotesVendidoExt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuExt.getPerson().getDni(),comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+					if(!listLotesVendidoExt.isEmpty()) {
+						for(Lote lote : listLotesVendidoExt) {
+							listLotesVendido.add(lote);
+						}
+					}
+				}
+			}
+			
+			if(listLotesVendido != null && !listLotesVendido.isEmpty()) {
+				if(size.equals("SI")) {
+					return listLotesVendido.size();
+				}
+				
+				int sizeLotes = listLotesVendido.size();
+				double calculo = (sizeLotes*100)/comisionSelected.getMeta();
+				sizeLotes = (int) calculo;
+				return sizeLotes;
+			}
+			
+		}else {
+			List<Lote> listLotesVendido = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(), "%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+			if(listLotesVendido != null && !listLotesVendido.isEmpty()) {
+				if(size.equals("SI")) {
+					return listLotesVendido.size();
+				}
+				
+				int sizeLotes = listLotesVendido.size();
+				double calculo = (sizeLotes*100)/comisionSelected.getMeta();
+				sizeLotes = (int) calculo;
+				return sizeLotes;
+			}
 		}
+		
+		
+		
 		return porc;
 	}
 	

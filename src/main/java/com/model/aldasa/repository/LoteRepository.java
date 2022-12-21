@@ -33,4 +33,5 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
 
 	
 	List<Lote> findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(String Status, Person personSupervisor, String dniAsesor, Date fechaIni, Date fechaFin);
+	List<Lote> findByStatusAndPersonAssessorDniAndFechaVendidoBetween(String Status,String dniAsesor, Date fechaIni, Date fechaFin);
 }

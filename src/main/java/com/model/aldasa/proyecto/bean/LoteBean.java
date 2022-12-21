@@ -78,7 +78,6 @@ public class LoteBean implements Serializable{
 	private Person personAsesorSelected;
 	private Lote loteSelected;
 	private Team teamSelected;
-	private Lote loteNew;
 	private Usuario usuarioLogin;
 	
 	private Project projectFilter;
@@ -123,8 +122,8 @@ public class LoteBean implements Serializable{
 		nombreLoteSelected="";
 		tituloDialog="NUEVO LOTE";
 		
-		loteNew=new Lote();
-		loteNew.setStatus("Disponible");
+		loteSelected=new Lote();
+		loteSelected.setStatus("Disponible");
 		
 		listarManzanas();
 		listarProject();
@@ -134,17 +133,23 @@ public class LoteBean implements Serializable{
 	public void modifyLote( ) {
 		tituloDialog="MODIFICAR LOTE";
 		nombreLoteSelected="Manzana " + loteSelected.getManzana().getName()+" / Lote: "+loteSelected.getNumberLote();
+				
+		fechaSeparacion = loteSelected.getFechaSeparacion();
+		fechaVencimiento = loteSelected.getFechaVencimiento();
+		fechaVendido = loteSelected.getFechaVendido();
+		personVenta = loteSelected.getPersonVenta();
 		
-		loteNew = loteSelected;
 		
-		fechaSeparacion = loteNew.getFechaSeparacion();
-		fechaVencimiento = loteNew.getFechaVencimiento();
-		fechaVendido = loteNew.getFechaVendido();
-		personVenta = loteNew.getPersonVenta();
+		Usuario usuarioAsesor = usuarioService.findByPerson(loteSelected.getPersonAssessor()); 
+		if(usuarioAsesor != null) {
+			teamSelected = usuarioAsesor.getTeam();
+		}else {
+			teamSelected = null;
+		}
 		
-		teamSelected = teamService.findByPersonSupervisor(loteNew.getPersonSupervisor());
+		
 		cargarAsesorPorEquipo();
-		personAsesorSelected = loteNew.getPersonAssessor();
+		personAsesorSelected = loteSelected.getPersonAssessor();
 
 				
 		listarManzanas();
@@ -153,7 +158,7 @@ public class LoteBean implements Serializable{
 	}
 	
 	public void changeCmbEstado() {
-		if(loteNew.getStatus().equals("Separado")) {
+		if(loteSelected.getStatus().equals("Separado")) {
 			if(fechaSeparacion == null) {
 				fechaSeparacion = new Date(); 
 				fechaVencimiento=sumarDiasAFecha(new Date(), 7);
@@ -162,20 +167,14 @@ public class LoteBean implements Serializable{
 			}
 		}
 		
-		if(loteNew.getStatus().equals("Vendido")) {
-			loteNew.setTipoPago("Contado");
+		if(loteSelected.getStatus().equals("Vendido")) {
+			loteSelected.setTipoPago("Contado");
 			if(fechaVendido == null) {
 				fechaVendido=new Date();
 			}
 		}
 		
-//		if(tituloDialog.equals("NUEVO LOTE")) {
-//			if(!loteNew.getStatus().equals("Separado") && loteNew.getStatus().equals("Vendido")) {
-//				loteNew.setFechaSeparacion(null); 
-//				loteNew.setFechaVencimiento(null);
-//				loteNew.setFechaVencimiento(null);
-//			}
-//		}
+
 	}
 	
 	public void calcularFechaVencimiento() {
@@ -290,30 +289,30 @@ public class LoteBean implements Serializable{
 	}
 	
 	public void saveLote() {
-		if(loteNew.getNumberLote().equals("") || loteNew.getNumberLote()==null) {
+		if(loteSelected.getNumberLote().equals("") || loteSelected.getNumberLote()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar número de lote."));
 			return ;
 		}
 		
-		if(loteNew.getManzana()==null) {
+		if(loteSelected.getManzana()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una manzana."));
 			return ;
 		} 
 		
-		if(loteNew.getProject()==null) {
+		if(loteSelected.getProject()==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar un proyecto."));
 			return ;
 		} 
 		
-		loteNew.setFechaSeparacion(fechaSeparacion);
-		loteNew.setFechaVencimiento(fechaVencimiento);
-		loteNew.setPersonSupervisor(null);
-		loteNew.setPersonAssessor(null);
-		loteNew.setPersonVenta(null);
-		loteNew.setFechaVendido(null);
+		loteSelected.setFechaSeparacion(fechaSeparacion);
+		loteSelected.setFechaVencimiento(fechaVencimiento);
+		loteSelected.setPersonSupervisor(null);
+		loteSelected.setPersonAssessor(null);
+		loteSelected.setPersonVenta(null);
+		loteSelected.setFechaVendido(null);
 
 
-		if(loteNew.getStatus().equals(EstadoLote.SEPARADO.getName())) {
+		if(loteSelected.getStatus().equals(EstadoLote.SEPARADO.getName())) {
 			if(fechaSeparacion == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una fecha separación."));
 				return ;
@@ -328,57 +327,57 @@ public class LoteBean implements Serializable{
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar equipo."));
 				return ;
 			}else if (teamSelected != null) {
-				loteNew.setPersonSupervisor(teamSelected.getPersonSupervisor());
+				loteSelected.setPersonSupervisor(teamSelected.getPersonSupervisor());
 			}
 			
 			if (personAsesorSelected == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar asesor."));
 				return ;
 			}else if (personAsesorSelected != null) {
-				loteNew.setPersonAssessor(personAsesorSelected);
+				loteSelected.setPersonAssessor(personAsesorSelected);
 			}
 		}
 
-		if(loteNew.getStatus().equals(EstadoLote.VENDIDO.getName())) {
+		if(loteSelected.getStatus().equals(EstadoLote.VENDIDO.getName())) {
 			if(personVenta == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
 				return ;
 			}else if (personVenta != null) {
-				loteNew.setPersonVenta(personVenta);
+				loteSelected.setPersonVenta(personVenta);
 			}
 			
 			if(teamSelected == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
 				return ;
 			}else if (teamSelected != null) {
-				loteNew.setPersonSupervisor(teamSelected.getPersonSupervisor());
+				loteSelected.setPersonSupervisor(teamSelected.getPersonSupervisor());
 			}
 			
 			if (personAsesorSelected == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
 				return ;
 			}else if (personAsesorSelected != null) {
-				loteNew.setPersonAssessor(personAsesorSelected);
+				loteSelected.setPersonAssessor(personAsesorSelected);
 			}
 			
 			if(fechaVendido == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
 				return ;
 			}else if (fechaVendido !=null) {
-				loteNew.setFechaVendido(fechaVendido);
+				loteSelected.setFechaVendido(fechaVendido);
 			}
 			
-			if(loteNew.getTipoPago().equals("Contado")) {
-				loteNew.setMontoInicial(null);
-				loteNew.setNumeroCuota(null);
-				if (loteNew.getMontoVenta() == null) {
+			if(loteSelected.getTipoPago().equals("Contado")) {
+				loteSelected.setMontoInicial(null);
+				loteSelected.setNumeroCuota(null);
+				if (loteSelected.getMontoVenta() == null) {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
 					return ;
 				}
 			}
 			
-			if(loteNew.getTipoPago().equals("Crédito")) {
-				if (loteNew.getMontoVenta() == null || loteNew.getMontoInicial() == null || loteNew.getNumeroCuota() == null) {
+			if(loteSelected.getTipoPago().equals("Crédito")) {
+				if (loteSelected.getMontoVenta() == null || loteSelected.getMontoInicial() == null || loteSelected.getNumeroCuota() == null) {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
 					return ;
 				}
@@ -388,9 +387,9 @@ public class LoteBean implements Serializable{
 		//*********************************
 		
 		if (tituloDialog.equals("NUEVO LOTE")) {
-			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProject(loteNew.getNumberLote(), loteNew.getManzana(), loteNew.getProject());
+			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProject(loteSelected.getNumberLote(), loteSelected.getManzana(), loteSelected.getProject());
 			if (validarExistencia == null) {
-				loteService.save(loteNew);
+				loteService.save(loteSelected);
 				newLote();
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
 				fechaSeparacion = null;
@@ -400,11 +399,11 @@ public class LoteBean implements Serializable{
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya existe."));
 			}
 		} else {
-			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProjectException(loteNew.getNumberLote(), loteNew.getManzana().getId(), loteNew.getProject().getId(), loteNew.getId());
+			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProjectException(loteSelected.getNumberLote(), loteSelected.getManzana().getId(), loteSelected.getProject().getId(), loteSelected.getId());
 			if (validarExistencia == null) {
-				loteService.save(loteNew);
+				loteService.save(loteSelected);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
-				nombreLoteSelected="Manzana " + loteNew.getManzana().getName()+"/ lote: "+loteNew.getNumberLote();
+				nombreLoteSelected="Manzana " + loteSelected.getManzana().getName()+"/ lote: "+loteSelected.getNumberLote();
 			} else { 
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya existe."));
 			}
@@ -413,15 +412,15 @@ public class LoteBean implements Serializable{
 	}
 	
 	public void calcularAreaPerimetro() {
-		if(loteNew.getMedidaFrontal() != null && loteNew.getMedidaFrontal() >0) {
-			if(loteNew.getMedidaDerecha() != null && loteNew.getMedidaDerecha() >0) {
-				if(loteNew.getMedidaIzquierda() != null && loteNew.getMedidaIzquierda() >0) {
-					if(loteNew.getMedidaFondo() != null && loteNew.getMedidaFondo() >0) {
-						double area1 = (loteNew.getMedidaFrontal()*loteNew.getMedidaDerecha())/2;
-						double area2 = (loteNew.getMedidaIzquierda()*loteNew.getMedidaFondo())/2;
+		if(loteSelected.getMedidaFrontal() != null && loteSelected.getMedidaFrontal() >0) {
+			if(loteSelected.getMedidaDerecha() != null && loteSelected.getMedidaDerecha() >0) {
+				if(loteSelected.getMedidaIzquierda() != null && loteSelected.getMedidaIzquierda() >0) {
+					if(loteSelected.getMedidaFondo() != null && loteSelected.getMedidaFondo() >0) {
+						double area1 = (loteSelected.getMedidaFrontal()*loteSelected.getMedidaDerecha())/2;
+						double area2 = (loteSelected.getMedidaIzquierda()*loteSelected.getMedidaFondo())/2;
 						
-						loteNew.setArea(area1+area2);
-						loteNew.setPerimetro(loteNew.getMedidaFrontal()+loteNew.getMedidaDerecha()+loteNew.getMedidaIzquierda()+loteNew.getMedidaFondo());
+						loteSelected.setArea(area1+area2);
+						loteSelected.setPerimetro(loteSelected.getMedidaFrontal()+loteSelected.getMedidaDerecha()+loteSelected.getMedidaIzquierda()+loteSelected.getMedidaFondo());
 					}
 				}
 			}
@@ -706,12 +705,6 @@ public class LoteBean implements Serializable{
 	}
 	public void setNombreLoteSelected(String nombreLoteSelected) {
 		this.nombreLoteSelected = nombreLoteSelected;
-	}
-	public Lote getLoteNew() {
-		return loteNew;
-	}
-	public void setLoteNew(Lote loteNew) {
-		this.loteNew = loteNew;
 	}
 	public Manzana getManzanaFilter() {
 		return manzanaFilter;

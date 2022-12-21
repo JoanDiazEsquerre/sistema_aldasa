@@ -258,15 +258,15 @@
 					</h:panelGrid>
 			    </p:tab>
 			    
-			    <p:tab title="Externos" > 
+			    <p:tab title="Externos" >
 			    	<h:panelGrid columns="4" width="100%">
-						<h:outputLabel for="comCred" value="Comisión Crédito: " />
-						<p:inputNumber id="comCred" value="#{comisionBean.comisionSelected.comisionCredito}" symbol="%"  symbolPosition="s"> 
+						<h:outputLabel for="metaExt" value="Meta por Asesor: " />
+						<p:inputNumber id="metaExt" value="#{comisionBean.comisionSelected.metaAsesorExterno}"  decimalPlaces="0"> 
 							<p:ajax update=":formComisionDialog:messagesDialogComision" />
 						</p:inputNumber>  
 						
-						<h:outputLabel for="basJun" value="Básico Junior(2-4 ventas): " />
-						<p:inputNumber id="basJun" value="#{comisionBean.comisionSelected.basicoJunior}" > 
+						<h:outputLabel for="basExt" value="Básico Meta: " />
+						<p:inputNumber id="basExt" value="#{comisionBean.comisionSelected.basicoAsesorExterno}" > 
 							<p:ajax update=":formComisionDialog:messagesDialogComision" />
 						</p:inputNumber>  
 					</h:panelGrid>

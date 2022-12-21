@@ -56,7 +56,6 @@ public class TeamBean  implements Serializable {
 		teamSelected.setStatus(true);
 		teamSelected.setName("");
 		listarPersonas();
-		
 	}
 	
 	public void modifyTeam( ) {
@@ -64,7 +63,6 @@ public class TeamBean  implements Serializable {
 		listarPersonas();
 		
 	}
-	
 	
 	public void saveTeam() {
 		if(teamSelected.getName().equals("") || teamSelected.getName()==null) {
