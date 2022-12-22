@@ -73,6 +73,7 @@ public class ComisionesBean implements Serializable {
 	
 	private double totalSolesContado = 0;
 	private double totalSolesInicial = 0;
+	private double totalSolesPendiente = 0;
 	
 	
 	private List<Person> lstPersonAsesor;
@@ -297,6 +298,19 @@ public class ComisionesBean implements Serializable {
 				return sizeLotes;
 			}
 			
+		}else if(team.getName().equals("ONLINE")) {
+			List<Lote> listLotesVendido = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(), "%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+			if(listLotesVendido != null && !listLotesVendido.isEmpty()) {
+				if(size.equals("SI")) {
+					return listLotesVendido.size();
+				}
+				
+				int sizeLotes = listLotesVendido.size();
+				double calculo = (sizeLotes*100)/comisionSelected.getMetaOnline();
+				sizeLotes = (int) calculo;
+				return sizeLotes;
+			}
+			
 		}else {
 			List<Lote> listLotesVendido = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(), "%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
 			if(listLotesVendido != null && !listLotesVendido.isEmpty()) {
@@ -322,6 +336,7 @@ public class ComisionesBean implements Serializable {
 		
 		totalSolesContado = 0;
 		totalSolesInicial = 0;
+		totalSolesPendiente= 0;
 	}
 	
 	public double calcularComisionSubgerente(Lote lote) {
@@ -371,30 +386,207 @@ public class ComisionesBean implements Serializable {
 	
 	public double calcularSolesContado(Team team) {
 		double solesContado = 0;
-		List<Lote> listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(),"%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
-		if(!listaLotes.isEmpty()) {
-			for(Lote lote : listaLotes){
-				if(lote.getTipoPago().equals("Contado")) {
-					solesContado = solesContado + lote.getMontoVenta();
+		
+		if(team.getName().equals("INTERNOS")) {
+			
+			List<Lote> listLotesVendido = new ArrayList<>();
+			List<Usuario> listUsuInternos = usuarioService.findByTeam(team);
+			if(!listUsuInternos.isEmpty()) {
+				for(Usuario usuInt : listUsuInternos) {
+					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+					if(!listLotesVendidoInt.isEmpty()) {
+						for(Lote lote : listLotesVendidoInt) {
+							listLotesVendido.add(lote);
+						}
+					}
 				}
 			}
+			
+			if(!listLotesVendido.isEmpty()) {
+				for(Lote lote : listLotesVendido){
+					if(lote.getTipoPago().equals("Contado")) {
+						solesContado = solesContado + lote.getMontoVenta();
+					}
+				}
+			}
+			totalSolesContado = totalSolesContado +solesContado;
+			
+		}else if(team.getName().equals("EXTERNOS")) {
+			
+			List<Lote> listLotesVendido = new ArrayList<>();
+			List<Usuario> listUsuInternos = usuarioService.findByTeam(team);
+			if(!listUsuInternos.isEmpty()) {
+				for(Usuario usuInt : listUsuInternos) {
+					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+					if(!listLotesVendidoInt.isEmpty()) {
+						for(Lote lote : listLotesVendidoInt) {
+							listLotesVendido.add(lote);
+						}
+					}
+				}
+			}
+			
+			if(!listLotesVendido.isEmpty()) {
+				for(Lote lote : listLotesVendido){
+					if(lote.getTipoPago().equals("Contado")) {
+						solesContado = solesContado + lote.getMontoVenta();
+					}
+				}
+			}
+			totalSolesContado = totalSolesContado +solesContado;
+			
+		}else {
+			List<Lote> listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(),"%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+			if(!listaLotes.isEmpty()) {
+				for(Lote lote : listaLotes){
+					if(lote.getTipoPago().equals("Contado")) {
+						solesContado = solesContado + lote.getMontoVenta();
+					}
+				}
+			}
+			totalSolesContado = totalSolesContado +solesContado;
+			
 		}
-		totalSolesContado = totalSolesContado +solesContado;
+		
+		
 		return solesContado;
 	}
 	
 	public double calcularSolesInicial(Team team) {
 		double solesCredito = 0;
-		List<Lote> listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(),"%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
-		if(!listaLotes.isEmpty()) {
-			for(Lote lote : listaLotes){
-				if(lote.getTipoPago().equals("Crédito")) {
-					solesCredito = solesCredito + lote.getMontoInicial();
+		
+		if(team.getName().equals("INTERNOS")) {
+			List<Lote> listLotesVendido = new ArrayList<>();
+			List<Usuario> listUsuInternos = usuarioService.findByTeam(team);
+			if(!listUsuInternos.isEmpty()) {
+				for(Usuario usuInt : listUsuInternos) {
+					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+					if(!listLotesVendidoInt.isEmpty()) {
+						for(Lote lote : listLotesVendidoInt) {
+							listLotesVendido.add(lote);
+						}
+					}
 				}
 			}
+			
+			if(!listLotesVendido.isEmpty()) {
+				for(Lote lote : listLotesVendido){
+					if(lote.getTipoPago().equals("Crédito")) {
+						solesCredito = solesCredito + lote.getMontoInicial();
+					}
+				}
+			}
+			totalSolesInicial = totalSolesInicial + solesCredito;
+			
+		}else if(team.getName().equals("EXTERNOS")) {
+			
+			List<Lote> listLotesVendido = new ArrayList<>();
+			List<Usuario> listUsuInternos = usuarioService.findByTeam(team);
+			if(!listUsuInternos.isEmpty()) {
+				for(Usuario usuInt : listUsuInternos) {
+					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+					if(!listLotesVendidoInt.isEmpty()) {
+						for(Lote lote : listLotesVendidoInt) {
+							listLotesVendido.add(lote);
+						}
+					}
+				}
+			}
+			
+			if(!listLotesVendido.isEmpty()) {
+				for(Lote lote : listLotesVendido){
+					if(lote.getTipoPago().equals("Crédito")) {
+						solesCredito = solesCredito + lote.getMontoInicial();
+					}
+				}
+			}
+			totalSolesInicial = totalSolesInicial + solesCredito;
+			
+		}else {
+			List<Lote> listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(),"%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+			if(!listaLotes.isEmpty()) {
+				for(Lote lote : listaLotes){
+					if(lote.getTipoPago().equals("Crédito")) {
+						solesCredito = solesCredito + lote.getMontoInicial();
+					}
+				}
+			}
+			totalSolesInicial = totalSolesInicial + solesCredito;
 		}
-		totalSolesInicial = totalSolesInicial + solesCredito;
+		
+		
+		
 		return solesCredito;
+	}
+	
+	public double calcularSolesPendiente(Team team) {
+		double solesPendiente = 0;
+		
+		if(team.getName().equals("INTERNOS")) {
+			List<Lote> listLotesVendido = new ArrayList<>();
+			List<Usuario> listUsuInternos = usuarioService.findByTeam(team);
+			if(!listUsuInternos.isEmpty()) {
+				for(Usuario usuInt : listUsuInternos) {
+					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+					if(!listLotesVendidoInt.isEmpty()) {
+						for(Lote lote : listLotesVendidoInt) {
+							listLotesVendido.add(lote);
+						}
+					}
+				}
+			}
+			
+			if(!listLotesVendido.isEmpty()) {
+				for(Lote lote : listLotesVendido){
+					if(lote.getTipoPago().equals("Crédito")) {
+						double saldo = lote.getMontoVenta() - lote.getMontoInicial();
+						solesPendiente = solesPendiente+saldo;
+					}
+				}
+			}
+			totalSolesPendiente = totalSolesPendiente + solesPendiente;
+			
+		}else if(team.getName().equals("EXTERNOS")) {
+			
+			List<Lote> listLotesVendido = new ArrayList<>();
+			List<Usuario> listUsuInternos = usuarioService.findByTeam(team);
+			if(!listUsuInternos.isEmpty()) {
+				for(Usuario usuInt : listUsuInternos) {
+					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+					if(!listLotesVendidoInt.isEmpty()) {
+						for(Lote lote : listLotesVendidoInt) {
+							listLotesVendido.add(lote);
+						}
+					}
+				}
+			}
+			
+			if(!listLotesVendido.isEmpty()) {
+				for(Lote lote : listLotesVendido){
+					if(lote.getTipoPago().equals("Crédito")) {
+						double saldo = lote.getMontoVenta() - lote.getMontoInicial();
+						solesPendiente = solesPendiente+saldo;
+					}
+				}
+			}
+			totalSolesPendiente = totalSolesPendiente + solesPendiente;
+			
+		}else {
+			List<Lote> listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(),"%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+			if(!listaLotes.isEmpty()) {
+				for(Lote lote : listaLotes){
+					if(lote.getTipoPago().equals("Crédito")) {
+						double saldo = lote.getMontoVenta() - lote.getMontoInicial();
+						solesPendiente = solesPendiente+saldo;
+					}
+				}
+			}
+			totalSolesPendiente = totalSolesPendiente + solesPendiente;
+		}
+		
+		
+		
+		return solesPendiente;
 	}
 	
 	public void iniciarLazyUsuarioAsesor() {
@@ -508,6 +700,9 @@ public class ComisionesBean implements Serializable {
                 
 				Page<Team> pageTeam;
 				pageTeam= teamService.findByNameLikeAndStatus(name, true, pageable);
+				totalSolesContado = 0;
+				totalSolesInicial = 0;
+				totalSolesPendiente = 0;
 				
 				setRowCount((int) pageTeam.getTotalElements());
 				return datasource = pageTeam.getContent();
@@ -692,6 +887,14 @@ public class ComisionesBean implements Serializable {
 
 	public void setTotalSolesInicial(double totalSolesInicial) {
 		this.totalSolesInicial = totalSolesInicial;
+	}
+
+	public double getTotalSolesPendiente() {
+		return totalSolesPendiente;
+	}
+
+	public void setTotalSolesPendiente(double totalSolesPendiente) {
+		this.totalSolesPendiente = totalSolesPendiente;
 	}
 	
 }

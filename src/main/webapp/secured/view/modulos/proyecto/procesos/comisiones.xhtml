@@ -9,22 +9,25 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">PROYECTOS > COMISIONES</h2>
-		<h:panelGrid id="grid" columns="8" width="95%">
-			<h:outputLabel for="optionComision" value="Comision:" />
-			<p:selectOneMenu id="optionComision" value="#{comisionesBean.comisionSelected}" converter="#{comisionesBean.conversorComision}" style="margin:10px">
+		<h:panelGrid id="grid" columns="10" width="95%" style="margin-bottom: 15px;">
+			<h:outputLabel for="optionComision" value="Comision:" style="float: rigth;" />
+			<p:selectOneMenu id="optionComision" value="#{comisionesBean.comisionSelected}" converter="#{comisionesBean.conversorComision}" style="float: Left;">
 				<f:selectItems value="#{comisionesBean.lstComision}" var="com" itemLabel="#{com.codigo} : #{comisionesBean.sdf.format(com.fechaIni)}-#{comisionesBean.sdf.format(com.fechaCierre)}" itemValue="#{prof}" />
 				<p:ajax listener="#{comisionesBean.cambiarComision}" update="idTeamTable, comCont, comCred" />
 			</p:selectOneMenu>
 			
-			<h:outputLabel for="comCont" value="Comisión Contado: "  />
-			<h:outputLabel id="comCont" value="#{comisionesBean.comisionSelected.comisionContado}%" style="font-weight: bold;"/>  
+			<h:outputLabel for="comCont" value="Comisión Contado: "  style="float: rigth;" />
+			<h:outputLabel id="comCont" value="#{comisionesBean.comisionSelected.comisionContado}%" style="font-weight: bold;float: Left;"/>  
 				 
 			
-			<h:outputLabel for="comCred" value="Comisión Crédito: " />
-			<h:outputLabel id="comCred" value="#{comisionesBean.comisionSelected.comisionCredito}%" style="font-weight: bold;" />
+			<h:outputLabel for="comCred" value="Comisión Crédito: " style="float: rigth;" />
+			<h:outputLabel id="comCred" value="#{comisionesBean.comisionSelected.comisionCredito}%" style="font-weight: bold;float: Left;" /> 
 			
-			<h:outputLabel for="meta" value="Meta: " />
-			<h:outputLabel id="meta" value="#{comisionesBean.comisionSelected.meta}" style="font-weight: bold;" />
+			<h:outputLabel for="meta" value="Meta: " style="float: rigth;"  />
+			<h:outputLabel id="meta" value="#{comisionesBean.comisionSelected.meta}" style="font-weight: bold;float: Left" />
+			
+			<h:outputLabel for="metaOn" value="Meta Online: " style="float: rigth;" />
+			<h:outputLabel id="metaOn" value="#{comisionesBean.comisionSelected.metaOnline}" style="font-weight: bold;float: Left" />
 
            	
 		</h:panelGrid>
@@ -59,6 +62,12 @@
                 </h:outputText> 
 			</p:column>
 			
+			<p:column headerText="Saldo Pendiente" filterMatchMode="contains" style="text-align: center">
+				<h:outputText value="#{comisionesBean.calcularSolesPendiente(team)}" >
+                    <f:convertNumber currencySymbol="" type="currency"  />
+                </h:outputText> 
+			</p:column>
+			
 			<p:column headerText="% Meta" filterMatchMode="contains">
 				 <p:progressBar value="#{comisionesBean.calcularProcentajeMeta(team,'NO')}" labelTemplate="{value}%" displayOnly="true"/>
 			</p:column>
@@ -67,16 +76,23 @@
 			<p:columnGroup type="footer">
                 <p:row>
                     <p:column colspan="4" style="text-align:right" footerText="Totales:"/>
-                    <p:column>
+                    <p:column style="text-align: center">
                         <f:facet name="footer">
                             <h:outputText value="#{comisionesBean.totalSolesContado}">
 			                    <f:convertNumber currencySymbol="" type="currency"  />
 			                </h:outputText> 
                         </f:facet>
                     </p:column>
-                    <p:column>
+                    <p:column style="text-align: center">
                         <f:facet name="footer">
                             <h:outputText value="#{comisionesBean.totalSolesInicial}">
+			                    <f:convertNumber currencySymbol="" type="currency"  />
+			                </h:outputText> 
+                        </f:facet>
+                    </p:column>
+                    <p:column style="text-align: center">
+                        <f:facet name="footer">
+                            <h:outputText value="#{comisionesBean.totalSolesPendiente}">
 			                    <f:convertNumber currencySymbol="" type="currency"  />
 			                </h:outputText> 
                         </f:facet>
@@ -90,7 +106,7 @@
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogAsesor" header="Detalle asesores: #{comisionesBean.teamSelected.name}" widgetVar="asesorDialog" resizable="false" closable="true"
 		appendTo="@(body)" width="100%" height="800px" fitViewport="true">
 		<h:form id="formAsesorDialog">
-			<p:dataTable var="asesor" id="idTableLote" value="#{comisionesBean.lstPersonAsesor}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="10"
+			<p:dataTable var="asesor" id="idTableLote" value="#{comisionesBean.lstPersonAsesor}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="10" style="margin-bottom: 50px;"
 				size="small" emptyMessage="No se encontraron resultados." paginatorPosition="bottom" rowKey="#{asesor.id}" selectionMode="single">
 				<p:column style="width:2rem">
 	                <p:rowToggler/> 
@@ -151,7 +167,7 @@
 				
 				<p:rowExpansion>
 	                <div>
-	                    <p:dataTable var="lote" value="#{comisionesBean.listaLotesVendidoPorAsesor(asesor)}" rowIndexVar="row"
+	                    <p:dataTable var="lote" value="#{comisionesBean.listaLotesVendidoPorAsesor(asesor)}" rowIndexVar="row" style="margin-bottom:30px;"
 							size="small" emptyMessage="No se encontraron lotes vendidos." paginatorPosition="bottom" rowKey="#{lote.id}" selectionMode="single">
 							<p:column width="25px">
 				                      #{row +1}
