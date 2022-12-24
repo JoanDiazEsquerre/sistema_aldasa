@@ -17,6 +17,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import org.apache.poi.xslf.usermodel.ListAutoNumber;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -40,7 +41,6 @@ import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.TeamService;
 import com.model.aldasa.service.UsuarioService;
-import com.model.aldasa.util.EstadoLote;
 import com.model.aldasa.util.Perfiles;
 
 @ManagedBean
@@ -81,10 +81,13 @@ public class ReporteLotesBean implements Serializable{
 	private Lote loteNew;
 	private Usuario usuarioLogin;
 	
+	private StreamedContent fileDes;
+	
 	private Project projectFilter;
 	private Manzana manzanaFilter;
 	private Manzana manzanaFilterMapeo;
 	private Person personVenta;
+	private Usuario usuarioFilter;
 	
 	private String status = "";
 	private String tituloDialog;
@@ -96,6 +99,7 @@ public class ReporteLotesBean implements Serializable{
 	private LazyDataModel<Lote> lstLoteLazy;
 	private List<Manzana> lstManzana = new ArrayList<>();
 	private List<Project> lstProject = new ArrayList<>();
+	private List<Usuario> lstUsuario = new ArrayList<>();
 	private List<Team> lstTeam;
 	private List<Person> lstPersonAsesor = new ArrayList<>();
 
@@ -112,44 +116,12 @@ public class ReporteLotesBean implements Serializable{
 		iniciarLazy();
 		cargarAsesorPorEquipo();
 		lstTeam=teamService.findByStatus(true);
+		lstUsuario=usuarioService.findAll();
 
 	}
 	
 	public void listarPersonas() {
 		lstPerson=personService.findByStatus(true);
-	}
-
-	public void newLote() {
-		nombreLoteSelected="";
-		tituloDialog="NUEVO LOTE";
-		
-		loteNew=new Lote();
-		loteNew.setStatus("Disponible");
-		
-		listarManzanas();
-		listarProject();
-		listarPersonas();
-	}
-	
-	public void modifyLote( ) {
-		tituloDialog="MODIFICAR LOTE";
-		nombreLoteSelected="Manzana " + loteSelected.getManzana().getName()+" / Lote: "+loteSelected.getNumberLote();
-		
-		loteNew = loteSelected;
-		
-		fechaSeparacion = loteNew.getFechaSeparacion();
-		fechaVencimiento = loteNew.getFechaVencimiento();
-		fechaVendido = loteNew.getFechaVendido();
-		personVenta = loteNew.getPersonVenta();
-		
-		teamSelected = teamService.findByPersonSupervisor(loteNew.getPersonSupervisor());
-		cargarAsesorPorEquipo();
-		personAsesorSelected = loteNew.getPersonAssessor();
-
-				
-		listarManzanas();
-		listarProject();
-		listarPersonas();
 	}
 	
 	public void changeCmbEstado() {
@@ -178,6 +150,14 @@ public class ReporteLotesBean implements Serializable{
 //		}
 	}
 	
+	public void buscarReporte() {
+		
+	}
+	public void procesarExcel() {
+		
+	}
+	
+
 	public void calcularFechaVencimiento() {
 		if(fechaSeparacion != null) {
 			fechaVencimiento = sumarDiasAFecha(fechaSeparacion, 7);
@@ -209,6 +189,7 @@ public class ReporteLotesBean implements Serializable{
 	public void listarProject(){
 		lstProject= projectService.findByStatus(true);
 	}
+	
 	
 	public void listarLotes(){		
 		lstLotes= loteService.findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(projectFilter,manzanaFilterMapeo, "%%");
@@ -289,129 +270,6 @@ public class ReporteLotesBean implements Serializable{
 		};
 	}
 	
-	public void saveLote() {
-		if(loteNew.getNumberLote().equals("") || loteNew.getNumberLote()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar número de lote."));
-			return ;
-		}
-		
-		if(loteNew.getManzana()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una manzana."));
-			return ;
-		} 
-		
-		if(loteNew.getProject()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar un proyecto."));
-			return ;
-		} 
-		
-		loteNew.setFechaSeparacion(fechaSeparacion);
-		loteNew.setFechaVencimiento(fechaVencimiento);
-		loteNew.setPersonSupervisor(null);
-		loteNew.setPersonAssessor(null);
-		loteNew.setPersonVenta(null);
-		loteNew.setFechaVendido(null);
-
-
-		if(loteNew.getStatus().equals(EstadoLote.SEPARADO.getName())) {
-			if(fechaSeparacion == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una fecha separación."));
-				return ;
-			}
-			
-			if(fechaVencimiento == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una fecha vencimiento."));
-				return ;
-			}
-			
-			if(teamSelected == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar equipo."));
-				return ;
-			}else if (teamSelected != null) {
-				loteNew.setPersonSupervisor(teamSelected.getPersonSupervisor());
-			}
-			
-			if (personAsesorSelected == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar asesor."));
-				return ;
-			}else if (personAsesorSelected != null) {
-				loteNew.setPersonAssessor(personAsesorSelected);
-			}
-		}
-
-		if(loteNew.getStatus().equals(EstadoLote.VENDIDO.getName())) {
-			if(personVenta == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
-				return ;
-			}else if (personVenta != null) {
-				loteNew.setPersonVenta(personVenta);
-			}
-			
-			if(teamSelected == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
-				return ;
-			}else if (teamSelected != null) {
-				loteNew.setPersonSupervisor(teamSelected.getPersonSupervisor());
-			}
-			
-			if (personAsesorSelected == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
-				return ;
-			}else if (personAsesorSelected != null) {
-				loteNew.setPersonAssessor(personAsesorSelected);
-			}
-			
-			if(fechaVendido == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
-				return ;
-			}else if (fechaVendido !=null) {
-				loteNew.setFechaVendido(fechaVendido);
-			}
-			
-			if(loteNew.getTipoPago().equals("Contado")) {
-				loteNew.setMontoInicial(null);
-				loteNew.setNumeroCuota(null);
-				if (loteNew.getMontoVenta() == null) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
-					return ;
-				}
-			}
-			
-			if(loteNew.getTipoPago().equals("Crédito")) {
-				if (loteNew.getMontoVenta() == null || loteNew.getMontoInicial() == null || loteNew.getNumeroCuota() == null) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
-					return ;
-				}
-			}
-		}
-		
-		//*********************************
-		
-		if (tituloDialog.equals("NUEVO LOTE")) {
-			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProject(loteNew.getNumberLote(), loteNew.getManzana(), loteNew.getProject());
-			if (validarExistencia == null) {
-				loteService.save(loteNew);
-				newLote();
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
-				fechaSeparacion = null;
-				fechaVencimiento = null;
-				fechaVendido=null;
-			} else { 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya existe."));
-			}
-		} else {
-			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProjectException(loteNew.getNumberLote(), loteNew.getManzana().getId(), loteNew.getProject().getId(), loteNew.getId());
-			if (validarExistencia == null) {
-				loteService.save(loteNew);
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
-				nombreLoteSelected="Manzana " + loteNew.getManzana().getName()+"/ lote: "+loteNew.getNumberLote();
-			} else { 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya existe."));
-			}
-		}
-		
-	}
-	
 	public void calcularAreaPerimetro() {
 		if(loteNew.getMedidaFrontal() != null && loteNew.getMedidaFrontal() >0) {
 			if(loteNew.getMedidaDerecha() != null && loteNew.getMedidaDerecha() >0) {
@@ -479,6 +337,33 @@ public class ReporteLotesBean implements Serializable{
                     return "";
                 } else {
                     return ((Manzana) value).getId() + "";
+                }
+            }
+        };
+    }
+	public Converter getConversorUsuario() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Usuario c = null;
+                    for (Usuario si : lstUsuario) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Usuario) value).getId() + "";
                 }
             }
         };
@@ -559,6 +444,16 @@ public class ReporteLotesBean implements Serializable{
         }
         return lista;
     }
+	public List<Usuario> completeUsuario(String query) {
+        List<Usuario> lista = new ArrayList<>();
+        for (Usuario c : lstUsuario) {
+            if (c.getPerson().getSurnames().toUpperCase().contains(query.toUpperCase()) || c.getPerson().getNames().toUpperCase().contains(query.toUpperCase()) || c.getPerson().getDni().toUpperCase().contains(query.toUpperCase())) {
+                lista.add(c);
+            }
+        }
+        return lista;
+    }
+
 	
 	public void fileDownloadView() {
         file = DefaultStreamedContent.builder()
@@ -761,77 +656,77 @@ public class ReporteLotesBean implements Serializable{
 	public void setFechaVendido(Date fechaVendido) {
 		this.fechaVendido = fechaVendido;
 	}
-
 	public List<Person> getLstPerson() {
 		return lstPerson;
 	}
-
 	public void setLstPerson(List<Person> lstPerson) {
 		this.lstPerson = lstPerson;
 	}
-
 	public PersonService getPersonService() {
 		return personService;
 	}
-
 	public void setPersonService(PersonService personService) {
 		this.personService = personService;
 	}
-
 	public Person getPersonVenta() {
 		return personVenta;
 	}
-
 	public void setPersonVenta(Person personVenta) {
 		this.personVenta = personVenta;
 	}
-
 	public Team getTeamSelected() {
 		return teamSelected;
 	}
-
 	public void setTeamSelected(Team teamSelected) {
 		this.teamSelected = teamSelected;
 	}
-
 	public List<Team> getLstTeam() {
 		return lstTeam;
 	}
-
 	public void setLstTeam(List<Team> lstTeam) {
 		this.lstTeam = lstTeam;
 	}
-
 	public UsuarioService getUsuarioService() {
 		return usuarioService;
 	}
-
 	public void setUsuarioService(UsuarioService usuarioService) {
 		this.usuarioService = usuarioService;
 	}
-
 	public Person getPersonAsesorSelected() {
 		return personAsesorSelected;
 	}
-
 	public void setPersonAsesorSelected(Person personAsesorSelected) {
 		this.personAsesorSelected = personAsesorSelected;
 	}
-
 	public List<Person> getLstPersonAsesor() {
 		return lstPersonAsesor;
 	}
-
 	public void setLstPersonAsesor(List<Person> lstPersonAsesor) {
 		this.lstPersonAsesor = lstPersonAsesor;
 	}
-
 	public TeamService getTeamService() {
 		return teamService;
 	}
-
 	public void setTeamService(TeamService teamService) {
 		this.teamService = teamService;
+	}
+	public Usuario getUsuarioFilter() {
+		return usuarioFilter;
+	}
+	public void setUsuarioFilter(Usuario usuarioFilter) {
+		this.usuarioFilter = usuarioFilter;
+	}
+	public List<Usuario> getLstUsuario() {
+		return lstUsuario;
+	}
+	public void setLstUsuario(List<Usuario> lstUsuario) {
+		this.lstUsuario = lstUsuario;
+	}
+	public StreamedContent getFileDes() {
+		return fileDes;
+	}
+	public void setFileDes(StreamedContent fileDes) {
+		this.fileDes = fileDes;
 	}
 	
 	

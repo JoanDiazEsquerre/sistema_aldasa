@@ -1,5 +1,6 @@
 package com.model.aldasa.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -17,6 +18,8 @@ public interface EmpleadoService {
 	
 	Empleado findByPerson (Person person);
 	Empleado findByPersonIdException(int idPerson, int idEmpleado);
+	Empleado findByPersonDni(String dniPerson);
+	List<Empleado> findByEstado(boolean estado);
 
 	
 	Page<Empleado> findByPersonSurnamesLikeAndEstado(String person, boolean status, Pageable pageable);

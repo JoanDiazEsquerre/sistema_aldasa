@@ -25,6 +25,7 @@ public interface UsuarioService {
 	List<Usuario> findByTeamPersonSupervisorAndStatus(Person personSupervisor,boolean status);
 	List<Usuario> findByTeam(Team team);
 	List<Usuario> findByProfileId(int idProfile);
+	List<Usuario> findAll();
 	
 	Page<Usuario> findByProfileNameLikeAndPersonSurnamesLikeAndPasswordLikeAndUsernameLikeAndStatus(String profileName, String personSurnames, String password, String username, boolean status, Pageable pageable);
 	

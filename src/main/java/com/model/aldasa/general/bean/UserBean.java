@@ -165,7 +165,6 @@ public class UserBean implements Serializable {
 	
 	public void listarTeam() {
 		lstTeam=teamService.findByStatus(true);
-		System.out.println("tamañoTeam:"+lstTeam.size());
 	}
 	
 	public void newUser() {

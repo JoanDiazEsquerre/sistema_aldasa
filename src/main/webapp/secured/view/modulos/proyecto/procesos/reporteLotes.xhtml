@@ -9,7 +9,7 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">REPORTES > LOTES</h2>
-		<p:panelGrid  columns="4" id="panelFilter" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" style="width:auto">
+		<p:panelGrid  columns="8" id="panelFilter" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" style="width:auto">
 			<p:outputLabel for="statusFilter" value="Estado: "/>
 			<p:selectOneMenu id="statusFilter" value="#{reporteLotesBean.status}">
 				<f:selectItem itemLabel="[--Todos--]" itemValue=""/>
@@ -32,31 +32,23 @@
                           var="ase" itemLabel="#{ase.name}" itemValue="#{ase}" forceSelection="true"  > 
             	<p:ajax update="idTableLote" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
             </p:autoComplete>
-		</p:panelGrid>
-		
-		
+            
+            <p:outputLabel for="optionUsuario" value="Asesor Venta: "/>
+            <p:autoComplete scrollHeight="300" value="#{reporteLotesBean.usuarioFilter}" converter="#{reporteLotesBean.conversorUsuario}" id="optionUsuario" completeMethod="#{reporteLotesBean.completeUsuario}"  
+                          var="ase" itemLabel="#{ase.person.surnames.concat(' ')}#{ase.person.names}" itemValue="#{ase}" forceSelection="true"  > 
+				<p:ajax update="idTableLote" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();" />
+            </p:autoComplete>
+            
+            <p:commandButton value="Buscar" styleClass="font-bold ui-button-outlined" actionListener="#{reporteLotesBean.buscarReporte}" update="form:idTableLote"/>
+            
+            <p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{reporteLotesBean.procesarExcel}"
+                         icon="pi pi-arrow-down" styleClass="mr-2">
+            <p:fileDownload value="#{reporteLotesBean.fileDes}"/> 
+      		</p:commandButton>
+		</p:panelGrid>	
 
-		<p:dataTable var="lote" id="idTableLote" value="#{reporteLotesBean.lstLoteLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="15" style="width:120%"
+		<p:dataTable var="lote" id="idTableLote" value="#{reporteLotesBean.lstLoteLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="15" style="width:100%"
 			size="small" emptyMessage="No se encontraron lotes." paginatorPosition="bottom" rowKey="#{lote.id}" selection="#{reporteLotesBean.loteSelected}" selectionMode="single">
-			<f:facet name="header">
-				<div class="p-d-flex p-ai-center p-jc-between">
-					<span>
-						<p:commandButton id="images" icon="pi pi-image" rendered="#{reporteLotesBean.projectFilter != null}" style="margin-right:10px" title="Descargar maqueta" actionListener="#{reporteLotesBean.fileDownloadView}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
-				            <p:fileDownload value="#{reporteLotesBean.file}"/>
-				        </p:commandButton>
-			            
-			            <p:commandButton id="mapeo" icon="pi pi-th-large" rendered="#{reporteLotesBean.projectFilter != null}" oncomplete="PF('mapeoDialog').show();" update="dialogMapeo" actionListener="#{reporteLotesBean.listarLotes()}"/>
-					</span>
-				</div>
-			</f:facet>
-			<p:ajax event="rowSelect" listener="#{reporteLotesBean.modifyLote()}" update=":formLoteDialog :dialogLote :form:idTableLote " onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('loteDialog').show();" />
-			<p:column style="width:42px;text-align: left">
-				<f:facet name="header">
-					<p:commandLink action="#{reporteLotesBean.newLote()}" update=":formLoteDialog :dialogLote" oncomplete="PF('loteDialog').show();" title="NUEVO LOTE">
-						<p:graphicImage width="50" value="/recursos/images/anadir.png" />
-					</p:commandLink>
-				</f:facet>
-			</p:column>
 
 			<p:column width="25px">
                       #{row +1}
@@ -82,30 +74,6 @@
 				<h:outputText value="#{lote.status}" style="font-weight: bold;color:#{lote.status eq 'Disponible'?'green':lote.status eq 'Separado'?'blue':lote.status eq 'Vendido'?'red':'black'}" />
 			</p:column>
             
-            <p:column headerText="Medida frontal(ML)" filterMatchMode="contains" responsivePriority="3">
-				<h:outputText value="#{lote.medidaFrontal}" />
-			</p:column>
-			
-			<p:column headerText="Medida costado derecho (ML)" filterMatchMode="contains" responsivePriority="3">
-				<h:outputText value="#{lote.medidaDerecha}" />
-			</p:column>
-			
-			<p:column headerText="Medida costado izquierdo (ML)" filterMatchMode="contains" responsivePriority="3">
-				<h:outputText value="#{lote.medidaIzquierda}" />
-			</p:column>
-			
-			<p:column headerText="Medida fondo (ML)" filterMatchMode="contains" responsivePriority="3">
-				<h:outputText value="#{lote.medidaFondo}" />
-			</p:column>
-			
-			<p:column headerText="Área de lote (M2)" filterMatchMode="contains" responsivePriority="3">
-				<h:outputText value="#{lote.area}" />
-			</p:column>
-			
-			<p:column headerText="Perímetro (ML)" filterMatchMode="contains" responsivePriority="3">
-				<h:outputText value="#{lote.perimetro}" />
-			</p:column>
-			
 			<p:column headerText="Fecha Separación" filterMatchMode="contains" responsivePriority="3">
 				<h:outputText value="#{lote.fechaSeparacion}" > 
 					<f:convertDateTime pattern="dd/MM/yyyy" />
@@ -123,199 +91,14 @@
 					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 			</p:column>
+			
+			<p:column headerText="Asesor" filterMatchMode="contains" responsivePriority="3">
+				<h:outputText value="#{lote.personAssessor.names} #{lote.personAssessor.surnames}"/> 
+			</p:column>
+			
 		</p:dataTable>
 
 	</h:form>
-	
-	<p:dialog modal="true" responsive="true" dynamic="true" closeOnEscape="true" id="dialogLote" header="#{reporteLotesBean.tituloDialog}" widgetVar="loteDialog" resizable="false" closable="true"
-		appendTo="@(body)" style="width:auto">
-		<h:form id="formLoteDialog">
-			<h:outputLabel value="#{reporteLotesBean.nombreLoteSelected}" style="color: #007d4c;font-weight: bolder;" id="nomLoteSelect" />
-		
-			<p:tabView id="tabOpciones"> 
-				<p:tab title="Descripción" >
-					<p:messages id="messages" showDetail="true" closable="true">
-						<p:autoUpdate />
-					</p:messages>
-					<h:panelGrid id="grid" columns="4">
-						<h:outputLabel value="Número de Lote: " for="nombreLote" />
-						<p:inputText value="#{reporteLotesBean.loteNew.numberLote}" style="margin:5px; width:220px" id="nombreLote" maxlength="10" disabled="#{!reporteLotesBean.modificar}" ><p:ajax update="messages" /> </p:inputText>
-					
-						<h:outputLabel for="manzana" value="Manzana: " />
-						<p:selectOneMenu style="margin:5px; width:220px" id="manzana" value="#{reporteLotesBean.loteNew.manzana}" disabled="#{!reporteLotesBean.modificar}" converter="#{reporteLotesBean.conversorManzana}"> 
-							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
-							<f:selectItems value="#{reporteLotesBean.lstManzana}" var="manz" itemLabel="#{manz.name}" itemValue="#{manz}"/>
-							<p:ajax update="messages" />
-						</p:selectOneMenu>
-						
-						<h:outputLabel for="amplia" value="Ampliación: " />
-						<p:selectOneMenu style="margin:5px; width:220px" id="amplia" value="#{reporteLotesBean.loteNew.ampliacion}" disabled="#{!reporteLotesBean.modificar}">
-							<f:selectItem itemLabel="No" itemValue="N"/>
-							<f:selectItem itemLabel="Si" itemValue="S"/>
-							<p:ajax update="messages" />
-						</p:selectOneMenu>
-					
-						<h:outputLabel for="proyecto" value="Proyecto:" />
-						<p:selectOneMenu style="margin:5px; width:220px" id="proyecto" value="#{reporteLotesBean.loteNew.project}" converter="#{reporteLotesBean.conversorProject}" disabled="#{!reporteLotesBean.modificar}">
-							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
-							<f:selectItems value="#{reporteLotesBean.lstProject}" var="proy" itemLabel="#{proy.name}" itemValue="#{proy}"/>
-							<p:ajax update="messages" />
-						</p:selectOneMenu>
-						
-						<h:outputLabel for="option" value="Estado:" />
-						<p:selectOneMenu id="option" value="#{reporteLotesBean.loteNew.status}" style="margin:5px; width:220px" disabled="#{!reporteLotesBean.modificar}">
-							<f:selectItem itemLabel="Disponible" itemValue="Disponible" />
-							<f:selectItem itemLabel="Separado" itemValue="Separado"/>
-							<f:selectItem itemLabel="Vendido" itemValue="Vendido"/>
-							<f:selectItem itemLabel="Inactivo" itemValue="Inactivo"/>
-							<p:ajax update="tabOpciones" listener="#{reporteLotesBean.changeCmbEstado}" />
-						</p:selectOneMenu>
-						
-						<h:outputLabel id="lblFechaSep" for="fechaSeparado" value="Fecha Separación:" rendered="#{reporteLotesBean.loteNew.status eq 'Separado'}"/>
-						<p:datePicker id="fechaSeparado" style="margin:5px; width:220px" value="#{reporteLotesBean.fechaSeparacion}" rendered="#{reporteLotesBean.loteNew.status eq 'Separado'}" disabled="#{!reporteLotesBean.modificar}"> 
-							<p:ajax listener="#{reporteLotesBean.calcularFechaVencimiento}" update=":formLoteDialog:tabOpciones:venc" />
-						</p:datePicker>
-						
-						<h:outputLabel id="lblFechaVenc" for="venc" value="Fecha Vencimiento:" rendered="#{reporteLotesBean.loteNew.status eq 'Separado'}"/>
-						<p:datePicker id="venc" style="margin:5px; width:220px" value="#{reporteLotesBean.fechaVencimiento}" rendered="#{reporteLotesBean.loteNew.status eq 'Separado'}" disabled="#{!reporteLotesBean.modificar}"/>
-						
-						<h:outputLabel for="optionTeam" value="Equipo:" rendered="#{reporteLotesBean.loteNew.status eq 'Separado' or reporteLotesBean.loteNew.status eq 'Vendido'}" />						
-						<p:selectOneMenu id="optionTeam" value="#{reporteLotesBean.teamSelected}" rendered="#{reporteLotesBean.loteNew.status eq 'Separado' or reporteLotesBean.loteNew.status eq 'Vendido'}" converter="#{reporteLotesBean.conversorTeam}" style="margin:5px; width:220px">
-							<f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}" />
-							<f:selectItems value="#{reporteLotesBean.lstTeam}" var="prof" itemLabel="#{prof.name} / #{prof.personSupervisor.surnames} #{prof.personSupervisor.names}" itemValue="#{prof}" />
-							<p:ajax listener="#{reporteLotesBean.cargarAsesorPorEquipo}"	update="optionAsesor" />
-						</p:selectOneMenu>
-
-						<h:outputLabel for="optionAsesor" value="Asesor:" rendered="#{reporteLotesBean.loteNew.status eq 'Separado' or reporteLotesBean.loteNew.status eq 'Vendido'}" />
-						<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{reporteLotesBean.personAsesorSelected}" rendered="#{reporteLotesBean.loteNew.status eq 'Separado' or reporteLotesBean.loteNew.status eq 'Vendido'}" converter="#{reporteLotesBean.conversorPersonAsesor}" 
-						   	id="optionAsesor" completeMethod="#{reporteLotesBean.completePersonAsesor}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" 
-						   	forceSelection="true" style="margin:5px; width:220px" />
-						   	
-					</h:panelGrid>
-					<p:commandButton value="Guardar" action="#{reporteLotesBean.saveLote()}" update=":form:idTableLote :formLoteDialog" rendered="#{reporteLotesBean.modificar}" />
-				</p:tab>
-				<p:tab title="Medidas" >
-					<h:panelGrid id="gridMedidas" columns="2">
-						<h:outputLabel value="Medida frontal (ML): " for="medidaFrontal" />
-						<p:inputNumber id="medidaFrontal" value="#{reporteLotesBean.loteNew.medidaFrontal}" modifyValueOnWheel="false" disabled="#{!reporteLotesBean.modificar}" ><p:ajax listener="#{reporteLotesBean.calcularAreaPerimetro}" update="messages,areaLote,perimetro" /> </p:inputNumber>
-						
-						<h:outputLabel value="Medida costado derecho (ML): " for="medidaCostDerecho" />
-						<p:inputNumber id="medidaCostDerecho" value="#{reporteLotesBean.loteNew.medidaDerecha}" modifyValueOnWheel="false" disabled="#{!reporteLotesBean.modificar}"><p:ajax listener="#{reporteLotesBean.calcularAreaPerimetro}" update="messages,areaLote,perimetro" /> </p:inputNumber>	
-						
-						<h:outputLabel value="Medida costado izquierdo (ML): " for="medidaCostIzq" />
-						<p:inputNumber id="medidaCostIzq" value="#{reporteLotesBean.loteNew.medidaIzquierda}" modifyValueOnWheel="false" disabled="#{!reporteLotesBean.modificar}"><p:ajax listener="#{reporteLotesBean.calcularAreaPerimetro}" update="messages,areaLote,perimetro" /></p:inputNumber>
-						
-						<h:outputLabel value="Medida fondo (ML): " for="medidaFondo" />
-						<p:inputNumber id="medidaFondo" value="#{reporteLotesBean.loteNew.medidaFondo}" modifyValueOnWheel="false" disabled="#{!reporteLotesBean.modificar}"><p:ajax listener="#{reporteLotesBean.calcularAreaPerimetro}" update="messages,areaLote,perimetro" /></p:inputNumber>
-						
-						<h:outputLabel value="Área de lote (M2): " for="areaLote" />
-						<p:inputNumber id="areaLote" value="#{reporteLotesBean.loteNew.area}" modifyValueOnWheel="false" disabled="#{!reporteLotesBean.modificar}"><p:ajax update="messages" /> </p:inputNumber>
-						
-						<h:outputLabel value="Perímetro (ML): " for="perimetro" />
-						<p:inputNumber id="perimetro" value="#{reporteLotesBean.loteNew.perimetro}" modifyValueOnWheel="false" disabled="#{!reporteLotesBean.modificar}"><p:ajax update="messages" /> </p:inputNumber>		
-					</h:panelGrid>
-				</p:tab>
-				<p:tab title="Límites" > 
-					<h:panelGrid id="gridLimites" columns="2">
-						<h:outputLabel value="Límite frontal: " for="limiteFrontal" />
-						<p:inputText id="limiteFrontal" value="#{reporteLotesBean.loteNew.limiteFrontal}" modifyValueOnWheel="false" maxlength="45" disabled="#{!reporteLotesBean.modificar}"><p:ajax update="messages" /> </p:inputText>
-						
-						<h:outputLabel value="Límite costado derecho (ML): " for="limiteCostDerecho" />
-						<p:inputText id="limiteCostDerecho" value="#{reporteLotesBean.loteNew.limiteDerecha}" modifyValueOnWheel="false" maxlength="45" disabled="#{!reporteLotesBean.modificar}"><p:ajax update="messages" /> </p:inputText>		
-						
-						<h:outputLabel value="Límite costado izquierdo (ML): " for="limiteCostIzq" />
-						<p:inputText id="limiteCostIzq" value="#{reporteLotesBean.loteNew.limiteIzquierda}" modifyValueOnWheel="false" maxlength="45" disabled="#{!reporteLotesBean.modificar}"><p:ajax update="messages" /> </p:inputText>
-						
-						<h:outputLabel value="Límite fondo (ML): " for="limiteFondo" />
-						<p:inputText id="limiteFondo" value="#{reporteLotesBean.loteNew.limiteFondo}" modifyValueOnWheel="false" maxlength="45" disabled="#{!reporteLotesBean.modificar}"><p:ajax update="messages" /> </p:inputText>
-						
-						<h:outputLabel value="Comentario: " for="comentario" />
-						<p:inputText id="comentario" value="#{reporteLotesBean.loteNew.comentario}" modifyValueOnWheel="false" maxlength="50" disabled="#{!reporteLotesBean.modificar}"><p:ajax update="messages" /> </p:inputText>
-					</h:panelGrid>
-				</p:tab>
-				<p:tab title="Datos de venta" rendered="#{reporteLotesBean.loteNew.status eq 'Vendido'}">
-					<h:panelGrid id="gridDatosVenta" columns="2">
-					
-					   	<h:outputLabel for="optionPerson" value="Comprador:" rendered="#{reporteLotesBean.loteNew.status eq 'Separado' or reporteLotesBean.loteNew.status eq 'Vendido'}" />
-		                <p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{reporteLotesBean.personVenta}" converter="#{reporteLotesBean.conversorPerson}" id="optionPerson"  completeMethod="#{reporteLotesBean.completePerson}"  disabled="#{!reporteLotesBean.modificar}"
-		                          var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px" rendered="#{reporteLotesBean.loteNew.status eq 'Separado' or reporteLotesBean.loteNew.status eq 'Vendido'}" >
-							<p:column width="400px">
-								<h:outputLabel value="#{per.surnames} #{per.names}" />
-							</p:column>
-							<p:column width="400px">
-								<h:outputLabel value="#{per.dni}" />
-							</p:column>
-
-							<p:ajax update="messages" />
-						</p:autoComplete>
-
-						<h:outputLabel id="lblFechaVend" for="vend" value="Fecha venta:" />
-						<p:datePicker id="vend" style="margin:5px; width:220px" value="#{reporteLotesBean.fechaVendido}" disabled="#{!reporteLotesBean.modificar}"/>
-						
-						<h:outputLabel value="Tipo de Pago:" for="optionPago" />
-						<p:selectOneMenu id="optionPago" value="#{reporteLotesBean.loteNew.tipoPago}" style="margin:5px; width:220px" disabled="#{!reporteLotesBean.modificar}">
-							<f:selectItem itemLabel="Contado" itemValue="Contado" />
-							<f:selectItem itemLabel="Crédito" itemValue="Crédito"/>
-							<p:ajax update="gridDatosVenta messages" />
-						</p:selectOneMenu>
-											
-						<h:outputLabel value="Monto Venta:" for="montoVenta" />
-						<p:inputNumber id="montoVenta" value="#{reporteLotesBean.loteNew.montoVenta}" style="margin:5px; width:220px" modifyValueOnWheel="false" > <p:ajax update="messages" /> </p:inputNumber>
-						
-						
-						<h:outputLabel value="Monto Inicial: " id="lblMontoInicial" for="montoIni" rendered="#{reporteLotesBean.loteNew.tipoPago eq 'Crédito'}" />
-						<p:inputNumber id="montoIni" value="#{reporteLotesBean.loteNew.montoInicial}" style="margin:5px; width:220px" modifyValueOnWheel="false" rendered="#{reporteLotesBean.loteNew.tipoPago eq 'Crédito'}"> <p:ajax update="messages" /> </p:inputNumber>
-											
-						<h:outputLabel value="Nro. de Cuotas: " id="lblNroCuota" for="nroCuota" rendered="#{reporteLotesBean.loteNew.tipoPago eq 'Crédito'}"/>
-						<p:inputNumber id="nroCuota" value="#{reporteLotesBean.loteNew.numeroCuota}" style="margin:5px; width:220px" minValue="1" decimalPlaces="0" rendered="#{reporteLotesBean.loteNew.tipoPago eq 'Crédito'}"> <p:ajax update="messages" /> </p:inputNumber>
-					</h:panelGrid>
-				</p:tab> 
-			</p:tabView>	
-		</h:form>
-	</p:dialog>
-	
-	<p:dialog modal="true" dynamic="true" responsive="true" height="auto" closeOnEscape="true" id="dialogImagen" header="Mapeo de lotes del proyecto: #{reporteLotesBean.projectFilter.name}" widgetVar="imagenDialog" resizable="false" closable="true"
-		appendTo="@(body)" style="width:auto">
-		<h:form id="formImagenDialog">
-			<p:graphicImage value="/recursos/images/proyectos/proyecto#{reporteLotesBean.projectFilter.id}.jpg" style="width: 660px;"/>
-		</h:form>
-	</p:dialog>
-	
-	<p:dialog modal="true" responsive="true" dynamic="true" closeOnEscape="true" id="dialogMapeo" width="80%" height="400px" header="Mapeo de lotes" widgetVar="mapeoDialog" resizable="false" closable="true"
-		appendTo="@(body)" style="width:auto">
-		<h:form id="formMapeoDialog">
-		
-		
-			<p:outputLabel value="Proyecto: #{reporteLotesBean.projectFilter.name}" style="color: #007d4c;font-weight: bold" /><br> </br>
-			
-			<p:outputLabel for="filterMapeo" value="Manzana: " style="font-size: 25px;" />
-			<p:selectOneMenu id="filterMapeo" value="#{reporteLotesBean.manzanaFilterMapeo}" converter="#{reporteLotesBean.conversorManzana}" >
-				<f:selectItems value="#{reporteLotesBean.lstManzana}" var="proy" itemLabel="#{proy.name}" itemValue="#{proy}"/>
-				<p:ajax event="change" update=":formMapeoDialog:grdLotes" listener="#{reporteLotesBean.listarLotes()}"/>
-			</p:selectOneMenu>
-			
-			<p:panelGrid style="margin-bottom: 20px" id="grdLotes" columns="5" layout="grid">
-				<p:outputLabel value="No se ha registrado lotes" rendered="#{reporteLotesBean.cantidadLotes eq 0}"  />
-				<p:repeat value="#{reporteLotesBean.lstLotes}" var="lote">
-           			<p:button value="#{lote.manzana.name}-#{lote.numberLote}" disabled="true" style="margin:5px;background:#{lote.status eq 'Vendido'?'red':lote.status eq 'Separado'?'blue':lote.status eq 'Disponible'?'green':'black'}"> </p:button>
-        		</p:repeat>
-			</p:panelGrid>
-			
-			Leyenda:
-			<p:panelGrid  columns="4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"> 
-				<p:button value="Disponible" style="background: green" disabled="true"/>
-				<p:button value="Separado" style="background: blue" disabled="true"/>
-				<p:button value="Vendido" style="background: red" disabled="true"/>
-				<p:button value="Inactivo" style="background: black" disabled="true"/>
-			</p:panelGrid>
-			
-		</h:form>
-	</p:dialog>
-	
-	<p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false"
-              resizable="false">
-              <i class="pi pi-spinner pi-spin" style="font-size:3rem"></i>
-    </p:dialog>
     
     <pe:blockUI widgetVar="blockUIWidget">
           <h:form style="background: white"> 

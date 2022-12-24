@@ -425,4 +425,27 @@
 			<value>#{teamService}</value>
 		</managed-property>
 	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>asistenciaBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.general.bean.AsistenciaBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope> 
+		<managed-property>
+			<property-name>asistenciaService</property-name>
+			<value>#{asistenciaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>empleadoService</property-name>
+			<value>#{empleadoService}</value>
+		</managed-property>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>reporteAsistenciaBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.general.bean.ReporteAsistenciaBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope> 
+		<managed-property>
+			<property-name>empleadoService</property-name>
+			<value>#{empleadoService}</value>
+		</managed-property>
+		
+	</managed-bean>
 </faces-config>

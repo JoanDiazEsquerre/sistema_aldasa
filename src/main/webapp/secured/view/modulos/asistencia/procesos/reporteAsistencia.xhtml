@@ -1,0 +1,56 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	locale="#{localeBean.usedLocale}"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+	<h:form id="form">
+		<h2 style="color: #007d4c;">REPORTE > ASISTENCIA</h2>
+		<h:panelGrid id="grid" columns="2" width="30%">
+			
+			<h:outputLabel value="Empleado: " style="text-align:right"/>
+			<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{reporteProspeccionBean.personAssessorSelected}" converter="#{reporteProspeccionBean.conversorPersonAssessor}" id="assessor" completeMethod="#{reporteProspeccionBean.completePersonAssesor}"  
+                          var="ase" itemLabel="#{ase.surnames.concat(' ')}#{ase.names}" itemValue="#{ase}" forceSelection="true" />
+	
+		</h:panelGrid>
+		
+		<p:dataTable var="det" id="idTableDet" value="#{reporteProspeccionBean.lstProspectionDetailReporte}" rowIndexVar="row" paginator="true" rows="5" size="small" style="width:120%"
+		emptyMessage="No se encontraron registros." paginatorPosition="bottom" rowKey="#{det.id}" selection="#{reporteProspeccionBean.prospectionDetailSelected}" selectionMode="single"> 
+			<f:facet name="header">
+				<div class="p-d-flex p-ai-center p-jc-between">
+					<span>Lista de Asistencias</span>
+				</div>
+			</f:facet>
+			<p:ajax event="rowSelect" />
+
+			<p:column style="width:15px;text-align: left">
+				<f:facet name="header">
+				#
+				</f:facet>
+			</p:column>
+
+			<p:column width="25px">
+                   		#{row +1}
+     		</p:column>
+
+			<p:column headerText="Empleado" sortBy="#{det.prospection.personAssessor.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{det.prospection.personAssessor.surnames} #{det.prospection.personAssessor.names}" />
+			</p:column>
+			
+			<p:column headerText="Tipo" sortBy="#{det.action.description}" filterMatchMode="contains">
+				<h:outputText value="#{det.action.description}" />
+			</p:column>
+			
+			<p:column headerText="Fecha y Hora" sortBy="#{det.date}" filterMatchMode="contains">
+				<h:outputText value="#{det.date}" />
+			</p:column>
+			
+
+		</p:dataTable>
+
+	</h:form>
+
+</ui:composition>

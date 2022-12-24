@@ -1,5 +1,6 @@
 package com.model.aldasa.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,20 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 	public Empleado findByPersonIdException(int idPerson, int idEmpleado) {
 		// TODO Auto-generated method stub
 		return empleadoRepository.findByPersonIdException(idPerson, idEmpleado);
+	}
+
+
+	@Override
+	public Empleado findByPersonDni(String dniPerson) {
+		// TODO Auto-generated method stub
+		return empleadoRepository.findByPersonDni(dniPerson);
+	}
+
+
+	@Override
+	public List<Empleado> findByEstado(boolean estado) {
+		// TODO Auto-generated method stub
+		return empleadoRepository.findByEstado(estado);
 	}
 
 }

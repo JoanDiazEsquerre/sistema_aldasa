@@ -32,16 +32,16 @@ public class NavegacionBean implements Serializable  {
 	private int idAsesor = Perfiles.ASESOR.getId();
 	private int idAsistentenAdmin = Perfiles.ASISTENTE_ADMINISTRATIVO.getId();
 	
-	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte;
+	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
-					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones;
+					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia;
 	
 	private int[] permisoProspectos= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoProspeccion= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoAgenda= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoSimulador= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoPersonas= {idAdministrador,idAsistentenAdmin};
-	private int[] permisoUsuarios= {idAdministrador};
+	private int[] permisoUsuarios= {idAdministrador, idAsistentenAdmin};
 	private int[] permisoPerfiles= {idAdministrador};
 	private int[] permisoProyectos= {idAdministrador,idAsistentenAdmin};
 	private int[] permisoEquipos= {idAdministrador};
@@ -53,6 +53,8 @@ public class NavegacionBean implements Serializable  {
 	private int[] permisoComision= {idAdministrador};
 	private int[] permisoEmpleado= {idAdministrador};
 	private int[] permisoReporteLotes= {idAdministrador};
+	private int[] permisoAsistencia= {idAdministrador};
+	private int[] permisoReporteAsistencia= {idAdministrador};
 
 
 	@PostConstruct
@@ -66,7 +68,7 @@ public class NavegacionBean implements Serializable  {
 
 	
 	public void permisoPantallas() {
-		menuProspeccion=false; menuProyecto=false; menuMantenimiento=false; menuReporte=false;
+		menuProspeccion=false; menuProyecto=false; menuMantenimiento=false; menuReporte=false; menuAsistencia=false;
 		
 		//*******************************************************************************
 		subMenuProspectos = validaPermiso(permisoProspectos);
@@ -103,9 +105,17 @@ public class NavegacionBean implements Serializable  {
 		//*******************************************************************************
 		subMenuReporteAcciones = validaPermiso(permisoReporteAcciones);
 		subMenuReporteLotes = validaPermiso(permisoReporteLotes);
+		subMenuReporteAsistencia = validaPermiso(permisoReporteAsistencia);
 		
-		if(subMenuReporteAcciones || subMenuReporteLotes) {
+		if(subMenuReporteAcciones || subMenuReporteLotes || subMenuReporteAsistencia) {
 			menuReporte=true;
+		}
+		//*******************************************************************************
+		
+		subMenuAsistencia = validaPermiso(permisoAsistencia);
+
+		if(subMenuAsistencia) {
+			menuAsistencia=true;
 		}
 		//*******************************************************************************
 				
@@ -175,6 +185,12 @@ public class NavegacionBean implements Serializable  {
 		
 		public void getMantenimientoPasswordchangePage() {
 	        ruta = "modulos/general/mantenimientos/passwordchange.xhtml";
+	    }
+		public void getAsistenciaAsistenciaPage() {
+	        ruta = "modulos/asistencia/mantenimientos/asistencia.xhtml";
+	    }
+		public void getAsistenciaReporteAsistenciaPage() {
+	        ruta = "modulos/asistencia/procesos/reporteAsistencia.xhtml";
 	    }
 	
 	public void cerrarSesion() {
@@ -457,6 +473,36 @@ public class NavegacionBean implements Serializable  {
 	}
 	public void setPermisoReporteLotes(int[] permisoReporteLotes) {
 		this.permisoReporteLotes = permisoReporteLotes;
+	}
+	public boolean isMenuAsistencia() {
+		return menuAsistencia;
+	}
+	public void setMenuAsistencia(boolean menuAsistencia) {
+		this.menuAsistencia = menuAsistencia;
+	}
+	public boolean isSubMenuAsistencia() {
+		return subMenuAsistencia;
+	}
+	public void setSubMenuAsistencia(boolean subMenuAsistencia) {
+		this.subMenuAsistencia = subMenuAsistencia;
+	}
+	public int[] getPermisoAsistencia() {
+		return permisoAsistencia;
+	}
+	public void setPermisoAsistencia(int[] permisoAsistencia) {
+		this.permisoAsistencia = permisoAsistencia;
+	}
+	public boolean isSubMenuReporteAsistencia() {
+		return subMenuReporteAsistencia;
+	}
+	public void setSubMenuReporteAsistencia(boolean subMenuReporteAsistencia) {
+		this.subMenuReporteAsistencia = subMenuReporteAsistencia;
+	}
+	public int[] getPermisoReporteAsistencia() {
+		return permisoReporteAsistencia;
+	}
+	public void setPermisoReporteAsistencia(int[] permisoReporteAsistencia) {
+		this.permisoReporteAsistencia = permisoReporteAsistencia;
 	}
 	
 	

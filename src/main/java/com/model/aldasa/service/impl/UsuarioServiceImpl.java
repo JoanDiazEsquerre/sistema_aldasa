@@ -89,6 +89,12 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public List<Usuario> findByProfileId(int idProfile) {
 		return usuarioRepository.findByProfileId(idProfile);
 	}
+
+	@Override
+	public List<Usuario> findAll() {
+		// TODO Auto-generated method stub
+		return usuarioRepository.findAll();
+	}
 	
 
 }
