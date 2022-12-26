@@ -34,6 +34,11 @@
 			<p:datePicker value="#{reporteAsistenciaBean.fechaFin}" readonlyInput="true" >
 				<p:ajax update=":form:idTableDet" />
 			</p:datePicker>
+			
+			<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{reporteAsistenciaBean.procesarExcel}"
+                         icon="pi pi-arrow-down" styleClass="mr-2">
+            <p:fileDownload value="#{reporteAsistenciaBean.fileDes}"/> 
+      		</p:commandButton>
 		</h:panelGrid>
 		
 		<p:dataTable var="asistencia" id="idTableDet" value="#{reporteAsistenciaBean.lstAsistenciaLazy}" rowIndexVar="row" paginator="true" rows="5" size="small" style="width:120%"
@@ -60,13 +65,13 @@
 			</p:column>
 			
 			<p:column headerText="Tipo" sortBy="#{asistencia.tipo}" filterMatchMode="contains">
-				<h:outputText value="#{asistencia.tipo}" />
+				<h:outputText value="#{asistencia.tipo eq 'E'? 'ENTRADA':'SALIDA'}" />
 			</p:column>
 			
 			<p:column headerText="Fecha y Hora" sortBy="#{asistencia.hora}" filterMatchMode="contains">
-				<h:outputText value="#{asistencia.hora}" > 
-					<f:convertDateTime locale="es" pattern="dd/MM/yyyy hh:mm:ss a" />
-				</h:outputText>
+				<p:outputLabel value="#{reporteAsistenciaBean.hora(asistencia.hora)}" > 
+					<f:convertDateTime  pattern="dd/MM/yyyy hh:mm:ss a" />
+				</p:outputLabel>
 			</p:column>
 			
 
