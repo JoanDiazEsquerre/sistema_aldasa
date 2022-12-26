@@ -98,7 +98,7 @@ public class AsistenciaBean implements Serializable {
 			if (lstAsistencia.isEmpty()) {
 				Asistencia asistencia = new Asistencia();
 				asistencia.setEmpleado(empleado);
-				asistencia.setTipo('E');
+				asistencia.setTipo("E");
 				asistencia.setHora(new Date());
 				Asistencia guarda = asistenciaService.save(asistencia);
 				if(guarda == null) {
@@ -116,14 +116,14 @@ public class AsistenciaBean implements Serializable {
 				
 				
 			}else {}
-				char tipo = 'o';
+				String tipo = "";
 				for (Asistencia asist:lstAsistencia) {
 					tipo = asist.getTipo();
 				}
-				if(tipo=='E') {
+				if(tipo.equals("E")) {
 					Asistencia asistencia = new Asistencia();
 					asistencia.setEmpleado(empleado);
-					asistencia.setTipo('S');
+					asistencia.setTipo("S");
 					asistencia.setHora(new Date());
 					Asistencia guarda = asistenciaService.save(asistencia);
 					if(guarda == null) {
@@ -140,7 +140,7 @@ public class AsistenciaBean implements Serializable {
 				} else {
 					Asistencia asistencia = new Asistencia();
 					asistencia.setEmpleado(empleado);
-					asistencia.setTipo('E');
+					asistencia.setTipo("E");
 					asistencia.setHora(new Date());
 					Asistencia guarda = asistenciaService.save(asistencia);
 					if(guarda == null) {

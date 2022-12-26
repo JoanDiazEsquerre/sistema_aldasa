@@ -4,8 +4,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.model.aldasa.entity.Asistencia;
 import com.model.aldasa.entity.Empleado;
+import com.model.aldasa.entity.Usuario;
 
 public interface AsistenciaService {
 
@@ -14,5 +18,7 @@ public interface AsistenciaService {
 	void delete(Asistencia entity);
 	
 	List<Asistencia> findByEmpleadoAndHoraBetweenOrderByIdAsc(Empleado empleado, Date horaIni, Date horaFin);
+	
+	Page<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetween(String dni, String tipo, Date fechaIni, Date fechaFin, Pageable pageable);
 
 }

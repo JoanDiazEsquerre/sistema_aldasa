@@ -446,6 +446,10 @@
 			<property-name>empleadoService</property-name>
 			<value>#{empleadoService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>asistenciaService</property-name>
+			<value>#{asistenciaService}</value>
+		</managed-property>
 		
 	</managed-bean>
 </faces-config>

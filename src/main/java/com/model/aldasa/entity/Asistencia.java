@@ -23,7 +23,7 @@ public class Asistencia {
 	@JoinColumn(name="idempleado")
 	private Empleado empleado;
 	
-	private char tipo;
+	private String tipo;
 	
 	@Column(name="hora")
 	private Date hora;
@@ -43,10 +43,10 @@ public class Asistencia {
 	public void setEmpleado(Empleado empleado) {
 		this.empleado = empleado;
 	}
-	public char getTipo() {
+	public String getTipo() {
 		return tipo;
 	}
-	public void setTipo(char tipo) {
+	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
 	public Date getHora() {

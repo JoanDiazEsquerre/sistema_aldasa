@@ -9,16 +9,35 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">REPORTE > ASISTENCIA</h2>
-		<h:panelGrid id="grid" columns="2" width="30%">
+		<h:panelGrid id="grid" columns="8" width="30%">
 			
 			<h:outputLabel value="Empleado: " style="text-align:right"/>
-			<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{reporteProspeccionBean.personAssessorSelected}" converter="#{reporteProspeccionBean.conversorPersonAssessor}" id="assessor" completeMethod="#{reporteProspeccionBean.completePersonAssesor}"  
-                          var="ase" itemLabel="#{ase.surnames.concat(' ')}#{ase.names}" itemValue="#{ase}" forceSelection="true" />
+			<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{reporteAsistenciaBean.empleadoSelected}" converter="#{reporteAsistenciaBean.conversorEmpleado}" id="assessor" completeMethod="#{reporteAsistenciaBean.completeEmpleado}"  
+                          var="ase" itemLabel="#{ase.person.surnames.concat(' ')}#{ase.person.names}" itemValue="#{ase}" forceSelection="true" > 
+            	 <p:ajax update=":form:idTableDet" />
+           	</p:autoComplete>
 	
+			<h:outputLabel for="tipo" value="Tipo:" />
+            <p:selectOneMenu id="tipo" value="#{reporteAsistenciaBean.tipo}" style="margin:10px" >
+	            <f:selectItem itemLabel="[--TODOS--]" itemValue=""/>
+	            <f:selectItem itemLabel="Entrada" itemValue="E"/>
+	            <f:selectItem itemLabel="Salida" itemValue="S"/>
+	            <p:ajax update=":form:idTableDet" />
+            </p:selectOneMenu>
+                
+            <h:outputLabel value="Fecha inicio:" style="text-align:right"/>
+			<p:datePicker value="#{reporteAsistenciaBean.fechaIni}" readonlyInput="true">
+				<p:ajax update=":form:idTableDet" />
+			</p:datePicker>
+			
+			<h:outputLabel value="Fecha fin:" style="text-align:right"/>
+			<p:datePicker value="#{reporteAsistenciaBean.fechaFin}" readonlyInput="true" >
+				<p:ajax update=":form:idTableDet" />
+			</p:datePicker>
 		</h:panelGrid>
 		
-		<p:dataTable var="det" id="idTableDet" value="#{reporteProspeccionBean.lstProspectionDetailReporte}" rowIndexVar="row" paginator="true" rows="5" size="small" style="width:120%"
-		emptyMessage="No se encontraron registros." paginatorPosition="bottom" rowKey="#{det.id}" selection="#{reporteProspeccionBean.prospectionDetailSelected}" selectionMode="single"> 
+		<p:dataTable var="asistencia" id="idTableDet" value="#{reporteAsistenciaBean.lstAsistenciaLazy}" rowIndexVar="row" paginator="true" rows="5" size="small" style="width:120%"
+		emptyMessage="No se encontraron registros." paginatorPosition="bottom" rowKey="#{asistencia.id}" selection="#{reporteAsistenciaBean.asistenciaSelected}" selectionMode="single"> 
 			<f:facet name="header">
 				<div class="p-d-flex p-ai-center p-jc-between">
 					<span>Lista de Asistencias</span>
@@ -36,16 +55,18 @@
                    		#{row +1}
      		</p:column>
 
-			<p:column headerText="Empleado" sortBy="#{det.prospection.personAssessor.surnames}" filterMatchMode="contains">
-				<h:outputText value="#{det.prospection.personAssessor.surnames} #{det.prospection.personAssessor.names}" />
+			<p:column headerText="Empleado" sortBy="#{asistencia.empleado.person.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{asistencia.empleado.person.surnames} #{asistencia.empleado.person.names}" />
 			</p:column>
 			
-			<p:column headerText="Tipo" sortBy="#{det.action.description}" filterMatchMode="contains">
-				<h:outputText value="#{det.action.description}" />
+			<p:column headerText="Tipo" sortBy="#{asistencia.tipo}" filterMatchMode="contains">
+				<h:outputText value="#{asistencia.tipo}" />
 			</p:column>
 			
-			<p:column headerText="Fecha y Hora" sortBy="#{det.date}" filterMatchMode="contains">
-				<h:outputText value="#{det.date}" />
+			<p:column headerText="Fecha y Hora" sortBy="#{asistencia.hora}" filterMatchMode="contains">
+				<h:outputText value="#{asistencia.hora}" > 
+					<f:convertDateTime locale="es" pattern="dd/MM/yyyy hh:mm:ss a" />
+				</h:outputText>
 			</p:column>
 			
 

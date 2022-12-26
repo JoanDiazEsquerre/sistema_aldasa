@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Asistencia;
@@ -41,6 +43,13 @@ public class AsistenciaServiceImpl  implements AsistenciaService  {
 	public List<Asistencia> findByEmpleadoAndHoraBetweenOrderByIdAsc(Empleado empleado, Date horaIni, Date horaFin) {
 		// TODO Auto-generated method stub
 		return asistenciaRepository.findByEmpleadoAndHoraBetweenOrderByIdAsc(empleado, horaIni, horaFin);
+	}
+
+	@Override
+	public Page<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetween(String dni, String tipo, Date fechaIni,
+			Date fechaFin, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return asistenciaRepository.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetween(dni, tipo, fechaIni, fechaFin, pageable);
 	}
 
 }
