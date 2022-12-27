@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
@@ -37,9 +38,13 @@ import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Asistencia;
 import com.model.aldasa.entity.Empleado;
+import com.model.aldasa.entity.Prospect;
+import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.ProspectionDetail;
+import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.service.AsistenciaService;
 import com.model.aldasa.service.EmpleadoService;
+import com.model.aldasa.util.EstadoProspeccion;
 import com.model.aldasa.util.UtilXls;
 
 @ManagedBean
@@ -61,8 +66,10 @@ public class ReporteAsistenciaBean implements Serializable {
 	private Asistencia asistenciaSelected;
 	
 	private String tipo;
+	private String tituloDialog="";
 	private String nombreArchivo = "Reporte de Asistencia.xlsx";
 	private Date fechaIni,fechaFin;
+	
 	
 	private StreamedContent fileDes;
 	
@@ -75,6 +82,24 @@ public class ReporteAsistenciaBean implements Serializable {
 		fechaFin = new Date() ;
 		tipo="";
 		iniciarLazy();
+	}
+	
+	public void updateAsistencia() {
+		tituloDialog = "MODIFICAR ASISTENCIA";
+
+	}
+	
+	public void newAsistencia() {
+		tituloDialog = "NUEVA ASISTENCIA";
+		asistenciaSelected = new Asistencia();
+		asistenciaSelected.setEmpleado(asistenciaSelected.getEmpleado());
+		asistenciaSelected.setTipo(tipo);
+		asistenciaSelected.setHora(asistenciaSelected.getHora()); 
+	}
+	
+	public void saveAsistencia() {
+		
+		
 	}
 	
 	public void procesarExcel() {
@@ -324,13 +349,17 @@ public class ReporteAsistenciaBean implements Serializable {
 	public void setFileDes(StreamedContent fileDes) {
 		this.fileDes = fileDes;
 	}
-
 	public String getNombreArchivo() {
 		return nombreArchivo;
 	}
-
 	public void setNombreArchivo(String nombreArchivo) {
 		this.nombreArchivo = nombreArchivo;
+	}
+	public String getTituloDialog() {
+		return tituloDialog;
+	}
+	public void setTituloDialog(String tituloDialog) {
+		this.tituloDialog = tituloDialog;
 	}
 	
 	

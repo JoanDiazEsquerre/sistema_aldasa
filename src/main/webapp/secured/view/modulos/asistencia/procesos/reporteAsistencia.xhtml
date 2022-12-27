@@ -41,20 +41,23 @@
       		</p:commandButton>
 		</h:panelGrid>
 		
-		<p:dataTable var="asistencia" id="idTableDet" value="#{reporteAsistenciaBean.lstAsistenciaLazy}" rowIndexVar="row" paginator="true" rows="5" size="small" style="width:120%"
+		<p:dataTable reflow="true"  var="asistencia" id="idTableDet" value="#{reporteAsistenciaBean.lstAsistenciaLazy}"  widgetVar="asistenciaTable" rowIndexVar="row" paginator="true" rows="15" size="small" style="width:120%"
 		emptyMessage="No se encontraron registros." paginatorPosition="bottom" rowKey="#{asistencia.id}" selection="#{reporteAsistenciaBean.asistenciaSelected}" selectionMode="single"> 
 			<f:facet name="header">
 				<div class="p-d-flex p-ai-center p-jc-between">
 					<span>Lista de Asistencias</span>
 				</div>
 			</f:facet>
-			<p:ajax event="rowSelect" />
+			<p:ajax event="rowSelect" update="dialogAsistencia" listener="#{reporteAsistenciaBean.updateAsistencia()}" oncomplete="PF('asistenciaNewDialog').show();" />
 
-			<p:column style="width:15px;text-align: left">
-				<f:facet name="header">
-				#
-				</f:facet>
-			</p:column>
+			<p:column style="width:42px;text-align: left">
+                <f:facet name="header">
+                    <p:commandLink actionListener="#{reporteAsistenciaBean.newAsistencia()}" update="dialogAsistencia" oncomplete="PF('asistenciaNewDialog').show();" title="NUEVA ASISTENCIA">
+                        <p:graphicImage width="50" value="/recursos/images/anadir.png" />
+
+                   </p:commandLink>
+                </f:facet>
+            </p:column>
 
 			<p:column width="25px">
                    		#{row +1}
@@ -78,5 +81,39 @@
 		</p:dataTable>
 
 	</h:form>
+	 <p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogAsistencia" header="#{reporteAsistenciaBean.tituloDialog}" widgetVar="asistenciaNewDialog" resizable="false" closable="true"
+	       appendTo="@(body)" style="width:auto">
+	       <h:form id="formAsistencia">
+	         	<p:messages id="messages" showDetail="true" closable="true">
+	               <p:autoUpdate/>
+	           	</p:messages>
+				<h:panelGrid id="grid" columns="2">
+					<h:outputLabel  for="assessor"  value="Empleado: " style="text-align:right" />
+					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{reporteAsistenciaBean.asistenciaSelected.empleado}"
+						converter="#{reporteAsistenciaBean.conversorEmpleado}" id="assessor" completeMethod="#{reporteAsistenciaBean.completeEmpleado}"
+						var="ase" itemLabel="#{ase.person.surnames.concat(' ')}#{ase.person.names}" itemValue="#{ase}" forceSelection="true">
+						<p:ajax  event="keyup" update="messages" />
+					</p:autoComplete>
+	
+					<h:outputLabel for="tipo" value="Tipo:" />
+					<p:selectOneMenu id="tipo" value="#{reporteAsistenciaBean.asistenciaSelected.tipo}" style="margin:10px">
+						<f:selectItem itemLabel="[--SELECCIONAR--]" itemValue="" />
+						<f:selectItem itemLabel="Entrada" itemValue="E" />
+						<f:selectItem itemLabel="Salida" itemValue="S" />
+						<p:ajax event="keyup" update="messages" />
+					</p:selectOneMenu>
+	
+					<h:outputLabel value="Fecha:" style="text-align:right" />
+					<p:datePicker value="#{reporteAsistenciaBean.asistenciaSelected.hora}" readonlyInput="true">
+						<p:ajax event="keyup" update="messages" />
+					</p:datePicker>
+	
+					<p:commandButton value="Guardar" actionListener="#{reporteAsistenciaBean.saveAsistencia()}"
+						update=":form:idTableDet :formAsistencia" />
+
+			</h:panelGrid>
+
+		</h:form>
+	   </p:dialog>
 
 </ui:composition>
