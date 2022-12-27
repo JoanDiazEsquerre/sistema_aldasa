@@ -65,9 +65,12 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 
 
 	@Override
-	public List<Empleado> findByEstado(boolean estado) {
+	public List<Empleado> findByEstadoOrderByPersonSurnamesAsc(boolean estado) {
 		// TODO Auto-generated method stub
-		return empleadoRepository.findByEstado(estado);
+		return empleadoRepository.findByEstadoOrderByPersonSurnamesAsc(estado);
 	}
+
+
+
 
 }

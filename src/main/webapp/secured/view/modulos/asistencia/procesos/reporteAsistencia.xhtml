@@ -8,7 +8,7 @@
 
 
 	<h:form id="form">
-		<h2 style="color: #007d4c;">REPORTE > ASISTENCIA</h2>
+		<h2 style="color: #007d4c;">REPORTE > REPORTE DE ASISTENCIA</h2>
 		<h:panelGrid id="grid" columns="8" width="30%">
 			
 			<h:outputLabel value="Empleado: " style="text-align:right"/>
@@ -62,21 +62,19 @@
 			<p:column width="25px">
                    		#{row +1}
      		</p:column>
+     		
+    		<p:column headerText="Fecha y Hora" sortBy="#{asistencia.hora}" filterMatchMode="contains">
+    			<h:outputText value="#{reporteAsistenciaBean.convertirHora(asistencia.hora)}" />
+				
+			</p:column>
 
 			<p:column headerText="Empleado" sortBy="#{asistencia.empleado.person.surnames}" filterMatchMode="contains">
 				<h:outputText value="#{asistencia.empleado.person.surnames} #{asistencia.empleado.person.names}" />
 			</p:column>
 			
 			<p:column headerText="Tipo" sortBy="#{asistencia.tipo}" filterMatchMode="contains">
-				<h:outputText value="#{asistencia.tipo eq 'E'? 'ENTRADA':'SALIDA'}" />
+				<h:outputText value="#{reporteAsistenciaBean.convertirTipo(asistencia.tipo)}" />
 			</p:column>
-			
-			<p:column headerText="Fecha y Hora" sortBy="#{asistencia.hora}" filterMatchMode="contains">
-				<p:outputLabel value="#{reporteAsistenciaBean.hora(asistencia.hora)}" > 
-					<f:convertDateTime  pattern="dd/MM/yyyy hh:mm:ss a" />
-				</p:outputLabel>
-			</p:column>
-			
 
 		</p:dataTable>
 
@@ -104,10 +102,10 @@
 					</p:selectOneMenu>
 	
 					<h:outputLabel value="Fecha:" style="text-align:right" />
-					<p:datePicker value="#{reporteAsistenciaBean.asistenciaSelected.hora}" readonlyInput="true">
+					<p:datePicker value="#{reporteAsistenciaBean.asistenciaSelected.hora}" showTime="true" style="margin:5px" pattern="dd/MM/yyyy hh:mm:ss a" readonlyInput="true">
 						<p:ajax event="keyup" update="messages" />
 					</p:datePicker>
-	
+					
 					<p:commandButton value="Guardar" actionListener="#{reporteAsistenciaBean.saveAsistencia()}"
 						update=":form:idTableDet :formAsistencia" />
 

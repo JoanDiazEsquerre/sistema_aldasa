@@ -16,7 +16,7 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, Integer> {
 	Page<Empleado> findByPersonSurnamesLikeAndEstado(String person, boolean status, Pageable pageable);
 	Empleado findByPerson (Person person);
 	Empleado findByPersonDni(String dniPerson);
-	List<Empleado> findByEstado(boolean estado);
+	List<Empleado> findByEstadoOrderByPersonSurnamesAsc(boolean estado);
 
 
 	@Query(nativeQuery = true,value = "SELECT * FROM empleado WHERE idPerson=:idPerson AND id<>:idEmpleado ")

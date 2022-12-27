@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -73,11 +75,14 @@ public class ReporteAsistenciaBean implements Serializable {
 	
 	private StreamedContent fileDes;
 	
-	SimpleDateFormat sdfFull = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+	SimpleDateFormat sdfFull = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	SimpleDateFormat sdfTime = new SimpleDateFormat("hh:mm:ss a");
+
 	
 	@PostConstruct
 	public void init() {
-		lstEmpleado=empleadoService.findByEstado(true);
+		lstEmpleado=empleadoService.findByEstadoOrderByPersonSurnamesAsc(true);
 		fechaIni = new Date() ;
 		fechaFin = new Date() ;
 		tipo="";
@@ -86,6 +91,7 @@ public class ReporteAsistenciaBean implements Serializable {
 	
 	public void updateAsistencia() {
 		tituloDialog = "MODIFICAR ASISTENCIA";
+	
 
 	}
 	
@@ -101,7 +107,7 @@ public class ReporteAsistenciaBean implements Serializable {
 		
 		
 	}
-	
+	 
 	public void procesarExcel() {
 		  XSSFWorkbook workbook = new XSSFWorkbook();
 	        XSSFSheet sheet = workbook.createSheet("Asistencia");
@@ -117,36 +123,108 @@ public class ReporteAsistenciaBean implements Serializable {
 //	        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 11)); //combinar Celdas para titulo
 
 	        Row rowSubTitulo = sheet.createRow(0);
-	        Cell cellSubIndex = rowSubTitulo.createCell(0);cellSubIndex.setCellValue("EMPLEADO");cellSubIndex.setCellStyle(styleTitulo);
-	        Cell cellSubDoc = rowSubTitulo.createCell(1);cellSubDoc.setCellValue("TIPO");cellSubDoc.setCellStyle(styleTitulo);
-	        Cell cellSubSerie = rowSubTitulo.createCell(2);cellSubSerie.setCellValue("FECHA Y HORA");cellSubSerie.setCellStyle(styleTitulo);
+	        Cell cellSubFecha = rowSubTitulo.createCell(0);cellSubFecha.setCellValue("FECHA");cellSubFecha.setCellStyle(styleTitulo);
+	        Cell cellSubEmpleado = rowSubTitulo.createCell(1);cellSubEmpleado.setCellValue("EMPLEADO");cellSubEmpleado.setCellStyle(styleTitulo);
+	        Cell cellSubEntrada1 = rowSubTitulo.createCell(2);cellSubEntrada1.setCellValue("ENTRADA");cellSubEntrada1.setCellStyle(styleTitulo);
+	        Cell cellSubSalida1 = rowSubTitulo.createCell(3);cellSubSalida1.setCellValue("SALIDA");cellSubSalida1.setCellStyle(styleTitulo);
+	        Cell cellSubEntrada2 = rowSubTitulo.createCell(4);cellSubEntrada2.setCellValue("ENTRADA");cellSubEntrada2.setCellStyle(styleTitulo);
+	        Cell cellSubSalida2 = rowSubTitulo.createCell(5);cellSubSalida2.setCellValue("SALIDA");cellSubSalida2.setCellStyle(styleTitulo);
+	        Cell cellSubArea = rowSubTitulo.createCell(6);cellSubArea.setCellValue("ÁREA");cellSubArea.setCellStyle(styleTitulo);
 	       
-	        String dni="%%";
-            
-            if(empleadoSelected!=null) {
-            	dni= "%" + empleadoSelected.getPerson().getDni() + "%";
-            }
-            
-            fechaIni.setHours(0);
-            fechaIni.setMinutes(0);
-            fechaIni.setSeconds(0);
-            fechaFin.setHours(23);
-            fechaFin.setMinutes(59);
-            fechaFin.setSeconds(59);
 	        
-	        List<Asistencia> lstasistencia=asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetween(dni, "%"+tipo+"%", fechaIni, fechaFin)  ;
-	        
-	        if(!lstasistencia.isEmpty()) {
+	        if(fechaFin.before(fechaIni)) {
+	        	FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La fecha fin debe ser mayor o igual que la fecha inicio");
+				PrimeFaces.current().dialog().showMessageDynamic(message);
+				return;
+	        }else {
+	        	Date fecha1=fechaIni;
+	        	Date fecha2=fechaFin;
+	        	
 	        	int index = 1;
-	        	for(Asistencia asist :lstasistencia) {
-	        		Row rowDetail = sheet.createRow(index);
-	        	    Cell cellNomPros = rowDetail.createCell(0);cellNomPros.setCellValue(asist.getEmpleado().getPerson().getSurnames()+" "+asist.getEmpleado().getPerson().getNames());cellNomPros.setCellStyle(styleBorder);
-	        	    Cell cellDniPros = rowDetail.createCell(1);cellDniPros.setCellValue(asist.getTipo().equals("E")?"ENTRADA":"SALIDA");cellDniPros.setCellStyle(styleBorder);
-	        	    Cell cellTlf = rowDetail.createCell(2);cellTlf.setCellValue(sdfFull.format(asist.getHora()));cellTlf.setCellStyle(styleBorder);
+	        	while (fecha1.getTime() <= fecha2.getTime() ){
+	        		
 	        	    
-	        	    index++;
+	        	    List<Empleado>  lstempleados = empleadoService.findByEstadoOrderByPersonSurnamesAsc(true);
+	        	    if(!lstempleados.isEmpty()) {
+	        	    	for(Empleado empleado : lstempleados) {
+	        	    		Row rowDetail = sheet.createRow(index);
+	        	    		Cell cellfecha = rowDetail.createCell(0); cellfecha.setCellValue(sdf.format(fecha1)); cellfecha.setCellStyle(styleBorder);
+	        	    		Cell cellEmpleado = rowDetail.createCell(1); cellEmpleado.setCellValue(empleado.getPerson().getSurnames()+" "+empleado.getPerson().getNames()); cellEmpleado.setCellStyle(styleBorder);
+	        	    		
+	        	    		
+	        	    		Date dia1 = fecha1;
+	        	    		dia1.setHours(0);
+	        	    		dia1.setMinutes(0);
+	        	    		dia1.setSeconds(0);
+	        	    		dia1 = sdf.parse(sdf.format(dia1));
+	        	    		
+	        	    		Date dia2 = fecha1;
+	        	    		dia2.setHours(23);
+	        	    		dia2.setMinutes(59);
+	        	    		dia2.setSeconds(59);
+	        	    		List<Asistencia> lstasistenciasEntrada = asistenciaService.findByEmpleadoPersonDniAndTipoAndHoraBetween(empleado.getPerson().getDni(), "E", dia1, dia2);
+	        	    		
+	        	    		if(!lstasistenciasEntrada.isEmpty()) {
+	        	    			int a = 2;
+	        	    			for(Asistencia asistencia : lstasistenciasEntrada) {
+	        		        	    Cell cellHora = rowDetail.createCell(a);cellHora.setCellValue(sdfTime.format(asistencia.getHora()));cellHora.setCellStyle(styleBorder);
+	        		        	    a = a+2;
+	        	    			}
+	        	    			
+	        	    		}
+	        	  
+	        	    		
+	        	    		List<Asistencia> lstasistenciasSalida = asistenciaService.findByEmpleadoPersonDniAndTipoAndHoraBetween(empleado.getPerson().getDni(), "S", dia1, dia2);
+	        	    		
+	        	    		if(!lstasistenciasSalida.isEmpty()) {
+	        	    			int b = 3;
+	        	    			for(Asistencia asistencia : lstasistenciasSalida) {
+	        		        	    Cell cellHora = rowDetail.createCell(b);cellHora.setCellValue(sdfTime.format(asistencia.getHora()));cellHora.setCellStyle(styleBorder);
+	        		        	    b = b+2;
+	        	    			}
+	        	    			
+	        	    		}
+	        	    		
+	        	    		index++;
+	        	    	}
+	        	    }
+	        	    
+	        	    
+	        	    
+	        	    fecha1=sumarDiasAFecha(fecha1, 1);
+	        	
+	        		
 	        	}
+	        	
 	        }
+
+	        
+//	        String dni="%%";
+//            
+//            if(empleadoSelected!=null) {
+//            	dni= "%" + empleadoSelected.getPerson().getDni() + "%";
+//            }
+            
+//            fechaIni.setHours(0);
+//            fechaIni.setMinutes(0);
+//            fechaIni.setSeconds(0);
+//            fechaFin.setHours(23);
+//            fechaFin.setMinutes(59);
+//            fechaFin.setSeconds(59);
+            
+//	        List<Asistencia> lstasistencia=asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetween(dni, "%"+tipo+"%", fechaIni, fechaFin)  ;
+	        
+//	        if(!lstasistencia.isEmpty()) {
+//	        	int index = 1;
+//	        	for(Asistencia asist :lstasistencia) {
+//	        		Row rowDetail = sheet.createRow(index);
+//	        	    Cell cellNomPros = rowDetail.createCell(0);cellNomPros.setCellValue(asist.getEmpleado().getPerson().getSurnames()+" "+asist.getEmpleado().getPerson().getNames());cellNomPros.setCellStyle(styleBorder);
+//	        	    Cell cellDniPros = rowDetail.createCell(1);cellDniPros.setCellValue(asist.getTipo().equals("E")?"ENTRADA":"SALIDA");cellDniPros.setCellStyle(styleBorder);
+//	        	    Cell cellTlf = rowDetail.createCell(2);cellTlf.setCellValue(sdfFull.format(asist.getHora()));cellTlf.setCellStyle(styleBorder);
+//	        	    
+//	        	    index++;
+//	        	}
+//	        }
 	     
 
 	        for (int j = 0; j <= 3; j++) {
@@ -171,6 +249,14 @@ public class ReporteAsistenciaBean implements Serializable {
 	            e.printStackTrace();
 	        }
 		
+	}
+	
+	public  Date sumarDiasAFecha(Date fecha, int dias){
+	      if (dias==0) return fecha;
+	      Calendar calendar = Calendar.getInstance();
+	      calendar.setTime(fecha); 
+	      calendar.add(Calendar.DAY_OF_YEAR, dias);  
+	      return calendar.getTime(); 
 	}
 	
 	public void iniciarLazy() {
@@ -243,10 +329,20 @@ public class ReporteAsistenciaBean implements Serializable {
 		};
 	}
     
-	public Date hora (Date hora) {
-		hora.setHours(hora.getHours()-5);
-		System.out.println(sdfFull.format(hora));
-		return hora;
+	public String convertirHora (Date hora) {
+		String a = sdfFull.format(hora);
+		return a;
+	}
+	
+	public String convertirTipo (String tipo) {
+		String valor = "";
+		if(tipo.equals("E")) {
+			valor = "ENTRADA";
+		}else {
+			valor = "SALIDA";
+		}
+
+		return valor;
 	}
 	
 	public Converter getConversorEmpleado() {

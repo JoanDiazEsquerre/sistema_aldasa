@@ -19,7 +19,7 @@ public interface EmpleadoService {
 	Empleado findByPerson (Person person);
 	Empleado findByPersonIdException(int idPerson, int idEmpleado);
 	Empleado findByPersonDni(String dniPerson);
-	List<Empleado> findByEstado(boolean estado);
+	List<Empleado> findByEstadoOrderByPersonSurnamesAsc(boolean estado);
 
 	
 	Page<Empleado> findByPersonSurnamesLikeAndEstado(String person, boolean status, Pageable pageable);

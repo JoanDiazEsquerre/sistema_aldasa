@@ -25,7 +25,6 @@ public class Asistencia {
 	
 	private String tipo;
 	
-	@Column(name="hora")
 	private Date hora;
 
 	
