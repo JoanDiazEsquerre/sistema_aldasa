@@ -391,6 +391,10 @@
 			<property-name>personService</property-name>
 			<value>#{personService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>areaService</property-name>
+			<value>#{areaService}</value>
+		</managed-property>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>reporteLotesBean</managed-bean-name>

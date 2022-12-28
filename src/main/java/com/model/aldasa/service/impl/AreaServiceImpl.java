@@ -1,5 +1,6 @@
 package com.model.aldasa.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,12 @@ public class AreaServiceImpl implements AreaService  {
 	public void delete(Area entity) {
 		// TODO Auto-generated method stub
 		areaRepository.delete(entity);
+	}
+
+	@Override
+	public List<Area> findByEstado(boolean estado) {
+		// TODO Auto-generated method stub
+		return areaRepository.findByEstado(estado);
 	}
 
 	

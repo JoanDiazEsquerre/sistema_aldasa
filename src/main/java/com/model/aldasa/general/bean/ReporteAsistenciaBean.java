@@ -131,6 +131,7 @@ public class ReporteAsistenciaBean implements Serializable {
 	        Cell cellSubEntrada2 = rowSubTitulo.createCell(4);cellSubEntrada2.setCellValue("ENTRADA");cellSubEntrada2.setCellStyle(styleTitulo);
 	        Cell cellSubSalida2 = rowSubTitulo.createCell(5);cellSubSalida2.setCellValue("SALIDA");cellSubSalida2.setCellStyle(styleTitulo);
 	        Cell cellSubArea = rowSubTitulo.createCell(6);cellSubArea.setCellValue("ÁREA");cellSubArea.setCellStyle(styleTitulo);
+	        
 	       
 	        
 	        if(fechaFin.before(fechaIni)) {
@@ -161,13 +162,11 @@ public class ReporteAsistenciaBean implements Serializable {
 	        	    		Cell cellfecha = rowDetail.createCell(0); cellfecha.setCellValue(sdf.format(fecha1)); cellfecha.setCellStyle(styleBorder);
 	        	    		Cell cellEmpleado = rowDetail.createCell(1); cellEmpleado.setCellValue(empleado.getPerson().getSurnames()+" "+empleado.getPerson().getNames()); cellEmpleado.setCellStyle(styleBorder);
 	        	    		Cell cellE1 = rowDetail.createCell(2); cellE1.setCellStyle(styleBorder);
-
 	        	    		Cell cellS1 = rowDetail.createCell(3); cellS1.setCellStyle(styleBorder);
-
 	        	    		Cell cellE2 = rowDetail.createCell(4); cellE2.setCellStyle(styleBorder);
-
 	        	    		Cell cellS2 = rowDetail.createCell(5); cellS2.setCellStyle(styleBorder);
-	        	    		Cell cellArea = rowDetail.createCell(6); cellArea.setCellStyle(styleBorder);
+	        	    		Cell cellArea = rowDetail.createCell(6);cellArea.setCellValue(empleado.getArea().getNombre()); cellArea.setCellStyle(styleBorder);
+	        	    		
 
 	        	    		
 	        	    		Date dia1 = fecha1;

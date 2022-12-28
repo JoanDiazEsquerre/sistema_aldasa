@@ -1,5 +1,7 @@
 package com.model.aldasa.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,7 +28,18 @@ public class Empleado {
 	private Double sueldoBasico;
 	
 	private boolean estado;
+	
+	@ManyToOne
+	@JoinColumn(name="idarea")
+	private Area area;
 
+	@Column(name="fechaingreso")
+	private Date fechaIngreso;
+	
+	@Column(name="fechasalida")
+	private Date fechaSalida;
+	
+	private String cargo;
 	
 	
 	public Integer getId() {
@@ -53,4 +66,29 @@ public class Empleado {
 	public void setSueldoBasico(Double sueldoBasico) {
 		this.sueldoBasico = sueldoBasico;
 	}
+	public Area getArea() {
+		return area;
+	}
+	public void setArea(Area area) {
+		this.area = area;
+	}
+	public Date getFechaIngreso() {
+		return fechaIngreso;
+	}
+	public void setFechaIngreso(Date fechaIngreso) {
+		this.fechaIngreso = fechaIngreso;
+	}
+	public Date getFechaSalida() {
+		return fechaSalida;
+	}
+	public void setFechaSalida(Date fechaSalida) {
+		this.fechaSalida = fechaSalida;
+	}
+	public String getCargo() {
+		return cargo;
+	}
+	public void setCargo(String cargo) {
+		this.cargo = cargo;
+	}
+	
 }

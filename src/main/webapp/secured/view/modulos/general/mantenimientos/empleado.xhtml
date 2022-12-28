@@ -49,6 +49,10 @@
 				filterMatchMode="contains">
 				<h:outputText value="#{empleado.sueldoBasico}" />
 			</p:column>
+			<p:column headerText="Área" sortBy="#{empleado.area.nombre}"
+				filterMatchMode="contains">
+				<h:outputText value="#{empleado.area.nombre}" />
+			</p:column>
 		</p:dataTable>
 	
 	</h:form>
@@ -65,11 +69,17 @@
 				<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{empleadoBean.empleadoSelected.person}" 
 				converter="#{empleadoBean.conversorPersonSurnames}" id="optionPerson" completeMethod="#{empleadoBean.completePersonSurnames}"  
                 var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:10px" />
-			
+				
 				<h:outputLabel value="Sueldo básico:" for="sueldoBasico" />
 						<p:inputNumber id="sueldoBasico" value="#{empleadoBean.empleadoSelected.sueldoBasico}" style="margin:5px; width:220px" modifyValueOnWheel="false" > 
 						<p:ajax update="messages" /> 
 						</p:inputNumber>
+					
+				<h:outputLabel for="optionArea" value="Área:" />
+                <p:selectOneMenu id="optionArea" value="#{empleadoBean.empleadoSelected.area}" converter="#{empleadoBean.conversorArea}" style="margin:10px" >
+                    <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
+                    <f:selectItems value="#{empleadoBean.lstArea}" var="area" itemLabel="#{area.nombre}" itemValue="#{area}"/>
+                </p:selectOneMenu>
 				
 				<h:outputLabel for="option" value="Estado:" />
 				<p:selectOneMenu id="option" value="#{empleadoBean.empleadoSelected.estado}" style="margin:10px">

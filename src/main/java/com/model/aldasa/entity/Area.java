@@ -42,7 +42,19 @@ public class Area {
 		this.estado = estado;
 	}
 
-	
+	@Override
+    public boolean equals(Object other) {
+        return (other instanceof Area) && (id != null)
+            ? id.equals(((Area) other).id)
+            : (other == this);
+    }
+
+   @Override
+    public int hashCode() {
+        return (id != null)
+            ? (this.getClass().hashCode() + id.hashCode())
+            : super.hashCode();
+    }
 	
 	
 	

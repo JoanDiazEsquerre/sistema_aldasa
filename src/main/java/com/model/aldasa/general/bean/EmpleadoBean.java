@@ -22,9 +22,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.model.aldasa.entity.Area;
 import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Profile;
+import com.model.aldasa.service.AreaService;
 import com.model.aldasa.service.EmpleadoService;
 import com.model.aldasa.service.PersonService;
 
@@ -39,10 +41,15 @@ public class EmpleadoBean implements Serializable {
 	
 	@ManagedProperty(value = "#{personService}")
 	private PersonService personService; 
+	
+	@ManagedProperty(value = "#{areaService}")
+	private AreaService areaService; 
 		
 	private LazyDataModel<Empleado> lstEmpleadoLazy;
 	
 	private List<Person> lstPerson;
+	private List<Area> lstArea;
+
 	
 	private Empleado empleadoSelected;
 	private boolean estado = true;
@@ -53,6 +60,7 @@ public class EmpleadoBean implements Serializable {
 	public void init() {
 		iniciarLazy();
 		listarPersonas();
+		lstArea=areaService.findByEstado(true);
 	}
 	public void newEmpleado() {
 		tituloDialog="NUEVO EMPLEADO";
@@ -198,6 +206,34 @@ public class EmpleadoBean implements Serializable {
         return lista;
     }	
 	
+	public Converter getConversorArea() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Area c = null;
+                    for (Area si : lstArea) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Area) value).getId() + "";
+                }
+            }
+        };
+    }
+	
 	public Empleado getEmpleadoSelected() {
 		return empleadoSelected;
 	}
@@ -239,6 +275,18 @@ public class EmpleadoBean implements Serializable {
 	}
 	public void setPersonService(PersonService personService) {
 		this.personService = personService;
+	}
+	public List<Area> getLstArea() {
+		return lstArea;
+	}
+	public void setLstArea(List<Area> lstArea) {
+		this.lstArea = lstArea;
+	}
+	public AreaService getAreaService() {
+		return areaService;
+	}
+	public void setAreaService(AreaService areaService) {
+		this.areaService = areaService;
 	}
 	
 	

@@ -73,9 +73,13 @@
 			</p:column>
 			
 			<p:column headerText="Tipo" sortBy="#{asistencia.tipo}" filterMatchMode="contains">
-				<h:outputText value="#{reporteAsistenciaBean.convertirTipo(asistencia.tipo)}" />
+				<h:outputText value="#{reporteAsistenciaBean.convertirTipo(asistencia.tipo)}"   style="font-weight: bold;color:#{asistencia.tipo eq 'E'?'green':'blue'}" />
 			</p:column>
-
+			
+			<p:column headerText="Área" sortBy="#{asistencia.empleado.area.nombre}"
+				filterMatchMode="contains">
+				<h:outputText value="#{asistencia.empleado.area.nombre}" />
+			</p:column>
 		</p:dataTable>
 
 	</h:form>
