@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -143,20 +144,41 @@ public class ReporteAsistenciaBean implements Serializable {
 	        	int index = 1;
 	        	while (fecha1.getTime() <= fecha2.getTime() ){
 	        		
+	        		List<Empleado>  lstempleados = new ArrayList<>();
+	        	    if(empleadoSelected != null) {
+	        	    	Empleado emp = empleadoService.findByPerson(empleadoSelected.getPerson());
+	        	    	lstempleados.add(emp);
+	        	    }else {
+	        	    	lstempleados = empleadoService.findByEstadoOrderByPersonSurnamesAsc(true);
+	        	    }
 	        	    
-	        	    List<Empleado>  lstempleados = empleadoService.findByEstadoOrderByPersonSurnamesAsc(true);
+	        	    
+	        	    
+	        	    
 	        	    if(!lstempleados.isEmpty()) {
 	        	    	for(Empleado empleado : lstempleados) {
 	        	    		Row rowDetail = sheet.createRow(index);
 	        	    		Cell cellfecha = rowDetail.createCell(0); cellfecha.setCellValue(sdf.format(fecha1)); cellfecha.setCellStyle(styleBorder);
 	        	    		Cell cellEmpleado = rowDetail.createCell(1); cellEmpleado.setCellValue(empleado.getPerson().getSurnames()+" "+empleado.getPerson().getNames()); cellEmpleado.setCellStyle(styleBorder);
-	        	    		
+	        	    		Cell cellE1 = rowDetail.createCell(2); cellE1.setCellStyle(styleBorder);
+
+	        	    		Cell cellS1 = rowDetail.createCell(3); cellS1.setCellStyle(styleBorder);
+
+	        	    		Cell cellE2 = rowDetail.createCell(4); cellE2.setCellStyle(styleBorder);
+
+	        	    		Cell cellS2 = rowDetail.createCell(5); cellS2.setCellStyle(styleBorder);
+	        	    		Cell cellArea = rowDetail.createCell(6); cellArea.setCellStyle(styleBorder);
+
 	        	    		
 	        	    		Date dia1 = fecha1;
-	        	    		dia1.setHours(0);
-	        	    		dia1.setMinutes(0);
-	        	    		dia1.setSeconds(0);
-	        	    		dia1 = sdf.parse(sdf.format(dia1));
+	        	    		String day = sdf.format(dia1);
+	        	    		try {
+								dia1 = sdf.parse(day);
+							} catch (ParseException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+	        	    	
 	        	    		
 	        	    		Date dia2 = fecha1;
 	        	    		dia2.setHours(23);
@@ -256,7 +278,11 @@ public class ReporteAsistenciaBean implements Serializable {
 	      Calendar calendar = Calendar.getInstance();
 	      calendar.setTime(fecha); 
 	      calendar.add(Calendar.DAY_OF_YEAR, dias);  
-	      return calendar.getTime(); 
+	      Date date= calendar.getTime(); 
+	      date.setHours(0);
+	      date.setMinutes(0); 
+	      date.setSeconds(0);
+	      return date; 
 	}
 	
 	public void iniciarLazy() {
