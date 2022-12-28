@@ -40,9 +40,9 @@ public class AsistenciaServiceImpl  implements AsistenciaService  {
 	}
 
 	@Override
-	public List<Asistencia> findByEmpleadoAndHoraBetweenOrderByIdAsc(Empleado empleado, Date horaIni, Date horaFin) {
+	public List<Asistencia> findByEmpleadoAndHoraBetweenOrderByHoraAsc(Empleado empleado, Date horaIni, Date horaFin) {
 		// TODO Auto-generated method stub
-		return asistenciaRepository.findByEmpleadoAndHoraBetweenOrderByIdAsc(empleado, horaIni, horaFin);
+		return asistenciaRepository.findByEmpleadoAndHoraBetweenOrderByHoraAsc(empleado, horaIni, horaFin);
 	}
 
 	@Override

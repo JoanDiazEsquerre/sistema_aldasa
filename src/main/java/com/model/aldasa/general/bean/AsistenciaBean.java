@@ -94,7 +94,7 @@ public class AsistenciaBean implements Serializable {
 			horaFin.setHours(23);
 			horaFin.setMinutes(59);
 			horaFin.setSeconds(59);
-			List<Asistencia> lstAsistencia = asistenciaService.findByEmpleadoAndHoraBetweenOrderByIdAsc(empleado, horaIni, horaFin);
+			List<Asistencia> lstAsistencia = asistenciaService.findByEmpleadoAndHoraBetweenOrderByHoraAsc(empleado, horaIni, horaFin);
 			if (lstAsistencia.isEmpty()) {
 				Asistencia asistencia = new Asistencia();
 				asistencia.setEmpleado(empleado);
@@ -115,7 +115,14 @@ public class AsistenciaBean implements Serializable {
 				
 				
 				
-			}else {}
+			}else {
+				if(lstAsistencia.size()==4) {
+					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo registrar, ya tiene completado los registros del día.");
+					PrimeFaces.current().dialog().showMessageDynamic(message);
+					return;
+				}
+				
+				
 				String tipo = "";
 				for (Asistencia asist:lstAsistencia) {
 					tipo = asist.getTipo();
@@ -159,6 +166,7 @@ public class AsistenciaBean implements Serializable {
 	
 		}
 		
+	}
 		
 	
 

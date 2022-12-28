@@ -249,7 +249,7 @@ public class ReporteAsistenciaBean implements Serializable {
 //	        }
 	     
 
-	        for (int j = 0; j <= 3; j++) {
+	        for (int j = 0; j <= 6; j++) {
 	            sheet.autoSizeColumn(j);
 	        }
 	        try {
