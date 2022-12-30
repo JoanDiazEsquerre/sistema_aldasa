@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Asistencia;
 import com.model.aldasa.entity.Empleado;
+import com.model.aldasa.entity.Person;
 import com.model.aldasa.repository.AsistenciaRepository;
 import com.model.aldasa.service.AsistenciaService;
 
@@ -64,6 +65,12 @@ public class AsistenciaServiceImpl  implements AsistenciaService  {
 			Date fechaFin) {
 		// TODO Auto-generated method stub
 		return asistenciaRepository.findByEmpleadoPersonDniAndTipoAndHoraBetween(dni, tipo, fechaIni, fechaFin);
+	}
+
+	@Override
+	public Asistencia findByEmpleadoPerson(Person empleado) {
+		// TODO Auto-generated method stub
+		return asistenciaRepository.findByEmpleadoPerson(empleado);
 	}
 
 }

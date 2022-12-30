@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.model.aldasa.entity.Asistencia;
 import com.model.aldasa.entity.Empleado;
+import com.model.aldasa.entity.Person;
 
 public interface AsistenciaRepository  extends JpaRepository<Asistencia, Integer> {
 	
@@ -16,6 +17,7 @@ public interface AsistenciaRepository  extends JpaRepository<Asistencia, Integer
 	List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetween(String dni, String tipo, Date fechaIni, Date fechaFin);
 	List<Asistencia> findByEmpleadoPersonDniAndTipoAndHoraBetween(String dni, String tipo, Date fechaIni, Date fechaFin);
 
+	Asistencia findByEmpleadoPerson (Person empleado);
 
 	Page<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetween(String dni, String tipo, Date fechaIni, Date fechaFin, Pageable pageable);
 

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.model.aldasa.entity.Asistencia;
 import com.model.aldasa.entity.Empleado;
+import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Usuario;
 
 public interface AsistenciaService {
@@ -16,6 +17,8 @@ public interface AsistenciaService {
 	Optional<Asistencia> findById(Integer id);
 	Asistencia save(Asistencia entity);
 	void delete(Asistencia entity);
+	
+	Asistencia findByEmpleadoPerson (Person empleado);
 	
 	List<Asistencia> findByEmpleadoAndHoraBetweenOrderByHoraAsc(Empleado empleado, Date horaIni, Date horaFin);
 	List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetween(String dni, String tipo, Date fechaIni, Date fechaFin);

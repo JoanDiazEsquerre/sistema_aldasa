@@ -1,5 +1,6 @@
 package com.model.aldasa.entity;
 
+
 import java.util.Date;
 
 import javax.persistence.Column;

@@ -8,11 +8,14 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
+import org.apache.commons.fileupload.RequestContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.Perfiles;
+
+import org.primefaces.PrimeFaces;
 
 @ManagedBean(name = "navegacionBean")
 @SessionScoped
@@ -197,6 +200,7 @@ public class NavegacionBean implements Serializable  {
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 	}
 	
+
 
 	public String getRuta() {
 		return ruta;

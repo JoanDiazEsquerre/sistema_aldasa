@@ -84,6 +84,18 @@ public class EmpleadoBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar sueldo básico."));
 			return ;
 		}
+		if(empleadoSelected.getArea()==null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar área."));
+			return ;
+		}
+		if(empleadoSelected.getCargo().equals("")) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar cargo."));
+			return ;
+		}
+		if(empleadoSelected.getFechaIngreso()==null && empleadoSelected.getFechaSalida()==null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar fechas."));
+			return ;
+		}
 		if (tituloDialog.equals("NUEVO EMPLEADO")) {
 			Empleado validarExistencia = empleadoService.findByPerson(empleadoSelected.getPerson());
 			if (validarExistencia == null) {

@@ -45,9 +45,25 @@
 				filterBy="#{empleado.person.surnames}" filterMatchMode="contains">
 				<h:outputText value="#{empleado.person.surnames} #{empleado.person.names}" />
 			</p:column>
-			<p:column headerText="Sueldo Básico" sortBy="#{empleado.sueldoBasico}"
+			<p:column headerText="Fecha Ingreso" filterMatchMode="contains">
+				<h:outputText value="#{empleado.fechaIngreso}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Fecha Salida" filterMatchMode="contains">
+				<h:outputText value="#{empleado.fechaSalida}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			<p:column headerText="Sueldo Básico" sortBy="#{empleado.sueldoBasico}" filterMatchMode="contains">
+				<h:outputText value="#{empleado.sueldoBasico}" > 
+				 <f:convertNumber currencySymbol="" type="currency"  />
+				 </h:outputText>
+			</p:column>
+			<p:column headerText="Cargo" sortBy="#{empleado.cargo}"
 				filterMatchMode="contains">
-				<h:outputText value="#{empleado.sueldoBasico}" />
+				<h:outputText value="#{empleado.cargo}" />
 			</p:column>
 			<p:column headerText="Área" sortBy="#{empleado.area.nombre}"
 				filterMatchMode="contains">
@@ -71,7 +87,7 @@
                 var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:10px" />
 				
 				<h:outputLabel value="Sueldo básico:" for="sueldoBasico" />
-						<p:inputNumber id="sueldoBasico" value="#{empleadoBean.empleadoSelected.sueldoBasico}" style="margin:5px; width:220px" modifyValueOnWheel="false" > 
+						<p:inputNumber id="sueldoBasico" value="#{empleadoBean.empleadoSelected.sueldoBasico}" style="margin:10px; width:220px" modifyValueOnWheel="false" > 
 						<p:ajax update="messages" /> 
 						</p:inputNumber>
 					
@@ -80,6 +96,20 @@
                     <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
                     <f:selectItems value="#{empleadoBean.lstArea}" var="area" itemLabel="#{area.nombre}" itemValue="#{area}"/>
                 </p:selectOneMenu>
+                
+                <h:outputLabel value="Cargo: " for="cargo" />
+				<p:inputText value="#{empleadoBean.empleadoSelected.cargo}" id="cargo" style="margin:10px" />
+				
+				
+				<h:outputLabel value="Fecha de ingreso:" style="text-align:right" />
+				<p:datePicker value="#{empleadoBean.empleadoSelected.fechaIngreso}" readonlyInput="true" style="margin:10px"> 
+					<p:ajax event="keyup" update="messages" />
+				</p:datePicker> 
+			
+				<h:outputLabel value="Fecha de salida:" style="text-align:right"/>
+				<p:datePicker value="#{empleadoBean.empleadoSelected.fechaSalida}" readonlyInput="true" style="margin:10px"> 
+					<p:ajax event="keyup" update="messages" />
+				</p:datePicker>
 				
 				<h:outputLabel for="option" value="Estado:" />
 				<p:selectOneMenu id="option" value="#{empleadoBean.empleadoSelected.estado}" style="margin:10px">

@@ -105,9 +105,30 @@ public class ReporteAsistenciaBean implements Serializable {
 	}
 	
 	public void saveAsistencia() {
+		if(asistenciaSelected.getEmpleado()==null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar empleado."));
+			return ;
+		}
+		if(asistenciaSelected.getTipo().equals("")) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar tipo."));
+			return ;
+		}
+		if(asistenciaSelected.getHora()==null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar fecha."));
+			return ;
+		}
+		Asistencia asistencia = asistenciaService.save(asistenciaSelected);
+		
+		if (asistencia == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo guardar."));
+		} else {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente."));
+
+		}
 		
 		
 	}
+		
 	 
 	public void procesarExcel() {
 		  XSSFWorkbook workbook = new XSSFWorkbook();
