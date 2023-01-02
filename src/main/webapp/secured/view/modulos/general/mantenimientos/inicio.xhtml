@@ -27,10 +27,15 @@
 		
 		
 	</h:form>
-	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogInicio" header="LOTES POR VENCER" widgetVar="inicioDialog" resizable="false" closable="true"
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogInicio" header="LOTES SEPARADOS" widgetVar="inicioDialog" resizable="false" closable="true"
 		appendTo="@(body)"  width="80%">
 		<h:form id="formInicioDialog">
-		   <p:dataTable var="lote" id="idTableLote" value="#{inicioBean.lstLoteLazy}"  widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="7" 
+			<p:selectOneButton value="#{inicioBean.busqueda}"> 
+				<f:selectItem itemLabel="Por vencer" itemValue="#{true}" />
+				<f:selectItem itemLabel="Vencidos" itemValue="#{false}" />
+				<p:ajax update=":formInicioDialog:idTableLote" />
+			</p:selectOneButton>
+			<p:dataTable var="lote" id="idTableLote" value="#{inicioBean.lstLoteLazy}"  widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="7" 
 			size="small" emptyMessage="No se encontraron lotes." paginatorPosition="bottom" rowKey="#{lote.id}"  selectionMode="single">
 
 			<p:column width="25px">

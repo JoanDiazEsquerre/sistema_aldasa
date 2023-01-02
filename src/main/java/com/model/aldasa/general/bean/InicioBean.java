@@ -45,6 +45,8 @@ public class InicioBean implements Serializable {
 	private LazyDataModel<Lote> lstLoteLazy;
 	
 	private Manzana manzanaFilter;
+	
+	private boolean busqueda = true;
 
 	
 	@PostConstruct
@@ -114,18 +116,18 @@ public class InicioBean implements Serializable {
                 	}
                 }
                 
-                Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
-                
-                Date fechaIni = sumarDiasAFecha(new Date (), -1);
-                Date fechaFin = new Date();
-                fechaFin.setHours(23);
-                fechaFin.setMinutes(59);
-                fechaFin.setSeconds(59);
-                
+				Pageable pageable = PageRequest.of(first / pageSize, pageSize, sort);
+
+				Date fechaIni = sumarDiasAFecha(new Date(), -1);
+				Date fechaFin = sumarDiasAFecha(new Date(), 1);
+
 				Page<Lote> pageLote;
-		
-					pageLote= loteService.findAllByStatusAndFechaVencimientoBetween(EstadoLote.SEPARADO.getName(), fechaIni, fechaFin, pageable);
-				
+
+				if (busqueda) {
+					pageLote = loteService.findAllByStatusAndFechaVencimientoBetween(EstadoLote.SEPARADO.getName(),fechaIni, fechaFin, pageable);
+				}else {
+					pageLote = loteService.findAllByStatusAndFechaVencimientoLessThan(EstadoLote.SEPARADO.getName() , fechaIni, pageable);
+				}
 
 				setRowCount((int) pageLote.getTotalElements());
 				return datasource = pageLote.getContent();
@@ -139,9 +141,7 @@ public class InicioBean implements Serializable {
 	      calendar.setTime(fecha); 
 	      calendar.add(Calendar.DAY_OF_YEAR, dias);  
 	      Date date= calendar.getTime(); 
-	      date.setHours(0);
-	      date.setMinutes(0); 
-	      date.setSeconds(0);
+	   
 	      return date; 
 	}
 	
@@ -192,6 +192,13 @@ public class InicioBean implements Serializable {
 	}
 	public void setManzanaFilter(Manzana manzanaFilter) {
 		this.manzanaFilter = manzanaFilter;
+	}
+
+	public boolean isBusqueda() {
+		return busqueda;
+	}
+	public void setBusqueda(boolean busqueda) {
+		this.busqueda = busqueda;
 	}
 	
 }
