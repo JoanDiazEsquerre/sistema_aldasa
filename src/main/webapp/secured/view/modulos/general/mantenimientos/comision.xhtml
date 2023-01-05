@@ -173,7 +173,7 @@
 							<p:ajax update=":formComisionDialog:messagesDialogComision" />
 						</p:inputNumber>  
 						
-						<h:outputLabel for="basJun" value="Básico Junior(2-4 ventas): " />
+						<h:outputLabel for="basJun" value="+ Básico Junior(2-4 ventas): " />
 						<p:inputNumber id="basJun" value="#{comisionBean.comisionSelected.basicoJunior}" > 
 							<p:ajax update=":formComisionDialog:messagesDialogComision" />
 						</p:inputNumber>  
@@ -183,7 +183,7 @@
 							<p:ajax update=":formComisionDialog:messagesDialogComision" />
 						</p:inputNumber>  
 						
-						<h:outputLabel for="basSen" value="Básico Senior(5-8 ventas): " />
+						<h:outputLabel for="basSen" value="+ Básico Senior(5-8 ventas): " />
 						<p:inputNumber id="basSen" value="#{comisionBean.comisionSelected.basicoSenior}" > 
 							<p:ajax update=":formComisionDialog:messagesDialogComision" />
 						</p:inputNumber>  
@@ -193,7 +193,7 @@
 							<p:ajax update=":formComisionDialog:messagesDialogComision" />
 						</p:inputNumber>  
 						
-						<h:outputLabel for="basMst" value="Básico Master(9 a más ventas): " />
+						<h:outputLabel for="basMst" value="+ Básico Master(9 a más ventas): " />
 						<p:inputNumber id="basMst" value="#{comisionBean.comisionSelected.basicoMaster}" > 
 							<p:ajax update=":formComisionDialog:messagesDialogComision" />
 						</p:inputNumber>  
@@ -236,22 +236,27 @@
 							<p:ajax update=":formComisionDialog:messagesDialogComision" />
 						</p:inputNumber> 
 						
-						<h:outputLabel for="priVenCreOnl" value="Primera Venta Crédito Online: " />
+						<h:outputLabel for="comSpvO" value="Comisión Supervisor Online: " />
+						<p:inputNumber id="comSpvO" value="#{comisionBean.comisionSelected.comisionSupervisorOnline}" symbol="%" symbolPosition="s" emptyValue="always"> 
+							<p:ajax update=":formComisionDialog:messagesDialogComision" />
+						</p:inputNumber>  
+						
+						<h:outputLabel for="priVenCreOnl" value="Bono Crédito(1 venta): " />
 						<p:inputNumber id="priVenCreOnl" value="#{comisionBean.comisionSelected.primeraVentaCreditoOnline}"> 
 							<p:ajax update=":formComisionDialog:messagesDialogComision" />
 						</p:inputNumber>  
 						
-						<h:outputLabel for="priVenConOnl" value="Primera Venta Contado Online: " />
+						<h:outputLabel for="priVenConOnl" value="Bono Contado(1 venta): " />
 						<p:inputNumber id="priVenConOnl" value="#{comisionBean.comisionSelected.primeraVentaContadoOnline}"> 
 							<p:ajax update=":formComisionDialog:messagesDialogComision" />
 						</p:inputNumber>  
 						
-						<h:outputLabel for="bonCredOnl" value="Bono Crédito Online(2 a más ventas): " />
+						<h:outputLabel for="bonCredOnl" value="Bono Crédito(2 a más ventas): " />
 						<p:inputNumber id="bonCredOnl" value="#{comisionBean.comisionSelected.bonoCreditoOnline}"> 
 							<p:ajax update=":formComisionDialog:messagesDialogComision" />
 						</p:inputNumber>  
 						
-						<h:outputLabel for="bonContOnl" value="Bono Contado Online(2 a más ventas): " />
+						<h:outputLabel for="bonContOnl" value="Bono Contado(2 a más ventas): " />
 						<p:inputNumber id="bonContOnl" value="#{comisionBean.comisionSelected.bonoContadoOnline}"> 
 							<p:ajax update=":formComisionDialog:messagesDialogComision" />
 						</p:inputNumber> 

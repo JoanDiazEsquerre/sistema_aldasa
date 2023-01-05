@@ -60,24 +60,26 @@ public class ComisionesBean implements Serializable {
 	
 	private LazyDataModel<Team> lstTeamLazy;
 	private LazyDataModel<Usuario> lstUsuarioLazy;
+//	private LazyDataModel<Lote> lstLoteVendidoLazy;
 	
 	private Team teamSelected;
 	private Person personAsesorSelected;
 	private Comision comisionSelected;
+	private Lote loteSelected;
+
 	
 	private Date fechaIni,fechaFin;
 	private Integer comisionContado=8;
 	private Integer comisionCredito=4;
-	
-	private boolean metaEquipo;
-	
+		
 	private double totalSolesContado = 0;
 	private double totalSolesInicial = 0;
 	private double totalSolesPendiente = 0;
 	
 	
-	private List<Person> lstPersonAsesor;
+//	private List<Person> lstPersonAsesor;
 	private List<Comision> lstComision;
+	private List<Lote> lstLotesVendidos;
 	
 	
 	
@@ -95,62 +97,147 @@ public class ComisionesBean implements Serializable {
 		iniciarLazyTeam();
 	}
 	
-	public void verDetalleAsesores() {
-		lstPersonAsesor = new ArrayList<>();
-		List<Lote> lstLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), teamSelected.getPersonSupervisor(), "%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
-		int contador = 0;
-		if(!lstLotes.isEmpty()) {
-			for(Lote lote : lstLotes) {
-				Person personAsesor = lote.getPersonAssessor();
-				
-				if(contador == 0) {
-					lstPersonAsesor.add(personAsesor);
-				}else {
-					boolean encuentra = false;
-					for(Person asesor:lstPersonAsesor) {
-						if(asesor.equals(lote.getPersonAssessor())) {
-							encuentra=true;
-						}
-					}
-					
-					if(!encuentra) {
-						lstPersonAsesor.add(personAsesor);
-					}
-				}
-				contador++;
-			}
-			
-			for(Person asesor:lstPersonAsesor) {
-				int nroContado = 0;
-				int nroCredito = 0;
-				double comisionContado = 0.0;
-				double comisionCredito = 0.0;
-				double totalComision = 0.0;
-				
-				for(Lote lote : lstLotes) {
-					if(asesor.equals(lote.getPersonAssessor())) {
-						int nro = asesor.getLotesVendidos()+1;
-						if(lote.getTipoPago().equals("Contado")) {
-							nroContado = nroContado+1;
-							totalComision = totalComision + calcularComisionAsesor(lote);
-							comisionContado = comisionContado+ calcularComisionAsesor(lote);
-						}else {
-							nroCredito = nroCredito+1;
-							totalComision = totalComision + calcularComisionAsesor(lote);
-							comisionCredito = comisionCredito+ calcularComisionAsesor(lote);
-						}
-						
-						asesor.setLotesVendidos(nro); 
-						asesor.setLotesContado(nroContado);
-						asesor.setLotesCredito(nroCredito);
-						asesor.setTotalComision(totalComision); 
-						asesor.setComisionContado(comisionContado);
-						asesor.setComisionCredito(comisionCredito); 
-					}
-				}
-			}
+	public void listarLotesVendidosPorTeam() {
+		Date fechaIni = comisionSelected.getFechaIni();
+		fechaIni.setHours(0);
+		fechaIni.setMinutes(0);
+		fechaIni.setSeconds(0);
+		
+		Date fechaFin = comisionSelected.getFechaCierre();
+		fechaFin.setHours(23);
+		fechaFin.setMinutes(59);
+		fechaFin.setSeconds(59);
+		
+		if(teamSelected.getPersonSupervisor()!=null) {
+			lstLotesVendidos = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), teamSelected.getPersonSupervisor(), "%%", fechaIni, fechaFin);
 		}
+		
 	}
+	
+//	public void iniciarLazyLotesVendidos() {
+//		lstLoteVendidoLazy = new LazyDataModel<Lote>() {
+//			private List<Lote> datasource;
+//
+//            @Override
+//            public void setRowIndex(int rowIndex) {
+//                if (rowIndex == -1 || getPageSize() == 0) {
+//                    super.setRowIndex(-1);
+//                } else {
+//                    super.setRowIndex(rowIndex % getPageSize());
+//                }
+//            }
+//
+//            @Override
+//            public Lote getRowData(String rowKey) {
+//                int intRowKey = Integer.parseInt(rowKey);
+//                for (Lote lote : datasource) {
+//                    if (lote.getId() == intRowKey) {
+//                        return lote;
+//                    }
+//                }
+//                return null;
+//            }
+//
+//            @Override
+//            public String getRowKey(Lote lote) {
+//                return String.valueOf(lote.getId());
+//            }
+//
+//			@Override
+//			public List<Lote> load(int first, int pageSize, Map<String, SortMeta> sortBy,Map<String, FilterMeta> filterBy) {
+//				
+//				
+//                                
+//                Sort sort=Sort.by("numberLote").ascending();
+//                if(sortBy!=null) {
+//                	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
+//                	    System.out.println(entry.getKey() + "/" + entry.getValue());
+//                	   if(entry.getValue().getOrder().isAscending()) {
+//                		   sort = Sort.by(entry.getKey()).descending();
+//                	   }else {
+//                		   sort = Sort.by(entry.getKey()).ascending();
+//                	   }
+//                	}
+//                }
+//                
+//                Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
+//                
+//				Page<Lote> pageLote;
+//				
+//				Date fechaIni = comisionSelected.getFechaIni();
+//				fechaIni.setHours(0);
+//				fechaIni.setMinutes(0);
+//				fechaIni.setSeconds(0);
+//				
+//				Date fechaFin = comisionSelected.getFechaCierre();
+//				fechaFin.setHours(23);
+//				fechaFin.setMinutes(59);
+//				fechaFin.setSeconds(59);
+//
+//				pageLote= loteService.findAllByStatusLikeAndPersonSupervisorDniLikeAndPersonAssessorDniLikeAndFechaVendidoBetween("%"+EstadoLote.VENDIDO.getName()+"%","%"+teamSelected.getPersonSupervisor().getDni()+"%", "%%", fechaIni, fechaFin, pageable);
+//				
+//				setRowCount((int) pageLote.getTotalElements());
+//				return datasource = pageLote.getContent();
+//			}
+//		};
+//	}
+	
+//	public void verDetalleAsesores() {
+//		lstPersonAsesor = new ArrayList<>();
+//		List<Lote> lstLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), teamSelected.getPersonSupervisor(), "%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+//		int contador = 0;
+//		if(!lstLotes.isEmpty()) {
+//			for(Lote lote : lstLotes) {
+//				Person personAsesor = lote.getPersonAssessor();
+//				
+//				if(contador == 0) {
+//					lstPersonAsesor.add(personAsesor);
+//				}else {
+//					boolean encuentra = false;
+//					for(Person asesor:lstPersonAsesor) {
+//						if(asesor.equals(lote.getPersonAssessor())) {
+//							encuentra=true;
+//						}
+//					}
+//					
+//					if(!encuentra) {
+//						lstPersonAsesor.add(personAsesor);
+//					}
+//				}
+//				contador++;
+//			}
+//			
+//			for(Person asesor:lstPersonAsesor) {
+//				int nroContado = 0;
+//				int nroCredito = 0;
+//				double comisionContado = 0.0;
+//				double comisionCredito = 0.0;
+//				double totalComision = 0.0;
+//				
+//				for(Lote lote : lstLotes) {
+//					if(asesor.equals(lote.getPersonAssessor())) {
+//						int nro = asesor.getLotesVendidos()+1;
+//						if(lote.getTipoPago().equals("Contado")) {
+//							nroContado = nroContado+1;
+//							totalComision = totalComision + calcularComisionAsesor(lote);
+//							comisionContado = comisionContado+ calcularComisionAsesor(lote);
+//						}else {
+//							nroCredito = nroCredito+1;
+//							totalComision = totalComision + calcularComisionAsesor(lote);
+//							comisionCredito = comisionCredito+ calcularComisionAsesor(lote);
+//						}
+//						
+//						asesor.setLotesVendidos(nro); 
+//						asesor.setLotesContado(nroContado);
+//						asesor.setLotesCredito(nroCredito);
+//						asesor.setTotalComision(totalComision); 
+//						asesor.setComisionContado(comisionContado);
+//						asesor.setComisionCredito(comisionCredito); 
+//					}
+//				}
+//			}
+//		}
+//	}
 	
 	public String asignarTipoBono(Person asesor) {
 		String tipoBono = "Ninguno";
@@ -349,16 +436,17 @@ public class ComisionesBean implements Serializable {
 	}
 	
 	public double calcularComisionSupervior(Lote lote) {
+		int lotesVendidos = calcularProcentajeMeta(teamSelected, "SI");
+		
 		double comision = 0;
 		double porcSupervisor = Double.parseDouble(comisionSelected.getComisionSupervisor()+"") / 100;
 		double porcSupervisorMeta = Double.parseDouble(comisionSelected.getComisionMetaSupervisor()+"") / 100;
 		
-		if(metaEquipo) {
+		if(lotesVendidos >= 20) {
 			comision = lote.getMontoVenta() * porcSupervisorMeta;
 		}else {
 			comision = lote.getMontoVenta() * porcSupervisor;
 		}
-		
 
 		return comision;
 	}
@@ -804,12 +892,12 @@ public class ComisionesBean implements Serializable {
 	public void setPersonAsesorSelected(Person personAsesorSelected) {
 		this.personAsesorSelected = personAsesorSelected;
 	}
-	public List<Person> getLstPersonAsesor() {
-		return lstPersonAsesor;
-	}
-	public void setLstPersonAsesor(List<Person> lstPersonAsesor) {
-		this.lstPersonAsesor = lstPersonAsesor;
-	}
+//	public List<Person> getLstPersonAsesor() {
+//		return lstPersonAsesor;
+//	}
+//	public void setLstPersonAsesor(List<Person> lstPersonAsesor) {
+//		this.lstPersonAsesor = lstPersonAsesor;
+//	}
 	public LoteService getLoteService() {
 		return loteService;
 	}
@@ -846,55 +934,55 @@ public class ComisionesBean implements Serializable {
 	public void setSdfY2(SimpleDateFormat sdfY2) {
 		this.sdfY2 = sdfY2;
 	}
-	public boolean isMetaEquipo() {
-		return metaEquipo;
-	}
-	public void setMetaEquipo(boolean metaEquipo) {
-		this.metaEquipo = metaEquipo;
-	}
-
 	public EmpleadoService getEmpleadoService() {
 		return empleadoService;
 	}
-
 	public void setEmpleadoService(EmpleadoService empleadoService) {
 		this.empleadoService = empleadoService;
 	}
-
 	public LazyDataModel<Usuario> getLstUsuarioLazy() {
 		return lstUsuarioLazy;
 	}
-
 	public void setLstUsuarioLazy(LazyDataModel<Usuario> lstUsuarioLazy) {
 		this.lstUsuarioLazy = lstUsuarioLazy;
 	}
-
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
 	public double getTotalSolesContado() {
 		return totalSolesContado;
 	}
-
 	public void setTotalSolesContado(double totalSolesContado) {
 		this.totalSolesContado = totalSolesContado;
 	}
-
 	public double getTotalSolesInicial() {
 		return totalSolesInicial;
 	}
-
 	public void setTotalSolesInicial(double totalSolesInicial) {
 		this.totalSolesInicial = totalSolesInicial;
 	}
-
 	public double getTotalSolesPendiente() {
 		return totalSolesPendiente;
 	}
-
 	public void setTotalSolesPendiente(double totalSolesPendiente) {
 		this.totalSolesPendiente = totalSolesPendiente;
 	}
-	
+//	public LazyDataModel<Lote> getLstLoteVendidoLazy() {
+//		return lstLoteVendidoLazy;
+//	}
+//	public void setLstLoteVendidoLazy(LazyDataModel<Lote> lstLoteVendidoLazy) {
+//		this.lstLoteVendidoLazy = lstLoteVendidoLazy;
+//	}
+	public Lote getLoteSelected() {
+		return loteSelected;
+	}
+	public void setLoteSelected(Lote loteSelected) {
+		this.loteSelected = loteSelected;
+	}
+	public List<Lote> getLstLotesVendidos() {
+		return lstLotesVendidos;
+	}
+	public void setLstLotesVendidos(List<Lote> lstLotesVendidos) {
+		this.lstLotesVendidos = lstLotesVendidos;
+	}
 }

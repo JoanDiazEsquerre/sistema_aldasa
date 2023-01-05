@@ -93,6 +93,10 @@ public class Lote {
 	@JoinColumn(name="idpersonsupervisor")
 	private Person personSupervisor;
 	
+	private transient double comisionAsesor;
+	private transient double comisionSupervisor;
+	private transient double comisionSubgerente;
+	
 	
 	public Integer getId() {
 		return id;
@@ -256,8 +260,24 @@ public class Lote {
 	public void setPersonSupervisor(Person personSupervisor) {
 		this.personSupervisor = personSupervisor;
 	}
-	
-	
+	public double getComisionAsesor() {
+		return comisionAsesor;
+	}
+	public void setComisionAsesor(double comisionAsesor) {
+		this.comisionAsesor = comisionAsesor;
+	}
+	public double getComisionSupervisor() {
+		return comisionSupervisor;
+	}
+	public void setComisionSupervisor(double comisionSupervisor) {
+		this.comisionSupervisor = comisionSupervisor;
+	}
+	public double getComisionSubgerente() {
+		return comisionSubgerente;
+	}
+	public void setComisionSubgerente(double comisionSubgerente) {
+		this.comisionSubgerente = comisionSubgerente;
+	}
 	@Override
     public boolean equals(Object other) {
         return (other instanceof Lote) && (id != null)

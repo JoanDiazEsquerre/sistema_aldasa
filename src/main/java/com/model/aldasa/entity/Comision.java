@@ -85,6 +85,9 @@ public class Comision {
 	
 	@Column(name="basicoasesorexterno")
 	private Double basicoAsesorExterno;
+	
+	@Column(name="comisionsupervisoronline")
+	private Double comisionSupervisorOnline;
 
 	
 	public Integer getId() {
@@ -237,6 +240,13 @@ public class Comision {
 	public void setBasicoAsesorExterno(Double basicoAsesorExterno) {
 		this.basicoAsesorExterno = basicoAsesorExterno;
 	}
+	public Double getComisionSupervisorOnline() {
+		return comisionSupervisorOnline;
+	}
+	public void setComisionSupervisorOnline(Double comisionSupervisorOnline) {
+		this.comisionSupervisorOnline = comisionSupervisorOnline;
+	}
+	
 	@Override
     public boolean equals(Object other) {
         return (other instanceof Comision) && (id != null)
@@ -251,6 +261,4 @@ public class Comision {
             ? (this.getClass().hashCode() + id.hashCode())
             : super.hashCode();
     }
-	
-
 }

@@ -146,11 +146,12 @@ public class ComisionBean implements Serializable {
 		comisionSelected.setMetaOnline(10);
 		comisionSelected.setPrimeraVentaCreditoOnline(300.00);
 		comisionSelected.setPrimeraVentaContadoOnline(500.00);
-		comisionSelected.setBonoCreditoOnline(400.00);
+		comisionSelected.setBonoCreditoOnline(400.00); 
 		comisionSelected.setBonoContadoOnline(400.00);
 		comisionSelected.setEstado(true);
 		comisionSelected.setMetaAsesorExterno(5); 
 		comisionSelected.setBasicoAsesorExterno(1025.00); 
+		comisionSelected.setComisionSupervisorOnline(0.5);
 	}
 	
 	public void modifyComision( ) {
