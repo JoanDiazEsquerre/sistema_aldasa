@@ -21,7 +21,61 @@ public class Comisiones {
     @JoinColumn(name="idlote")
     private Lote lote;
 	
-	@Column(name="monthentry")
-	private String monthEntry;
+	@Column(name="comisionasesor")
+	private double comisionAsesor;
+	
+	@Column(name="comisionsupervisor")
+	private double comisionSupervisor;
+	
+	@Column(name="comisionsubgerente")
+	private double comisionSubgerente;
+	
+	
+	
+	
+	
+	
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Lote getLote() {
+		return lote;
+	}
+
+	public void setLote(Lote lote) {
+		this.lote = lote;
+	}
+
+	public double getComisionAsesor() {
+		return comisionAsesor;
+	}
+
+	public void setComisionAsesor(double comisionAsesor) {
+		this.comisionAsesor = comisionAsesor;
+	}
+
+	public double getComisionSupervisor() {
+		return comisionSupervisor;
+	}
+
+	public void setComisionSupervisor(double comisionSupervisor) {
+		this.comisionSupervisor = comisionSupervisor;
+	}
+
+	public double getComisionSubgerente() {
+		return comisionSubgerente;
+	}
+
+	public void setComisionSubgerente(double comisionSubgerente) {
+		this.comisionSubgerente = comisionSubgerente;
+	}
+	
+	
 
 }
