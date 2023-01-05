@@ -34,10 +34,12 @@ public class NavegacionBean implements Serializable  {
 	private int idSupervisor = Perfiles.SUPERVISOR.getId();
 	private int idAsesor = Perfiles.ASESOR.getId();
 	private int idAsistentenAdmin = Perfiles.ASISTENTE_ADMINISTRATIVO.getId();
+	private int idAsistencia = Perfiles.ASISTENCIA.getId();
+	private int idRecursosHumanos = Perfiles.RECURSOS_HUMANOS.getId();
 	
 	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
-					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia;
+					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion;
 	
 	private int[] permisoProspectos= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoProspeccion= {idAdministrador,idSupervisor,idAsesor};
@@ -48,17 +50,17 @@ public class NavegacionBean implements Serializable  {
 	private int[] permisoPerfiles= {idAdministrador};
 	private int[] permisoProyectos= {idAdministrador,idAsistentenAdmin};
 	private int[] permisoEquipos= {idAdministrador};
-	private int[] permisoCambiarConstrasenia= {idAdministrador,idSupervisor,idAsesor, idAsistentenAdmin};
+	private int[] permisoCambiarConstrasenia= {idAdministrador,idSupervisor,idAsesor, idAsistentenAdmin,idRecursosHumanos};
 	private int[] permisoReporteAcciones= {idAdministrador,idSupervisor,idAsesor,idAsistentenAdmin};
 	private int[] permisoManzanas= {idAdministrador,idAsistentenAdmin};
 	private int[] permisoLotes= {idAdministrador,idSupervisor,idAsesor,idAsistentenAdmin};
 	private int[] permisoComisiones= {idAdministrador};
 	private int[] permisoComision= {idAdministrador};
-	private int[] permisoEmpleado= {idAdministrador};
+	private int[] permisoEmpleado= {idAdministrador, idRecursosHumanos};
 	private int[] permisoReporteLotes= {idAdministrador};
-	private int[] permisoAsistencia= {idAdministrador};
-	private int[] permisoReporteAsistencia= {idAdministrador};
-
+	private int[] permisoAsistencia= {idAdministrador, idAsistencia, idRecursosHumanos};
+	private int[] permisoReporteAsistencia= {idAdministrador, idRecursosHumanos};
+	private int[] permisoRequerimientoSeparacion= {idAdministrador,idSupervisor,idAsesor, idAsistentenAdmin};
 
 	@PostConstruct
 	public void init() {
@@ -78,8 +80,9 @@ public class NavegacionBean implements Serializable  {
 		subMenuProspeccion= validaPermiso(permisoProspeccion);
 		subMenuAgenda= validaPermiso(permisoAgenda);
 		subMenuSimulador= validaPermiso(permisoSimulador);
-		
-		if(subMenuProspectos || subMenuProspeccion || subMenuAgenda || subMenuSimulador) {
+		subMenuRequerimientoSeparacion= validaPermiso(permisoRequerimientoSeparacion);
+	
+		if(subMenuProspectos || subMenuProspeccion || subMenuAgenda || subMenuSimulador || subMenuRequerimientoSeparacion) {
 			menuProspeccion=true;
 		}
 		//*******************************************************************************
@@ -141,6 +144,9 @@ public class NavegacionBean implements Serializable  {
 	    }
 		public void getProcesoSimuladorPage() {
 		       ruta="modulos/prospeccion/procesos/simulador.xhtml";
+		}
+		public void getProcesoRequerimientoSeparacionPage() {
+		       ruta="modulos/prospeccion/procesos/requerimientoSeparacion.xhtml";
 		}
 		public void getProcesoAgendaPage() {
 	       ruta="modulos/prospeccion/procesos/agenda.xhtml";
@@ -507,6 +513,30 @@ public class NavegacionBean implements Serializable  {
 	}
 	public void setPermisoReporteAsistencia(int[] permisoReporteAsistencia) {
 		this.permisoReporteAsistencia = permisoReporteAsistencia;
+	}
+	public int getIdAsistencia() {
+		return idAsistencia;
+	}
+	public void setIdAsistencia(int idAsistencia) {
+		this.idAsistencia = idAsistencia;
+	}
+	public int getIdRecursosHumanos() {
+		return idRecursosHumanos;
+	}
+	public void setIdRecursosHumanos(int idRecursosHumanos) {
+		this.idRecursosHumanos = idRecursosHumanos;
+	}
+	public boolean isSubMenuRequerimientoSeparacion() {
+		return subMenuRequerimientoSeparacion;
+	}
+	public void setSubMenuRequerimientoSeparacion(boolean subMenuRequerimientoSeparacion) {
+		this.subMenuRequerimientoSeparacion = subMenuRequerimientoSeparacion;
+	}
+	public int[] getPermisoRequerimientoSeparacion() {
+		return permisoRequerimientoSeparacion;
+	}
+	public void setPermisoRequerimientoSeparacion(int[] permisoRequerimientoSeparacion) {
+		this.permisoRequerimientoSeparacion = permisoRequerimientoSeparacion;
 	}
 	
 	

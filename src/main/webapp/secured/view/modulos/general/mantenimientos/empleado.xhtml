@@ -41,8 +41,7 @@
 	                      #{row +1}
 	        </p:column>
 	        
-			<p:column headerText="Nombre del empleado" sortBy="#{empleado.person.surnames}"
-				filterBy="#{empleado.person.surnames}" filterMatchMode="contains">
+			<p:column headerText="Nombre del empleado" sortBy="#{empleado.person.surnames}" filterBy="#{empleado.person.surnames}" filterMatchMode="contains">
 				<h:outputText value="#{empleado.person.surnames} #{empleado.person.names}" />
 			</p:column>
 			<p:column headerText="Fecha Ingreso" filterMatchMode="contains">

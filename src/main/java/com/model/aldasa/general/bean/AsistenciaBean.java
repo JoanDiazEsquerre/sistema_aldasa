@@ -107,7 +107,7 @@ public class AsistenciaBean implements Serializable {
 					return;
 				}else {
 					
-					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Confirmación ", "Se guardo su ENTRADA correctamente, empleado " + empleado.getPerson().getSurnames() + " " + empleado.getPerson().getNames() + ".");
+					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Confirmación ", "Se guardo su ENTRADA correctamente, empleado " + empleado.getPerson().getSurnames() + " " + empleado.getPerson().getNames() + " y se ha tomado una foto automaticamente para verificar que seas la verdadera persona.");
 					PrimeFaces.current().dialog().showMessageDynamic(message);
 					textoIngresado="";
 					return;
@@ -139,7 +139,7 @@ public class AsistenciaBean implements Serializable {
 						return;
 					}else {
 						
-						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Confirmación ", "Se guardo su SALIDA correctamente, empleado " + empleado.getPerson().getSurnames() + " " + empleado.getPerson().getNames() + ".");
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Confirmación ", "Se guardo su SALIDA correctamente, empleado " + empleado.getPerson().getSurnames() + " " + empleado.getPerson().getNames() + " y se ha tomado una foto automaticamente para verificar que seas la verdadera persona.");
 						PrimeFaces.current().dialog().showMessageDynamic(message);
 						textoIngresado="";
 						return;
@@ -156,7 +156,7 @@ public class AsistenciaBean implements Serializable {
 						return;
 					}else {
 						
-						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Confirmación ", "Se guardo su ENTRADA correctamente, empleado " + empleado.getPerson().getSurnames() + " " + empleado.getPerson().getNames() + ".");
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Confirmación ", "Se guardo su ENTRADA correctamente, empleado " + empleado.getPerson().getSurnames() + " " + empleado.getPerson().getNames() + " y se ha tomado una foto automaticamente para verificar que seas la verdadera persona.");
 						PrimeFaces.current().dialog().showMessageDynamic(message);
 						textoIngresado="";
 						return;
