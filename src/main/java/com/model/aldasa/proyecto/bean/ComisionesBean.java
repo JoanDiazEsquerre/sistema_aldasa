@@ -108,9 +108,23 @@ public class ComisionesBean implements Serializable {
 		fechaFin.setMinutes(59);
 		fechaFin.setSeconds(59);
 		
-		if(teamSelected.getPersonSupervisor()!=null) {
-			lstLotesVendidos = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), teamSelected.getPersonSupervisor(), "%%", fechaIni, fechaFin);
+		if(teamSelected.getName().equals("ONLINE")) {
+			
+		}else if(teamSelected.getName().equals("EXTERNOS")){
+			
+		}else if(teamSelected.getName().equals("INTERNOS")) {
+			
+		}else {
+			if(teamSelected.getPersonSupervisor()!=null) {
+				lstLotesVendidos = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), teamSelected.getPersonSupervisor(), "%%", fechaIni, fechaFin);
+			}
 		}
+		
+		
+		
+		
+		
+		
 		
 	}
 	
