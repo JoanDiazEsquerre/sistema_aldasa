@@ -128,7 +128,7 @@
 	</h:form>
 	
 	<p:dialog modal="true" responsive="true" dynamic="true" closeOnEscape="true" id="dialogLote" header="#{loteBean.tituloDialog}" widgetVar="loteDialog" resizable="false" closable="true"
-		appendTo="@(body)" style="width:auto">
+		appendTo="@(body)" style="width:auto" rendered="#{navegacionBean.usuarioLogin.profile.id ne 2 and navegacionBean.usuarioLogin.profile.id ne 3}">
 		<h:form id="formLoteDialog">
 			<h:outputLabel value="#{loteBean.nombreLoteSelected}" style="color: #007d4c;font-weight: bolder;" id="nomLoteSelect" />
 		

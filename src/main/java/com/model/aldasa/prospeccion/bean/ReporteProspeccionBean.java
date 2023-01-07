@@ -150,6 +150,8 @@ public class ReporteProspeccionBean extends BaseBean implements Serializable {
 			lote.setFechaSeparacion(new Date());
 			lote.setFechaVencimiento(sumarDiasAFecha(new Date(), 7));
 			lote.setPersonVenta(prospectionDetailSelected.getProspection().getProspect().getPerson());
+			lote.setPersonAssessor(prospectionDetailSelected.getProspection().getPersonAssessor());
+			lote.setPersonSupervisor(prospectionDetailSelected.getProspection().getPersonSupervisor());
 			
 			lote = loteService.save(lote);
 			if(lote != null) {

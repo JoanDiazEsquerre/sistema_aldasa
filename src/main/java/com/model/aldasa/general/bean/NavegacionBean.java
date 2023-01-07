@@ -39,7 +39,7 @@ public class NavegacionBean implements Serializable  {
 	
 	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
-					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion;
+					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia;
 	
 	private int[] permisoProspectos= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoProspeccion= {idAdministrador,idSupervisor,idAsesor};
@@ -60,7 +60,6 @@ public class NavegacionBean implements Serializable  {
 	private int[] permisoReporteLotes= {idAdministrador};
 	private int[] permisoAsistencia= {idAdministrador, idAsistencia, idRecursosHumanos};
 	private int[] permisoReporteAsistencia= {idAdministrador, idRecursosHumanos};
-	private int[] permisoRequerimientoSeparacion= {idAdministrador,idSupervisor,idAsesor, idAsistentenAdmin};
 
 	@PostConstruct
 	public void init() {
@@ -80,9 +79,8 @@ public class NavegacionBean implements Serializable  {
 		subMenuProspeccion= validaPermiso(permisoProspeccion);
 		subMenuAgenda= validaPermiso(permisoAgenda);
 		subMenuSimulador= validaPermiso(permisoSimulador);
-		subMenuRequerimientoSeparacion= validaPermiso(permisoRequerimientoSeparacion);
 	
-		if(subMenuProspectos || subMenuProspeccion || subMenuAgenda || subMenuSimulador || subMenuRequerimientoSeparacion) {
+		if(subMenuProspectos || subMenuProspeccion || subMenuAgenda || subMenuSimulador) {
 			menuProspeccion=true;
 		}
 		//*******************************************************************************
@@ -145,9 +143,7 @@ public class NavegacionBean implements Serializable  {
 		public void getProcesoSimuladorPage() {
 		       ruta="modulos/prospeccion/procesos/simulador.xhtml";
 		}
-		public void getProcesoRequerimientoSeparacionPage() {
-		       ruta="modulos/prospeccion/procesos/requerimientoSeparacion.xhtml";
-		}
+		
 		public void getProcesoAgendaPage() {
 	       ruta="modulos/prospeccion/procesos/agenda.xhtml";
 
@@ -525,18 +521,6 @@ public class NavegacionBean implements Serializable  {
 	}
 	public void setIdRecursosHumanos(int idRecursosHumanos) {
 		this.idRecursosHumanos = idRecursosHumanos;
-	}
-	public boolean isSubMenuRequerimientoSeparacion() {
-		return subMenuRequerimientoSeparacion;
-	}
-	public void setSubMenuRequerimientoSeparacion(boolean subMenuRequerimientoSeparacion) {
-		this.subMenuRequerimientoSeparacion = subMenuRequerimientoSeparacion;
-	}
-	public int[] getPermisoRequerimientoSeparacion() {
-		return permisoRequerimientoSeparacion;
-	}
-	public void setPermisoRequerimientoSeparacion(int[] permisoRequerimientoSeparacion) {
-		this.permisoRequerimientoSeparacion = permisoRequerimientoSeparacion;
 	}
 	
 	

@@ -100,8 +100,6 @@ public class ProspeccionBean extends BaseBean{
 	@ManagedProperty(value = "#{loteService}")
 	private LoteService loteService;
 	
-	
-	
 	@ManagedProperty(value = "#{manzanaService}")
 	private ManzanaService manzanaService;
 	

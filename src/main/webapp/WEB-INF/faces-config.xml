@@ -469,5 +469,7 @@
 			<value>#{loteService}</value>
 		</managed-property>
 	</managed-bean>
+	
 		
 </faces-config>
+
