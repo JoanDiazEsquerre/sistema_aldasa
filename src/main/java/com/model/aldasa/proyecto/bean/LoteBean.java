@@ -2,6 +2,7 @@ package com.model.aldasa.proyecto.bean;
 
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,6 +28,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.model.aldasa.entity.Comision;
+import com.model.aldasa.entity.Comisiones;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Manzana;
 import com.model.aldasa.entity.Person;
@@ -34,6 +37,7 @@ import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.general.bean.NavegacionBean;
+import com.model.aldasa.service.ComisionService;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.ManzanaService;
 import com.model.aldasa.service.PersonService;
@@ -70,6 +74,9 @@ public class LoteBean implements Serializable{
 	@ManagedProperty(value = "#{teamService}")
 	private TeamService teamService; 
 	
+	@ManagedProperty(value = "#{comisionService}")
+	private ComisionService comisionService;
+	
 	private List<Lote> lstLotes;
 	private List<Person> lstPerson;
 	
@@ -97,6 +104,11 @@ public class LoteBean implements Serializable{
 	private List<Project> lstProject = new ArrayList<>();
 	private List<Team> lstTeam;
 	private List<Person> lstPersonAsesor = new ArrayList<>();
+	
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");  
+	SimpleDateFormat sdfM = new SimpleDateFormat("MM");  
+	SimpleDateFormat sdfY = new SimpleDateFormat("yyyy");  
+	SimpleDateFormat sdfY2 = new SimpleDateFormat("yy"); 
 
 	
 	@PostConstruct
@@ -389,8 +401,21 @@ public class LoteBean implements Serializable{
 		if (tituloDialog.equals("NUEVO LOTE")) {
 			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProject(loteSelected.getNumberLote(), loteSelected.getManzana(), loteSelected.getProject());
 			if (validarExistencia == null) {
-				loteService.save(loteSelected);
+				Lote lote = loteService.save(loteSelected);
+				if (loteSelected.getStatus().equals(EstadoLote.VENDIDO.getName())) {
+					Comision comisionSelected = comisionService.findByEstadoAndCodigo(true, sdfM.format(new Date())+sdfY2.format(new Date()));
+					
+					Usuario usuarioAsesor = usuarioService.findByPerson(lote.getPersonAssessor());
+					
+					Comisiones comision = new Comisiones();
+					comision.setLote(lote); 
+					comision.setComisionAsesor(lote.getPersonAssessor());
+
+				}
 				newLote();
+				
+				
+				
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
 				fechaSeparacion = null;
 				fechaVencimiento = null;
