@@ -51,7 +51,7 @@
 			<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{reporteProspeccionBean.procesarExcel}"
                          icon="pi pi-arrow-down" styleClass="mr-2">
             <p:fileDownload value="#{reporteProspeccionBean.fileDes}"/> 
-        </p:commandButton>
+       		</p:commandButton>
 		</h:panelGrid>
 		
 		<p:dataTable var="det" id="idTableDet" value="#{reporteProspeccionBean.lstProspectionDetailReporte}" rowIndexVar="row" paginator="true" rows="5" size="small" style="width:120%"

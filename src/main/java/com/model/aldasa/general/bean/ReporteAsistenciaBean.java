@@ -99,9 +99,9 @@ public class ReporteAsistenciaBean implements Serializable {
 	public void newAsistencia() {
 		tituloDialog = "NUEVA ASISTENCIA";
 		asistenciaSelected = new Asistencia();
-		asistenciaSelected.setEmpleado(asistenciaSelected.getEmpleado());
-		asistenciaSelected.setTipo(tipo);
-		asistenciaSelected.setHora(asistenciaSelected.getHora()); 
+		asistenciaSelected.setEmpleado(null);
+		asistenciaSelected.setTipo("");
+		asistenciaSelected.setHora(null); 
 	}
 	
 	public void saveAsistencia() {
@@ -118,6 +118,10 @@ public class ReporteAsistenciaBean implements Serializable {
 			return ;
 		}
 		Asistencia asistencia = asistenciaService.save(asistenciaSelected);
+		
+		if(tituloDialog.equals("NUEVA ASISTENCIA")) {
+			newAsistencia();
+		}
 		
 		if (asistencia == null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo guardar."));

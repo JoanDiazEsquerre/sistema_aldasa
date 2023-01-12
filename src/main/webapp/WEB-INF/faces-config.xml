@@ -341,6 +341,14 @@
 			<property-name>teamService</property-name>
 			<value>#{teamService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>comisionService</property-name>
+			<value>#{comisionService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>comisionesService</property-name>
+			<value>#{comisionesService}</value>
+		</managed-property>
 	</managed-bean>
 	   
 	<managed-bean>
@@ -364,8 +372,16 @@
 			<value>#{comisionService}</value>
 		</managed-property>
 		<managed-property>
+			<property-name>comisionesService</property-name>
+			<value>#{comisionesService}</value>
+		</managed-property>
+		<managed-property>
 			<property-name>empleadoService</property-name>
 			<value>#{empleadoService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>personService</property-name>
+			<value>#{personService}</value>
 		</managed-property>
 	</managed-bean>
 	

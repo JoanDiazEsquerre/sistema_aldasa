@@ -139,31 +139,31 @@
 					</p:messages>
 					<h:panelGrid id="grid" columns="4">
 						<h:outputLabel value="Número de Lote: " for="nombreLote" />
-						<p:inputText value="#{loteBean.loteSelected.numberLote}" style="margin:5px; width:220px" id="nombreLote" maxlength="10" disabled="#{!loteBean.modificar}" ><p:ajax update="messages" /> </p:inputText>
+						<p:inputText value="#{loteBean.loteSelected.numberLote}" style="margin:5px; width:220px" id="nombreLote" maxlength="10" > <p:ajax update="messages" /> </p:inputText>
 					
 						<h:outputLabel for="manzana" value="Manzana: " />
-						<p:selectOneMenu style="margin:5px; width:220px" id="manzana" value="#{loteBean.loteSelected.manzana}" disabled="#{!loteBean.modificar}" converter="#{loteBean.conversorManzana}"> 
+						<p:selectOneMenu style="margin:5px; width:220px" id="manzana" value="#{loteBean.loteSelected.manzana}" converter="#{loteBean.conversorManzana}"> 
 							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
 							<f:selectItems value="#{loteBean.lstManzana}" var="manz" itemLabel="#{manz.name}" itemValue="#{manz}"/>
 							<p:ajax update="messages" />
 						</p:selectOneMenu>
 						
 						<h:outputLabel for="amplia" value="Ampliación: " />
-						<p:selectOneMenu style="margin:5px; width:220px" id="amplia" value="#{loteBean.loteSelected.ampliacion}" disabled="#{!loteBean.modificar}">
+						<p:selectOneMenu style="margin:5px; width:220px" id="amplia" value="#{loteBean.loteSelected.ampliacion}" >
 							<f:selectItem itemLabel="No" itemValue="N"/>
 							<f:selectItem itemLabel="Si" itemValue="S"/>
 							<p:ajax update="messages" />
 						</p:selectOneMenu>
 					
 						<h:outputLabel for="proyecto" value="Proyecto:" />
-						<p:selectOneMenu style="margin:5px; width:220px" id="proyecto" value="#{loteBean.loteSelected.project}" converter="#{loteBean.conversorProject}" disabled="#{!loteBean.modificar}">
+						<p:selectOneMenu style="margin:5px; width:220px" id="proyecto" value="#{loteBean.loteSelected.project}" converter="#{loteBean.conversorProject}" >
 							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
 							<f:selectItems value="#{loteBean.lstProject}" var="proy" itemLabel="#{proy.name}" itemValue="#{proy}"/>
 							<p:ajax update="messages" />
 						</p:selectOneMenu>
 						
 						<h:outputLabel for="option" value="Estado:" />
-						<p:selectOneMenu id="option" value="#{loteBean.loteSelected.status}" style="margin:5px; width:220px" disabled="#{!loteBean.modificar}">
+						<p:selectOneMenu id="option" value="#{loteBean.loteSelected.status}"  style="margin:5px; width:220px" >
 							<f:selectItem itemLabel="Disponible" itemValue="Disponible" />
 							<f:selectItem itemLabel="Separado" itemValue="Separado"/>
 							<f:selectItem itemLabel="Vendido" itemValue="Vendido"/>
@@ -172,12 +172,12 @@
 						</p:selectOneMenu>
 						
 						<h:outputLabel id="lblFechaSep" for="fechaSeparado" value="Fecha Separación:" rendered="#{loteBean.loteSelected.status eq 'Separado'}"/>
-						<p:datePicker id="fechaSeparado" style="margin:5px; width:220px" value="#{loteBean.fechaSeparacion}" rendered="#{loteBean.loteSelected.status eq 'Separado'}" disabled="#{!loteBean.modificar}"> 
+						<p:datePicker id="fechaSeparado" style="margin:5px; width:220px" value="#{loteBean.fechaSeparacion}" rendered="#{loteBean.loteSelected.status eq 'Separado'}" > 
 							<p:ajax listener="#{loteBean.calcularFechaVencimiento}" update=":formLoteDialog:tabOpciones:venc" />
 						</p:datePicker>
 						
 						<h:outputLabel id="lblFechaVenc" for="venc" value="Fecha Vencimiento:" rendered="#{loteBean.loteSelected.status eq 'Separado'}"/>
-						<p:datePicker id="venc" style="margin:5px; width:220px" value="#{loteBean.fechaVencimiento}" rendered="#{loteBean.loteSelected.status eq 'Separado'}" disabled="#{!loteBean.modificar}"/>
+						<p:datePicker id="venc" style="margin:5px; width:220px" value="#{loteBean.fechaVencimiento}" rendered="#{loteBean.loteSelected.status eq 'Separado'}" />
 						
 						<h:outputLabel for="optionTeam" value="Equipo:" rendered="#{loteBean.loteSelected.status eq 'Separado' or loteBean.loteSelected.status eq 'Vendido'}" />						
 						<p:selectOneMenu id="optionTeam" value="#{loteBean.teamSelected}" rendered="#{loteBean.loteSelected.status eq 'Separado' or loteBean.loteSelected.status eq 'Vendido'}" converter="#{loteBean.conversorTeam}" style="margin:5px; width:220px">
@@ -192,52 +192,52 @@
 						   	forceSelection="true" style="margin:5px; width:220px" />
 						   	
 					</h:panelGrid>
-					<p:commandButton value="Guardar" action="#{loteBean.saveLote()}" update=":form:idTableLote :formLoteDialog" rendered="#{loteBean.modificar}" />
+					<p:commandButton value="Guardar" action="#{loteBean.saveLote()}" update=":form:idTableLote :formLoteDialog" />
 				</p:tab>
 				<p:tab title="Medidas" >
 					<h:panelGrid id="gridMedidas" columns="2">
 						<h:outputLabel value="Medida frontal (ML): " for="medidaFrontal" />
-						<p:inputNumber id="medidaFrontal" value="#{loteBean.loteSelected.medidaFrontal}" modifyValueOnWheel="false" disabled="#{!loteBean.modificar}" ><p:ajax listener="#{loteBean.calcularAreaPerimetro}" update="messages,areaLote,perimetro" /> </p:inputNumber>
+						<p:inputNumber id="medidaFrontal" value="#{loteBean.loteSelected.medidaFrontal}" modifyValueOnWheel="false"  ><p:ajax listener="#{loteBean.calcularAreaPerimetro}" update="messages,areaLote,perimetro" /> </p:inputNumber>
 						
 						<h:outputLabel value="Medida costado derecho (ML): " for="medidaCostDerecho" />
-						<p:inputNumber id="medidaCostDerecho" value="#{loteBean.loteSelected.medidaDerecha}" modifyValueOnWheel="false" disabled="#{!loteBean.modificar}"><p:ajax listener="#{loteBean.calcularAreaPerimetro}" update="messages,areaLote,perimetro" /> </p:inputNumber>	
+						<p:inputNumber id="medidaCostDerecho" value="#{loteBean.loteSelected.medidaDerecha}" modifyValueOnWheel="false" ><p:ajax listener="#{loteBean.calcularAreaPerimetro}" update="messages,areaLote,perimetro" /> </p:inputNumber>	
 						
 						<h:outputLabel value="Medida costado izquierdo (ML): " for="medidaCostIzq" />
-						<p:inputNumber id="medidaCostIzq" value="#{loteBean.loteSelected.medidaIzquierda}" modifyValueOnWheel="false" disabled="#{!loteBean.modificar}"><p:ajax listener="#{loteBean.calcularAreaPerimetro}" update="messages,areaLote,perimetro" /></p:inputNumber>
+						<p:inputNumber id="medidaCostIzq" value="#{loteBean.loteSelected.medidaIzquierda}" modifyValueOnWheel="false" ><p:ajax listener="#{loteBean.calcularAreaPerimetro}" update="messages,areaLote,perimetro" /></p:inputNumber>
 						
 						<h:outputLabel value="Medida fondo (ML): " for="medidaFondo" />
-						<p:inputNumber id="medidaFondo" value="#{loteBean.loteSelected.medidaFondo}" modifyValueOnWheel="false" disabled="#{!loteBean.modificar}"><p:ajax listener="#{loteBean.calcularAreaPerimetro}" update="messages,areaLote,perimetro" /></p:inputNumber>
+						<p:inputNumber id="medidaFondo" value="#{loteBean.loteSelected.medidaFondo}" modifyValueOnWheel="false"><p:ajax listener="#{loteBean.calcularAreaPerimetro}" update="messages,areaLote,perimetro" /></p:inputNumber>
 						
 						<h:outputLabel value="Área de lote (M2): " for="areaLote" />
-						<p:inputNumber id="areaLote" value="#{loteBean.loteSelected.area}" modifyValueOnWheel="false" disabled="#{!loteBean.modificar}"><p:ajax update="messages" /> </p:inputNumber>
+						<p:inputNumber id="areaLote" value="#{loteBean.loteSelected.area}" modifyValueOnWheel="false"><p:ajax update="messages" /> </p:inputNumber>
 						
 						<h:outputLabel value="Perímetro (ML): " for="perimetro" />
-						<p:inputNumber id="perimetro" value="#{loteBean.loteSelected.perimetro}" modifyValueOnWheel="false" disabled="#{!loteBean.modificar}"><p:ajax update="messages" /> </p:inputNumber>		
+						<p:inputNumber id="perimetro" value="#{loteBean.loteSelected.perimetro}" modifyValueOnWheel="false" ><p:ajax update="messages" /> </p:inputNumber>		
 					</h:panelGrid>
 				</p:tab>
 				<p:tab title="Límites" > 
 					<h:panelGrid id="gridLimites" columns="2">
 						<h:outputLabel value="Límite frontal: " for="limiteFrontal" />
-						<p:inputText id="limiteFrontal" value="#{loteBean.loteSelected.limiteFrontal}" modifyValueOnWheel="false" maxlength="45" disabled="#{!loteBean.modificar}"><p:ajax update="messages" /> </p:inputText>
+						<p:inputText id="limiteFrontal" value="#{loteBean.loteSelected.limiteFrontal}" modifyValueOnWheel="false" maxlength="45" > <p:ajax update="messages" /> </p:inputText> 
 						
 						<h:outputLabel value="Límite costado derecho (ML): " for="limiteCostDerecho" />
-						<p:inputText id="limiteCostDerecho" value="#{loteBean.loteSelected.limiteDerecha}" modifyValueOnWheel="false" maxlength="45" disabled="#{!loteBean.modificar}"><p:ajax update="messages" /> </p:inputText>		
+						<p:inputText id="limiteCostDerecho" value="#{loteBean.loteSelected.limiteDerecha}" modifyValueOnWheel="false" maxlength="45" > <p:ajax update="messages" /> </p:inputText>		
 						
 						<h:outputLabel value="Límite costado izquierdo (ML): " for="limiteCostIzq" />
-						<p:inputText id="limiteCostIzq" value="#{loteBean.loteSelected.limiteIzquierda}" modifyValueOnWheel="false" maxlength="45" disabled="#{!loteBean.modificar}"><p:ajax update="messages" /> </p:inputText>
+						<p:inputText id="limiteCostIzq" value="#{loteBean.loteSelected.limiteIzquierda}" modifyValueOnWheel="false" maxlength="45" > <p:ajax update="messages" /> </p:inputText>
 						
 						<h:outputLabel value="Límite fondo (ML): " for="limiteFondo" />
-						<p:inputText id="limiteFondo" value="#{loteBean.loteSelected.limiteFondo}" modifyValueOnWheel="false" maxlength="45" disabled="#{!loteBean.modificar}"><p:ajax update="messages" /> </p:inputText>
+						<p:inputText id="limiteFondo" value="#{loteBean.loteSelected.limiteFondo}" modifyValueOnWheel="false" maxlength="45" > <p:ajax update="messages" /> </p:inputText>
 						
 						<h:outputLabel value="Comentario: " for="comentario" />
-						<p:inputText id="comentario" value="#{loteBean.loteSelected.comentario}" modifyValueOnWheel="false" maxlength="50" disabled="#{!loteBean.modificar}"><p:ajax update="messages" /> </p:inputText>
+						<p:inputText id="comentario" value="#{loteBean.loteSelected.comentario}" modifyValueOnWheel="false" maxlength="50" > <p:ajax update="messages" /> </p:inputText>
 					</h:panelGrid>
 				</p:tab>
 				<p:tab title="Datos de venta" rendered="#{loteBean.loteSelected.status eq 'Vendido'}">
 					<h:panelGrid id="gridDatosVenta" columns="2">
 					
 					   	<h:outputLabel for="optionPerson" value="Comprador:" rendered="#{loteBean.loteSelected.status eq 'Separado' or loteBean.loteSelected.status eq 'Vendido'}" />
-		                <p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{loteBean.personVenta}" converter="#{loteBean.conversorPerson}" id="optionPerson"  completeMethod="#{loteBean.completePerson}"  disabled="#{!loteBean.modificar}"
+		                <p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{loteBean.personVenta}" converter="#{loteBean.conversorPerson}" id="optionPerson"  completeMethod="#{loteBean.completePerson}" 
 		                          var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px" rendered="#{loteBean.loteSelected.status eq 'Separado' or loteBean.loteSelected.status eq 'Vendido'}" >
 							<p:column width="400px">
 								<h:outputLabel value="#{per.surnames} #{per.names}" />
@@ -250,10 +250,10 @@
 						</p:autoComplete>
 
 						<h:outputLabel id="lblFechaVend" for="vend" value="Fecha venta:" />
-						<p:datePicker id="vend" style="margin:5px; width:220px" value="#{loteBean.fechaVendido}" disabled="#{!loteBean.modificar}"/>
+						<p:datePicker id="vend" style="margin:5px; width:220px" value="#{loteBean.fechaVendido}" />
 						
 						<h:outputLabel value="Tipo de Pago:" for="optionPago" />
-						<p:selectOneMenu id="optionPago" value="#{loteBean.loteSelected.tipoPago}" style="margin:5px; width:220px" disabled="#{!loteBean.modificar}">
+						<p:selectOneMenu id="optionPago" value="#{loteBean.loteSelected.tipoPago}" style="margin:5px; width:220px" >
 							<f:selectItem itemLabel="Contado" itemValue="Contado" />
 							<f:selectItem itemLabel="Crédito" itemValue="Crédito"/>
 							<p:ajax update="gridDatosVenta messages" />

@@ -17,6 +17,7 @@ public interface ComisionService {
 	List<Comision> findByEstado(Boolean estado);
 	Comision findByEstadoAndCodigo(Boolean estado, String codigo);
 	Comision findByCodigoAndIdException(String codigo, int idComision);
+	Comision findByFechaIniLessThanEqualAndFechaCierreGreaterThanEqual(Date fechaIni, Date fechaCierre);
 
 
 	Page<Comision> findByEstadoAndFechaIniBetween(Boolean estado,Date fechaIni, Date fechaFin, Pageable pageable);

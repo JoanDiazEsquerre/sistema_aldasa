@@ -97,6 +97,14 @@ public class LoteServiceImpl implements LoteService {
 	public Page<Lote> findAllByStatusAndFechaVencimientoLessThan(String status, Date fechaIni, Pageable pageable) {
 		// TODO Auto-generated method stub
 		return loteRepository.findAllByStatusAndFechaVencimientoLessThan(status, fechaIni, pageable);
-	} 
+	}
+
+	@Override
+	public List<Lote> findByStatusAndPersonAssessorDniAndTipoPagoAndFechaVendidoBetween(String Status, String dniAsesor,
+			String tipoPago, Date fechaIni, Date fechaFin) {
+		// TODO Auto-generated method stub
+		return loteRepository.findByStatusAndPersonAssessorDniAndTipoPagoAndFechaVendidoBetween(Status, dniAsesor, tipoPago, fechaIni, fechaFin);
+	}
+
 	
 }

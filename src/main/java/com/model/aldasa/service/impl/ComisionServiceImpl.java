@@ -61,6 +61,12 @@ public class ComisionServiceImpl  implements ComisionService {
 		return comisionRepository.findByCodigoAndIdException(codigo, idComision);
 	}
 
+	@Override
+	public Comision findByFechaIniLessThanEqualAndFechaCierreGreaterThanEqual(Date fechaIni, Date fechaCierre) {
+		// TODO Auto-generated method stub
+		return comisionRepository.findByFechaIniLessThanEqualAndFechaCierreGreaterThanEqual(fechaIni, fechaCierre);
+	}
+
 	
 
 	

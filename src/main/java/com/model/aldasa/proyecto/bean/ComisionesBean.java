@@ -24,14 +24,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Comision;
+import com.model.aldasa.entity.Comisiones;
 import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Lote;
+import com.model.aldasa.entity.Meta;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.service.ComisionService;
+import com.model.aldasa.service.ComisionesService;
 import com.model.aldasa.service.EmpleadoService;
 import com.model.aldasa.service.LoteService;
+import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.TeamService;
 import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.EstadoLote;
@@ -55,19 +59,26 @@ public class ComisionesBean implements Serializable {
 	@ManagedProperty(value = "#{comisionService}")
 	private ComisionService comisionService;
 	
+	@ManagedProperty(value = "#{comisionesService}")
+	private ComisionesService comisionesService;
+	
 	@ManagedProperty(value = "#{empleadoService}")
 	private EmpleadoService empleadoService;
 	
-	private LazyDataModel<Team> lstTeamLazy;
+	@ManagedProperty(value = "#{personService}")
+	private PersonService personService;
+	
+	private LazyDataModel<Comisiones> lstComisionesLazy;
 	private LazyDataModel<Usuario> lstUsuarioLazy;
 //	private LazyDataModel<Lote> lstLoteVendidoLazy;
 	
 	private Team teamSelected;
-	private Person personAsesorSelected;
 	private Comision comisionSelected;
+	private Comisiones comisionesSelected;
 	private Lote loteSelected;
-
 	
+	private String opcionAsesor = "";
+
 	private Date fechaIni,fechaFin;
 	private Integer comisionContado=8;
 	private Integer comisionCredito=4;
@@ -76,10 +87,12 @@ public class ComisionesBean implements Serializable {
 	private double totalSolesInicial = 0;
 	private double totalSolesPendiente = 0;
 	
-	
 //	private List<Person> lstPersonAsesor;
 	private List<Comision> lstComision;
+	private List<Comisiones> lstComisiones;
 	private List<Lote> lstLotesVendidos;
+	private List<Meta> lstMeta;
+	private List<Person> lstPersonSupervisor;
 	
 	
 	
@@ -94,7 +107,7 @@ public class ComisionesBean implements Serializable {
 		cambiarComision();
 		lstComision = comisionService.findByEstado(true);
 		
-		iniciarLazyTeam();
+		iniciarLazyComisiones();
 	}
 	
 	public void listarLotesVendidosPorTeam() {
@@ -117,6 +130,7 @@ public class ComisionesBean implements Serializable {
 		}else {
 			if(teamSelected.getPersonSupervisor()!=null) {
 				lstLotesVendidos = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), teamSelected.getPersonSupervisor(), "%%", fechaIni, fechaFin);
+				
 			}
 		}
 		
@@ -432,12 +446,9 @@ public class ComisionesBean implements Serializable {
 	}
 	
 	public void cambiarComision() {
-		fechaIni = comisionSelected.getFechaIni();
-		fechaFin = comisionSelected.getFechaCierre();
 		
-		totalSolesContado = 0;
-		totalSolesInicial = 0;
-		totalSolesPendiente= 0;
+		lstPersonSupervisor = personService.getPersonSupervisor(EstadoLote.VENDIDO.getName(), comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+		
 	}
 	
 	public double calcularComisionSubgerente(Lote lote) {
@@ -691,6 +702,147 @@ public class ComisionesBean implements Serializable {
 		return solesPendiente;
 	}
 	
+	public void mostrarMeta() {
+		totalSolesContado=0;
+		totalSolesInicial=0;
+		totalSolesPendiente=0;
+		lstMeta = new ArrayList<>();
+		List<Person> lstSupervisoresCampo = personService.getPersonSupervisorCampo(comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+		if (!lstSupervisoresCampo.isEmpty()) {
+			for(Person persona : lstSupervisoresCampo) {
+				List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), persona, "%%", comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+				
+				Meta meta = new Meta();
+				meta.setSupervisor(persona.getSurnames() + " " + persona.getNames());
+				meta.setLotesVendidos(lstLotesVendidos.size());
+				double calculo = (lstLotesVendidos.size()*100)/comisionSelected.getMeta();
+				meta.setPorcentajeMeta((int) calculo);
+				
+				double contado = 0 ;
+				double inicial = 0 ;
+				double saldo = 0 ;
+				
+				for(Lote lote : lstLotesVendidos) {
+					if(lote.getTipoPago().equals("Contado")) {
+						contado = contado + lote.getMontoVenta();
+					}else {
+						inicial = inicial + lote.getMontoInicial();
+						double calculaSaldo = lote.getMontoVenta() - lote.getMontoInicial();
+						saldo =saldo + calculaSaldo ;
+					}
+				}
+				totalSolesContado = totalSolesContado + contado;
+				totalSolesInicial = totalSolesInicial + inicial;
+				totalSolesPendiente = totalSolesPendiente + saldo;
+
+				meta.setMontoContado(contado);
+				meta.setMontoInicial(inicial);
+				meta.setSaldoPendiente(saldo);
+				lstMeta.add(meta);
+			}
+		}
+		
+		List<Comisiones> lstInternos = comisionesService.findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(true, EstadoLote.VENDIDO.getName(), "I", comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+		if(!lstInternos.isEmpty()) {
+		
+			Meta meta = new Meta() ;
+			meta.setSupervisor("Internos");
+			meta.setLotesVendidos(lstInternos.size());
+			double calculo = (lstInternos.size()*100)/comisionSelected.getMeta();
+			meta.setPorcentajeMeta((int) calculo);
+			
+			double contado = 0 ;
+			double inicial = 0 ;
+			double saldo = 0 ;
+			
+			for(Comisiones comisiones : lstInternos) {
+				if(comisiones.getLote().getTipoPago().equals("Contado")) {
+					contado = contado + comisiones.getLote().getMontoVenta();
+				}else {
+					inicial = inicial + comisiones.getLote().getMontoInicial();
+					double calculoSaldo = comisiones.getLote().getMontoVenta() - comisiones.getLote().getMontoInicial();
+					saldo = saldo + calculoSaldo;
+				}
+			}
+			totalSolesContado = totalSolesContado + contado;
+			totalSolesInicial = totalSolesInicial + inicial;
+			totalSolesPendiente = totalSolesPendiente + saldo ;
+
+			
+			meta.setMontoContado(contado);
+			meta.setMontoInicial(inicial);
+			meta.setSaldoPendiente(saldo);
+			lstMeta.add(meta);
+		}
+		
+		List<Comisiones> lstExternos = comisionesService.findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(true, EstadoLote.VENDIDO.getName(), "E", comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+		if(!lstExternos.isEmpty()) {
+		
+			Meta meta = new Meta() ;
+			meta.setSupervisor("Externos");
+			meta.setLotesVendidos(lstExternos.size());
+			double calculo = (lstExternos.size()*100)/comisionSelected.getMeta();
+			meta.setPorcentajeMeta((int) calculo);
+			
+			double contado = 0 ;
+			double inicial = 0 ;
+			double saldo = 0 ;
+			
+			for(Comisiones comisiones : lstExternos) {
+				if(comisiones.getLote().getTipoPago().equals("Contado")) {
+					contado = contado + comisiones.getLote().getMontoVenta();
+				}else {
+					inicial = inicial + comisiones.getLote().getMontoInicial();
+					double calculoSaldo = comisiones.getLote().getMontoVenta() - comisiones.getLote().getMontoInicial();
+					saldo = saldo + calculoSaldo;
+				}
+			}
+			totalSolesContado = totalSolesContado + contado;
+			totalSolesInicial = totalSolesInicial + inicial;
+			totalSolesPendiente = totalSolesPendiente + saldo ;
+			
+			meta.setMontoContado(contado);
+			meta.setMontoInicial(inicial);
+			meta.setSaldoPendiente(saldo);
+			lstMeta.add(meta);
+		}
+		
+		List<Comisiones> lstOnline = comisionesService.findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(true, EstadoLote.VENDIDO.getName(), "O", comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+		if(!lstOnline.isEmpty()) {
+		
+			Meta meta = new Meta() ;
+			meta.setSupervisor("Online");
+			meta.setLotesVendidos(lstOnline.size());
+			double calculo = (lstOnline.size()*100)/comisionSelected.getMetaOnline();
+			meta.setPorcentajeMeta((int) calculo);
+			
+			double contado = 0 ;
+			double inicial = 0 ;
+			double saldo = 0 ;
+			
+			for(Comisiones comisiones : lstOnline) {
+				if(comisiones.getLote().getTipoPago().equals("Contado")) {
+					contado = contado + comisiones.getLote().getMontoVenta();
+				}else {
+					inicial = inicial + comisiones.getLote().getMontoInicial();
+					double calculoSaldo = comisiones.getLote().getMontoVenta() - comisiones.getLote().getMontoInicial();
+					saldo = saldo + calculoSaldo;
+				}
+			}
+			totalSolesContado = totalSolesContado + contado;
+			totalSolesInicial = totalSolesInicial + inicial;
+			totalSolesPendiente = totalSolesPendiente + saldo ;
+
+			
+			meta.setMontoContado(contado);
+			meta.setMontoInicial(inicial);
+			meta.setSaldoPendiente(saldo);
+			lstMeta.add(meta);
+		}
+		
+		
+	}
+	
 	public void iniciarLazyUsuarioAsesor() {
 		lstUsuarioLazy = new LazyDataModel<Usuario>() {
 			private List<Usuario> datasource;
@@ -753,9 +905,9 @@ public class ComisionesBean implements Serializable {
 		};
 	}
 	
-	public void iniciarLazyTeam() {
-		lstTeamLazy = new LazyDataModel<Team>() {
-			private List<Team> datasource;
+	public void iniciarLazyComisiones() {
+		lstComisionesLazy = new LazyDataModel<Comisiones>() {
+			private List<Comisiones> datasource;
 
             @Override
             public void setRowIndex(int rowIndex) {
@@ -767,26 +919,25 @@ public class ComisionesBean implements Serializable {
             }
 
             @Override
-            public Team getRowData(String rowKey) {
+            public Comisiones getRowData(String rowKey) {
                 int intRowKey = Integer.parseInt(rowKey);
-                for (Team team : datasource) {
-                    if (team.getId() == intRowKey) {
-                        return team;
+                for (Comisiones comisiones : datasource) {
+                    if (comisiones.getId() == intRowKey) {
+                        return comisiones;
                     }
                 }
                 return null;
             }
 
             @Override
-            public String getRowKey(Team team) {
-                return String.valueOf(team.getId());
+            public String getRowKey(Comisiones comisiones) {
+                return String.valueOf(comisiones.getId());
             }
 
 			@Override
-			public List<Team> load(int first, int pageSize, Map<String, SortMeta> sortBy,Map<String, FilterMeta> filterBy) {				
-				String name="%"+ (filterBy.get("name")!=null?filterBy.get("name").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+			public List<Comisiones> load(int first, int pageSize, Map<String, SortMeta> sortBy,Map<String, FilterMeta> filterBy) {				
 				
-                Sort sort=Sort.by("name").ascending();
+                Sort sort=Sort.by("lote.fechaVendido").ascending();
                 if(sortBy!=null) {
                 	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
                 	    System.out.println(entry.getKey() + "/" + entry.getValue());
@@ -800,14 +951,24 @@ public class ComisionesBean implements Serializable {
                 
                 Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
                 
-				Page<Team> pageTeam;
-				pageTeam= teamService.findByNameLikeAndStatus(name, true, pageable);
-				totalSolesContado = 0;
-				totalSolesInicial = 0;
-				totalSolesPendiente = 0;
-				
-				setRowCount((int) pageTeam.getTotalElements());
-				return datasource = pageTeam.getContent();
+				Page<Comisiones> pageComisiones = null;
+				if(opcionAsesor.equals("")) {
+					pageComisiones= comisionesService.findByEstadoAndLoteStatusAndLotePersonAssessorDniLikeAndLoteFechaVendidoBetween(true,EstadoLote.VENDIDO.getName(), "%%", comisionSelected.getFechaIni(), comisionSelected.getFechaCierre(), pageable);
+
+				}else if(opcionAsesor.equals("I")) {
+					pageComisiones = comisionesService.findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(true, EstadoLote.VENDIDO.getName(), "I", comisionSelected.getFechaIni(), comisionSelected.getFechaCierre(), pageable);
+				}else if(opcionAsesor.equals("E")) {
+					pageComisiones = comisionesService.findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(true, EstadoLote.VENDIDO.getName(), "E", comisionSelected.getFechaIni(), comisionSelected.getFechaCierre(), pageable);
+
+				}else {
+					Person personaSupervisor = new Person();
+					int id = Integer.parseInt(opcionAsesor) ;
+					personaSupervisor.setId(id);
+					pageComisiones= comisionesService.findByEstadoAndLoteStatusAndLotePersonSupervisorAndLotePersonAssessorDniLikeAndLoteFechaVendidoBetween(true,EstadoLote.VENDIDO.getName(), personaSupervisor , "%%" , comisionSelected.getFechaIni(), comisionSelected.getFechaCierre(), pageable);
+
+				}
+				setRowCount((int) pageComisiones.getTotalElements());
+				return datasource = pageComisiones.getContent();
 			}
 		};
 	}
@@ -835,6 +996,34 @@ public class ComisionesBean implements Serializable {
                     return "";
                 } else {
                     return ((Comision) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorPersonSupervisor() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Person c = null;
+                    for (Person si : lstPersonSupervisor) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Person) value).getId() + "";
                 }
             }
         };
@@ -900,18 +1089,6 @@ public class ComisionesBean implements Serializable {
 	public void setUsuarioService(UsuarioService usuarioService) {
 		this.usuarioService = usuarioService;
 	}
-	public Person getPersonAsesorSelected() {
-		return personAsesorSelected;
-	}
-	public void setPersonAsesorSelected(Person personAsesorSelected) {
-		this.personAsesorSelected = personAsesorSelected;
-	}
-//	public List<Person> getLstPersonAsesor() {
-//		return lstPersonAsesor;
-//	}
-//	public void setLstPersonAsesor(List<Person> lstPersonAsesor) {
-//		this.lstPersonAsesor = lstPersonAsesor;
-//	}
 	public LoteService getLoteService() {
 		return loteService;
 	}
@@ -936,12 +1113,14 @@ public class ComisionesBean implements Serializable {
 	public void setComisionSelected(Comision comisionSelected) {
 		this.comisionSelected = comisionSelected;
 	}
-	public LazyDataModel<Team> getLstTeamLazy() {
-		return lstTeamLazy;
+
+	public LazyDataModel<Comisiones> getLstComisionesLazy() {
+		return lstComisionesLazy;
 	}
-	public void setLstTeamLazy(LazyDataModel<Team> lstTeamLazy) {
-		this.lstTeamLazy = lstTeamLazy;
+	public void setLstComisionesLazy(LazyDataModel<Comisiones> lstComisionesLazy) {
+		this.lstComisionesLazy = lstComisionesLazy;
 	}
+
 	public SimpleDateFormat getSdfY2() {
 		return sdfY2;
 	}
@@ -999,4 +1178,47 @@ public class ComisionesBean implements Serializable {
 	public void setLstLotesVendidos(List<Lote> lstLotesVendidos) {
 		this.lstLotesVendidos = lstLotesVendidos;
 	}
+	public List<Comisiones> getLstComisiones() {
+		return lstComisiones;
+	}
+	public void setLstComisiones(List<Comisiones> lstComisiones) {
+		this.lstComisiones = lstComisiones;
+	}
+	public PersonService getPersonService() {
+		return personService;
+	}
+	public void setPersonService(PersonService personService) {
+		this.personService = personService;
+	}
+	public List<Meta> getLstMeta() {
+		return lstMeta;
+	}
+	public void setLstMeta(List<Meta> lstMeta) {
+		this.lstMeta = lstMeta;
+	}
+	public ComisionesService getComisionesService() {
+		return comisionesService;
+	}
+	public void setComisionesService(ComisionesService comisionesService) {
+		this.comisionesService = comisionesService;
+	}
+	public List<Person> getLstPersonSupervisor() {
+		return lstPersonSupervisor;
+	}
+	public void setLstPersonSupervisor(List<Person> lstPersonSupervisor) {
+		this.lstPersonSupervisor = lstPersonSupervisor;
+	}
+	public Comisiones getComisionesSelected() {
+		return comisionesSelected;
+	}
+	public void setComisionesSelected(Comisiones comisionesSelected) {
+		this.comisionesSelected = comisionesSelected;
+	}
+	public String getOpcionAsesor() {
+		return opcionAsesor;
+	}
+	public void setOpcionAsesor(String opcionAsesor) {
+		this.opcionAsesor = opcionAsesor;
+	}
+	
 }

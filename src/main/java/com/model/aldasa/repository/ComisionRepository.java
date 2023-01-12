@@ -15,6 +15,7 @@ public interface ComisionRepository  extends JpaRepository<Comision, Integer>{
 	
 	List<Comision> findByEstado(Boolean estado);
 	Comision findByEstadoAndCodigo(Boolean estado, String codigo);
+	Comision findByFechaIniLessThanEqualAndFechaCierreGreaterThanEqual(Date fechaIni, Date fechaCierre);
 	
 	@Query(nativeQuery = true,value = "SELECT * FROM comision WHERE codigo=:codigo AND id<>:idComision ")
 	Comision findByCodigoAndIdException(String codigo, int idComision);

@@ -1,5 +1,6 @@
 package com.model.aldasa.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +52,18 @@ public class PersonServiceImpl implements PersonService {
 	@Override
 	public Person findByDniException(String dni, int idUser) {
 		return personRepository.findByDniException(dni, idUser);
+	}
+
+	@Override
+	public List<Person> getPersonSupervisor(String status, Date fechaIni, Date fechaFin) {
+		// TODO Auto-generated method stub
+		return personRepository.getPersonSupervisor(status, fechaIni, fechaFin);
+	}
+
+	@Override
+	public List<Person> getPersonSupervisorCampo(Date fechaIni, Date fechaFin) {
+		// TODO Auto-generated method stub
+		return personRepository.getPersonSupervisorCampo(fechaIni, fechaFin);
 	}
 
 }

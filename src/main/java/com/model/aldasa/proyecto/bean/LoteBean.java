@@ -38,6 +38,7 @@ import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.ComisionService;
+import com.model.aldasa.service.ComisionesService;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.ManzanaService;
 import com.model.aldasa.service.PersonService;
@@ -77,6 +78,9 @@ public class LoteBean implements Serializable{
 	@ManagedProperty(value = "#{comisionService}")
 	private ComisionService comisionService;
 	
+	@ManagedProperty(value = "#{comisionesService}")
+	private ComisionesService comisionesService;
+	
 	private List<Lote> lstLotes;
 	private List<Person> lstPerson;
 	
@@ -87,6 +91,7 @@ public class LoteBean implements Serializable{
 	private Team teamSelected;
 	private Usuario usuarioLogin;
 	
+	
 	private Project projectFilter;
 	private Manzana manzanaFilter;
 	private Manzana manzanaFilterMapeo;
@@ -95,7 +100,6 @@ public class LoteBean implements Serializable{
 	private String status = "";
 	private String tituloDialog;
 	private String nombreLoteSelected="";
-	private boolean modificar = false;
 	private int cantidadLotes=0;
 	private Date fechaSeparacion, fechaVencimiento,fechaVendido;
 	
@@ -114,9 +118,6 @@ public class LoteBean implements Serializable{
 	@PostConstruct
 	public void init() {
 		usuarioLogin = navegacionBean.getUsuarioLogin();
-		if(usuarioLogin.getProfile().getId()==Perfiles.ADMINISTRADOR.getId() || usuarioLogin.getProfile().getId()==Perfiles.ASISTENTE_ADMINISTRATIVO.getId()) {
-			modificar=true;
-		}
 		listarProject();
 		listarManzanas();
 		listarPersonas();
@@ -394,27 +395,20 @@ public class LoteBean implements Serializable{
 					return ;
 				}
 			}
+		} else {
+			loteSelected.setMontoVenta(null);
+			loteSelected.setTipoPago(null);
 		}
 		
 		//*********************************
+		
 		
 		if (tituloDialog.equals("NUEVO LOTE")) {
 			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProject(loteSelected.getNumberLote(), loteSelected.getManzana(), loteSelected.getProject());
 			if (validarExistencia == null) {
 				Lote lote = loteService.save(loteSelected);
-				if (loteSelected.getStatus().equals(EstadoLote.VENDIDO.getName())) {
-					Comision comisionSelected = comisionService.findByEstadoAndCodigo(true, sdfM.format(new Date())+sdfY2.format(new Date()));
-					
-					Usuario usuarioAsesor = usuarioService.findByPerson(lote.getPersonAssessor());
-					
-					Comisiones comision = new Comisiones();
-					comision.setLote(lote); 
-					comision.setComisionAsesor(lote.getPersonAssessor());
-
-				}
+				generarComision(lote);
 				newLote();
-				
-				
 				
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
 				fechaSeparacion = null;
@@ -426,7 +420,8 @@ public class LoteBean implements Serializable{
 		} else {
 			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProjectException(loteSelected.getNumberLote(), loteSelected.getManzana().getId(), loteSelected.getProject().getId(), loteSelected.getId());
 			if (validarExistencia == null) {
-				loteService.save(loteSelected);
+				Lote lote = loteService.save(loteSelected);
+				generarComision(lote);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
 				nombreLoteSelected="Manzana " + loteSelected.getManzana().getName()+"/ lote: "+loteSelected.getNumberLote();
 			} else { 
@@ -434,6 +429,95 @@ public class LoteBean implements Serializable{
 			}
 		}
 		
+		
+	}
+	
+	
+	public void generarComision(Lote lote) {
+		
+		if (lote.getStatus().equals(EstadoLote.VENDIDO.getName())) {
+			
+			Comisiones validarExistencia = comisionesService.findByLote(lote);
+			Usuario usuarioAsesor = usuarioService.findByPerson(lote.getPersonAssessor());
+			Comision comision = comisionService.findByFechaIniLessThanEqualAndFechaCierreGreaterThanEqual(lote.getFechaVendido(), lote.getFechaVendido());
+		
+			if(comision != null){
+				Comisiones comisiones = new Comisiones();
+				if(validarExistencia != null) {
+					comisiones.setId(validarExistencia.getId());
+				}
+				comisiones.setLote(lote);
+				if(usuarioAsesor.getTeam().getName().equals("ONLINE")) {
+					List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonAssessorDniAndTipoPagoAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), lote.getPersonAssessor().getDni(),lote.getTipoPago(), comision.getFechaIni(), comision.getFechaCierre());
+					if(lstLotesVendidos.size()==1) {
+						if (lote.getTipoPago().equals("Contado")) {
+							comisiones.setComisionAsesor(500.00);
+						}else {
+							comisiones.setComisionAsesor(300.00);
+						}
+					}else {
+						if (lote.getTipoPago().equals("Contado")) {
+							comisiones.setComisionAsesor(400.00);
+						}else {
+							comisiones.setComisionAsesor(400.00);
+						}
+					}
+					comisiones.setComisionSupervisor((lote.getMontoVenta()*comision.getComisionSupervisorOnline())/100);
+					comisiones.setTipoEmpleado("O");
+					
+				}else if (usuarioAsesor.getTeam().getName().equals("INTERNOS") || usuarioAsesor.getTeam().getName().equals("EXTERNOS")) {
+					if (lote.getTipoPago().equals("Contado")) {
+						comisiones.setComisionAsesor((lote.getMontoVenta()*comision.getComisionContado())/100);
+					}else {
+						comisiones.setComisionAsesor((lote.getMontoVenta()*comision.getComisionCredito())/100);
+					}
+					comisiones.setComisionSupervisor(0);
+					comisiones.setTipoEmpleado(usuarioAsesor.getTeam().getName().equals("INTERNOS")?"I": "E");
+					
+				}else {
+					List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), lote.getPersonSupervisor(), "%%", comision.getFechaIni(), comision.getFechaCierre());
+					int meta  = comision.getMeta() ;
+					boolean alcanzaMeta = false;
+					if(lstLotesVendidos.size() >= meta) {
+						alcanzaMeta = true;
+						for (Lote lt:lstLotesVendidos) {
+							Comisiones comConsulta = comisionesService.findByLote(lt);
+							if(comConsulta != null) {
+								comConsulta.setComisionSupervisor((lt.getMontoVenta()*comision.getComisionMetaSupervisor())/100);
+								comisionesService.save(comConsulta);
+
+							}
+						}
+	                        
+					}
+					if (lote.getTipoPago().equals("Contado")) {
+						comisiones.setComisionAsesor((lote.getMontoVenta()*comision.getComisionContado())/100);
+					}else {
+						comisiones.setComisionAsesor((lote.getMontoVenta()*comision.getComisionCredito())/100);
+					}
+					
+					if(!alcanzaMeta) {
+						comisiones.setComisionSupervisor((lote.getMontoVenta()*comision.getComisionSupervisor())/100);
+
+					}else {
+						comisiones.setComisionSupervisor((lote.getMontoVenta()*comision.getComisionMetaSupervisor())/100);
+					}
+
+				}
+				comisiones.setComisionSubgerente((lote.getMontoVenta()*comision.getSubgerente())/100);
+				comisiones.setEstado(true);
+				comisionesService.save(comisiones);
+			}
+
+		}else {
+			Comisiones comisionesrelacionados = comisionesService.findByLote(lote);
+			
+			if (comisionesrelacionados != null) {
+				comisionesrelacionados.setEstado(false);
+				comisionesService.save(comisionesrelacionados);
+
+			}
+		}
 	}
 	
 	public void calcularAreaPerimetro() {
@@ -719,12 +803,7 @@ public class LoteBean implements Serializable{
 	public void setUsuarioLogin(Usuario usuarioLogin) {
 		this.usuarioLogin = usuarioLogin;
 	}
-	public boolean isModificar() {
-		return modificar;
-	}
-	public void setModificar(boolean modificar) {
-		this.modificar = modificar;
-	}
+	
 	public String getNombreLoteSelected() {
 		return nombreLoteSelected;
 	}
@@ -815,42 +894,45 @@ public class LoteBean implements Serializable{
 	public List<Team> getLstTeam() {
 		return lstTeam;
 	}
-
 	public void setLstTeam(List<Team> lstTeam) {
 		this.lstTeam = lstTeam;
 	}
-
 	public UsuarioService getUsuarioService() {
 		return usuarioService;
 	}
-
 	public void setUsuarioService(UsuarioService usuarioService) {
 		this.usuarioService = usuarioService;
 	}
-
 	public Person getPersonAsesorSelected() {
 		return personAsesorSelected;
 	}
-
 	public void setPersonAsesorSelected(Person personAsesorSelected) {
 		this.personAsesorSelected = personAsesorSelected;
 	}
-
 	public List<Person> getLstPersonAsesor() {
 		return lstPersonAsesor;
 	}
-
 	public void setLstPersonAsesor(List<Person> lstPersonAsesor) {
 		this.lstPersonAsesor = lstPersonAsesor;
 	}
-
 	public TeamService getTeamService() {
 		return teamService;
 	}
-
 	public void setTeamService(TeamService teamService) {
 		this.teamService = teamService;
 	}
-	
+	public ComisionService getComisionService() {
+		return comisionService;
+	}
+	public void setComisionService(ComisionService comisionService) {
+		this.comisionService = comisionService;
+	}
+	public ComisionesService getComisionesService() {
+		return comisionesService;
+	}
+	public void setComisionesService(ComisionesService comisionesService) {
+		this.comisionesService = comisionesService;
+	}
+
 	
 }
