@@ -50,8 +50,6 @@ public class Comision {
 	@Column(name="bonomaster")
 	private Double bonoMaster;
 
-	private Integer meta;
-	
 	@Column(name="comisionsupervisor")
 	private Integer comisionSupervisor;
 	
@@ -155,12 +153,6 @@ public class Comision {
 	}
 	public void setBonoMaster(Double bonoMaster) {
 		this.bonoMaster = bonoMaster;
-	}
-	public Integer getMeta() {
-		return meta;
-	}
-	public void setMeta(Integer meta) {
-		this.meta = meta;
 	}
 	public Integer getComisionSupervisor() {
 		return comisionSupervisor;

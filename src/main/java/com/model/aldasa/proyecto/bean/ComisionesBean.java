@@ -134,12 +134,6 @@ public class ComisionesBean implements Serializable {
 			}
 		}
 		
-		
-		
-		
-		
-		
-		
 	}
 	
 //	public void iniciarLazyLotesVendidos() {

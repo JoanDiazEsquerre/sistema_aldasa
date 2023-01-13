@@ -138,8 +138,13 @@
 				<h:outputText value="#{comision.bonoContadoOnline}"/> 
 			</p:column>
 		</p:dataTable>
+		
+		<p:contextMenu for="idTableComision">
+            <p:menuitem value="Meta Supervisor" update="dialogComision2" icon="pi pi-search" oncomplete="PF('comisionDialog2').show()" actionListener="#{comisionBean.cargarTeam()}"/>
+        </p:contextMenu>
 
 	</h:form>
+	
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogComision" header="#{comisionBean.tituloDialog}" widgetVar="comisionDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formComisionDialog">
@@ -209,12 +214,7 @@
 			    		<h:outputLabel for="comSpv" value="Comisión Supervisor: " />
 						<p:inputNumber id="comSpv" value="#{comisionBean.comisionSelected.comisionSupervisor}" symbol="%" symbolPosition="s" emptyValue="always"> 
 							<p:ajax update=":formComisionDialog:messagesDialogComision" />
-						</p:inputNumber>  
-						
-						<h:outputLabel for="met" value="Meta: " />
-						<p:inputNumber id="met" value="#{comisionBean.comisionSelected.meta}" > 
-							<p:ajax update=":formComisionDialog:messagesDialogComision" />
-						</p:inputNumber>  
+						</p:inputNumber>   
 						
 						<h:outputLabel for="comMetSpv" value="Comisión Meta Supervisor: " />
 						<p:inputNumber id="comMetSpv" value="#{comisionBean.comisionSelected.comisionMetaSupervisor}"  symbol="%" symbolPosition="s" emptyValue="always"> 
@@ -288,4 +288,54 @@
 			<p:commandButton value="Guardar" action="#{comisionBean.saveComision()}" update=":form:idTableComision" />
 		</h:form>
 	</p:dialog>
+	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogComision2" header="Meta Supervisor" widgetVar="comisionDialog2" resizable="false" closable="true"
+		appendTo="@(body)" width="50%">
+		<h:form id="formComisionDialog2">
+			<p:messages id="messagesDialogComision2" showDetail="true" closable="true">
+	            <p:autoUpdate/>
+	        </p:messages>
+	        
+	        <h:panelGrid id="grid" columns="2" width="50%">
+						
+				<h:outputLabel for="optionTeam" value="Equipo:"  />						
+				<p:selectOneMenu id="optionTeam" value="#{comisionBean.teamSelected}" converter="#{comisionBean.conversorTeam}" style="margin:5px; width:220px">
+					<f:selectItem itemLabel="[-- Seleccionar --]" itemValue="#{null}" />
+					<f:selectItems value="#{comisionBean.lstTeam}" var="prof" itemLabel="#{prof.name} / #{prof.personSupervisor.surnames} #{prof.personSupervisor.names}" itemValue="#{prof}" />
+					<p:ajax update="messagesDialogComision2"  />		
+				</p:selectOneMenu>
+				
+				<p:outputLabel for="met" value="Meta:"/>
+                <p:inputNumber id="met" value="#{comisionBean.meta}" minValue="1" decimalPlaces="0" > 
+              	  <p:ajax update="messagesDialogComision2" event="keyup" />		
+                </p:inputNumber>
+                
+                <p:commandButton value="Guardar" action="#{comisionBean.saveMetaSupervisor()}" update="idMetaTable" />
+						   	
+			</h:panelGrid>
+			
+			<p:dataTable var="meta" id="idMetaTable" value="#{comisionBean.lstMetaSupervisor}" widgetVar="idTeamTable" rowIndexVar="row" paginator="true" rows="4" 
+				size="small" emptyMessage="No se encontratos resultados." paginatorPosition="bottom" rowKey="#{meta.id}" selection="#{comisionBean.metaSupervisorSelected}" selectionMode="single">
+				
+				<p:column width="25px">
+	                      #{row +1}
+	        	</p:column>
+	        	
+				<p:column headerText="Supervisor" sortBy="#{meta.personSupervisor.surnames}"  filterMatchMode="contains" >
+					<h:outputText value="#{meta.personSupervisor.surnames} #{meta.personSupervisor.names}"  />
+				</p:column>
+				
+				<p:column headerText="Meta" filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{meta.meta}" />
+				</p:column>
+				
+			</p:dataTable>
+			
+			<p:contextMenu for="idMetaTable" >
+	            <p:menuitem value="Eliminar" update="idMetaTable" icon="pi pi-times" action="#{comisionBean.eliminarMetaSupervisor()}" />
+       		</p:contextMenu>
+			
+	    </h:form>
+	</p:dialog>
+	     
 </ui:composition>

@@ -41,6 +41,7 @@ import com.model.aldasa.service.ComisionService;
 import com.model.aldasa.service.ComisionesService;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.ManzanaService;
+import com.model.aldasa.service.MetaSupervisorService;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.TeamService;
@@ -80,6 +81,9 @@ public class LoteBean implements Serializable{
 	
 	@ManagedProperty(value = "#{comisionesService}")
 	private ComisionesService comisionesService;
+	
+	@ManagedProperty(value = "#{metaSupervisorService}")
+	private MetaSupervisorService metaSupervisorService;
 	
 	private List<Lote> lstLotes;
 	private List<Person> lstPerson;
@@ -442,6 +446,7 @@ public class LoteBean implements Serializable{
 			Comision comision = comisionService.findByFechaIniLessThanEqualAndFechaCierreGreaterThanEqual(lote.getFechaVendido(), lote.getFechaVendido());
 		
 			if(comision != null){
+				MetaSupervisor metaSupervisor = metaSupervisorService.fi;
 				Comisiones comisiones = new Comisiones();
 				if(validarExistencia != null) {
 					comisiones.setId(validarExistencia.getId());
@@ -932,6 +937,12 @@ public class LoteBean implements Serializable{
 	}
 	public void setComisionesService(ComisionesService comisionesService) {
 		this.comisionesService = comisionesService;
+	}
+	public MetaSupervisorService getMetaSupervisorService() {
+		return metaSupervisorService;
+	}
+	public void setMetaSupervisorService(MetaSupervisorService metaSupervisorService) {
+		this.metaSupervisorService = metaSupervisorService;
 	}
 
 	

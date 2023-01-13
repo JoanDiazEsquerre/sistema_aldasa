@@ -383,6 +383,10 @@
 			<property-name>personService</property-name>
 			<value>#{personService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>metaSupervisorService</property-name>
+			<value>#{metaSupervisorService}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>
@@ -392,6 +396,14 @@
 		<managed-property>
 			<property-name>comisionService</property-name>
 			<value>#{comisionService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>teamService</property-name>
+			<value>#{teamService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>metaSupervisorService</property-name>
+			<value>#{metaSupervisorService}</value>
 		</managed-property>
 		
 	</managed-bean>

@@ -13,7 +13,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -25,7 +27,11 @@ import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Comision;
 import com.model.aldasa.entity.Empleado;
+import com.model.aldasa.entity.MetaSupervisor;
+import com.model.aldasa.entity.Team;
 import com.model.aldasa.service.ComisionService;
+import com.model.aldasa.service.MetaSupervisorService;
+import com.model.aldasa.service.TeamService;
 
 @ManagedBean
 @ViewScoped
@@ -36,11 +42,24 @@ public class ComisionBean implements Serializable {
 	@ManagedProperty(value = "#{comisionService}")
 	private ComisionService comisionService;
 	
+	@ManagedProperty(value = "#{teamService}")
+	private TeamService teamService;
+	
+	@ManagedProperty(value = "#{metaSupervisorService}")
+	private MetaSupervisorService metaSupervisorService;
+	
 	private LazyDataModel<Comision> lstComisionLazy;
 	
+	private List<Team> lstTeam;
+	private List<MetaSupervisor> lstMetaSupervisor;
+	
 	private Comision comisionSelected;
+	private Team teamSelected;
+	private MetaSupervisor metaSupervisorSelected;
 	
 	private String tituloDialog, anio;
+	
+	private Integer meta = null;
 	
 	private Date fechaIniFilter, fechaFinFilter;
 	
@@ -85,7 +104,7 @@ public class ComisionBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar los datos del asesor."));
 			return ;
 		}
-		if(comisionSelected.getComisionSupervisor()==null || comisionSelected.getMeta()==null || comisionSelected.getComisionMetaSupervisor()==null || comisionSelected.getBonoMetaSupervisor()==null ) {
+		if(comisionSelected.getComisionSupervisor()==null || comisionSelected.getComisionMetaSupervisor()==null || comisionSelected.getBonoMetaSupervisor()==null ) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar los datos del supervisor."));
 			return ;
 		}
@@ -125,6 +144,42 @@ public class ComisionBean implements Serializable {
 		
 	}
 
+	public void saveMetaSupervisor() {
+		if (teamSelected == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar equipo."));
+			return ;
+		}else if(teamSelected.getPersonSupervisor() == null){
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El equipo no tiene supervisor."));
+			return;
+		}else {
+			MetaSupervisor supervisor = metaSupervisorService.findByComisionAndEstadoAndPersonSupervisor(comisionSelected, true, teamSelected.getPersonSupervisor());
+			if(supervisor != null) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El supervisor ya esta registrado."));
+				return;
+			}
+		}
+		if(meta == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar meta."));
+			return ;
+		}
+		
+		MetaSupervisor guardaMeta = new MetaSupervisor();
+		guardaMeta.setComision(comisionSelected);
+		guardaMeta.setPersonSupervisor(teamSelected.getPersonSupervisor());
+		guardaMeta.setMeta(meta);
+		guardaMeta.setEstado(true);
+		
+		MetaSupervisor guardar = metaSupervisorService.save(guardaMeta);
+		 if (guardar != null) {
+			 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				cargarTeam();
+		 }else {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo guardar."));
+		 }
+		
+	
+		
+	}
 	
 	public void newComision() {
 		tituloDialog="NUEVA COMISIÓN";
@@ -138,7 +193,6 @@ public class ComisionBean implements Serializable {
 		comisionSelected.setBonoSenior(300.00);
 		comisionSelected.setBasicoMaster(1500.00);
 		comisionSelected.setBonoMaster(500.00);
-		comisionSelected.setMeta(30);
 		comisionSelected.setComisionSupervisor(1);
 		comisionSelected.setComisionMetaSupervisor(2); 
 		comisionSelected.setBonoMetaSupervisor(500.00);
@@ -237,6 +291,51 @@ public class ComisionBean implements Serializable {
 		};
 	}
 	
+	public void cargarTeam(){
+		lstTeam = teamService.findByStatus(true);
+		teamSelected = null;
+		meta = null;
+		lstMetaSupervisor = metaSupervisorService.findByComisionAndEstado(comisionSelected, true);
+	}
+	
+	public void eliminarMetaSupervisor() {
+		metaSupervisorSelected.setEstado(false);
+		MetaSupervisor meta = metaSupervisorService.save(metaSupervisorSelected);
+		if(meta != null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se eliminó correctamente."));
+			cargarTeam();
+		}
+	
+	}
+	
+	public Converter getConversorTeam() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                    Team c = null;
+                    for (Team si : lstTeam) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Team) value).getId() + "";
+                }
+            }
+        };
+    }
+	
 
 	public String getTituloDialog() {
 		return tituloDialog;
@@ -300,6 +399,50 @@ public class ComisionBean implements Serializable {
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+	public Team getTeamSelected() {
+		return teamSelected;
+	}
+	public void setTeamSelected(Team teamSelected) {
+		this.teamSelected = teamSelected;
+	}
+	public List<Team> getLstTeam() {
+		return lstTeam;
+	}
+	public void setLstTeam(List<Team> lstTeam) {
+		this.lstTeam = lstTeam;
+	}
+	public TeamService getTeamService() {
+		return teamService;
+	}
+	public void setTeamService(TeamService teamService) {
+		this.teamService = teamService;
+	}
+	public Integer getMeta() {
+		return meta;
+	}
+	public void setMeta(Integer meta) {
+		this.meta = meta;
+	}
+	public MetaSupervisorService getMetaSupervisorService() {
+		return metaSupervisorService;
+	}
+	public void setMetaSupervisorService(MetaSupervisorService metaSupervisorService) {
+		this.metaSupervisorService = metaSupervisorService;
+	}
+	public List<MetaSupervisor> getLstMetaSupervisor() {
+		return lstMetaSupervisor;
+	}
+	public void setLstMetaSupervisor(List<MetaSupervisor> lstMetaSupervisor) {
+		this.lstMetaSupervisor = lstMetaSupervisor;
+	}
+
+	public MetaSupervisor getMetaSupervisorSelected() {
+		return metaSupervisorSelected;
+	}
+
+	public void setMetaSupervisorSelected(MetaSupervisor metaSupervisorSelected) {
+		this.metaSupervisorSelected = metaSupervisorSelected;
 	}
 	
 	

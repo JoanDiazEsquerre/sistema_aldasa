@@ -15,6 +15,7 @@ public interface ComisionService {
 	void delete(Comision entity);
 	
 	List<Comision> findByEstado(Boolean estado);
+	
 	Comision findByEstadoAndCodigo(Boolean estado, String codigo);
 	Comision findByCodigoAndIdException(String codigo, int idComision);
 	Comision findByFechaIniLessThanEqualAndFechaCierreGreaterThanEqual(Date fechaIni, Date fechaCierre);
