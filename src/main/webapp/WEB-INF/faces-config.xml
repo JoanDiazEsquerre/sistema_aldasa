@@ -349,6 +349,10 @@
 			<property-name>comisionesService</property-name>
 			<value>#{comisionesService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>metaSupervisorService</property-name>
+			<value>#{metaSupervisorService}</value>
+		</managed-property>
 	</managed-bean>
 	   
 	<managed-bean>

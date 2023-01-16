@@ -28,6 +28,7 @@ import com.model.aldasa.entity.Comisiones;
 import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Meta;
+import com.model.aldasa.entity.MetaSupervisor;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
@@ -35,6 +36,7 @@ import com.model.aldasa.service.ComisionService;
 import com.model.aldasa.service.ComisionesService;
 import com.model.aldasa.service.EmpleadoService;
 import com.model.aldasa.service.LoteService;
+import com.model.aldasa.service.MetaSupervisorService;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.TeamService;
 import com.model.aldasa.service.UsuarioService;
@@ -67,6 +69,9 @@ public class ComisionesBean implements Serializable {
 	
 	@ManagedProperty(value = "#{personService}")
 	private PersonService personService;
+	
+	@ManagedProperty(value = "#{metaSupervisorService}")
+	private MetaSupervisorService metaSupervisorService;
 	
 	private LazyDataModel<Comisiones> lstComisionesLazy;
 	private LazyDataModel<Usuario> lstUsuarioLazy;
@@ -355,90 +360,6 @@ public class ComisionesBean implements Serializable {
 		
 	}
 	
-	public int calcularProcentajeMeta(Team team, String size) {
-		int porc=0;
-		if(team.getName().equals("INTERNOS")) {
-			List<Lote> listLotesVendido = new ArrayList<>();
-			List<Usuario> listUsuInternos = usuarioService.findByTeam(team);
-			if(!listUsuInternos.isEmpty()) {
-				for(Usuario usuInt : listUsuInternos) {
-					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
-					if(!listLotesVendidoInt.isEmpty()) {
-						for(Lote lote : listLotesVendidoInt) {
-							listLotesVendido.add(lote);
-						}
-					}
-				}
-			}
-			
-			if(listLotesVendido != null && !listLotesVendido.isEmpty()) {
-				if(size.equals("SI")) {
-					return listLotesVendido.size();
-				}
-				
-				int sizeLotes = listLotesVendido.size();
-				double calculo = (sizeLotes*100)/comisionSelected.getMeta();
-				sizeLotes = (int) calculo;
-				return sizeLotes;
-			}
-			
-		}else if(team.getName().equals("EXTERNOS")) {
-			List<Lote> listLotesVendido = new ArrayList<>();
-			List<Usuario> listUsuIxternos = usuarioService.findByTeam(team);
-			if(!listUsuIxternos.isEmpty()) {
-				for(Usuario usuExt : listUsuIxternos) {
-					List<Lote> listLotesVendidoExt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuExt.getPerson().getDni(),comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
-					if(!listLotesVendidoExt.isEmpty()) {
-						for(Lote lote : listLotesVendidoExt) {
-							listLotesVendido.add(lote);
-						}
-					}
-				}
-			}
-			
-			if(listLotesVendido != null && !listLotesVendido.isEmpty()) {
-				if(size.equals("SI")) {
-					return listLotesVendido.size();
-				}
-				
-				int sizeLotes = listLotesVendido.size();
-				double calculo = (sizeLotes*100)/comisionSelected.getMeta();
-				sizeLotes = (int) calculo;
-				return sizeLotes;
-			}
-			
-		}else if(team.getName().equals("ONLINE")) {
-			List<Lote> listLotesVendido = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(), "%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
-			if(listLotesVendido != null && !listLotesVendido.isEmpty()) {
-				if(size.equals("SI")) {
-					return listLotesVendido.size();
-				}
-				
-				int sizeLotes = listLotesVendido.size();
-				double calculo = (sizeLotes*100)/comisionSelected.getMetaOnline();
-				sizeLotes = (int) calculo;
-				return sizeLotes;
-			}
-			
-		}else {
-			List<Lote> listLotesVendido = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(), "%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
-			if(listLotesVendido != null && !listLotesVendido.isEmpty()) {
-				if(size.equals("SI")) {
-					return listLotesVendido.size();
-				}
-				
-				int sizeLotes = listLotesVendido.size();
-				double calculo = (sizeLotes*100)/comisionSelected.getMeta();
-				sizeLotes = (int) calculo;
-				return sizeLotes;
-			}
-		}
-		
-		
-		
-		return porc;
-	}
-	
 	public void cambiarComision() {
 		
 		lstPersonSupervisor = personService.getPersonSupervisor(EstadoLote.VENDIDO.getName(), comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
@@ -454,21 +375,7 @@ public class ComisionesBean implements Serializable {
 		return comision;
 	}
 	
-	public double calcularComisionSupervior(Lote lote) {
-		int lotesVendidos = calcularProcentajeMeta(teamSelected, "SI");
-		
-		double comision = 0;
-		double porcSupervisor = Double.parseDouble(comisionSelected.getComisionSupervisor()+"") / 100;
-		double porcSupervisorMeta = Double.parseDouble(comisionSelected.getComisionMetaSupervisor()+"") / 100;
-		
-		if(lotesVendidos >= 20) {
-			comision = lote.getMontoVenta() * porcSupervisorMeta;
-		}else {
-			comision = lote.getMontoVenta() * porcSupervisor;
-		}
-
-		return comision;
-	}
+	
 	
 	public List<Lote> listaLotesVendidoPorAsesor(Person asesor){
 		List<Lote> listaLotes = new ArrayList<>();
@@ -709,7 +616,13 @@ public class ComisionesBean implements Serializable {
 				Meta meta = new Meta();
 				meta.setSupervisor(persona.getSurnames() + " " + persona.getNames());
 				meta.setLotesVendidos(lstLotesVendidos.size());
-				double calculo = (lstLotesVendidos.size()*100)/comisionSelected.getMeta();
+				
+				MetaSupervisor metaSupervisor = metaSupervisorService.findByComisionAndEstadoAndPersonSupervisor(comisionSelected, true, persona);
+				double calculo = 0;
+				if(metaSupervisor != null) {
+					calculo = (lstLotesVendidos.size()*100)/metaSupervisor.getMeta();
+				}
+				
 				meta.setPorcentajeMeta((int) calculo);
 				
 				double contado = 0 ;
@@ -742,8 +655,8 @@ public class ComisionesBean implements Serializable {
 			Meta meta = new Meta() ;
 			meta.setSupervisor("Internos");
 			meta.setLotesVendidos(lstInternos.size());
-			double calculo = (lstInternos.size()*100)/comisionSelected.getMeta();
-			meta.setPorcentajeMeta((int) calculo);
+			
+			meta.setPorcentajeMeta(0);
 			
 			double contado = 0 ;
 			double inicial = 0 ;
@@ -775,8 +688,7 @@ public class ComisionesBean implements Serializable {
 			Meta meta = new Meta() ;
 			meta.setSupervisor("Externos");
 			meta.setLotesVendidos(lstExternos.size());
-			double calculo = (lstExternos.size()*100)/comisionSelected.getMeta();
-			meta.setPorcentajeMeta((int) calculo);
+			meta.setPorcentajeMeta(0);
 			
 			double contado = 0 ;
 			double inicial = 0 ;
@@ -805,11 +717,17 @@ public class ComisionesBean implements Serializable {
 		if(!lstOnline.isEmpty()) {
 		
 			Meta meta = new Meta() ;
-			meta.setSupervisor("Online");
+			meta.setSupervisor("Online/"+ lstOnline.get(0).getLote().getPersonSupervisor().getSurnames() + " " + lstOnline.get(0).getLote().getPersonSupervisor().getNames());
 			meta.setLotesVendidos(lstOnline.size());
-			double calculo = (lstOnline.size()*100)/comisionSelected.getMetaOnline();
-			meta.setPorcentajeMeta((int) calculo);
 			
+			MetaSupervisor metaSupervisor = metaSupervisorService.findByComisionAndEstadoAndPersonSupervisor(comisionSelected, true, lstOnline.get(0).getLote().getPersonSupervisor());
+			double calculo = 0;
+			if(metaSupervisor != null) {
+				calculo = (lstOnline.size()*100)/metaSupervisor.getMeta();
+			}
+			
+			meta.setPorcentajeMeta((int) calculo);
+						
 			double contado = 0 ;
 			double inicial = 0 ;
 			double saldo = 0 ;
@@ -1213,6 +1131,12 @@ public class ComisionesBean implements Serializable {
 	}
 	public void setOpcionAsesor(String opcionAsesor) {
 		this.opcionAsesor = opcionAsesor;
+	}
+	public MetaSupervisorService getMetaSupervisorService() {
+		return metaSupervisorService;
+	}
+	public void setMetaSupervisorService(MetaSupervisorService metaSupervisorService) {
+		this.metaSupervisorService = metaSupervisorService;
 	}
 	
 }

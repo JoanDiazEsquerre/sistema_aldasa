@@ -32,6 +32,7 @@ import com.model.aldasa.entity.Comision;
 import com.model.aldasa.entity.Comisiones;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Manzana;
+import com.model.aldasa.entity.MetaSupervisor;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Team;
@@ -446,7 +447,7 @@ public class LoteBean implements Serializable{
 			Comision comision = comisionService.findByFechaIniLessThanEqualAndFechaCierreGreaterThanEqual(lote.getFechaVendido(), lote.getFechaVendido());
 		
 			if(comision != null){
-				MetaSupervisor metaSupervisor = metaSupervisorService.fi;
+				
 				Comisiones comisiones = new Comisiones();
 				if(validarExistencia != null) {
 					comisiones.setId(validarExistencia.getId());
@@ -456,15 +457,15 @@ public class LoteBean implements Serializable{
 					List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonAssessorDniAndTipoPagoAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), lote.getPersonAssessor().getDni(),lote.getTipoPago(), comision.getFechaIni(), comision.getFechaCierre());
 					if(lstLotesVendidos.size()==1) {
 						if (lote.getTipoPago().equals("Contado")) {
-							comisiones.setComisionAsesor(500.00);
+							comisiones.setComisionAsesor(comision.getPrimeraVentaContadoOnline());
 						}else {
-							comisiones.setComisionAsesor(300.00);
+							comisiones.setComisionAsesor(comision.getPrimeraVentaCreditoOnline());
 						}
 					}else {
 						if (lote.getTipoPago().equals("Contado")) {
-							comisiones.setComisionAsesor(400.00);
+							comisiones.setComisionAsesor(comision.getBonoContadoOnline());
 						}else {
-							comisiones.setComisionAsesor(400.00);
+							comisiones.setComisionAsesor(comision.getBonoCreditoOnline());
 						}
 					}
 					comisiones.setComisionSupervisor((lote.getMontoVenta()*comision.getComisionSupervisorOnline())/100);
@@ -481,20 +482,25 @@ public class LoteBean implements Serializable{
 					
 				}else {
 					List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), lote.getPersonSupervisor(), "%%", comision.getFechaIni(), comision.getFechaCierre());
-					int meta  = comision.getMeta() ;
+					
+					MetaSupervisor metaSupervisor = metaSupervisorService.findByComisionAndEstadoAndPersonSupervisor(comision, true, lote.getPersonSupervisor());
+					
 					boolean alcanzaMeta = false;
-					if(lstLotesVendidos.size() >= meta) {
-						alcanzaMeta = true;
-						for (Lote lt:lstLotesVendidos) {
-							Comisiones comConsulta = comisionesService.findByLote(lt);
-							if(comConsulta != null) {
-								comConsulta.setComisionSupervisor((lt.getMontoVenta()*comision.getComisionMetaSupervisor())/100);
-								comisionesService.save(comConsulta);
+					if (metaSupervisor != null) {
+						int meta  = metaSupervisor.getMeta();
+						if(lstLotesVendidos.size() >= meta) {
+							alcanzaMeta = true;
+							for (Lote lt:lstLotesVendidos) {
+								Comisiones comConsulta = comisionesService.findByLote(lt);
+								if(comConsulta != null) {
+									comConsulta.setComisionSupervisor((lt.getMontoVenta()*comision.getComisionMetaSupervisor())/100);
+									comisionesService.save(comConsulta);
 
-							}
+								}
+							} 
 						}
-	                        
 					}
+					
 					if (lote.getTipoPago().equals("Contado")) {
 						comisiones.setComisionAsesor((lote.getMontoVenta()*comision.getComisionContado())/100);
 					}else {

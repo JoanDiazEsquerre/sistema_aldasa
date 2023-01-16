@@ -33,9 +33,6 @@
 			<h:outputLabel for="comCred" value="Comisión Crédito: " style="float: rigth;" />
 			<h:outputLabel id="comCred" value="#{comisionesBean.comisionSelected.comisionCredito}%" style="font-weight: bold;float: Left;" /> 
 			
-			<h:outputLabel for="meta" value="Meta: " style="float: rigth;"  />
-			<h:outputLabel id="meta" value="#{comisionesBean.comisionSelected.meta}" style="font-weight: bold;float: Left" />
-			
 			<h:outputLabel for="metaOn" value="Meta Online: " style="float: rigth;" />
 			<h:outputLabel id="metaOn" value="#{comisionesBean.comisionSelected.metaOnline}" style="font-weight: bold;float: Left" />
 
@@ -160,7 +157,9 @@
 				</p:column>
 				
 				<p:column headerText="% Meta" filterMatchMode="contains">
-					 <p:progressBar value="#{meta.porcentajeMeta}" labelTemplate="{value}%" displayOnly="true"/>
+					 <p:progressBar value="#{meta.porcentajeMeta}" labelTemplate="{value}%" displayOnly="true" rendered="#{meta.porcentajeMeta ne 0}"/>
+					 <h:outputText value="No tiene meta" rendered="#{meta.porcentajeMeta eq 0}" />
+					 
 				</p:column>
 				
 				
