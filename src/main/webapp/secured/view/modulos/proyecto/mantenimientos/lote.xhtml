@@ -163,7 +163,7 @@
 						</p:selectOneMenu>
 						
 						<h:outputLabel for="option" value="Estado:" />
-						<p:selectOneMenu id="option" value="#{loteBean.loteSelected.status}"  style="margin:5px; width:220px" >
+						<p:selectOneMenu id="option" value="#{loteBean.loteSelected.status}" style="margin:5px; width:220px" >
 							<f:selectItem itemLabel="Disponible" itemValue="Disponible" />
 							<f:selectItem itemLabel="Separado" itemValue="Separado"/>
 							<f:selectItem itemLabel="Vendido" itemValue="Vendido"/>
@@ -186,7 +186,7 @@
 							<p:ajax listener="#{loteBean.cargarAsesorPorEquipo}"	update="optionAsesor" />
 						</p:selectOneMenu>
 
-						<h:outputLabel for="optionAsesor" value="Asesor:" rendered="#{loteBean.loteSelected.status eq 'Separado' or loteBean.loteSelected.status eq 'Vendido'}" />
+						<h:outputLabel for="optionAsesor" value="Asesor:"  rendered="#{loteBean.loteSelected.status eq 'Separado' or loteBean.loteSelected.status eq 'Vendido'}" />
 						<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{loteBean.personAsesorSelected}" rendered="#{loteBean.loteSelected.status eq 'Separado' or loteBean.loteSelected.status eq 'Vendido'}" converter="#{loteBean.conversorPersonAsesor}" 
 						   	id="optionAsesor" completeMethod="#{loteBean.completePersonAsesor}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" 
 						   	forceSelection="true" style="margin:5px; width:220px" />

@@ -162,22 +162,7 @@
 							<p:ajax update=":formEvents:tabOpciones:messagesAction  :formEvents:tabOpciones:gridAcciones" />
 						</p:selectOneMenu>
 						
-						<h:outputLabel value="Proyecto: " rendered="#{prospeccionBean.prospectionDetailNew.action.description eq 'Separado' or prospeccionBean.prospectionDetailNew.action.description eq 'Vendido'}" />
-						<h:outputLabel value="#{prospeccionBean.prospectionSelected.project.name}" rendered="#{prospeccionBean.prospectionDetailNew.action.description eq 'Separado' or prospeccionBean.prospectionDetailNew.action.description eq 'Vendido'}" />
 						
-						<h:outputLabel id="lblManzana" for="manzana" value="Manzana: " rendered="#{prospeccionBean.prospectionDetailNew.action.description eq 'Separado' or prospeccionBean.prospectionDetailNew.action.description eq 'Vendido'}" />
-						<p:selectOneMenu style="margin:5px; width:220px" id="manzana" value="#{prospeccionBean.manzanaSelected}" converter="#{prospeccionBean.conversorManzana}" rendered="#{prospeccionBean.prospectionDetailNew.action.description eq 'Separado' or prospeccionBean.prospectionDetailNew.action.description eq 'Vendido'}"> 
-							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
-							<f:selectItems value="#{prospeccionBean.lstManzana}" var="manz" itemLabel="#{manz.name}" itemValue="#{manz}"/>
-							<p:ajax update=":formEvents:tabOpciones:messagesAction :formEvents:tabOpciones:gridAcciones" listener="#{prospeccionBean.listarLotes}"/>
-						</p:selectOneMenu>
-						
-						<h:outputLabel id="lblLote" for="lote" value="Lote: " rendered="#{prospeccionBean.prospectionDetailNew.action.description eq 'Separado' or prospeccionBean.prospectionDetailNew.action.description eq 'Vendido'}" />
-						<p:selectOneMenu style="margin:5px; width:220px" id="lote" value="#{prospeccionBean.loteSelected}" converter="#{prospeccionBean.conversorLote}" rendered="#{prospeccionBean.prospectionDetailNew.action.description eq 'Separado' or prospeccionBean.prospectionDetailNew.action.description eq 'Vendido'}"> 
-							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
-							<f:selectItems value="#{prospeccionBean.lstLote}" var="manz" itemLabel="#{manz.numberLote}" itemValue="#{manz}"/>
-							<p:ajax update=":formEvents:tabOpciones:messagesAction" />
-						</p:selectOneMenu>
 						
 						<h:outputLabel for="time" value="Fecha y Hora: " />
 						<p:datePicker value="#{prospeccionBean.prospectionDetailNew.date}" id="time" showTime="true" style="margin:5px" pattern="dd/MM/yyyy HH:mm a"> <p:ajax update=":formEvents:tabOpciones:messagesAction" /> </p:datePicker>
@@ -316,6 +301,37 @@
 					<p:commandButton id="idBotonSaveStatus" value="Guardar Estado" rendered="#{prospeccionBean.mostrarBotonCambioEstado}" actionListener="#{prospeccionBean.saveCambioEstado}" update=":form:tabView:idTableProy"/> 
 					
 				</p:tab>
+				<p:tab title="Requerimiento Separación" >
+					<p:messages id="messagesRequerimiento" showDetail="true" closable="true" >
+							<p:autoUpdate/>
+				    </p:messages>
+					<h:panelGrid columns="2" id="gridRequerimiento"> 
+						<h:outputLabel value="Proyecto: " />
+						<h:outputLabel value="#{prospeccionBean.prospectionSelected.project.name}" />
+						
+						<h:outputLabel id="lblManzana" for="manzana" value="Manzana: " />
+						<p:selectOneMenu style="margin:5px; width:220px" id="manzana" value="#{prospeccionBean.manzanaSelected}" converter="#{prospeccionBean.conversorManzana}" > 
+							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+							<f:selectItems value="#{prospeccionBean.lstManzana}" var="manz" itemLabel="#{manz.name}" itemValue="#{manz}"/>
+							<p:ajax update=":formEvents:tabOpciones:messagesRequerimiento :formEvents:tabOpciones:gridRequerimiento" listener="#{prospeccionBean.listarLotes}"/>
+						</p:selectOneMenu>
+						
+						<h:outputLabel id="lblLote" for="lote" value="Lote: " />
+						<p:selectOneMenu style="margin:5px; width:220px" id="lote" value="#{prospeccionBean.loteSelected}" converter="#{prospeccionBean.conversorLote}" > 
+							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+							<f:selectItems value="#{prospeccionBean.lstLote}" var="manz" itemLabel="#{manz.numberLote}" itemValue="#{manz}"/>
+							<p:ajax update=":formEvents:tabOpciones:messagesRequerimiento" />
+						</p:selectOneMenu>
+				
+					</h:panelGrid>
+					
+					<h:panelGrid columns="1"> 
+						<p:fileUpload value="#{prospeccionBean.files}" mode="simple" skinSimple="true" multiple="true" fileLimit="2" sizeLimit="500000"/>
+	        			<p:commandButton value="Guardar" ajax="false" styleClass="mt-3 ui-button-outlined block" />
+					</h:panelGrid>
+					
+				</p:tab>
+				
 			</p:tabView> 
 		</h:form>
 	</p:dialog>

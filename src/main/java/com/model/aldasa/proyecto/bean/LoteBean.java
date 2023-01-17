@@ -108,6 +108,8 @@ public class LoteBean implements Serializable{
 	private int cantidadLotes=0;
 	private Date fechaSeparacion, fechaVencimiento,fechaVendido;
 	
+	private boolean loteVendido = false;
+	
 	private LazyDataModel<Lote> lstLoteLazy;
 	private List<Manzana> lstManzana = new ArrayList<>();
 	private List<Project> lstProject = new ArrayList<>();
@@ -150,6 +152,13 @@ public class LoteBean implements Serializable{
 	
 	public void modifyLote( ) {
 		tituloDialog="MODIFICAR LOTE";
+		
+		if(loteSelected.getStatus().equals(EstadoLote.VENDIDO.getName())) {
+			loteVendido = true;
+		}else {
+			loteVendido = false;
+		}
+		
 		nombreLoteSelected="Manzana " + loteSelected.getManzana().getName()+" / Lote: "+loteSelected.getNumberLote();
 				
 		fechaSeparacion = loteSelected.getFechaSeparacion();
@@ -415,6 +424,12 @@ public class LoteBean implements Serializable{
 				generarComision(lote);
 				newLote();
 				
+				if(lote.getStatus().equals(EstadoLote.VENDIDO.getName())) {
+					loteVendido=true;
+				}else {
+					loteVendido=false;
+				}
+				
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
 				fechaSeparacion = null;
 				fechaVencimiento = null;
@@ -427,6 +442,13 @@ public class LoteBean implements Serializable{
 			if (validarExistencia == null) {
 				Lote lote = loteService.save(loteSelected);
 				generarComision(lote);
+				
+				if(lote.getStatus().equals(EstadoLote.VENDIDO.getName())) {
+					loteVendido=true;
+				}else {
+					loteVendido=false;
+				}
+				
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
 				nombreLoteSelected="Manzana " + loteSelected.getManzana().getName()+"/ lote: "+loteSelected.getNumberLote();
 			} else { 
@@ -949,6 +971,12 @@ public class LoteBean implements Serializable{
 	}
 	public void setMetaSupervisorService(MetaSupervisorService metaSupervisorService) {
 		this.metaSupervisorService = metaSupervisorService;
+	}
+	public boolean isLoteVendido() {
+		return loteVendido;
+	}
+	public void setLoteVendido(boolean loteVendido) {
+		this.loteVendido = loteVendido;
 	}
 
 	

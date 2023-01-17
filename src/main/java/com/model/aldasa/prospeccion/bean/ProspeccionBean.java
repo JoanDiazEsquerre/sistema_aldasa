@@ -21,6 +21,7 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
+import org.primefaces.model.file.UploadedFiles;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -120,6 +121,8 @@ public class ProspeccionBean extends BaseBean{
 	private String status = "En seguimiento";
 	private String titleDialog,statusSelected, resultSelected;
 	private boolean mostrarBotonCambioEstado;
+	
+	private UploadedFiles files;
 	
 	private List<Prospect> lstProspect;
 	private List<Person> lstPersonAssessor;
@@ -1283,7 +1286,13 @@ public class ProspeccionBean extends BaseBean{
 	public void setLstLote(List<Lote> lstLote) {
 		this.lstLote = lstLote;
 	}
-	
-	
+
+	public UploadedFiles getFiles() {
+		return files;
+	}
+	public void setFiles(UploadedFiles files) {
+		this.files = files;
+	}
+		
 
 }
