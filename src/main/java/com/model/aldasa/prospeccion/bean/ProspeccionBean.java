@@ -1,5 +1,9 @@
 package com.model.aldasa.prospeccion.bean;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,7 +25,9 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
+import org.primefaces.model.file.UploadedFile;
 import org.primefaces.model.file.UploadedFiles;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -208,7 +214,11 @@ public class ProspeccionBean extends BaseBean{
 	}
 	
 	public void listarLotes() {
-		lstLote = loteService.findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(prospectionSelected.getProject(), manzanaSelected, "%%");
+		if(manzanaSelected != null) {
+			lstLote = loteService.findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(prospectionSelected.getProject(), manzanaSelected, "%%");
+		}else {
+			lstLote = new ArrayList<>();
+		}
 	}
 	
 	
@@ -706,6 +716,54 @@ public class ProspeccionBean extends BaseBean{
 		FacesContext.getCurrentInstance().addMessage("messages1", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se cambio correctamente el estado a: " + prospectionSelected.getStatus()));
 	}
 	
+	public void generarRequerimiento() {
+		
+		
+		if(manzanaSelected == null) {
+			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar manzana"));	
+			return;
+		}
+		
+		if(loteSelected == null) {
+			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar número de lote"));	
+			return;
+		}
+		
+		
+		if (files == null ) {
+			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Subir voucher de separación y/o DNI del cliente"));	
+			return;
+		}
+	}
+	
+	public void subirArchivo(String nombre, UploadedFile fileSelected) {
+		File result = new File("");
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream(result);
+			byte[] buffer = new byte[1024];
+			int bulk;
+			InputStream inputStream = fileSelected.getInputStream();
+			while (true) {
+				bulk = inputStream.read(buffer);
+				if (bulk < 0) { 
+					break;
+					} //end of if                
+				fileOutputStream.write(buffer, 0, bulk);
+				fileOutputStream.flush();
+				} //end fo while(true)            
+			fileOutputStream.close();
+			inputStream.close(); 
+			FacesMessage msg = new FacesMessage("El archivo subió correctamente.");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			FacesMessage error = new FacesMessage("The files were not uploaded!");
+			FacesContext.getCurrentInstance().addMessage(null, error);
+		}
+	}
+	
+	
 	
 	public Converter getConversorProspect() {
         return new Converter() {
@@ -1007,9 +1065,7 @@ public class ProspeccionBean extends BaseBean{
         return lista;
     }
 	
-	
-	
-	
+
 	public LazyDataModel<Prospection> getLstProspectionLazy() {
 		return lstProspectionLazy;
 	}
@@ -1286,13 +1342,13 @@ public class ProspeccionBean extends BaseBean{
 	public void setLstLote(List<Lote> lstLote) {
 		this.lstLote = lstLote;
 	}
-
 	public UploadedFiles getFiles() {
 		return files;
 	}
 	public void setFiles(UploadedFiles files) {
 		this.files = files;
 	}
+	
 		
 
 }

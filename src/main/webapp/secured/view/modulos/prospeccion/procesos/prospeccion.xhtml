@@ -325,9 +325,11 @@
 				
 					</h:panelGrid>
 					
-					<h:panelGrid columns="1"> 
-						<p:fileUpload value="#{prospeccionBean.files}" mode="simple" skinSimple="true" multiple="true" fileLimit="2" sizeLimit="500000"/>
-	        			<p:commandButton value="Guardar" ajax="false" styleClass="mt-3 ui-button-outlined block" />
+					<h:panelGrid columns="1">
+					
+						<p:fileUpload value="#{prospeccionBean.files}" mode="simple" skinSimple="true" multiple="true"/>
+        				<p:commandButton value="Guardar" action="#{prospeccionBean.generarRequerimiento()}" styleClass="mt-3 ui-button-outlined block"/>
+	
 					</h:panelGrid>
 					
 				</p:tab>
