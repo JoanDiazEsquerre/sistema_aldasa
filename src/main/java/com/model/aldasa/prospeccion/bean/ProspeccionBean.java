@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,6 +23,7 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
@@ -45,6 +47,7 @@ import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.ProspectionDetail;
 import com.model.aldasa.entity.Province;
+import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.ActionService;
@@ -59,6 +62,7 @@ import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.ProspectionDetailService;
 import com.model.aldasa.service.ProspectionService;
 import com.model.aldasa.service.ProvinceService;
+import com.model.aldasa.service.RequerimientoSeparacionService;
 import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.EstadoLote;
@@ -110,11 +114,15 @@ public class ProspeccionBean extends BaseBean{
 	@ManagedProperty(value = "#{manzanaService}")
 	private ManzanaService manzanaService;
 	
+	@ManagedProperty(value = "#{requerimientoSeparacionService}")
+	private RequerimientoSeparacionService requerimientoSeparacionService;
+	
 	private LazyDataModel<Prospection> lstProspectionLazy;
 	
 	private Prospection prospectionSelected;
 	private Prospection prospectionNew;
 	private ProspectionDetail prospectionDetailSelected;
+	private RequerimientoSeparacion requerimientoSeparacionSelected;
 	private ProspectionDetail prospectionDetailNew;
 	private ProspectionDetail prospectionDetailAgendaNew;
 	private Usuario usuarioLogin = new Usuario();
@@ -129,6 +137,7 @@ public class ProspeccionBean extends BaseBean{
 	private boolean mostrarBotonCambioEstado;
 	
 	private UploadedFiles files;
+    private UploadedFile file;
 	
 	private List<Prospect> lstProspect;
 	private List<Person> lstPersonAssessor;
@@ -143,13 +152,16 @@ public class ProspeccionBean extends BaseBean{
 	private List<District> lstDistrict;
 	private List<Manzana> lstManzana = new ArrayList<>();
 	private List<Lote> lstLote = new ArrayList<>();
+	private List<RequerimientoSeparacion> lstReqSepSelected;
 	
+	SimpleDateFormat sdfFull = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 	
 	private Manzana manzanaSelected;
 	private Lote loteSelected;
 	
 	@PostConstruct
 	public void init() {
+
 		usuarioLogin = navegacionBean.getUsuarioLogin();
 		listarProspect();
 		listarPersonasAssessor();
@@ -573,6 +585,7 @@ public class ProspeccionBean extends BaseBean{
 		newProspectionDetail();
 		newProspectionDetailAgenda();
 		cargarManzanasByProyecto();
+		cargarRequerimiento();
 	}
 	
 	public void saveActionProspection() {
@@ -583,8 +596,7 @@ public class ProspeccionBean extends BaseBean{
 				return;
 			}else {
 				int idLote = loteSelected.getId();
-				List<Lote> lotesBusqueda = loteService.findById(idLote);
-				Lote loteBusqueda = lotesBusqueda.get(0);
+				Lote loteBusqueda = loteService.findById(idLote);
 				
 				if(loteBusqueda.getStatus().equals(EstadoLote.SEPARADO.getName())) {
 					FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra separado."));
@@ -609,8 +621,7 @@ public class ProspeccionBean extends BaseBean{
 				return;
 			}else {
 				int idLote = loteSelected.getId();
-				List<Lote> lotesBusqueda = loteService.findById(idLote);
-				Lote loteBusqueda = lotesBusqueda.get(0);
+				Lote loteBusqueda = loteService.findById(idLote);
 				
 				if(loteBusqueda.getStatus().equals(EstadoLote.SEPARADO.getName())) {
 					if(loteBusqueda.getPersonVenta().getId() != prospectionDetailNew.getProspection().getProspect().getPerson().getId()) {
@@ -681,6 +692,11 @@ public class ProspeccionBean extends BaseBean{
 		lstProspectionDetailAgenda = prospectionDetailService.findByProspectionAndScheduled(prospectionSelected,true);
 	}
 	
+	public void deleteRequerimieto() {
+		requerimientoSeparacionService.delete(requerimientoSeparacionSelected);
+		cargarRequerimiento();
+	}
+	
 	public void saveActionScheduledProspection() {
 		if(prospectionDetailAgendaNew.getDate()==null) {
 			FacesContext.getCurrentInstance().addMessage("messagesAgenda", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Selecciona Fecha y Hora."));
@@ -716,6 +732,10 @@ public class ProspeccionBean extends BaseBean{
 		FacesContext.getCurrentInstance().addMessage("messages1", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se cambio correctamente el estado a: " + prospectionSelected.getStatus()));
 	}
 	
+	public void cargarRequerimiento() {
+		lstReqSepSelected = requerimientoSeparacionService.findByProspection(prospectionSelected);
+	}
+	
 	public void generarRequerimiento() {
 		
 		
@@ -727,14 +747,38 @@ public class ProspeccionBean extends BaseBean{
 		if(loteSelected == null) {
 			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar número de lote"));	
 			return;
+		}else {
+			Lote l = loteService.findById(loteSelected.getId());
+			if (!l.getStatus().equals(EstadoLote.DISPONIBLE.getName())) {
+				FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote se encuentra " + l.getStatus()));	
+				return;
+				
+			}
+
 		}
 		
+		RequerimientoSeparacion requerimientoSeparacion = new RequerimientoSeparacion();
+		requerimientoSeparacion.setLote(loteSelected);
+		requerimientoSeparacion.setFecha(new Date());
+		requerimientoSeparacion.setEstado("Pendiente");
+		requerimientoSeparacion.setProspection(prospectionSelected);
 		
-		if (files == null ) {
-			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Subir voucher de separación y/o DNI del cliente"));	
-			return;
+		RequerimientoSeparacion guardarReq = requerimientoSeparacionService.save(requerimientoSeparacion);
+		
+		if(guardarReq != null) {
+			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente el requerimiento" ));
+			cargarRequerimiento();
+		}else {
+			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo guardar el requerimiento"));	
+
 		}
+		
 	}
+	
+	public void handleFileUpload(FileUploadEvent event) {
+        FacesMessage message = new FacesMessage("Successful", event.getFile().getFileName() + " is uploaded.");
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
 	
 	public void subirArchivo(String nombre, UploadedFile fileSelected) {
 		File result = new File("");
@@ -763,6 +807,10 @@ public class ProspeccionBean extends BaseBean{
 		}
 	}
 	
+	public String convertirHora (Date hora) {
+		String a = sdfFull.format(hora);
+		return a;
+	}
 	
 	
 	public Converter getConversorProspect() {
@@ -1348,7 +1396,36 @@ public class ProspeccionBean extends BaseBean{
 	public void setFiles(UploadedFiles files) {
 		this.files = files;
 	}
+	public List<RequerimientoSeparacion> getLstReqSepSelected() {
+		return lstReqSepSelected;
+	}
+	public void setLstReqSepSelected(List<RequerimientoSeparacion> lstReqSepSelected) {
+		this.lstReqSepSelected = lstReqSepSelected;
+	}
+	public RequerimientoSeparacion getRequerimientoSeparacionSelected() {
+		return requerimientoSeparacionSelected;
+	}
+	public void setRequerimientoSeparacionSelected(RequerimientoSeparacion requerimientoSeparacionSelected) {
+		this.requerimientoSeparacionSelected = requerimientoSeparacionSelected;
+	}
+	public SimpleDateFormat getSdfFull() {
+		return sdfFull;
+	}
+	public void setSdfFull(SimpleDateFormat sdfFull) {
+		this.sdfFull = sdfFull;
+	}
+	public UploadedFile getFile() {
+		return file;
+	}
+	public void setFile(UploadedFile file) {
+		this.file = file;
+	}
+	public RequerimientoSeparacionService getRequerimientoSeparacionService() {
+		return requerimientoSeparacionService;
+	}
+	public void setRequerimientoSeparacionService(RequerimientoSeparacionService requerimientoSeparacionService) {
+		this.requerimientoSeparacionService = requerimientoSeparacionService;
+	}
 	
-		
 
 }

@@ -22,7 +22,7 @@ public class RequerimientoSeparacion {
 	@JoinColumn(name="idlote")
 	private Lote lote;
 	
-	private Date fechaCierre;
+	private Date fecha;
 	
 	private String estado;
 	
@@ -45,11 +45,11 @@ public class RequerimientoSeparacion {
 	public void setLote(Lote lote) {
 		this.lote = lote;
 	}
-	public Date getFechaCierre() {
-		return fechaCierre;
+	public Date getFecha() {
+		return fecha;
 	}
-	public void setFechaCierre(Date fechaCierre) {
-		this.fechaCierre = fechaCierre;
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
 	}
 	public String getEstado() {
 		return estado;

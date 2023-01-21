@@ -215,6 +215,10 @@
 			<property-name>loteService</property-name>
 			<value>#{loteService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>requerimientoSeparacionService</property-name>
+			<value>#{requerimientoSeparacionService}</value>
+		</managed-property>
 	</managed-bean>
 
 	<managed-bean>
@@ -499,6 +503,23 @@
 		<managed-property>
 			<property-name>loteService</property-name>
 			<value>#{loteService}</value>
+		</managed-property>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>requerimientoSeparacionBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.prospeccion.bean.RequerimientoSeparacionBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope> 
+		<managed-property>
+			<property-name>loteService</property-name>
+			<value>#{loteService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>prospectService</property-name>
+			<value>#{prospectService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{prospectService}</value>
 		</managed-property>
 	</managed-bean>
 	

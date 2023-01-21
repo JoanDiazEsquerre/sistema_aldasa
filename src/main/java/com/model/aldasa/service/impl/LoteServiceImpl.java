@@ -49,7 +49,7 @@ public class LoteServiceImpl implements LoteService {
 
 
 	@Override
-	public List<Lote> findById(int id) {
+	public Lote findById(int id) {
 		return loteRepository.findById(id);
 	}
 

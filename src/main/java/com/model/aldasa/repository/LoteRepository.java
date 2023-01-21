@@ -16,7 +16,7 @@ import com.model.aldasa.entity.Person;
 
 public interface LoteRepository extends JpaRepository<Lote, Integer> {
 
-	List<Lote> findById(int id);
+	Lote findById(int id);
 	List<Lote> findByStatus(boolean status);
 	Lote findByNumberLoteAndManzanaAndProject (String name, Manzana manzana, Project project);
 	

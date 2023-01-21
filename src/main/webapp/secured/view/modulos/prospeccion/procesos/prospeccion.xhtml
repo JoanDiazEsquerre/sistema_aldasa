@@ -326,11 +326,70 @@
 					</h:panelGrid>
 					
 					<h:panelGrid columns="1">
-					
+						<p:fileUpload value="#{prospeccionBean.file}" mode="simple" skinSimple="true"/>
 						<p:fileUpload value="#{prospeccionBean.files}" mode="simple" skinSimple="true" multiple="true"/>
-        				<p:commandButton value="Guardar" action="#{prospeccionBean.generarRequerimiento()}" styleClass="mt-3 ui-button-outlined block"/>
+						
+        				<p:commandButton value="Guardar" update=":formEvents:tabOpciones:gridRequerimiento :formEvents:tabOpciones:idTableReqsep" action="#{prospeccionBean.generarRequerimiento()}" styleClass="mt-3 ui-button-outlined block"/>
 	
 					</h:panelGrid>
+					<p:dataTable var="req" id="idTableReqsep" value="#{prospeccionBean.lstReqSepSelected}" rowIndexVar="row" paginator="true" rows="5" size="small" 
+					emptyMessage="No se encontraron requerimientos de separación." paginatorPosition="bottom" rowKey="#{req.id}" selection="#{prospeccionBean.requerimientoSeparacionSelected}" selectionMode="single"> 
+						<f:facet name="header">
+							<div class="p-d-flex p-ai-center p-jc-between">
+								<span>Lista de Requerimientos de Separación</span>
+							</div>
+						</f:facet>
+						<p:ajax event="rowSelect" />
+
+						<p:column style="width:42px;text-align: left">
+							<f:facet name="header">
+							#
+							</f:facet>
+						</p:column>
+
+						<p:column width="25px">
+                      		#{row +1}
+        				</p:column>
+
+						<p:column headerText="Proyecto" sortBy="#{req.lote.project.name}" filterMatchMode="contains">
+							<h:outputText value="#{req.lote.project.name}" />
+						</p:column>
+						
+						<p:column headerText="Manzana" sortBy="#{req.lote.manzana.name}" filterMatchMode="contains">
+							<h:outputText value="#{req.lote.manzana.name}" />
+						</p:column>
+						
+						<p:column headerText="Lote" sortBy="#{req.lote.numberLote}" filterMatchMode="contains">
+							<h:outputText value="#{req.lote.numberLote}" />
+						</p:column>
+						
+						<p:column headerText="Estado" sortBy="#{req.estado}" filterMatchMode="contains">
+							<h:outputText value="#{req.estado}" />
+						</p:column>
+						
+						<p:column headerText="Fecha Requerimiento" sortBy="#{req.fecha}" filterMatchMode="contains">
+							<h:outputText value="#{prospeccionBean.convertirHora(req.fecha)}" />
+						</p:column>
+						
+						<p:column headerText="Fecha Separación" sortBy="#{req.lote.fechaSeparacion}" filterMatchMode="contains">
+							<h:outputText value="#{req.lote.fechaSeparacion}" > 
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Fecha Vencimiento" sortBy="#{req.lote.fechaSeparacion}" filterMatchMode="contains">
+							<h:outputText value="#{req.lote.fechaSeparacion}" > 
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column width="10%" filterMatchMode="contains">
+							<p:commandButton icon="pi pi-trash" process="@this" oncomplete="PF('deleteReqDialog').show()" >
+								<f:setPropertyActionListener value="#{req}" target="#{prospeccionBean.requerimientoSeparacionSelected}" />
+							</p:commandButton>
+						</p:column>
+						
+					</p:dataTable>
 					
 				</p:tab>
 				
@@ -448,6 +507,11 @@
     <p:confirmDialog widgetVar="deleteProductDialogAg" showEffect="fade" width="300" message="¿Deseas eliminar la agenda?" header="Confirmación" severity="warn" appendTo="@(body)">
         <p:commandButton value="Si" icon="pi pi-check" process="@this" update=":formEvents:tabOpciones:idTableDetAg :form:tabView:idTableProy" oncomplete="PF('deleteProductDialogAg').hide()" actionListener="#{prospeccionBean.deleteDetailActionAgenda}" />
         <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('deleteProductDialogAg').hide()" />
+    </p:confirmDialog>
+    
+    <p:confirmDialog widgetVar="deleteReqDialog" showEffect="fade" width="300" message="¿Deseas eliminar el requerimieto de separación?" header="Confirmación" severity="warn" appendTo="@(body)">
+        <p:commandButton value="Si" icon="pi pi-check" process="@this" update=":formEvents:tabOpciones:idTableReqsep :form:tabView:idTableProy" oncomplete="PF('deleteReqDialog').hide()" actionListener="#{prospeccionBean.deleteRequerimieto}" />
+        <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('deleteReqDialog').hide()" />
     </p:confirmDialog>
 	
 	<script>

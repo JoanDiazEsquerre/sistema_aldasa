@@ -14,7 +14,7 @@ import com.model.aldasa.entity.Project;
 
 public interface LoteService {
  
-	List<Lote> findById(int id);
+	Lote findById(int id);
 	Lote save(Lote lote);
 	void delete(Lote lote);
 	List<Lote> findByStatus(boolean status);

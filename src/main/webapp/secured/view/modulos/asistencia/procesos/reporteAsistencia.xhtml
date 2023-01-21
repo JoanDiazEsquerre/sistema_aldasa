@@ -65,7 +65,6 @@
      		
     		<p:column headerText="Fecha y Hora" sortBy="#{asistencia.hora}" filterMatchMode="contains">
     			<h:outputText value="#{reporteAsistenciaBean.convertirHora(asistencia.hora)}" />
-				
 			</p:column>
 
 			<p:column headerText="Empleado" sortBy="#{asistencia.empleado.person.surnames}" filterMatchMode="contains">

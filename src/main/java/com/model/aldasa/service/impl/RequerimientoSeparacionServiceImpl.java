@@ -1,10 +1,12 @@
 package com.model.aldasa.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.repository.RequerimientoSeparacionRepository;
 import com.model.aldasa.service.RequerimientoSeparacionService;
@@ -31,6 +33,12 @@ public class RequerimientoSeparacionServiceImpl implements RequerimientoSeparaci
 	public void delete(RequerimientoSeparacion entity) {
 		// TODO Auto-generated method stub
 		requerimientoSeparacionRepository.delete(entity);
+	}
+
+	@Override
+	public List<RequerimientoSeparacion> findByProspection(Prospection prostection) {
+		// TODO Auto-generated method stub
+		return requerimientoSeparacionRepository.findByProspection(prostection);
 	}
 
 }

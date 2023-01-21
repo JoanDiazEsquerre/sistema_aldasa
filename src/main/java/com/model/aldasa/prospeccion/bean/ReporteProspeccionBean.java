@@ -134,8 +134,7 @@ public class ReporteProspeccionBean extends BaseBean implements Serializable {
 	}
 	
 	public void separarLote() {
-		List<Lote> loteSeparar = loteService.findById(prospectionDetailSelected.getLote().getId());
-		Lote lote = loteSeparar.get(0);
+		Lote lote = loteService.findById(prospectionDetailSelected.getLote().getId());
 		if(lote.getStatus().equals(EstadoLote.SEPARADO.getName())) {
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se completó la accion, el lote se encuentra separado.");
 			PrimeFaces.current().dialog().showMessageDynamic(message);
@@ -165,8 +164,7 @@ public class ReporteProspeccionBean extends BaseBean implements Serializable {
 	}
 	
 	public void venderLote() {
-		List<Lote> loteSeparar = loteService.findById(prospectionDetailSelected.getLote().getId());
-		Lote lote = loteSeparar.get(0);
+		Lote lote = loteService.findById(prospectionDetailSelected.getLote().getId());
 		
 		if(lote.getStatus().equals(EstadoLote.VENDIDO.getName())) {
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se completó la accion, el lote se encuentra Vendido.");
