@@ -193,6 +193,7 @@
 						   	
 					</h:panelGrid>
 					<p:commandButton value="Guardar" action="#{loteBean.saveLote()}" update=":form:idTableLote :formLoteDialog" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
+					<p:commandButton value="word" action="#{loteBean.generarWord()}" />
 				</p:tab>
 				<p:tab title="Medidas" >
 					<h:panelGrid id="gridMedidas" columns="2">

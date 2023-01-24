@@ -9,7 +9,7 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">PROYECTOS > PROYECTOS</h2>
-		<p:selectOneButton value="#{projectBean.estado}">
+		<p:selectOneButton value="#{projectBean.estado}" unselectable="false">
 			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
 			<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
 			<p:ajax update=":form:idTableProject"
@@ -53,15 +53,74 @@
 		    <p:messages id="messages" showDetail="true" closable="true">
 	            <p:autoUpdate/>
 	        </p:messages>
-			<h:panelGrid id="grid" columns="2">
+			<h:panelGrid id="grid" columns="4">
+			
 				<h:outputLabel value="Nombre de Proyecto: " for="nombreProyecto" />
-				<p:inputText value="#{projectBean.projectSelected.name}"
-					id="nombreProyecto" />
+				<p:inputText value="#{projectBean.projectSelected.name}" id="nombreProyecto" maxlength="45" />
+				
+				<h:outputLabel value="Ubicación: " for="ubicacion" />
+				<p:inputText value="#{projectBean.projectSelected.ubicacion}" id="ubicacion" maxlength="200" />
+				
+				<h:outputLabel value="Sector: " for="sector" />
+				<p:inputText value="#{projectBean.projectSelected.sector}" id="sector" maxlength="200"/>
+				
+				<h:outputLabel value="Predio:  " for="predio" />
+				<p:inputText value="#{projectBean.projectSelected.predio}" id="predio" maxlength="200"/>
+				
+				<h:outputLabel value="Código de predio:  " for="codigoPredio" />
+				<p:inputText value="#{projectBean.projectSelected.codigoPredio}" id="codigoPredio" maxlength="100" />
+				
+				<h:outputLabel value="Área / Hectárea:  " for="areaHectarea" />
+				<p:inputText value="#{projectBean.projectSelected.areaHectarea}" id="areaHectarea" maxlength="15"/>
+				
+				<h:outputLabel value="Unidad catastral:  " for="unidadCatastral" />
+				<p:inputText value="#{projectBean.projectSelected.unidadCatastral}" id="unidadCatastral" maxlength="50"/>
+				
+				<h:outputLabel value="N° Partida electrónica:  " for="numPartidaElectronica" />
+				<p:inputText value="#{projectBean.projectSelected.numPartidaElectronica}" id="numPartidaElectronica" maxlength="50"/>
+				
+				<h:outputLabel value="Zona registral: " for="zonaRegistral" />
+				<p:inputText value="#{projectBean.projectSelected.zonaRegistral}" id="zonaRegistral" maxlength="100"/>
+				
 				<h:outputLabel for="option" value="Estado:" />
 				<p:selectOneMenu id="option" value="#{projectBean.projectSelected.status}" style="margin:5px">
 					<f:selectItem itemLabel="ACTIVO" itemValue="#{true}" />
 					<f:selectItem itemLabel="INACTIVO" itemValue="#{false}" />
 				</p:selectOneMenu>	
+				
+				<h:outputLabel for="pais" value="País: " />
+				<p:selectOneMenu style="margin:5px; width:220px" id="pais" value="#{projectBean.countrySelected}" converter="#{projectBean.conversorCountry}">
+					<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}" />
+					<f:selectItems value="#{projectBean.lstCountry}" var="country"
+						itemLabel="#{country.name}" itemValue="#{country}" />
+					<p:ajax listener="#{projectBean.listarDepartamentos}" update="dep,prov,dist" />
+				</p:selectOneMenu>
+
+				<h:outputLabel for="dep" value="Departamento: " />
+				<p:selectOneMenu style="margin:5px; width:220px" id="dep" value="#{projectBean.departmentSelected}" converter="#{projectBean.conversorDepartment}">
+					<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}" />
+					<f:selectItems value="#{projectBean.lstDepartment}" var="dep"
+						itemLabel="#{dep.name}" itemValue="#{dep}" />
+					<p:ajax listener="#{projectBean.listarProvincias}"
+						update="prov,dist" />
+				</p:selectOneMenu>
+
+				<h:outputLabel for="prov" value="Provincia: " />
+				<p:selectOneMenu style="margin:5px; width:220px" id="prov" value="#{projectBean.provinceSelected}" converter="#{projectBean.conversorProvince}">
+					<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}" />
+					<f:selectItems value="#{projectBean.lstProvince}" var="pro"
+						itemLabel="#{pro.name}" itemValue="#{pro}" />
+					<p:ajax listener="#{projectBean.listarDistritos}" update="dist" />
+				</p:selectOneMenu>
+
+				<h:outputLabel for="dist" value="Distrito: " />
+				<p:selectOneMenu style="margin:5px; width:220px" id="dist" value="#{projectBean.districtSelected}" converter="#{projectBean.conversorDistrict}">
+					<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}" />
+					<f:selectItems value="#{projectBean.lstDistrict}" var="pro"
+						itemLabel="#{pro.name}" itemValue="#{pro}" />
+				</p:selectOneMenu>
+				
+				
 				<p:commandButton value="Guardar" action="#{projectBean.saveProject()}" 
 					update=":form:idTableProject :formProjectDialog"/>
 			</h:panelGrid>

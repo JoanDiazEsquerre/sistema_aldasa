@@ -20,6 +20,35 @@ public class Project {
 	private String name;
 	private boolean status;
 	
+	private String ubicacion;
+	
+	private String sector;
+
+	private String predio;
+	
+	@Column(name="codigopredio")
+	private String codigoPredio;
+	
+	@Column(name="areahectarea")
+	private String areaHectarea;
+	
+	@Column(name="unidadcatastral")
+	private String unidadCatastral;
+	
+	@ManyToOne
+    @JoinColumn(name="iddistrict")
+    private District district;
+	
+	@Column(name="numpartidaelectronica")
+	private String numPartidaElectronica;
+	
+	@Column(name="zonaregistral")
+	private String zonaRegistral;
+	
+	
+	
+	
+	
 	
 	public Integer getId() {
 		return id;
@@ -39,10 +68,60 @@ public class Project {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-	
-	
-	
-	
+	public String getUbicacion() {
+		return ubicacion;
+	}
+	public void setUbicacion(String ubicacion) {
+		this.ubicacion = ubicacion;
+	}
+	public String getSector() {
+		return sector;
+	}
+	public void setSector(String sector) {
+		this.sector = sector;
+	}
+	public String getPredio() {
+		return predio;
+	}
+	public void setPredio(String predio) {
+		this.predio = predio;
+	}
+	public String getCodigoPredio() {
+		return codigoPredio;
+	}
+	public void setCodigoPredio(String codigoPredio) {
+		this.codigoPredio = codigoPredio;
+	}
+	public String getAreaHectarea() {
+		return areaHectarea;
+	}
+	public void setAreaHectarea(String areaHectarea) {
+		this.areaHectarea = areaHectarea;
+	}
+	public String getUnidadCatastral() {
+		return unidadCatastral;
+	}
+	public void setUnidadCatastral(String unidadCatastral) {
+		this.unidadCatastral = unidadCatastral;
+	}
+	public District getDistrict() {
+		return district;
+	}
+	public void setDistrict(District district) {
+		this.district = district;
+	}
+	public String getNumPartidaElectronica() {
+		return numPartidaElectronica;
+	}
+	public void setNumPartidaElectronica(String numPartidaElectronica) {
+		this.numPartidaElectronica = numPartidaElectronica;
+	}
+	public String getZonaRegistral() {
+		return zonaRegistral;
+	}
+	public void setZonaRegistral(String zonaRegistral) {
+		this.zonaRegistral = zonaRegistral;
+	}
 	@Override
     public boolean equals(Object other) {
         return (other instanceof Project) && (id != null)

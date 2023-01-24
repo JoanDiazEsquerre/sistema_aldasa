@@ -31,10 +31,10 @@ public class AldasaApplication {
 	  ServletRegistrationBean jsfServletRegistration (ServletContext servletContext) {
 	      //spring boot only works if this is set
 	      servletContext.setInitParameter("com.sun.faces.forceLoadConfiguration", Boolean.TRUE.toString());
-//	      servletContext.setInitParameter("primefaces.THEME", "bluesky");
+//	      servletContext.setInitParameter ("primefaces.THEME", "bluesky");
 //          servletContext.setInitParameter("javax.faces.FACELETS_SKIP_COMMENTS", "true");
 //          servletContext.setInitParameter("com.sun.faces.expressionFactory","com.sun.el.ExpressionFactoryImpl");
-          servletContext.setInitParameter("primefaces.UPLOADER","commons");
+//          servletContext.setInitParameter("primefaces.UPLOADER","commons");
 	      //registration
 	      ServletRegistrationBean srb = new ServletRegistrationBean();
 	      srb.setServlet(new FacesServlet());

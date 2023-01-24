@@ -589,64 +589,64 @@ public class ProspeccionBean extends BaseBean{
 	}
 	
 	public void saveActionProspection() {
-		prospectionDetailNew.setLote(loteSelected); 
-		if(prospectionDetailNew.getAction().getDescription().equals("Separado")) {
-			if(loteSelected == null) {
-				FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar Manzana y Lote."));
-				return;
-			}else {
-				int idLote = loteSelected.getId();
-				Lote loteBusqueda = loteService.findById(idLote);
-				
-				if(loteBusqueda.getStatus().equals(EstadoLote.SEPARADO.getName())) {
-					FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra separado."));
-					return;
-				}else if(loteBusqueda.getStatus().equals(EstadoLote.VENDIDO.getName())) {
-					FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra Vendido."));
-					return;
-				}
-				
-				for(ProspectionDetail detalle: lstProspectionDetail) {
-					if(detalle.getLote() != null) {
-						if(loteSelected.getId() == detalle.getLote().getId() && detalle.getAction().getDescription().equals(EstadoLote.SEPARADO.getName())) {
-							FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya seleccionó el lote "+ loteSelected.getNumberLote()+" de la Manzana "+manzanaSelected.getName()+ " como separado"));
-							return;
-						}
-					}
-				}
-			}
-		}else if(prospectionDetailNew.getAction().getDescription().equals("Vendido")){
-			if(loteSelected == null) {
-				FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar Manzana y Lote."));
-				return;
-			}else {
-				int idLote = loteSelected.getId();
-				Lote loteBusqueda = loteService.findById(idLote);
-				
-				if(loteBusqueda.getStatus().equals(EstadoLote.SEPARADO.getName())) {
-					if(loteBusqueda.getPersonVenta().getId() != prospectionDetailNew.getProspection().getProspect().getPerson().getId()) {
-						FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra separado."));
-						return;
-					}
-					
-				}else if(loteBusqueda.getStatus().equals(EstadoLote.VENDIDO.getName())) {
-					FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra Vendido."));
-					return;
-				}
-				
-				
-				for(ProspectionDetail detalle: lstProspectionDetail) {
-					if(detalle.getLote() != null) {
-						if(loteSelected.getId() == detalle.getLote().getId() && detalle.getAction().getDescription().equals("Vendido")) {
-							FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya seleccionó el lote "+ loteSelected.getNumberLote()+" de la Manzana "+manzanaSelected.getName()+ "como vendido"));
-							return;
-						}
-					}
-				}
-			}
-		}else {
-			prospectionDetailNew.setLote(null);
-		}
+//		prospectionDetailNew.setLote(loteSelected); 
+//		if(prospectionDetailNew.getAction().getDescription().equals("Separado")) {
+//			if(loteSelected == null) {
+//				FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar Manzana y Lote."));
+//				return;
+//			}else {
+//				int idLote = loteSelected.getId();
+//				Lote loteBusqueda = loteService.findById(idLote);
+//				
+//				if(loteBusqueda.getStatus().equals(EstadoLote.SEPARADO.getName())) {
+//					FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra separado."));
+//					return;
+//				}else if(loteBusqueda.getStatus().equals(EstadoLote.VENDIDO.getName())) {
+//					FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra Vendido."));
+//					return;
+//				}
+//				
+//				for(ProspectionDetail detalle: lstProspectionDetail) {
+//					if(detalle.getLote() != null) {
+//						if(loteSelected.getId() == detalle.getLote().getId() && detalle.getAction().getDescription().equals(EstadoLote.SEPARADO.getName())) {
+//							FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya seleccionó el lote "+ loteSelected.getNumberLote()+" de la Manzana "+manzanaSelected.getName()+ " como separado"));
+//							return;
+//						}
+//					}
+//				}
+//			}
+//		}else if(prospectionDetailNew.getAction().getDescription().equals("Vendido")){
+//			if(loteSelected == null) {
+//				FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar Manzana y Lote."));
+//				return;
+//			}else {
+//				int idLote = loteSelected.getId();
+//				Lote loteBusqueda = loteService.findById(idLote);
+//				
+//				if(loteBusqueda.getStatus().equals(EstadoLote.SEPARADO.getName())) {
+//					if(loteBusqueda.getPersonVenta().getId() != prospectionDetailNew.getProspection().getProspect().getPerson().getId()) {
+//						FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra separado."));
+//						return;
+//					}
+//					
+//				}else if(loteBusqueda.getStatus().equals(EstadoLote.VENDIDO.getName())) {
+//					FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra Vendido."));
+//					return;
+//				}
+//				
+//				
+//				for(ProspectionDetail detalle: lstProspectionDetail) {
+//					if(detalle.getLote() != null) {
+//						if(loteSelected.getId() == detalle.getLote().getId() && detalle.getAction().getDescription().equals("Vendido")) {
+//							FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya seleccionó el lote "+ loteSelected.getNumberLote()+" de la Manzana "+manzanaSelected.getName()+ "como vendido"));
+//							return;
+//						}
+//					}
+//				}
+//			}
+//		}else {
+//			prospectionDetailNew.setLote(null);
+//		}
 		
 		if(prospectionDetailNew.getDate()==null) {
 			FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Selecciona Fecha y Hora."));
@@ -752,9 +752,20 @@ public class ProspeccionBean extends BaseBean{
 			if (!l.getStatus().equals(EstadoLote.DISPONIBLE.getName())) {
 				FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote se encuentra " + l.getStatus()));	
 				return;
-				
 			}
+			for(RequerimientoSeparacion re : lstReqSepSelected) {
+				if(re.getEstado().equals("Pendiente") && re.getLote().getId()==loteSelected.getId()) {
+					FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Requerimiento registrado"));	
+					return;
+				}
+			}
+			
 
+		}
+		
+		
+		if(file != null) {
+			System.out.println("++++++Hola mundo++++++");
 		}
 		
 		RequerimientoSeparacion requerimientoSeparacion = new RequerimientoSeparacion();

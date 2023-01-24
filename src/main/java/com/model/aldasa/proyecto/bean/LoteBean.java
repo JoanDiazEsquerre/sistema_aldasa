@@ -1,6 +1,10 @@
 package com.model.aldasa.proyecto.bean;
 
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,7 +21,13 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.servlet.ServletContext;
 
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -89,6 +99,10 @@ public class LoteBean implements Serializable{
 	private List<Lote> lstLotes;
 	private List<Person> lstPerson;
 	
+	private StreamedContent fileDes;
+	
+	private String nombreArchivo = "Contrato.docx";
+	
 	private StreamedContent file;
 	
 	private Person personAsesorSelected;
@@ -107,6 +121,7 @@ public class LoteBean implements Serializable{
 	private String nombreLoteSelected="";
 	private int cantidadLotes=0;
 	private Date fechaSeparacion, fechaVencimiento,fechaVendido;
+	private String ruta = "C:/Users/ASUS F15/Documentos";
 	
 	private boolean loteVendido = false;
 	
@@ -133,6 +148,41 @@ public class LoteBean implements Serializable{
 		lstTeam=teamService.findByStatus(true);
 
 	}
+	
+	public void generarWord() throws IOException {
+
+		// initialize a blank document
+		XWPFDocument document = new XWPFDocument();
+		// create a new file
+		FileOutputStream out = new FileOutputStream(new File("document.docx"));
+		// create a new paragraph paragraph
+		XWPFParagraph paragraph = document.createParagraph();
+		XWPFRun run = paragraph.createRun();
+		run.setText("File joan Format Developer Guide - " +
+		  "Learn about computer files that you come across in " +
+		  "your daily work at: www.fileformat.com ");
+		
+		try {
+            ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            String filePath = scontext.getRealPath("/WEB-INF/fileAttachments/" + nombreArchivo);
+            File file = new File(filePath);
+            FileOutputStream out1 = new FileOutputStream(file);
+            document.write(out1);
+    		out1.close();
+            fileDes = DefaultStreamedContent.builder()
+                    .name(nombreArchivo)
+                    .contentType("aplication/docx")
+                    .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/fileAttachments/"+nombreArchivo))
+                    .build();
+            
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
+	
+   
 	
 	public void listarPersonas() {
 		lstPerson=personService.findByStatus(true);
@@ -977,6 +1027,54 @@ public class LoteBean implements Serializable{
 	}
 	public void setLoteVendido(boolean loteVendido) {
 		this.loteVendido = loteVendido;
+	}
+
+	public StreamedContent getFileDes() {
+		return fileDes;
+	}
+
+	public void setFileDes(StreamedContent fileDes) {
+		this.fileDes = fileDes;
+	}
+
+	public String getRuta() {
+		return ruta;
+	}
+
+	public void setRuta(String ruta) {
+		this.ruta = ruta;
+	}
+
+	public SimpleDateFormat getSdf() {
+		return sdf;
+	}
+
+	public void setSdf(SimpleDateFormat sdf) {
+		this.sdf = sdf;
+	}
+
+	public SimpleDateFormat getSdfM() {
+		return sdfM;
+	}
+
+	public void setSdfM(SimpleDateFormat sdfM) {
+		this.sdfM = sdfM;
+	}
+
+	public SimpleDateFormat getSdfY() {
+		return sdfY;
+	}
+
+	public void setSdfY(SimpleDateFormat sdfY) {
+		this.sdfY = sdfY;
+	}
+
+	public SimpleDateFormat getSdfY2() {
+		return sdfY2;
+	}
+
+	public void setSdfY2(SimpleDateFormat sdfY2) {
+		this.sdfY2 = sdfY2;
 	}
 
 	

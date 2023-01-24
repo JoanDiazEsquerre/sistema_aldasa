@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Prospection;
@@ -40,5 +42,12 @@ public class RequerimientoSeparacionServiceImpl implements RequerimientoSeparaci
 		// TODO Auto-generated method stub
 		return requerimientoSeparacionRepository.findByProspection(prostection);
 	}
+
+	@Override
+	public Page<RequerimientoSeparacion> findAllByEstado(String estado, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return requerimientoSeparacionRepository.findAllByEstado(estado, pageable);
+	}
+
 
 }

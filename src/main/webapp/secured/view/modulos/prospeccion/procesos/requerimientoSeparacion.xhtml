@@ -9,7 +9,115 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">PROSPECCIÓN > REQUERIMIENTO SEPARACIÓN</h2>
+		<p:selectOneButton value="#{requerimientoSeparacionBean.estado}" unselectable="false">
+			<f:selectItem itemLabel="Pendientes" itemValue="Pendiente"/>
+			<f:selectItem itemLabel="Aprobados" itemValue="Aprobado"/>
+			<f:selectItem itemLabel="Rechazados" itemValue="Rechazado"/>
+			
+			<p:ajax update=":form:idTableReqsep" />
+		</p:selectOneButton>
+		<p:dataTable var="req" id="idTableReqsep" value="#{requerimientoSeparacionBean.lstReqSepLazy}" rowIndexVar="row" paginator="true" rows="5" size="small" 
+		emptyMessage="No se encontraron requerimientos de separación." paginatorPosition="bottom" rowKey="#{req.id}" selection="#{requerimientoSeparacionBean.requerimientoSeparacionSelected}" selectionMode="single"> 
+			<f:facet name="header">
+				<div class="p-d-flex p-ai-center p-jc-between">
+					<span>Lista de Requerimientos de Separación</span>
+				</div>
+			</f:facet>
+			<p:ajax event="rowSelect" listener="#{requerimientoSeparacionBean.modifyRequerimiento}" update=":dialogReqSep :formRequerimiento" oncomplete="PF('dialogRequerimiento').show();" />
+
+			<p:column style="width:42px;text-align: left">
+				<f:facet name="header">
+				N°
+				</f:facet>
+			</p:column>
+
+			<p:column width="25px">
+                   		#{row +1}
+     		</p:column>
+     		
+     		<p:column headerText="Prospecto" sortBy="#{req.prospection.prospect.person.surnames}"
+				filterBy="#{req.prospection.prospect.person.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{req.prospection.prospect.person.surnames} #{req.prospection.prospect.person.names}" />
+			</p:column>
+			
+			<p:column headerText="Asesor" sortBy="#{req.prospection.personAssessor.surnames}"
+				filterBy="#{req.prospection.personAssessor.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{req.prospection.personAssessor.surnames} #{req.prospection.personAssessor.names}" />
+			</p:column>
+			
+			<p:column headerText="Supervisor" sortBy="#{req.prospection.personSupervisor.surnames}"
+				filterBy="#{req.prospection.personSupervisor.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{req.prospection.personSupervisor.surnames} #{req.prospection.personSupervisor.names}" />
+			</p:column>
+
+			<p:column headerText="Proyecto" sortBy="#{req.lote.project.name}" filterMatchMode="contains">
+				<h:outputText value="#{req.lote.project.name}" />
+			</p:column>
+			
+			<p:column headerText="Manzana" sortBy="#{req.lote.manzana.name}" filterMatchMode="contains">
+				<h:outputText value="#{req.lote.manzana.name}" />
+			</p:column>
+			
+			<p:column headerText="Lote" sortBy="#{req.lote.numberLote}" filterMatchMode="contains">
+				<h:outputText value="#{req.lote.numberLote}" />
+			</p:column>
+			
+			<p:column headerText="Estado" sortBy="#{req.estado}" filterMatchMode="contains">
+				<h:outputText value="#{req.estado}" />
+			</p:column>
+			
+			<p:column headerText="Fecha Requerimiento" sortBy="#{req.fecha}" filterMatchMode="contains">
+				<h:outputText value="#{prospeccionBean.convertirHora(req.fecha)}" />
+			</p:column>
+			
+			<p:column headerText="Fecha Separación" sortBy="#{req.lote.fechaSeparacion}" filterMatchMode="contains">
+				<h:outputText value="#{req.lote.fechaSeparacion}" > 
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column headerText="Fecha Vencimiento" sortBy="#{req.lote.fechaSeparacion}" filterMatchMode="contains">
+				<h:outputText value="#{req.lote.fechaSeparacion}" > 
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			
+		</p:dataTable>
 		
 	</h:form>
+	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogReqSep" header="#{requerimientoSeparacionBean.titleDialog}" widgetVar="dialogRequerimiento" resizable="false" closable="true"
+		appendTo="@(body)" >
+		<h:form id="formRequerimiento" >
+		<p:messages id="messages" showDetail="true" closable="true">
+	            <p:autoUpdate/>
+        </p:messages>
+		<h:panelGrid id="grid" columns="2"> 
+		
+			<h:outputText value="Estado: "  />
+			<p:selectOneMenu style="margin:5px" value="#{requerimientoSeparacionBean.cambioEstado}" >
+				<f:selectItem itemLabel="Pendiente" itemValue="Pendiente"/>
+				<f:selectItem itemLabel="Aprobado" itemValue="Aprobado"/>
+				<f:selectItem itemLabel="Rechazado" itemValue="Rechazado"/>
+				
+				<p:ajax update=":formRequerimiento:grid" />
+			</p:selectOneMenu>	
+		
+			<h:outputLabel value="Fecha de separación: "  rendered="#{requerimientoSeparacionBean.cambioEstado eq 'Aprobado'}"  />
+			<p:datePicker value="#{requerimientoSeparacionBean.fechaSeparacion}" readonlyInput="true" rendered="#{requerimientoSeparacionBean.cambioEstado eq 'Aprobado'}" > 
+				<p:ajax update="messages" />
+			</p:datePicker>
+						
+		
+			<h:outputLabel  value="Fecha de vencimiento " rendered="#{requerimientoSeparacionBean.cambioEstado eq 'Aprobado'}" />
+			<p:datePicker value="#{requerimientoSeparacionBean.fechaVencimiento}" readonlyInput="true" rendered="#{requerimientoSeparacionBean.cambioEstado eq 'Aprobado'}"> 
+				<p:ajax update="messages" />
+			</p:datePicker>	
+			
+		</h:panelGrid>
+		<p:commandButton value="Guardar" action="#{requerimientoSeparacionBean.saveReqSep()}" update="form:idTableReqsep"/>
+			
+		</h:form>
+	</p:dialog>
 
 </ui:composition>

@@ -9,7 +9,7 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">MANTENIMIENTOS > PERSONAS</h2>
-		<p:selectOneButton value="#{personBean.estado}">
+		<p:selectOneButton value="#{personBean.estado}" unselectable="false">
 			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
 			<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
 			<p:ajax update=":form:idTablePer" />

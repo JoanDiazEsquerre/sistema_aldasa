@@ -10,7 +10,7 @@
 		<h2 style="color: #007d4c;">PROSPECCIÓN > PROSPECCIONES</h2>
 		<p:tabView id="tabView">
 			<p:tab title="Lista de Prospecciones">
-				<p:selectOneButton value="#{prospeccionBean.status}">
+				<p:selectOneButton value="#{prospeccionBean.status}" unselectable="false">
 					<f:selectItem itemLabel="En seguimiento" itemValue="En seguimiento"/>
 					<f:selectItem itemLabel="Terminado" itemValue="Terminado"/>
 					
@@ -326,12 +326,12 @@
 					</h:panelGrid>
 					
 					<h:panelGrid columns="1">
+						
 						<p:fileUpload value="#{prospeccionBean.file}" mode="simple" skinSimple="true"/>
 						<p:fileUpload value="#{prospeccionBean.files}" mode="simple" skinSimple="true" multiple="true"/>
-						
         				<p:commandButton value="Guardar" update=":formEvents:tabOpciones:gridRequerimiento :formEvents:tabOpciones:idTableReqsep" action="#{prospeccionBean.generarRequerimiento()}" styleClass="mt-3 ui-button-outlined block"/>
-	
 					</h:panelGrid>
+					
 					<p:dataTable var="req" id="idTableReqsep" value="#{prospeccionBean.lstReqSepSelected}" rowIndexVar="row" paginator="true" rows="5" size="small" 
 					emptyMessage="No se encontraron requerimientos de separación." paginatorPosition="bottom" rowKey="#{req.id}" selection="#{prospeccionBean.requerimientoSeparacionSelected}" selectionMode="single"> 
 						<f:facet name="header">
@@ -384,8 +384,8 @@
 						</p:column>
 						
 						<p:column width="10%" filterMatchMode="contains">
-							<p:commandButton icon="pi pi-trash" process="@this" oncomplete="PF('deleteReqDialog').show()" >
-								<f:setPropertyActionListener value="#{req}" target="#{prospeccionBean.requerimientoSeparacionSelected}" />
+							<p:commandButton icon="pi pi-trash" styleClass="rounded-button ui-button-danger" process="@this" oncomplete="PF('deleteReqDialog').show()" rendered="#{req.estado eq 'Pendiente'}">
+								<f:setPropertyActionListener value="#{req}" target="#{prospeccionBean.requerimientoSeparacionSelected}"  />
 							</p:commandButton>
 						</p:column>
 						

@@ -17,7 +17,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
-import org.apache.poi.xslf.usermodel.ListAutoNumber;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;

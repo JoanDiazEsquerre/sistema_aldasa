@@ -8,7 +8,7 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">MANTENIMIENTOS > EQUIPOS</h2>
-		<p:selectOneButton value="#{teamBean.estado}">
+		<p:selectOneButton value="#{teamBean.estado}" unselectable="false">
 			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
 			<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
 			<p:ajax update=":form:idTableTeam"
