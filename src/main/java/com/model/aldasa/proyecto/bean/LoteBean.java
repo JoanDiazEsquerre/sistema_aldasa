@@ -2,10 +2,16 @@ package com.model.aldasa.proyecto.bean;
 
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,6 +28,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
@@ -102,9 +109,7 @@ public class LoteBean implements Serializable{
 	private StreamedContent fileDes;
 	
 	private String nombreArchivo = "Contrato.docx";
-	
-	private StreamedContent file;
-	
+		
 	private Person personAsesorSelected;
 	private Lote loteSelected;
 	private Team teamSelected;
@@ -121,7 +126,6 @@ public class LoteBean implements Serializable{
 	private String nombreLoteSelected="";
 	private int cantidadLotes=0;
 	private Date fechaSeparacion, fechaVencimiento,fechaVendido;
-	private String ruta = "C:/Users/ASUS F15/Documentos";
 	
 	private boolean loteVendido = false;
 	
@@ -154,7 +158,7 @@ public class LoteBean implements Serializable{
 		// initialize a blank document
 		XWPFDocument document = new XWPFDocument();
 		// create a new file
-		FileOutputStream out = new FileOutputStream(new File("document.docx"));
+//		FileOutputStream out = new FileOutputStream(new File("document.docx"));
 		// create a new paragraph paragraph
 		XWPFParagraph paragraph = document.createParagraph();
 		XWPFRun run = paragraph.createRun();
@@ -163,26 +167,38 @@ public class LoteBean implements Serializable{
 		  "your daily work at: www.fileformat.com ");
 		
 		try {
-            ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-            String filePath = scontext.getRealPath("/WEB-INF/fileAttachments/" + nombreArchivo);
-            File file = new File(filePath);
-            FileOutputStream out1 = new FileOutputStream(file);
-            document.write(out1);
-    		out1.close();
-            fileDes = DefaultStreamedContent.builder()
-                    .name(nombreArchivo)
-                    .contentType("aplication/docx")
-                    .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/fileAttachments/"+nombreArchivo))
-                    .build();
+//            ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+//            String filePath = scontext.getRealPath("/WEB-INF/fileAttachments/" + nombreArchivo);
+//            File file = new File(filePath);
+//            FileOutputStream out1 = new FileOutputStream(file);
+//            document.write(out1);
+//    		out1.close();
+//            fileDes = DefaultStreamedContent.builder()
+//                    .name("Reporte de Asistencia.xlsx")
+//                    .contentType("application/xls")
+//                    .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/fileAttachments/Reporte de Asistencia.xlsx"))
+//                    .build();
+			
+			 ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+	            String filePath = scontext.getRealPath("/WEB-INF/fileAttachments/"+nombreArchivo);
+	            File file = new File(filePath);
+	            FileOutputStream out = new FileOutputStream(file);
+	            document.write(out);
+	            out.close();
+	            fileDes = DefaultStreamedContent.builder()
+	                    .name(nombreArchivo)
+	                    .contentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+	                    .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/fileAttachments/"+nombreArchivo))
+	                    .build();
             
+    		 
+      
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-	}
-	
-   
+	}  
 	
 	public void listarPersonas() {
 		lstPerson=personService.findByStatus(true);
@@ -751,13 +767,6 @@ public class LoteBean implements Serializable{
         return lista;
     }
 	
-	public void fileDownloadView() {
-        file = DefaultStreamedContent.builder()
-                .name("proyecto"+projectFilter.getId()+".jpg")
-                .contentType("image/jpg")
-                .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/recursos/images/proyectos/proyecto"+projectFilter.getId()+".jpg"))
-                .build();
-    }
 	
 	public void cargarAsesorPorEquipo() {
 		lstPersonAsesor = new ArrayList<>();
@@ -905,12 +914,6 @@ public class LoteBean implements Serializable{
 	public void setLstLotes(List<Lote> lstLotes) {
 		this.lstLotes = lstLotes;
 	}
-	public StreamedContent getFile() {
-		return file;
-	}
-	public void setFile(StreamedContent file) {
-		this.file = file;
-	}
 	public Manzana getManzanaFilterMapeo() {
 		return manzanaFilterMapeo;
 	}
@@ -1035,14 +1038,6 @@ public class LoteBean implements Serializable{
 
 	public void setFileDes(StreamedContent fileDes) {
 		this.fileDes = fileDes;
-	}
-
-	public String getRuta() {
-		return ruta;
-	}
-
-	public void setRuta(String ruta) {
-		this.ruta = ruta;
 	}
 
 	public SimpleDateFormat getSdf() {

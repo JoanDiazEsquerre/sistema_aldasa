@@ -244,34 +244,6 @@ public class ReporteAsistenciaBean implements Serializable {
 	        	
 	        }
 
-	        
-//	        String dni="%%";
-//            
-//            if(empleadoSelected!=null) {
-//            	dni= "%" + empleadoSelected.getPerson().getDni() + "%";
-//            }
-            
-//            fechaIni.setHours(0);
-//            fechaIni.setMinutes(0);
-//            fechaIni.setSeconds(0);
-//            fechaFin.setHours(23);
-//            fechaFin.setMinutes(59);
-//            fechaFin.setSeconds(59);
-            
-//	        List<Asistencia> lstasistencia=asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetween(dni, "%"+tipo+"%", fechaIni, fechaFin)  ;
-	        
-//	        if(!lstasistencia.isEmpty()) {
-//	        	int index = 1;
-//	        	for(Asistencia asist :lstasistencia) {
-//	        		Row rowDetail = sheet.createRow(index);
-//	        	    Cell cellNomPros = rowDetail.createCell(0);cellNomPros.setCellValue(asist.getEmpleado().getPerson().getSurnames()+" "+asist.getEmpleado().getPerson().getNames());cellNomPros.setCellStyle(styleBorder);
-//	        	    Cell cellDniPros = rowDetail.createCell(1);cellDniPros.setCellValue(asist.getTipo().equals("E")?"ENTRADA":"SALIDA");cellDniPros.setCellStyle(styleBorder);
-//	        	    Cell cellTlf = rowDetail.createCell(2);cellTlf.setCellValue(sdfFull.format(asist.getHora()));cellTlf.setCellStyle(styleBorder);
-//	        	    
-//	        	    index++;
-//	        	}
-//	        }
-	     
 
 	        for (int j = 0; j <= 6; j++) {
 	            sheet.autoSizeColumn(j);
