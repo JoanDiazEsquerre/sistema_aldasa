@@ -190,6 +190,13 @@ public class ProspeccionBean extends BaseBean{
         newPerson();
 	}
 	
+	 public void upload() {
+	        if (file != null) {
+	            FacesMessage message = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
+	            FacesContext.getCurrentInstance().addMessage(null, message);
+	        }
+	    }
+	
 	public void listarPais() {
 		lstCountry = (List<Country>) countryService.findAll();
 	}

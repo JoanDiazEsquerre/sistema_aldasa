@@ -6,6 +6,10 @@
 	locale="#{localeBean.usedLocale}"
 	xmlns:f="http://java.sun.com/jsf/core">
 
+<h:form  id="formGReclamo" enctype="multipart/form-data">
+			<p:fileUpload value="#{prospeccionBean.file}" mode="simple" skinSimple="true"/>
+			<p:commandButton value="Submit" ajax="false" action="#{prospeccionBean.upload}" styleClass="mt-3 ui-button-outlined block"/>
+</h:form>
 	<h:form id="form">
 		<h2 style="color: #007d4c;">PROSPECCIÓN > PROSPECCIONES</h2>
 		<p:tabView id="tabView">
@@ -149,7 +153,7 @@
 	
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPro" header="#{prospeccionBean.titleDialog}" widgetVar="dialogProspecto" resizable="false" closable="true" height="600px"
 		appendTo="@(body)" width="90%" >
-		<h:form id="formEvents" >
+		<h:form id="formEvents"  >
 			<p:tabView id="tabOpciones"> 
 				<p:tab title="Acciones" >
 					<p:messages id="messagesAction" showDetail="true" closable="true" >
@@ -326,9 +330,9 @@
 					</h:panelGrid>
 					
 					<h:panelGrid columns="1">
-						
-						<p:fileUpload value="#{prospeccionBean.file}" mode="simple" skinSimple="true"/>
-						<p:fileUpload value="#{prospeccionBean.files}" mode="simple" skinSimple="true" multiple="true"/>
+					  
+<!-- 						<p:fileUpload value="#{prospeccionBean.file}" mode="simple" skinSimple="true"/> -->
+<!-- 						<p:fileUpload value="#{prospeccionBean.files}" mode="simple" skinSimple="true" multiple="true"/> -->
         				<p:commandButton value="Guardar" update=":formEvents:tabOpciones:gridRequerimiento :formEvents:tabOpciones:idTableReqsep" action="#{prospeccionBean.generarRequerimiento()}" styleClass="mt-3 ui-button-outlined block"/>
 					</h:panelGrid>
 					

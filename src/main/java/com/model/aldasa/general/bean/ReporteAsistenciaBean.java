@@ -28,6 +28,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.eclipse.jdt.internal.compiler.lookup.MostSpecificExceptionMethodBinding;
 import org.primefaces.PrimeFaces;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.FilterMeta;
@@ -72,7 +73,7 @@ public class ReporteAsistenciaBean implements Serializable {
 	private String tituloDialog="";
 	private String nombreArchivo = "Reporte de Asistencia.xlsx";
 	private Date fechaIni,fechaFin;
-	
+	private boolean mostrarBoton = false ;
 	
 	private StreamedContent fileDes;
 	
@@ -88,6 +89,139 @@ public class ReporteAsistenciaBean implements Serializable {
 		fechaFin = new Date() ;
 		tipo="";
 		iniciarLazy();
+	}
+	
+	public void mostrarBotonAutogenerar() {
+		mostrarBoton = false;
+		String fechaini = sdf.format(fechaIni);
+		String fechafin = sdf.format(fechaFin);
+		
+		if(empleadoSelected!=null && fechaini.equals(fechafin)) {
+			mostrarBoton=true;
+		}
+	}
+	
+	public void autogenerarRegistro() {
+		Date fechafin=fechaFin;
+		fechafin.setHours(23);
+		fechafin.setMinutes(59);
+		fechafin.setSeconds(59);
+		List<Asistencia> lstAsistencia = asistenciaService.findByEmpleadoAndHoraBetweenOrderByHoraAsc(empleadoSelected, fechaIni, fechafin);
+
+		if(lstAsistencia.isEmpty()) {
+			Date hora1 = fechaIni; hora1.setHours(8); hora1.setMinutes(0); hora1.setSeconds(0);
+			registroAutomatico(empleadoSelected, "E", hora1);
+			Date hora2 = fechaIni; hora2.setHours(13); hora2.setMinutes(0); hora2.setSeconds(0);
+			registroAutomatico(empleadoSelected, "S", hora2);
+			Date hora3 = fechaIni; hora3.setHours(15); hora3.setMinutes(0); hora3.setSeconds(0);
+			registroAutomatico(empleadoSelected, "E", hora3);
+			Date hora4 = fechaIni; hora4.setHours(18); hora4.setMinutes(0); hora4.setSeconds(0);
+			registroAutomatico(empleadoSelected, "S", hora4);
+			
+		}else if(lstAsistencia.size()==1) {
+			for(Asistencia asistencia:lstAsistencia) {
+				asistencia.getHora().setHours(8);
+				asistencia.getHora().setMinutes(0);
+				asistencia.getHora().setSeconds(0);
+				asistenciaService.save(asistencia);
+			}
+			Date hora2 = fechaIni; hora2.setHours(13); hora2.setMinutes(0); hora2.setSeconds(0);
+			registroAutomatico(empleadoSelected, "S", hora2);
+			Date hora3 = fechaIni; hora3.setHours(15); hora3.setMinutes(0); hora3.setSeconds(0);
+			registroAutomatico(empleadoSelected, "E", hora3);
+			Date hora4 = fechaIni; hora4.setHours(18); hora4.setMinutes(0); hora4.setSeconds(0);
+			registroAutomatico(empleadoSelected, "S", hora4);
+			
+		}else if(lstAsistencia.size()==2) {
+			for(Asistencia asistencia:lstAsistencia) {
+				if(asistencia.getTipo().equals("E")) {
+					asistencia.getHora().setHours(8);
+					asistencia.getHora().setMinutes(0);
+					asistencia.getHora().setSeconds(0);
+					asistenciaService.save(asistencia);
+				}else {
+					asistencia.getHora().setHours(13);
+					asistencia.getHora().setMinutes(0);
+					asistencia.getHora().setSeconds(0);
+					asistenciaService.save(asistencia);
+				}
+				
+			}
+			Date hora3 = fechaIni; hora3.setHours(15); hora3.setMinutes(0); hora3.setSeconds(0);
+			registroAutomatico(empleadoSelected, "E", hora3);
+			Date hora4 = fechaIni; hora4.setHours(18); hora4.setMinutes(0); hora4.setSeconds(0);
+			registroAutomatico(empleadoSelected, "S", hora4);
+		}else if(lstAsistencia.size()==3) {
+			int contador = 0 ;
+			for(Asistencia asistencia:lstAsistencia) {
+				if(contador==2) {
+					asistencia.getHora().setHours(15);
+					asistencia.getHora().setMinutes(0);
+					asistencia.getHora().setSeconds(0);
+					asistenciaService.save(asistencia);
+				}else {
+					if(asistencia.getTipo().equals("E")) {
+						asistencia.getHora().setHours(8);
+						asistencia.getHora().setMinutes(0);
+						asistencia.getHora().setSeconds(0);
+						asistenciaService.save(asistencia);
+					}else if(asistencia.getTipo().equals("S")){
+						asistencia.getHora().setHours(13);
+						asistencia.getHora().setMinutes(0);
+						asistencia.getHora().setSeconds(0);
+						asistenciaService.save(asistencia);
+					}
+				}
+				 
+				contador = contador + 1;
+				
+			}
+			Date hora4 = fechaIni; hora4.setHours(18); hora4.setMinutes(0); hora4.setSeconds(0);
+			registroAutomatico(empleadoSelected, "S", hora4);
+		}else {
+			int contador = 0 ;
+			for(Asistencia asistencia:lstAsistencia) {
+				if(contador>=2) {
+					if(asistencia.getTipo().equals("E")) {
+						asistencia.getHora().setHours(15);
+						asistencia.getHora().setMinutes(0);
+						asistencia.getHora().setSeconds(0);
+						asistenciaService.save(asistencia);
+					}else {
+						asistencia.getHora().setHours(18);
+						asistencia.getHora().setMinutes(0);
+						asistencia.getHora().setSeconds(0);
+						asistenciaService.save(asistencia);
+					}
+					
+				}else {
+					if(asistencia.getTipo().equals("E")) {
+						asistencia.getHora().setHours(8);
+						asistencia.getHora().setMinutes(0);
+						asistencia.getHora().setSeconds(0);
+						asistenciaService.save(asistencia);
+						
+					}else {
+						asistencia.getHora().setHours(13);
+						asistencia.getHora().setMinutes(0);
+						asistencia.getHora().setSeconds(0);
+						asistenciaService.save(asistencia);
+					}
+				
+				}
+				
+				contador = contador + 1;
+			}
+		}
+		
+	}
+	
+	public void registroAutomatico(Empleado empleado, String tipo, Date hora) {
+		Asistencia asistencia = new Asistencia();
+		asistencia.setEmpleado(empleado);
+		asistencia.setTipo(tipo);
+		asistencia.setHora(hora);
+		asistenciaService.save(asistencia);
 	}
 	
 	public void updateAsistencia() {
@@ -479,10 +613,13 @@ public class ReporteAsistenciaBean implements Serializable {
 	public void setTituloDialog(String tituloDialog) {
 		this.tituloDialog = tituloDialog;
 	}
-	
-	
-	
-	
+
+	public boolean isMostrarBoton() {
+		return mostrarBoton;
+	}
+	public void setMostrarBoton(boolean mostrarBoton) {
+		this.mostrarBoton = mostrarBoton;
+	}
 	
 	
 }
