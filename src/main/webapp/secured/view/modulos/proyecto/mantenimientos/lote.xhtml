@@ -42,7 +42,7 @@
 				<div class="p-d-flex p-ai-center p-jc-between">
 					<span>
 						<p:commandButton id="images" icon="pi pi-image" rendered="#{loteBean.projectFilter != null}" style="margin-right:10px" title="Descargar maqueta" actionListener="#{loteBean.fileDownloadView}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
-				            <p:fileDownload value="#{loteBean.file}"/>
+				            <p:fileDownload value="#{loteBean.fileImg}"/>
 				        </p:commandButton>
 			            
 			            <p:commandButton id="mapeo" icon="pi pi-th-large" rendered="#{loteBean.projectFilter != null}" oncomplete="PF('mapeoDialog').show();" update="dialogMapeo" actionListener="#{loteBean.listarLotes()}"/>

@@ -30,6 +30,7 @@ import javax.faces.convert.Converter;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.xwpf.usermodel.BreakType;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -107,6 +108,7 @@ public class LoteBean implements Serializable{
 	private List<Person> lstPerson;
 	
 	private StreamedContent fileDes;
+	private StreamedContent fileImg;
 	
 	private String nombreArchivo = "Contrato.docx";
 		
@@ -161,24 +163,30 @@ public class LoteBean implements Serializable{
 //		FileOutputStream out = new FileOutputStream(new File("document.docx"));
 		// create a new paragraph paragraph
 		XWPFParagraph paragraph = document.createParagraph();
-		XWPFRun run = paragraph.createRun();
-		run.setText("File joan Format Developer Guide - " +
-		  "Learn about computer files that you come across in " +
-		  "your daily work at: www.fileformat.com ");
+//		XWPFRun run = paragraph.createRun();
+//		run.setText("File joan Format Developer Guide - " +
+//		  "Learn about computer files that you come across in " +
+//		  "your daily work at: www.fileformat.com ");
+//		run.setBold(true);
+//		run.setText("joan ");
+//		run.setBold(false);
+//		run.setText(" jjjj");
 		
-		try {
-//            ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-//            String filePath = scontext.getRealPath("/WEB-INF/fileAttachments/" + nombreArchivo);
-//            File file = new File(filePath);
-//            FileOutputStream out1 = new FileOutputStream(file);
-//            document.write(out1);
-//    		out1.close();
-//            fileDes = DefaultStreamedContent.builder()
-//                    .name("Reporte de Asistencia.xlsx")
-//                    .contentType("application/xls")
-//                    .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/fileAttachments/Reporte de Asistencia.xlsx"))
-//                    .build();
-			
+		XWPFRun run = paragraph.createRun();
+		run.setBold(true);
+		run.setText("TITLE");
+		run.addCarriageReturn();
+		run.setBold(false);
+		run.setText("some text and stuff here");
+		run.addCarriageReturn();                 //separate previous text from break
+		run.addBreak(BreakType.PAGE);
+		run.addBreak(BreakType.TEXT_WRAPPING);   //cancels effect of page break
+		XWPFRun run2 = paragraph.createRun();    //create new run
+		run2.setText("more text");
+		run2.addCarriageReturn();
+		run2.setText("one more line");
+		
+		try {			
 			 ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 	            String filePath = scontext.getRealPath("/WEB-INF/fileAttachments/"+nombreArchivo);
 	            File file = new File(filePath);
@@ -380,6 +388,14 @@ public class LoteBean implements Serializable{
 			}
 		};
 	}
+	
+	public void fileDownloadView() {
+        fileImg = DefaultStreamedContent.builder()
+                .name("proyecto"+projectFilter.getId()+".jpg")
+                .contentType("image/jpg")
+                .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/recursos/images/proyectos/proyecto"+projectFilter.getId()+".jpg"))
+                .build();
+    }
 	
 	public void saveLote() {
 		if(loteSelected.getNumberLote().equals("") || loteSelected.getNumberLote()==null) {
@@ -1070,6 +1086,22 @@ public class LoteBean implements Serializable{
 
 	public void setSdfY2(SimpleDateFormat sdfY2) {
 		this.sdfY2 = sdfY2;
+	}
+
+	public StreamedContent getFileImg() {
+		return fileImg;
+	}
+
+	public void setFileImg(StreamedContent fileImg) {
+		this.fileImg = fileImg;
+	}
+
+	public String getNombreArchivo() {
+		return nombreArchivo;
+	}
+
+	public void setNombreArchivo(String nombreArchivo) {
+		this.nombreArchivo = nombreArchivo;
 	}
 
 	

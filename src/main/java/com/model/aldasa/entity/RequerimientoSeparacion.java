@@ -2,6 +2,7 @@ package com.model.aldasa.entity;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,7 +30,6 @@ public class RequerimientoSeparacion {
 	@ManyToOne
 	@JoinColumn(name="idprospection")
 	private Prospection prospection;
-
 	
 	
 	
@@ -63,7 +63,4 @@ public class RequerimientoSeparacion {
 	public void setProspection(Prospection prospection) {
 		this.prospection = prospection;
 	}
-	
-
-
 }

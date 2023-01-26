@@ -24,9 +24,11 @@ import javax.faces.model.SelectItemGroup;
 
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
 import org.primefaces.model.file.UploadedFiles;
 import org.springframework.beans.factory.annotation.Value;
@@ -136,7 +138,6 @@ public class ProspeccionBean extends BaseBean{
 	private String titleDialog,statusSelected, resultSelected;
 	private boolean mostrarBotonCambioEstado;
 	
-	private UploadedFiles files;
     private UploadedFile file;
 	
 	private List<Prospect> lstProspect;
@@ -155,7 +156,7 @@ public class ProspeccionBean extends BaseBean{
 	private List<RequerimientoSeparacion> lstReqSepSelected;
 	
 	SimpleDateFormat sdfFull = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
-	
+		
 	private Manzana manzanaSelected;
 	private Lote loteSelected;
 	
@@ -188,14 +189,8 @@ public class ProspeccionBean extends BaseBean{
         prospectionNew = new Prospection();
         prospectionNew.setDateStart(new Date());
         newPerson();
+            
 	}
-	
-	 public void upload() {
-	        if (file != null) {
-	            FacesMessage message = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
-	            FacesContext.getCurrentInstance().addMessage(null, message);
-	        }
-	    }
 	
 	public void listarPais() {
 		lstCountry = (List<Country>) countryService.findAll();
@@ -743,9 +738,7 @@ public class ProspeccionBean extends BaseBean{
 		lstReqSepSelected = requerimientoSeparacionService.findByProspection(prospectionSelected);
 	}
 	
-	public void generarRequerimiento() {
-		
-		
+	public void generarRequerimiento() {	
 		if(manzanaSelected == null) {
 			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar manzana"));	
 			return;
@@ -771,59 +764,82 @@ public class ProspeccionBean extends BaseBean{
 		}
 		
 		
-		if(file != null) {
-			System.out.println("++++++Hola mundo++++++");
+		if(file == null) {
+			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccione una imagen (voucher)"));	
+			return;
 		}
 		
 		RequerimientoSeparacion requerimientoSeparacion = new RequerimientoSeparacion();
 		requerimientoSeparacion.setLote(loteSelected);
 		requerimientoSeparacion.setFecha(new Date());
 		requerimientoSeparacion.setEstado("Pendiente");
-		requerimientoSeparacion.setProspection(prospectionSelected);
+		requerimientoSeparacion.setProspection(prospectionSelected); 
 		
 		RequerimientoSeparacion guardarReq = requerimientoSeparacionService.save(requerimientoSeparacion);
 		
 		if(guardarReq != null) {
+			String rename = guardarReq.getId() + "." + getExtension(file.getFileName());
+			
+            subirArchivo(rename);
 			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente el requerimiento" ));
 			cargarRequerimiento();
+			
 		}else {
 			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo guardar el requerimiento"));	
 
 		}
 		
 	}
-	
-	public void handleFileUpload(FileUploadEvent event) {
-        FacesMessage message = new FacesMessage("Successful", event.getFile().getFileName() + " is uploaded.");
-        FacesContext.getCurrentInstance().addMessage(null, message);
+
+	public void subirArchivo(String nombre) {
+        File result = new File("/WEB-INF/fileAttachments/" + nombre);
+        try {
+
+            FileOutputStream fileOutputStream = new FileOutputStream(result);
+
+            byte[] buffer = new byte[1024];
+
+            int bulk;
+
+            // Here you get uploaded picture bytes, while debugging you can see that 34818
+            InputStream inputStream = file.getInputStream();
+
+            while (true) {
+
+                bulk = inputStream.read(buffer);
+
+                if (bulk < 0) {
+
+                    break;
+
+                } //end of if
+
+                fileOutputStream.write(buffer, 0, bulk);
+                fileOutputStream.flush();
+
+            } //end fo while(true)
+
+            fileOutputStream.close();
+            inputStream.close();
+
+            FacesMessage msg = new FacesMessage("El archivo subió correctamente.");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            FacesMessage error = new FacesMessage("The files were not uploaded!");
+            FacesContext.getCurrentInstance().addMessage(null, error);
+        }
     }
 	
-	public void subirArchivo(String nombre, UploadedFile fileSelected) {
-		File result = new File("");
-		try {
-			FileOutputStream fileOutputStream = new FileOutputStream(result);
-			byte[] buffer = new byte[1024];
-			int bulk;
-			InputStream inputStream = fileSelected.getInputStream();
-			while (true) {
-				bulk = inputStream.read(buffer);
-				if (bulk < 0) { 
-					break;
-					} //end of if                
-				fileOutputStream.write(buffer, 0, bulk);
-				fileOutputStream.flush();
-				} //end fo while(true)            
-			fileOutputStream.close();
-			inputStream.close(); 
-			FacesMessage msg = new FacesMessage("El archivo subió correctamente.");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-			FacesMessage error = new FacesMessage("The files were not uploaded!");
-			FacesContext.getCurrentInstance().addMessage(null, error);
-		}
-	}
+	public static String getExtension(String filename) {
+        int index = filename.lastIndexOf('.');
+        if (index == -1) {
+            return "";
+        } else {
+            return filename.substring(index + 1);
+        }
+    }
 	
 	public String convertirHora (Date hora) {
 		String a = sdfFull.format(hora);
@@ -1408,12 +1424,6 @@ public class ProspeccionBean extends BaseBean{
 	public void setLstLote(List<Lote> lstLote) {
 		this.lstLote = lstLote;
 	}
-	public UploadedFiles getFiles() {
-		return files;
-	}
-	public void setFiles(UploadedFiles files) {
-		this.files = files;
-	}
 	public List<RequerimientoSeparacion> getLstReqSepSelected() {
 		return lstReqSepSelected;
 	}
@@ -1444,6 +1454,4 @@ public class ProspeccionBean extends BaseBean{
 	public void setRequerimientoSeparacionService(RequerimientoSeparacionService requerimientoSeparacionService) {
 		this.requerimientoSeparacionService = requerimientoSeparacionService;
 	}
-	
-
 }
