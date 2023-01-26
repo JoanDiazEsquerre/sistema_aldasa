@@ -328,8 +328,8 @@
 					<h:panelGrid columns="1" width="100%">	
 						
 									
-						<p:fileUpload value="#{prospeccionBean.file}" mode="simple" skinSimple="true"/>					  
-        				<p:commandButton value="Guardar" update=":formEvents:tabOpciones:gridRequerimiento :formEvents:tabOpciones:idTableReqsep" action="#{prospeccionBean.generarRequerimiento()}" styleClass="mt-3 ui-button-outlined block"/>
+						<p:fileUpload value="#{prospeccionBean.file}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>			  
+        				<p:commandButton  value="Guardar" update=":formEvents:tabOpciones:gridRequerimiento :formEvents:tabOpciones:idTableReqsep" action="#{prospeccionBean.generarRequerimiento()}" styleClass="mt-3 ui-button-outlined block"/>
 					</h:panelGrid>
 					
 					<p:dataTable var="req" id="idTableReqsep" value="#{prospeccionBean.lstReqSepSelected}" rowIndexVar="row" paginator="true" rows="5" size="small" 
@@ -339,7 +339,7 @@
 								<span>Lista de Requerimientos de Separación</span>
 							</div>
 						</f:facet>
-						<p:ajax event="rowSelect" />
+						<p:ajax event="rowSelect" listener="#{prospeccionBean.fileDownloadView}" oncomplete="PF('dlg').show()" update="idImg" />
 
 						<p:column style="width:42px;text-align: left">
 							<f:facet name="header">
@@ -383,10 +383,6 @@
 							</h:outputText>
 						</p:column>
 						
-						<p:column headerText="VER" filterMatchMode="contains">
-							<p:commandButton value="IMG" oncomplete="PF('dlg').show()" update="idImg"/>
-						</p:column>
-						
 						<p:column width="10%" filterMatchMode="contains">
 							<p:commandButton icon="pi pi-trash" styleClass="rounded-button ui-button-danger" process="@this" oncomplete="PF('deleteReqDialog').show()" rendered="#{req.estado eq 'Pendiente'}">
 								<f:setPropertyActionListener value="#{req}" target="#{prospeccionBean.requerimientoSeparacionSelected}"  />
@@ -402,7 +398,7 @@
 	</p:dialog>
 	
 	<p:dialog header="Voucher" widgetVar="dlg" id="idImg" modal="true" appendTo="@(body)" draggable="false"  resizable="false" showEffect="fade" hideEffect="fade">
-        	<p:graphicImage width="600" value="/recursos/images/proyectos/proyecto1.jpg" />
+        	<p:graphicImage width="600"  value="#{prospeccionBean.fileImg}"/>
     </p:dialog>
 	
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPerson" header="NUEVO PROSPECTO" widgetVar="personNewDialog" resizable="false" closable="true"

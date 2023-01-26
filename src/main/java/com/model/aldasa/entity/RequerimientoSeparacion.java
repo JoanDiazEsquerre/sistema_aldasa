@@ -31,6 +31,8 @@ public class RequerimientoSeparacion {
 	@JoinColumn(name="idprospection")
 	private Prospection prospection;
 	
+	@Column(name="nombreimagen")
+	private String nombreImagen;
 	
 	
 	public Integer getId() {
@@ -63,4 +65,13 @@ public class RequerimientoSeparacion {
 	public void setProspection(Prospection prospection) {
 		this.prospection = prospection;
 	}
+	public String getNombreImagen() {
+		return nombreImagen;
+	}
+	public void setNombreImagen(String nombreImagen) {
+		this.nombreImagen = nombreImagen;
+	}
+	
+	
+	
 }

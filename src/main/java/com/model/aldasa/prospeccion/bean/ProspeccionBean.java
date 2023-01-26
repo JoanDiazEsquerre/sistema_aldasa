@@ -1,6 +1,7 @@
 package com.model.aldasa.prospeccion.bean;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +20,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.faces.event.PhaseId;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
@@ -135,10 +137,13 @@ public class ProspeccionBean extends BaseBean{
 	private District districtSelected;
 
 	private String status = "En seguimiento";
+	private String rutaImagen;
 	private String titleDialog,statusSelected, resultSelected;
 	private boolean mostrarBotonCambioEstado;
 	
     private UploadedFile file;
+    private StreamedContent fileImg;
+    
 	
 	private List<Prospect> lstProspect;
 	private List<Person> lstPersonAssessor;
@@ -191,6 +196,48 @@ public class ProspeccionBean extends BaseBean{
         newPerson();
             
 	}
+	
+	
+	public void fileDownloadView() throws IOException {
+		String objetoImg = requerimientoSeparacionSelected.getNombreImagen();
+		String ext = extension(objetoImg);
+		
+		fileImg = image();
+    }
+	
+	 public StreamedContent image() throws IOException {
+	        FacesContext context = FacesContext.getCurrentInstance();
+
+	        StreamedContent fileImgen ;
+	        
+	        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+	            // So, we're rendering the view. Return a stub StreamedContent so that it will generate right URL.
+	            return new DefaultStreamedContent();
+	        }
+	        else {
+	            // So, browser is requesting the image. Return a real StreamedContent with the image bytes.
+	            String filename = context.getExternalContext().getRequestParameterMap().get("filename");
+	            fileImgen = DefaultStreamedContent.builder()
+	                  .name("1.jpeg")
+	                  .contentType("image/jpeg")
+	                  .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("C:\\img\\1.jpeg"))
+	                  .build();
+	            
+	            return fileImgen;
+	        }
+	    }
+	
+	public String extension(String filename) {
+		String valor = "" ;
+		int index = filename.lastIndexOf('.');
+		if (index == -1) {
+			return valor;
+		} else {
+			valor = filename.substring(index + 1);
+		}
+		return valor;
+	}
+	
 	
 	public void listarPais() {
 		lstCountry = (List<Country>) countryService.findAll();
@@ -774,11 +821,14 @@ public class ProspeccionBean extends BaseBean{
 		requerimientoSeparacion.setFecha(new Date());
 		requerimientoSeparacion.setEstado("Pendiente");
 		requerimientoSeparacion.setProspection(prospectionSelected); 
+		requerimientoSeparacion.setNombreImagen("");
 		
 		RequerimientoSeparacion guardarReq = requerimientoSeparacionService.save(requerimientoSeparacion);
 		
 		if(guardarReq != null) {
 			String rename = guardarReq.getId() + "." + getExtension(file.getFileName());
+			guardarReq.setNombreImagen(rename);
+			requerimientoSeparacionService.save(guardarReq);
 			
             subirArchivo(rename);
 			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente el requerimiento" ));
@@ -792,7 +842,7 @@ public class ProspeccionBean extends BaseBean{
 	}
 
 	public void subirArchivo(String nombre) {
-        File result = new File("/WEB-INF/fileAttachments/" + nombre);
+        File result = new File("/home/imagen/separaciones/" + nombre);
         try {
 
             FileOutputStream fileOutputStream = new FileOutputStream(result);
@@ -1454,4 +1504,18 @@ public class ProspeccionBean extends BaseBean{
 	public void setRequerimientoSeparacionService(RequerimientoSeparacionService requerimientoSeparacionService) {
 		this.requerimientoSeparacionService = requerimientoSeparacionService;
 	}
+	public String getRutaImagen() {
+		return rutaImagen;
+	}
+	public void setRutaImagen(String rutaImagen) {
+		this.rutaImagen = rutaImagen;
+	}
+	public StreamedContent getFileImg() {
+		return fileImg;
+	}
+	public void setFileImg(StreamedContent fileImg) {
+		this.fileImg = fileImg;
+	}
+	
+	
 }

@@ -196,7 +196,7 @@
 					
 
 					<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{loteBean.generarWord}"
-                         icon="pi pi-arrow-down" styleClass="mr-2">
+                         icon="pi pi-arrow-down" styleClass="mr-2" rendered="false">
 		            	<p:fileDownload value="#{loteBean.fileDes}"/> 
 		      		</p:commandButton>
 				</p:tab>
