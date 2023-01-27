@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,6 +19,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.event.PhaseId;
@@ -197,16 +199,47 @@ public class ProspeccionBean extends BaseBean{
             
 	}
 	
+
 	
-	public void fileDownloadView() throws IOException {
-		String objetoImg = requerimientoSeparacionSelected.getNombreImagen();
-		String ext = extension(objetoImg);
-		
-		fileImg = image();
+	public StreamedContent fileDownloadView() {
+		StreamedContent fileImg;
+		 String ruta = "C:\\img\\1.jpeg";
+        fileImg = DefaultStreamedContent.builder()
+                .name("1.jpeg")
+                .contentType("image/jpg")
+                .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream(ruta))
+                .build();
+        
+        return fileImg;
     }
 	
-	 public StreamedContent image() throws IOException {
-	        FacesContext context = FacesContext.getCurrentInstance();
+	public byte[] getImage2() throws IOException {
+		 String ruta = "C:\\img\\1.jpeg";
+
+		  File file = new File(ruta);
+		  byte[] bytes = Files.readAllBytes(file.toPath());     
+		  return bytes;
+      
+    }
+	
+	 public StreamedContent getImage() throws IOException {
+		/* String ruta = "C:"+File.pathSeparator+"img"+File.pathSeparator+"1.jpeg";
+		 File file = new File(ruta);
+		 InputStream input = new FileInputStream(file);
+		 return DefaultStreamedContent.builder()
+				 .stream(input)
+				 .build();
+
+		 ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+		 return DefaultStreamedContent.builder()
+                 .name("1.jpeg")
+                 .contentType("image/jpeg")
+                 .stream(() -> input)
+                 .build();
+		 return new DefaultStreamedContent(input,externalContext.getMimeType(file.getName()), file.getName());
+		 
+	 */
+	       FacesContext context = FacesContext.getCurrentInstance();
 
 	        StreamedContent fileImgen ;
 	        
@@ -220,7 +253,7 @@ public class ProspeccionBean extends BaseBean{
 	            fileImgen = DefaultStreamedContent.builder()
 	                  .name("1.jpeg")
 	                  .contentType("image/jpeg")
-	                  .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("C:\\img\\1.jpeg"))
+	                  .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("C:"+File.pathSeparator+"img"+File.pathSeparator+"1.jpeg"))
 	                  .build();
 	            
 	            return fileImgen;

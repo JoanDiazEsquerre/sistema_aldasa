@@ -339,7 +339,7 @@
 								<span>Lista de Requerimientos de Separación</span>
 							</div>
 						</f:facet>
-						<p:ajax event="rowSelect" listener="#{prospeccionBean.fileDownloadView}" oncomplete="PF('dlg').show()" update="idImg" />
+						<p:ajax event="rowSelect"  oncomplete="PF('dlg').show()" update="idImg" />
 
 						<p:column style="width:42px;text-align: left">
 							<f:facet name="header">
@@ -398,7 +398,9 @@
 	</p:dialog>
 	
 	<p:dialog header="Voucher" widgetVar="dlg" id="idImg" modal="true" appendTo="@(body)" draggable="false"  resizable="false" showEffect="fade" hideEffect="fade">
-        	<p:graphicImage width="600"  value="#{prospeccionBean.fileImg}"/>
+<!--         	<p:graphicImage width="600"  value="#{prospeccionBean.image}"/> -->
+        	<p:graphicImage value="#{loadImageBean.image2}" />
+        	
     </p:dialog>
 	
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPerson" header="NUEVO PROSPECTO" widgetVar="personNewDialog" resizable="false" closable="true"

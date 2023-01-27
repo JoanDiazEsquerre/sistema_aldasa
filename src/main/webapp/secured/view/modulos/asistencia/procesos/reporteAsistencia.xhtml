@@ -45,8 +45,9 @@
       		</p:commandButton>
 		</h:panelGrid>
 		
-		<p:dataTable reflow="true"  var="asistencia" id="idTableDet" value="#{reporteAsistenciaBean.lstAsistenciaLazy}"  widgetVar="asistenciaTable" rowIndexVar="row" paginator="true" rows="15" size="small" style="width:120%"
+		<p:dataTable reflow="true"  var="asistencia" id="idTableDet" value="#{reporteAsistenciaBean.lstAsistenciaLazy}"  widgetVar="asistenciaTable" rowIndexVar="row" paginator="true" rows="15" size="small" style="width:100%"
 		emptyMessage="No se encontraron registros." paginatorPosition="bottom" rowKey="#{asistencia.id}" selection="#{reporteAsistenciaBean.asistenciaSelected}" selectionMode="single"> 
+	
 			<f:facet name="header">
 				<div class="p-d-flex p-ai-center p-jc-between">
 					<span>Lista de Asistencias</span>
@@ -70,6 +71,10 @@
     		<p:column headerText="Fecha y Hora" sortBy="#{asistencia.hora}" filterMatchMode="contains">
     			<h:outputText value="#{reporteAsistenciaBean.convertirHora(asistencia.hora)}" />
 			</p:column>
+			
+<!-- 			<p:column headerText="Minútos de tardanza" filterMatchMode="contains"> -->
+<!--     			<h:outputText value="#{reporteAsistenciaBean.minutosTardanza}" /> -->
+<!-- 			</p:column> -->
 
 			<p:column headerText="Empleado" sortBy="#{asistencia.empleado.person.surnames}" filterMatchMode="contains">
 				<h:outputText value="#{asistencia.empleado.person.surnames} #{asistencia.empleado.person.names}" />
@@ -94,14 +99,14 @@
 	           	</p:messages>
 				<h:panelGrid id="grid" columns="2">
 					<h:outputLabel  for="assessor"  value="Empleado: " style="text-align:right" />
-					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{reporteAsistenciaBean.asistenciaSelected.empleado}"
+					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{reporteAsistenciaBean.empleadoDialog}"
 						converter="#{reporteAsistenciaBean.conversorEmpleado}" id="assessor" completeMethod="#{reporteAsistenciaBean.completeEmpleado}"
 						var="ase" itemLabel="#{ase.person.surnames.concat(' ')}#{ase.person.names}" itemValue="#{ase}" forceSelection="true">
 						<p:ajax  event="keyup" update="messages" />
 					</p:autoComplete>
 	
 					<h:outputLabel for="tipo" value="Tipo:" />
-					<p:selectOneMenu id="tipo" value="#{reporteAsistenciaBean.asistenciaSelected.tipo}" style="margin:10px">
+					<p:selectOneMenu id="tipo" value="#{reporteAsistenciaBean.tipoDialog}" style="margin:10px">
 						<f:selectItem itemLabel="[--SELECCIONAR--]" itemValue="" />
 						<f:selectItem itemLabel="Entrada" itemValue="E" />
 						<f:selectItem itemLabel="Salida" itemValue="S" />
@@ -109,7 +114,7 @@
 					</p:selectOneMenu>
 	
 					<h:outputLabel value="Fecha:" style="text-align:right" />
-					<p:datePicker value="#{reporteAsistenciaBean.asistenciaSelected.hora}" showTime="true" style="margin:5px" pattern="dd/MM/yyyy hh:mm:ss a" readonlyInput="true">
+					<p:datePicker value="#{reporteAsistenciaBean.horaDialog}" showTime="true" style="margin:5px" pattern="dd/MM/yyyy hh:mm:ss a" readonlyInput="true">
 						<p:ajax event="keyup" update="messages" />
 					</p:datePicker>
 					

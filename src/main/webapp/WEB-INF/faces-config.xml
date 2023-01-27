@@ -550,7 +550,12 @@
 			<value>#{prospectionService}</value>
 		</managed-property>
 	</managed-bean>
-	
+	<managed-bean>
+		<managed-bean-name>loadImageBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.prospeccion.bean.LoadImageBean</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope> 
+	</managed-bean>
+		
 		
 </faces-config>
 

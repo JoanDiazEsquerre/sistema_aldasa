@@ -69,11 +69,16 @@ public class ReporteAsistenciaBean implements Serializable {
 	private Empleado empleadoSelected;
 	private Asistencia asistenciaSelected;
 	
+	private Empleado empleadoDialog;
+	private String tipoDialog;
+	private Date horaDialog;
+	
 	private String tipo;
 	private String tituloDialog="";
 	private String nombreArchivo = "Reporte de Asistencia.xlsx";
 	private Date fechaIni,fechaFin;
 	private boolean mostrarBoton = false ;
+	private Integer idSelected;
 	
 	private StreamedContent fileDes;
 	
@@ -90,6 +95,15 @@ public class ReporteAsistenciaBean implements Serializable {
 		tipo="";
 		iniciarLazy();
 	}
+	
+//	public int minutosTardanza(Asistencia asist) {
+//		int minutos = 0;   
+//		return minutos;
+//	}
+	
+//	public void minutosTardanza() {
+//	
+//	}
 	
 	public void mostrarBotonAutogenerar() {
 		mostrarBoton = false;
@@ -119,12 +133,12 @@ public class ReporteAsistenciaBean implements Serializable {
 			registroAutomatico(empleadoSelected, "S", hora4);
 			
 		}else if(lstAsistencia.size()==1) {
-			for(Asistencia asistencia:lstAsistencia) {
-				asistencia.getHora().setHours(8);
-				asistencia.getHora().setMinutes(0);
-				asistencia.getHora().setSeconds(0);
-				asistenciaService.save(asistencia);
-			}
+//			for(Asistencia asistencia:lstAsistencia) {
+//				asistencia.getHora().setHours(8);
+//				asistencia.getHora().setMinutes(0);
+//				asistencia.getHora().setSeconds(0);
+//				asistenciaService.save(asistencia);
+//			}
 			Date hora2 = fechaIni; hora2.setHours(13); hora2.setMinutes(0); hora2.setSeconds(0);
 			registroAutomatico(empleadoSelected, "S", hora2);
 			Date hora3 = fechaIni; hora3.setHours(15); hora3.setMinutes(0); hora3.setSeconds(0);
@@ -134,12 +148,7 @@ public class ReporteAsistenciaBean implements Serializable {
 			
 		}else if(lstAsistencia.size()==2) {
 			for(Asistencia asistencia:lstAsistencia) {
-				if(asistencia.getTipo().equals("E")) {
-					asistencia.getHora().setHours(8);
-					asistencia.getHora().setMinutes(0);
-					asistencia.getHora().setSeconds(0);
-					asistenciaService.save(asistencia);
-				}else {
+				if(asistencia.getTipo().equals("S")) {
 					asistencia.getHora().setHours(13);
 					asistencia.getHora().setMinutes(0);
 					asistencia.getHora().setSeconds(0);
@@ -160,12 +169,7 @@ public class ReporteAsistenciaBean implements Serializable {
 					asistencia.getHora().setSeconds(0);
 					asistenciaService.save(asistencia);
 				}else {
-					if(asistencia.getTipo().equals("E")) {
-						asistencia.getHora().setHours(8);
-						asistencia.getHora().setMinutes(0);
-						asistencia.getHora().setSeconds(0);
-						asistenciaService.save(asistencia);
-					}else if(asistencia.getTipo().equals("S")){
+					if(asistencia.getTipo().equals("S")) {
 						asistencia.getHora().setHours(13);
 						asistencia.getHora().setMinutes(0);
 						asistencia.getHora().setSeconds(0);
@@ -195,21 +199,13 @@ public class ReporteAsistenciaBean implements Serializable {
 					}
 					
 				}else {
-					if(asistencia.getTipo().equals("E")) {
-						asistencia.getHora().setHours(8);
-						asistencia.getHora().setMinutes(0);
-						asistencia.getHora().setSeconds(0);
-						asistenciaService.save(asistencia);
-						
-					}else {
+					if(asistencia.getTipo().equals("S")) {
 						asistencia.getHora().setHours(13);
 						asistencia.getHora().setMinutes(0);
 						asistencia.getHora().setSeconds(0);
 						asistenciaService.save(asistencia);
 					}
-				
 				}
-				
 				contador = contador + 1;
 			}
 		}
@@ -226,32 +222,40 @@ public class ReporteAsistenciaBean implements Serializable {
 	
 	public void updateAsistencia() {
 		tituloDialog = "MODIFICAR ASISTENCIA";
-	
+		idSelected = asistenciaSelected.getId();
+		empleadoDialog = asistenciaSelected.getEmpleado();
+		tipoDialog = asistenciaSelected.getTipo();
+		horaDialog = asistenciaSelected.getHora();
 
 	}
 	
 	public void newAsistencia() {
 		tituloDialog = "NUEVA ASISTENCIA";
-		asistenciaSelected = new Asistencia();
-		asistenciaSelected.setEmpleado(null);
-		asistenciaSelected.setTipo("");
-		asistenciaSelected.setHora(null); 
+		idSelected = null;
+		empleadoDialog = null;
+		tipoDialog = "";
+		horaDialog = null;
 	}
 	
 	public void saveAsistencia() {
-		if(asistenciaSelected.getEmpleado()==null) {
+		if(empleadoDialog==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar empleado."));
 			return ;
 		}
-		if(asistenciaSelected.getTipo().equals("")) {
+		if(tipoDialog.equals("")) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar tipo."));
 			return ;
 		}
-		if(asistenciaSelected.getHora()==null) {
+		if(horaDialog==null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar fecha."));
 			return ;
 		}
-		Asistencia asistencia = asistenciaService.save(asistenciaSelected);
+		Asistencia crear = new Asistencia();
+		crear.setId(idSelected);
+		crear.setEmpleado(empleadoDialog);
+		crear.setTipo(tipoDialog);
+		crear.setHora(horaDialog);
+		Asistencia asistencia = asistenciaService.save(crear);
 		
 		if(tituloDialog.equals("NUEVA ASISTENCIA")) {
 			newAsistencia();
@@ -613,12 +617,35 @@ public class ReporteAsistenciaBean implements Serializable {
 	public void setTituloDialog(String tituloDialog) {
 		this.tituloDialog = tituloDialog;
 	}
-
 	public boolean isMostrarBoton() {
 		return mostrarBoton;
 	}
 	public void setMostrarBoton(boolean mostrarBoton) {
 		this.mostrarBoton = mostrarBoton;
+	}
+	public Integer getIdSelected() {
+		return idSelected;
+	}
+	public void setIdSelected(Integer idSelected) {
+		this.idSelected = idSelected;
+	}
+	public Empleado getEmpleadoDialog() {
+		return empleadoDialog;
+	}
+	public void setEmpleadoDialog(Empleado empleadoDialog) {
+		this.empleadoDialog = empleadoDialog;
+	}
+	public String getTipoDialog() {
+		return tipoDialog;
+	}
+	public void setTipoDialog(String tipoDialog) {
+		this.tipoDialog = tipoDialog;
+	}
+	public Date getHoraDialog() {
+		return horaDialog;
+	}
+	public void setHoraDialog(Date horaDialog) {
+		this.horaDialog = horaDialog;
 	}
 	
 	
