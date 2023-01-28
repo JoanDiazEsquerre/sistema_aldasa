@@ -96,14 +96,28 @@ public class ReporteAsistenciaBean implements Serializable {
 		iniciarLazy();
 	}
 	
-//	public int minutosTardanza(Asistencia asist) {
-//		int minutos = 0;   
-//		return minutos;
-//	}
+	public int minutosTardanza(Asistencia asist) {
+
+		int horaEntrada1 = 8;
+		int horaEntrada2= 15;
+		int minutosDiferencia = 0;
+		
+		if(asist.getTipo().equals("E")) {
+			if(asist.getHora().getHours() >= horaEntrada1) {
+				int horasDiferencia = asist.getHora().getHours() - horaEntrada1;
+				minutosDiferencia = asist.getHora().getMinutes() + (horasDiferencia*60);		
+			}
+			
+			if (asist.getHora().getHours() >= horaEntrada2) {
+				int horasDiferencia = asist.getHora().getHours() - horaEntrada2;
+				minutosDiferencia = asist.getHora().getMinutes() + (horasDiferencia*60);	
+			}
+			
+		}
+			return minutosDiferencia;
+	}
 	
-//	public void minutosTardanza() {
-//	
-//	}
+
 	
 	public void mostrarBotonAutogenerar() {
 		mostrarBoton = false;
@@ -294,7 +308,8 @@ public class ReporteAsistenciaBean implements Serializable {
 	        Cell cellSubEntrada2 = rowSubTitulo.createCell(4);cellSubEntrada2.setCellValue("ENTRADA");cellSubEntrada2.setCellStyle(styleTitulo);
 	        Cell cellSubSalida2 = rowSubTitulo.createCell(5);cellSubSalida2.setCellValue("SALIDA");cellSubSalida2.setCellStyle(styleTitulo);
 	        Cell cellSubArea = rowSubTitulo.createCell(6);cellSubArea.setCellValue("ÁREA");cellSubArea.setCellStyle(styleTitulo);
-	        
+	        Cell cellSubMinTard = rowSubTitulo.createCell(7);cellSubMinTard.setCellValue("MINUTOS DE TARDANZA");cellSubMinTard.setCellStyle(styleTitulo);
+  
 	       
 	        
 	        if(fechaFin.before(fechaIni)) {
@@ -329,9 +344,8 @@ public class ReporteAsistenciaBean implements Serializable {
 	        	    		Cell cellE2 = rowDetail.createCell(4); cellE2.setCellStyle(styleBorder);
 	        	    		Cell cellS2 = rowDetail.createCell(5); cellS2.setCellStyle(styleBorder);
 	        	    		Cell cellArea = rowDetail.createCell(6);cellArea.setCellValue(empleado.getArea().getNombre()); cellArea.setCellStyle(styleBorder);
-	        	    		
-
-	        	    		
+	        	    		Cell cellMinTard = rowDetail.createCell(7); cellMinTard.setCellStyle(styleBorder);
+		
 	        	    		Date dia1 = fecha1;
 	        	    		String day = sdf.format(dia1);
 	        	    		try {
@@ -340,7 +354,6 @@ public class ReporteAsistenciaBean implements Serializable {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-	        	    	
 	        	    		
 	        	    		Date dia2 = fecha1;
 	        	    		dia2.setHours(23);
@@ -349,6 +362,9 @@ public class ReporteAsistenciaBean implements Serializable {
 	        	    		List<Asistencia> lstasistenciasEntrada = asistenciaService.findByEmpleadoPersonDniAndTipoAndHoraBetween(empleado.getPerson().getDni(), "E", dia1, dia2);
 	        	    		
 	        	    		if(!lstasistenciasEntrada.isEmpty()) {
+	        	    			Asistencia entrada1 = lstasistenciasEntrada.get(0);
+	        	    			cellMinTard.setCellValue(minutosTardanza(entrada1));
+	        	    			
 	        	    			int a = 2;
 	        	    			for(Asistencia asistencia : lstasistenciasEntrada) {
 	        		        	    Cell cellHora = rowDetail.createCell(a);cellHora.setCellValue(sdfTime.format(asistencia.getHora()));cellHora.setCellStyle(styleBorder);
@@ -357,7 +373,6 @@ public class ReporteAsistenciaBean implements Serializable {
 	        	    			
 	        	    		}
 	        	  
-	        	    		
 	        	    		List<Asistencia> lstasistenciasSalida = asistenciaService.findByEmpleadoPersonDniAndTipoAndHoraBetween(empleado.getPerson().getDni(), "S", dia1, dia2);
 	        	    		
 	        	    		if(!lstasistenciasSalida.isEmpty()) {
@@ -372,18 +387,13 @@ public class ReporteAsistenciaBean implements Serializable {
 	        	    		index++;
 	        	    	}
 	        	    }
-	        	    
-	        	    
-	        	    
-	        	    fecha1=sumarDiasAFecha(fecha1, 1);
-	        	
-	        		
+	        	    fecha1=sumarDiasAFecha(fecha1, 1);	
 	        	}
 	        	
 	        }
 
 
-	        for (int j = 0; j <= 6; j++) {
+	        for (int j = 0; j <= 7; j++) {
 	            sheet.autoSizeColumn(j);
 	        }
 	        try {

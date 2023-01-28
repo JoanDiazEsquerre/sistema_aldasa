@@ -72,9 +72,9 @@
     			<h:outputText value="#{reporteAsistenciaBean.convertirHora(asistencia.hora)}" />
 			</p:column>
 			
-<!-- 			<p:column headerText="Minútos de tardanza" filterMatchMode="contains"> -->
-<!--     			<h:outputText value="#{reporteAsistenciaBean.minutosTardanza}" /> -->
-<!-- 			</p:column> -->
+			<p:column headerText="Minútos de tardanza" filterMatchMode="contains" style="text-align: center">
+    			<h:outputText value="#{reporteAsistenciaBean.minutosTardanza(asistencia) eq 0 ? '' : reporteAsistenciaBean.minutosTardanza(asistencia)}" />
+			</p:column>
 
 			<p:column headerText="Empleado" sortBy="#{asistencia.empleado.person.surnames}" filterMatchMode="contains">
 				<h:outputText value="#{asistencia.empleado.person.surnames} #{asistencia.empleado.person.names}" />
