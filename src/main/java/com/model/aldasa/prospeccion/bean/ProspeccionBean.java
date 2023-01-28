@@ -213,52 +213,7 @@ public class ProspeccionBean extends BaseBean{
         return fileImg;
     }
 	
-	public byte[] getImage2() throws IOException {
-		 String ruta = "C:\\img\\1.jpeg";
-
-		  File file = new File(ruta);
-		  byte[] bytes = Files.readAllBytes(file.toPath());     
-		  return bytes;
-      
-    }
 	
-	 public StreamedContent getImage() throws IOException {
-		/* String ruta = "C:"+File.pathSeparator+"img"+File.pathSeparator+"1.jpeg";
-		 File file = new File(ruta);
-		 InputStream input = new FileInputStream(file);
-		 return DefaultStreamedContent.builder()
-				 .stream(input)
-				 .build();
-
-		 ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-		 return DefaultStreamedContent.builder()
-                 .name("1.jpeg")
-                 .contentType("image/jpeg")
-                 .stream(() -> input)
-                 .build();
-		 return new DefaultStreamedContent(input,externalContext.getMimeType(file.getName()), file.getName());
-		 
-	 */
-	       FacesContext context = FacesContext.getCurrentInstance();
-
-	        StreamedContent fileImgen ;
-	        
-	        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
-	            // So, we're rendering the view. Return a stub StreamedContent so that it will generate right URL.
-	            return new DefaultStreamedContent();
-	        }
-	        else {
-	            // So, browser is requesting the image. Return a real StreamedContent with the image bytes.
-	            String filename = context.getExternalContext().getRequestParameterMap().get("filename");
-	            fileImgen = DefaultStreamedContent.builder()
-	                  .name("1.jpeg")
-	                  .contentType("image/jpeg")
-	                  .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("C:"+File.pathSeparator+"img"+File.pathSeparator+"1.jpeg"))
-	                  .build();
-	            
-	            return fileImgen;
-	        }
-	    }
 	
 	public String extension(String filename) {
 		String valor = "" ;

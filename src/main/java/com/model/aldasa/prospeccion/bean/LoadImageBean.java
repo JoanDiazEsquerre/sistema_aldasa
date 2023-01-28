@@ -20,8 +20,8 @@ public class LoadImageBean extends BaseBean{
 	
 	 public StreamedContent graphicImage;
 
-	 public byte[] getImage2() throws IOException {
-		 String ruta = "C:\\img\\1.jpeg";
+	 public byte[] getImage(String ruta) throws IOException {
+		 //String ruta = "C:\\img\\1.jpeg";
 
 		  File file = new File(ruta);
 		  byte[] bytes = Files.readAllBytes(file.toPath());     
