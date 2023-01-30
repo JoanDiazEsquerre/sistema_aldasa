@@ -171,9 +171,6 @@ public class AsistenciaBean implements Serializable {
 	
 
 	
-	
-	
-	
 	public String getTextoIngresado() {
 		return textoIngresado;
 	}

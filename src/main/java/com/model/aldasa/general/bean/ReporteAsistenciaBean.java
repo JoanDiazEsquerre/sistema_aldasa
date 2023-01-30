@@ -97,16 +97,23 @@ public class ReporteAsistenciaBean implements Serializable {
 	}
 	
 	public int minutosTardanza(Asistencia asist) {
-
+		
 		int horaEntrada1 = 8;
+		int horaAlmuerzo = 13;
 		int horaEntrada2= 15;
 		int minutosDiferencia = 0;
 		
 		if(asist.getTipo().equals("E")) {
+			
 			if(asist.getHora().getHours() >= horaEntrada1) {
 				int horasDiferencia = asist.getHora().getHours() - horaEntrada1;
 				minutosDiferencia = asist.getHora().getMinutes() + (horasDiferencia*60);		
 			}
+			
+			if(asist.getHora().getHours() >= horaAlmuerzo) {
+				minutosDiferencia = 0;		
+			}
+			
 			
 			if (asist.getHora().getHours() >= horaEntrada2) {
 				int horasDiferencia = asist.getHora().getHours() - horaEntrada2;
