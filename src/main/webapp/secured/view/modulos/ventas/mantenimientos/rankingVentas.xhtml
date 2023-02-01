@@ -9,15 +9,14 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">VENTAS > RANKIG DE VENTAS</h2>
-		<p:selectOneButton value="#{empleadoBean.estado}" unselectable="false">
+		<p:selectOneButton value="#{rankingVentasBean.estado}" unselectable="false">
 			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
 			<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
 			<p:ajax update=":form:idTableEmpleado" />
 		</p:selectOneButton>  
 		
-		<p:dataTable var="empleado" id="idTableEmpleado" value="#{empleadoBean.lstEmpleadoLazy}" widgetVar="empleadoTable" style="width:130%" rowIndexVar="row" paginator="true" rows="15" size="small"
-		emptyMessage="No se encontraron empleados."	paginatorPosition="bottom" rowKey="#{empleado.id}" selection="#{empleadoBean.empleadoSelected}" selectionMode="single">
-			<p:ajax event="rowSelect" listener="#{empleadoBean.modifyEmpleado()}" oncomplete="PF('empleadoDialog').show();" />
+		<p:dataTable var="ranking" id="idTableEmpleado" value="#{rankingVentasBean.lstEmpleadoLazy}" widgetVar="empleadoTable" style="width:130%" rowIndexVar="row" paginator="true" rows="15" size="small"
+		emptyMessage="No se encontraron empleados."	paginatorPosition="bottom" rowKey="#{ranking.id}" selection="#{rankingVentasBean.empleadoSelected}" selectionMode="single">
 		
 			<f:facet name="header">
 				<div class="p-d-flex p-ai-center p-jc-between">
@@ -35,8 +34,8 @@
 	                      #{row +1}
 	        </p:column>
 	        
-			<p:column headerText="Nombre del empleado" sortBy="#{empleado.person.surnames}" filterBy="#{empleado.person.surnames}" filterMatchMode="contains">
-				<h:outputText value="#{empleado.person.surnames} #{empleado.person.names}" />
+			<p:column headerText="Nombre del empleado" sortBy="#{ranking.empleado.person.surnames}" filterBy="#{ranking.empleado.person.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{ranking.empleado.person.surnames} #{ranking.empleado.person.names}" />
 			</p:column>
 		
 			
