@@ -82,9 +82,22 @@
 				</h:outputText>
 			</p:column>
 			
+			<p:column width="10%" headerText="Voucher" filterMatchMode="contains">
+				<p:commandButton value="VER" oncomplete="PF('dlg').show()" update=":idFormImagen:imagenLoad"  process="@this :idFormImagen:imagenLoad">
+					<f:setPropertyActionListener value="#{req.nombreImagen}" target="#{loadImageBean.nombreArchivo}"  />
+				</p:commandButton>
+			</p:column>
+			
 		</p:dataTable>
 		
 	</h:form>
+	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="idImg" header="Voucher" widgetVar="dlg" resizable="false" closable="true"
+		appendTo="@(body)" >	
+		<h:form id="idFormImagen"> 
+			<p:graphicImage width="400"  value="#{loadImageBean.image}" id="imagenLoad" cache="false"/>
+		</h:form>
+    </p:dialog>
 	
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogReqSep" header="#{requerimientoSeparacionBean.titleDialog}" widgetVar="dialogRequerimiento" resizable="false" closable="true"
 		appendTo="@(body)" >

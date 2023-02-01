@@ -330,6 +330,7 @@
 									
 						<p:fileUpload value="#{prospeccionBean.file}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>			  
         				<p:commandButton  value="Guardar" update=":formEvents:tabOpciones:gridRequerimiento :formEvents:tabOpciones:idTableReqsep" action="#{prospeccionBean.generarRequerimiento()}" styleClass="mt-3 ui-button-outlined block"/>
+						
 					</h:panelGrid>
 					
 					<p:dataTable var="req" id="idTableReqsep" value="#{prospeccionBean.lstReqSepSelected}" rowIndexVar="row" paginator="true" rows="5" size="small" 
@@ -339,7 +340,6 @@
 								<span>Lista de Requerimientos de Separación</span>
 							</div>
 						</f:facet>
-						<p:ajax event="rowSelect"  oncomplete="PF('dlg').show()" update="idImg" />
 
 						<p:column style="width:42px;text-align: left">
 							<f:facet name="header">
@@ -383,6 +383,12 @@
 							</h:outputText>
 						</p:column>
 						
+						<p:column width="10%" headerText="Voucher" filterMatchMode="contains">
+							<p:commandButton value="VER" oncomplete="PF('dlg').show()" update=":idFormImagen:imagenLoad"  process="@this :idFormImagen:imagenLoad">
+								<f:setPropertyActionListener value="#{req.nombreImagen}" target="#{loadImageBean.nombreArchivo}"  />
+							</p:commandButton>
+						</p:column>
+						
 						<p:column width="10%" filterMatchMode="contains">
 							<p:commandButton icon="pi pi-trash" styleClass="rounded-button ui-button-danger" process="@this" oncomplete="PF('deleteReqDialog').show()" rendered="#{req.estado eq 'Pendiente'}">
 								<f:setPropertyActionListener value="#{req}" target="#{prospeccionBean.requerimientoSeparacionSelected}"  />
@@ -397,10 +403,11 @@
 		</h:form>
 	</p:dialog>
 	
-	<p:dialog header="Voucher" widgetVar="dlg" id="idImg" modal="true" appendTo="@(body)" draggable="false"  resizable="false" showEffect="fade" hideEffect="fade">
-<!--         	<p:graphicImage width="600"  value="#{prospeccionBean.image}"/> -->
-        	<p:graphicImage width="600"  value="#{loadImageBean.image(aquiPonesRuta)}" />
-        	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="idImg" header="Voucher" widgetVar="dlg" resizable="false" closable="true"
+		appendTo="@(body)" style="width:auto">	
+		<h:form id="idFormImagen"> 
+			<p:graphicImage width="500" height="500"  value="#{loadImageBean.image}" id="imagenLoad" cache="false"/>
+		</h:form>
     </p:dialog>
 	
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPerson" header="NUEVO PROSPECTO" widgetVar="personNewDialog" resizable="false" closable="true"

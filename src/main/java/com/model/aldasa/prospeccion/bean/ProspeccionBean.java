@@ -1,11 +1,9 @@
 package com.model.aldasa.prospeccion.bean;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,23 +17,17 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.event.PhaseId;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
 import org.primefaces.PrimeFaces;
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
-import org.primefaces.model.file.UploadedFiles;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -167,6 +159,7 @@ public class ProspeccionBean extends BaseBean{
 	private Manzana manzanaSelected;
 	private Lote loteSelected;
 	
+	
 	@PostConstruct
 	public void init() {
 
@@ -199,20 +192,10 @@ public class ProspeccionBean extends BaseBean{
             
 	}
 	
-
-	
-	public StreamedContent fileDownloadView() {
-		StreamedContent fileImg;
-		 String ruta = "C:\\img\\1.jpeg";
-        fileImg = DefaultStreamedContent.builder()
-                .name("1.jpeg")
-                .contentType("image/jpg")
-                .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream(ruta))
-                .build();
-        
-        return fileImg;
-    }
-	
+//	public byte[] obtenerImagen() throws IOException {
+//		loadImageBean.setNombreArchivo(requerimientoSeparacionSelected.getNombreImagen());
+//		return loadImageBean.getImage();
+//	}
 	
 	
 	public String extension(String filename) {
@@ -830,7 +813,9 @@ public class ProspeccionBean extends BaseBean{
 	}
 
 	public void subirArchivo(String nombre) {
-        File result = new File("/home/imagen/separaciones/" + nombre);
+        File result = new File("/home/imagen/voucher_separaciones/" + nombre);
+//        File result = new File("C:\\IMG-ALDASA\\" + nombre);
+
         try {
 
             FileOutputStream fileOutputStream = new FileOutputStream(result);
@@ -1504,6 +1489,5 @@ public class ProspeccionBean extends BaseBean{
 	public void setFileImg(StreamedContent fileImg) {
 		this.fileImg = fileImg;
 	}
-	
-	
+
 }
