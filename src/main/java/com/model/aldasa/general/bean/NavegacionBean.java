@@ -37,9 +37,9 @@ public class NavegacionBean implements Serializable  {
 	private int idAsistencia = Perfiles.ASISTENCIA.getId();
 	private int idRecursosHumanos = Perfiles.RECURSOS_HUMANOS.getId();
 	
-	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia;
+	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
-					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion;
+					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas;
 	
 	private int[] permisoProspectos= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoProspeccion= {idAdministrador,idSupervisor,idAsesor};
@@ -61,6 +61,7 @@ public class NavegacionBean implements Serializable  {
 	private int[] permisoAsistencia= {idAdministrador, idAsistencia, idRecursosHumanos};
 	private int[] permisoReporteAsistencia= {idAdministrador, idRecursosHumanos};
 	private int[] permisoRequerimientoSeparacion= {idAdministrador};
+	private int[] permisoRankingVentas= {idAdministrador};
 
 	@PostConstruct
 	public void init() {
@@ -93,6 +94,13 @@ public class NavegacionBean implements Serializable  {
 				
 		if(subMenuManzanas || subMenuLotes || subMenuProyectos || subMenuComisiones){
 			menuProyecto=true;
+		}
+		
+		//******************************************************************************
+		subMenuRankingVentas= validaPermiso(permisoRankingVentas);
+				
+		if(subMenuRankingVentas){
+			menuVentas=true;
 		}
 		
 		//******************************************************************************
@@ -199,6 +207,9 @@ public class NavegacionBean implements Serializable  {
 	    }
 		public void getAsistenciaReporteAsistenciaPage() {
 	        ruta = "modulos/asistencia/procesos/reporteAsistencia.xhtml";
+	    }
+		public void getVentasRankingVentasPage() {
+	        ruta = "modulos/ventas/mantenimientos/rankingVentas.xhtml";
 	    }
 	
 	public void cerrarSesion() {
@@ -536,6 +547,24 @@ public class NavegacionBean implements Serializable  {
 	}
 	public void setPermisoRequerimientoSeparacion(int[] permisoRequerimientoSeparacion) {
 		this.permisoRequerimientoSeparacion = permisoRequerimientoSeparacion;
+	}
+	public boolean isMenuVentas() {
+		return menuVentas;
+	}
+	public void setMenuVentas(boolean menuVentas) {
+		this.menuVentas = menuVentas;
+	}
+	public boolean isSubMenuRankingVentas() {
+		return subMenuRankingVentas;
+	}
+	public void setSubMenuRankingVentas(boolean subMenuRankingVentas) {
+		this.subMenuRankingVentas = subMenuRankingVentas;
+	}
+	public int[] getPermisoRankingVentas() {
+		return permisoRankingVentas;
+	}
+	public void setPermisoRankingVentas(int[] permisoRankingVentas) {
+		this.permisoRankingVentas = permisoRankingVentas;
 	}
 	
 	

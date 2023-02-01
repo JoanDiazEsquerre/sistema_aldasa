@@ -1,0 +1,94 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	locale="#{localeBean.usedLocale}"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+	<h:form id="form">
+		<h2 style="color: #007d4c;">VENTAS > RANKIG DE VENTAS</h2>
+		<p:selectOneButton value="#{empleadoBean.estado}" unselectable="false">
+			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
+			<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
+			<p:ajax update=":form:idTableEmpleado" />
+		</p:selectOneButton>  
+		
+		<p:dataTable var="empleado" id="idTableEmpleado" value="#{empleadoBean.lstEmpleadoLazy}" widgetVar="empleadoTable" style="width:130%" rowIndexVar="row" paginator="true" rows="15" size="small"
+		emptyMessage="No se encontraron empleados."	paginatorPosition="bottom" rowKey="#{empleado.id}" selection="#{empleadoBean.empleadoSelected}" selectionMode="single">
+			<p:ajax event="rowSelect" listener="#{empleadoBean.modifyEmpleado()}" oncomplete="PF('empleadoDialog').show();" />
+		
+			<f:facet name="header">
+				<div class="p-d-flex p-ai-center p-jc-between">
+					<span>Lista de Empleados</span>
+				</div>
+			</f:facet>
+		
+			<p:column style="width:42px;text-align: left" >
+				<f:facet name="header" >
+				N°
+				</f:facet>
+			</p:column>
+			
+			<p:column width="25px" >
+	                      #{row +1}
+	        </p:column>
+	        
+			<p:column headerText="Nombre del empleado" sortBy="#{empleado.person.surnames}" filterBy="#{empleado.person.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{empleado.person.surnames} #{empleado.person.names}" />
+			</p:column>
+		
+			
+			<p:column headerText="Enero" sortBy="#{empleado.cargo}" filterMatchMode="contains">
+				<h:outputText  />
+			</p:column>
+			
+			<p:column headerText="Febrero" sortBy="#{empleado.cargo}" filterMatchMode="contains">
+				<h:outputText />
+			</p:column>
+			
+			<p:column headerText="Marzo" sortBy="#{empleado.cargo}" filterMatchMode="contains">
+				<h:outputText />
+			</p:column>
+			
+			<p:column headerText="Abril" sortBy="#{empleado.cargo}" filterMatchMode="contains">
+				<h:outputText  />
+			</p:column>
+			
+			<p:column headerText="Mayo" sortBy="#{empleado.cargo}" filterMatchMode="contains">
+				<h:outputText />
+			</p:column>
+			
+			<p:column headerText="Junio" sortBy="#{empleado.cargo}"	filterMatchMode="contains">
+				<h:outputText />
+			</p:column>
+			
+			<p:column headerText="Julio" sortBy="#{empleado.cargo}" filterMatchMode="contains">
+				<h:outputText />
+			</p:column>
+			
+			<p:column headerText="Agosto" sortBy="#{empleado.cargo}" filterMatchMode="contains">
+				<h:outputText />
+			</p:column>
+			
+			<p:column headerText="Septiembre" sortBy="#{empleado.cargo}" filterMatchMode="contains">
+				<h:outputText  />
+			</p:column>
+			
+			<p:column headerText="Octubre" sortBy="#{empleado.cargo}" filterMatchMode="contains">
+				<h:outputText />
+			</p:column>
+			
+			<p:column headerText="Noviembre" sortBy="#{empleado.cargo}" filterMatchMode="contains">
+				<h:outputText  />
+			</p:column>
+			
+			<p:column headerText="Diciembre" sortBy="#{empleado.cargo}" filterMatchMode="contains">
+				<h:outputText  />
+			</p:column>
+			
+		</p:dataTable>
+	</h:form>
+	
+</ui:composition>

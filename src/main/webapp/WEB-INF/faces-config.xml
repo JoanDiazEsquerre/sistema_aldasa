@@ -555,6 +555,17 @@
 		<managed-bean-class>com.model.aldasa.prospeccion.bean.LoadImageBean</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope> 
 	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>rankingVentasBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.ventas.bean.RankingVentasBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope> 
+		<managed-property>
+			<property-name>empleadoService</property-name>
+			<value>#{empleadoService}</value>
+		</managed-property>
+		
+	</managed-bean>
 		
 		
 </faces-config>
