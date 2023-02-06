@@ -549,6 +549,10 @@
 			<property-name>prospectionService</property-name>
 			<value>#{prospectionService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>loadImageBean</managed-bean-name>
@@ -559,12 +563,19 @@
 	<managed-bean>
 		<managed-bean-name>rankingVentasBean</managed-bean-name>
 		<managed-bean-class>com.model.aldasa.ventas.bean.RankingVentasBean</managed-bean-class>
-		<managed-bean-scope>view</managed-bean-scope> 
+		<managed-bean-scope>view</managed-bean-scope>
 		<managed-property>
 			<property-name>empleadoService</property-name>
 			<value>#{empleadoService}</value>
 		</managed-property>
-		
+		<managed-property>
+			<property-name>comisionService</property-name>
+			<value>#{comisionService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>loteService</property-name>
+			<value>#{loteService}</value>
+		</managed-property>
 	</managed-bean>
 		
 		

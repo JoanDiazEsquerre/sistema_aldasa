@@ -36,6 +36,7 @@ public class NavegacionBean implements Serializable  {
 	private int idAsistentenAdmin = Perfiles.ASISTENTE_ADMINISTRATIVO.getId();
 	private int idAsistencia = Perfiles.ASISTENCIA.getId();
 	private int idRecursosHumanos = Perfiles.RECURSOS_HUMANOS.getId();
+	private int idContabilidad = Perfiles.CONTABILIDAD.getId();
 	
 	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
@@ -60,7 +61,7 @@ public class NavegacionBean implements Serializable  {
 	private int[] permisoReporteLotes= {idAdministrador};
 	private int[] permisoAsistencia= {idAdministrador, idAsistencia, idRecursosHumanos};
 	private int[] permisoReporteAsistencia= {idAdministrador, idRecursosHumanos};
-	private int[] permisoRequerimientoSeparacion= {idAdministrador};
+	private int[] permisoRequerimientoSeparacion= {idAdministrador,idAsistentenAdmin,idContabilidad};
 	private int[] permisoRankingVentas= {idAdministrador};
 
 	@PostConstruct
@@ -566,7 +567,10 @@ public class NavegacionBean implements Serializable  {
 	public void setPermisoRankingVentas(int[] permisoRankingVentas) {
 		this.permisoRankingVentas = permisoRankingVentas;
 	}
-	
-	
-
+	public int getIdContabilidad() {
+		return idContabilidad;
+	}
+	public void setIdContabilidad(int idContabilidad) {
+		this.idContabilidad = idContabilidad;
+	}
 }

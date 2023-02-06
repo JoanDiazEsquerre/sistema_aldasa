@@ -9,14 +9,33 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">VENTAS > RANKIG DE VENTAS</h2>
+		<h:panelGrid id="grid" columns="4" width="30%">
+		
 		<p:selectOneButton value="#{rankingVentasBean.estado}" unselectable="false">
 			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
 			<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
 			<p:ajax update=":form:idTableEmpleado" />
-		</p:selectOneButton>  
+		</p:selectOneButton>
+	
+			<h:outputLabel for="años" value="Año:" />
+			<p:selectOneMenu id="años" value="#{rankingVentasBean.anio}" style="margin:10px">
+				<f:selectItem itemLabel="2021" itemValue="21" />
+				<f:selectItem itemLabel="2022" itemValue="22" />
+				<f:selectItem itemLabel="2023" itemValue="23" />
+				<f:selectItem itemLabel="2024" itemValue="24" />
+				<f:selectItem itemLabel="2025" itemValue="25" />
+				<f:selectItem itemLabel="2026" itemValue="26" />
+				<f:selectItem itemLabel="2027" itemValue="27" />
+				<f:selectItem itemLabel="2028" itemValue="28" />
+				<f:selectItem itemLabel="2029" itemValue="29" />
+				<f:selectItem itemLabel="2030" itemValue="30" />
+				<p:ajax  update="idTableEmpleado"/>
+			</p:selectOneMenu>
+			
+		</h:panelGrid>  
 		
-		<p:dataTable var="ranking" id="idTableEmpleado" value="#{rankingVentasBean.lstEmpleadoLazy}" widgetVar="empleadoTable" style="width:130%" rowIndexVar="row" paginator="true" rows="15" size="small"
-		emptyMessage="No se encontraron empleados."	paginatorPosition="bottom" rowKey="#{ranking.id}" selection="#{rankingVentasBean.empleadoSelected}" selectionMode="single">
+		<p:dataTable var="empleado" id="idTableEmpleado" value="#{rankingVentasBean.lstEmpleadoLazy}" widgetVar="empleadoTable" style="width:140%" rowIndexVar="row" paginator="true" rows="15" size="small"
+		emptyMessage="No se encontraron empleados."	paginatorPosition="bottom" rowKey="#{ranking.empleado.id}" selection="#{rankingVentasBean.empleadoSelected}" selectionMode="single">
 		
 			<f:facet name="header">
 				<div class="p-d-flex p-ai-center p-jc-between">
@@ -34,57 +53,77 @@
 	                      #{row +1}
 	        </p:column>
 	        
-			<p:column headerText="Nombre del empleado" sortBy="#{ranking.empleado.person.surnames}" filterBy="#{ranking.empleado.person.surnames}" filterMatchMode="contains">
-				<h:outputText value="#{ranking.empleado.person.surnames} #{ranking.empleado.person.names}" />
+			<p:column headerText="Nombre del empleado" sortBy="#{empleado.person.surnames}" filterBy="#{empleado.person.surnames}" filterMatchMode="contains">
+				<h:outputText value="#{empleado.person.surnames} #{empleado.person.names}" />
 			</p:column>
 		
 			
-			<p:column headerText="Enero" sortBy="#{empleado.cargo}" filterMatchMode="contains">
-				<h:outputText  />
+			<p:column headerText="Enero"  filterMatchMode="contains" >
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('01',empleado)}"  />
 			</p:column>
 			
-			<p:column headerText="Febrero" sortBy="#{empleado.cargo}" filterMatchMode="contains">
+			<p:column headerText="Febrero"  filterMatchMode="contains">
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('02',empleado)}" />
+			</p:column>
+			
+			<p:column headerText="Marzo"  filterMatchMode="contains">
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('03',empleado)}" />
+			</p:column>
+			
+			<p:column headerText="Abril"  filterMatchMode="contains">
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('04',empleado)}" />
+			</p:column>
+			
+			<p:column headerText="Mayo"  filterMatchMode="contains">
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('05',empleado)}" />
+			</p:column>
+			
+			<p:column headerText="Junio"	filterMatchMode="contains">
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('06',empleado)}" />
+			</p:column>
+			
+			<p:column headerText="Julio" filterMatchMode="contains">
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('07',empleado)}" />
+			</p:column>
+			
+			<p:column headerText="Agosto" filterMatchMode="contains">
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('08',empleado)}" />
+			</p:column>
+			
+			<p:column headerText="Septiembre" filterMatchMode="contains">
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('09',empleado)}" />
+			</p:column>
+			
+			<p:column headerText="Octubre"  filterMatchMode="contains">
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('10',empleado)}" />
+			</p:column>
+			
+			<p:column headerText="Noviembre" filterMatchMode="contains">
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('11',empleado)}"  />
+			</p:column>
+			
+			<p:column headerText="Diciembre" filterMatchMode="contains">
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('12',empleado)}" />
+			</p:column>
+			
+			<p:column headerText="Total Lotes Vendidos" filterMatchMode="contains">
+				<h:outputText value="#{rankingVentasBean.totalLotesVendido(empleado)}"/>
+			</p:column>
+			
+			<p:column headerText="Meses Trabajados" filterMatchMode="contains">
+				<h:outputText value="#{rankingVentasBean.mesesTrabajados(empleado)}" />
+			</p:column>
+			
+			<p:column headerText="Meses que Vendió" filterMatchMode="contains">
 				<h:outputText />
 			</p:column>
 			
-			<p:column headerText="Marzo" sortBy="#{empleado.cargo}" filterMatchMode="contains">
+			<p:column headerText="Promedio Mensual de Ventas" filterMatchMode="contains">
 				<h:outputText />
 			</p:column>
 			
-			<p:column headerText="Abril" sortBy="#{empleado.cargo}" filterMatchMode="contains">
-				<h:outputText  />
-			</p:column>
-			
-			<p:column headerText="Mayo" sortBy="#{empleado.cargo}" filterMatchMode="contains">
+			<p:column headerText="Promedio 3 Últimos Meses" filterMatchMode="contains">
 				<h:outputText />
-			</p:column>
-			
-			<p:column headerText="Junio" sortBy="#{empleado.cargo}"	filterMatchMode="contains">
-				<h:outputText />
-			</p:column>
-			
-			<p:column headerText="Julio" sortBy="#{empleado.cargo}" filterMatchMode="contains">
-				<h:outputText />
-			</p:column>
-			
-			<p:column headerText="Agosto" sortBy="#{empleado.cargo}" filterMatchMode="contains">
-				<h:outputText />
-			</p:column>
-			
-			<p:column headerText="Septiembre" sortBy="#{empleado.cargo}" filterMatchMode="contains">
-				<h:outputText  />
-			</p:column>
-			
-			<p:column headerText="Octubre" sortBy="#{empleado.cargo}" filterMatchMode="contains">
-				<h:outputText />
-			</p:column>
-			
-			<p:column headerText="Noviembre" sortBy="#{empleado.cargo}" filterMatchMode="contains">
-				<h:outputText  />
-			</p:column>
-			
-			<p:column headerText="Diciembre" sortBy="#{empleado.cargo}" filterMatchMode="contains">
-				<h:outputText  />
 			</p:column>
 			
 		</p:dataTable>

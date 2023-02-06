@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -30,12 +31,22 @@ import javax.faces.convert.Converter;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.xwpf.usermodel.Borders;
+import org.apache.poi.xwpf.usermodel.BreakClear;
 import org.apache.poi.xwpf.usermodel.BreakType;
+import org.apache.poi.xwpf.usermodel.LineSpacingRule;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.TextAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
+import org.apache.poi.xwpf.usermodel.VerticalAlign;
+import org.apache.poi.xwpf.usermodel.XWPFAbstractNum;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFNumbering;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.xmlbeans.XmlException;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTNumbering;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -155,36 +166,185 @@ public class LoteBean implements Serializable{
 
 	}
 	
-	public void generarWord() throws IOException {
+	public void generarWord() throws IOException, XmlException {
 
 		// initialize a blank document
 		XWPFDocument document = new XWPFDocument();
 		// create a new file
-//		FileOutputStream out = new FileOutputStream(new File("document.docx"));
 		// create a new paragraph paragraph
 		XWPFParagraph paragraph = document.createParagraph();
-//		XWPFRun run = paragraph.createRun();
-//		run.setText("File joan Format Developer Guide - " +
-//		  "Learn about computer files that you come across in " +
-//		  "your daily work at: www.fileformat.com ");
-//		run.setBold(true);
-//		run.setText("joan ");
-//		run.setBold(false);
-//		run.setText(" jjjj");
+		paragraph.setAlignment(ParagraphAlignment.CENTER);
 		
-		XWPFRun run = paragraph.createRun();
-		run.setBold(true);
-		run.setText("TITLE");
-		run.addCarriageReturn();
-		run.setBold(false);
-		run.setText("some text and stuff here");
-		run.addCarriageReturn();                 //separate previous text from break
-		run.addBreak(BreakType.PAGE);
-		run.addBreak(BreakType.TEXT_WRAPPING);   //cancels effect of page break
-		XWPFRun run2 = paragraph.createRun();    //create new run
-		run2.setText("more text");
-		run2.addCarriageReturn();
-		run2.setText("one more line");
+		XWPFRun runTitle = paragraph.createRun();
+		runTitle.setText("CONTRATO DE COMPRA VENTA DE BIEN INMUEBLE AL CRÉDITO");
+		runTitle.setBold(true);
+		runTitle.setFontFamily("Century Gothic");
+		runTitle.setFontSize(12);
+
+		
+		XWPFParagraph paragraph2 = document.createParagraph();
+		paragraph2.setAlignment(ParagraphAlignment.BOTH);
+		
+		XWPFRun run = paragraph2.createRun();
+		run.setText("POR INTERMEDIO DEL PRESENTE DOCUMENTO QUE CELEBRAN, DE UNA PARTE, ALDASA INMOBILIARIA S.A.C.,"
+				+ " CON RUC Nº 20607274526, REPRESENTADA POR SU GERENTE GENERAL ALAN CRUZADO BALCÁZAR, IDENTIFICADO CON DNI. "
+				+ "N° 44922055, DEBIDAMENTE INSCRITO EN LA PARTIDA ELECTRÓNICA Nº 11352661 DEL REGISTRO DE PERSONAS JURÍDICAS "
+				+ "DE LA ZONA REGISTRAL Nº II - SEDE - CHICLAYO, CON DOMICILIO EN CAL. LOS AMARANTOS NRO. 245 URB. FEDERICO "
+				+ "VILLARREAL, DISTRITO Y PROVINCIA DE CHICLAYO, DEPARTAMENTO DE LAMBAYEQUE; A QUIEN SE LE DENOMINARÁ EN "
+				+ "LO SUCESIVO LA PARTE VENDEDORA; A FAVOR DE EL (LA) (LOS) SR. (A.) (ES.) Dante Montalván Santisteban , "
+				+ "DE OCUPACIÓN  ESTILISTA, ESTADO CIVIL CASADO,  IDENTIFICADO(A)  CON DNI N° 16712921, PARA ESTE ACTO Y "
+				+ "MARÍA VIOLETA PISCOYA DAMIAN, DE OCUPACIÓN  ESTILISTA, ESTADO CIVIL CASADA,  IDENTIFICADO(A)  CON DNI "
+				+ "N° 16712921, PARA ESTE ACTO, AMBOS CON DOMICILIO EN AV. VICTOR BELAUNDE OESTE 843 URB. EL RETABLO, DEL "
+				+ "DISTRITO DE COMAS PROVINCIA DE LIMA, DEPARTAMENTO DE LIMA, CELULAR  944817916, "
+				+ "CORREO ELECTRÓNICO _______ A QUIEN(ES) EN LO SUCESIVO SE LE(S) DENOMINARÁ LA PARTE COMPRADORA, EL CONTRATO "
+				+ "SE CELEBRA CON ARREGLO A LAS SIGUIENTES CONSIDERACIONES:");
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		
+		XWPFParagraph paragraphPrimero = document.createParagraph();
+		paragraphPrimero.setAlignment(ParagraphAlignment.LEFT);
+		
+		XWPFRun runPrimero = paragraphPrimero.createRun();
+		runPrimero.setText("PRIMERO.");
+		runPrimero.setBold(true);
+		runPrimero.setFontFamily("Century Gothic");
+		runPrimero.setFontSize(9);
+		runPrimero.setBold(true);
+		runPrimero.setUnderline(UnderlinePatterns.SINGLE);
+		
+		
+		
+		String cTAbstractNumBulletXML = 
+				  "<w:abstractNum xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" w:abstractNumId=\"0\">"
+				+ "<w:multiLevelType w:val=\"hybridMultilevel\"/>"
+				+ "<w:lvl w:ilvl=\"0\"><w:start w:val=\"1\"/><w:numFmt w:val=\"bullet\"/><w:lvlText w:val=\"\uF06E\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"720\" w:hanging=\"360\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Wingdings\" w:hAnsi=\"Wingdings\" w:hint=\"default\"/></w:rPr></w:lvl>"
+				+ "<w:lvl w:ilvl=\"1\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"bullet\"/><w:lvlText w:val=\"\u2013\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"1440\" w:hanging=\"360\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Courier New\" w:hAnsi=\"Courier New\" w:cs=\"Courier New\" w:hint=\"default\"/></w:rPr></w:lvl>"
+				+ "<w:lvl w:ilvl=\"2\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"bullet\"/><w:lvlText w:val=\"\u26Ac\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"2160\" w:hanging=\"360\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Courier New\" w:hAnsi=\"Courier New\" w:hint=\"default\"/></w:rPr></w:lvl>"
+				+ "</w:abstractNum>";
+
+		String cTAbstractNumDecimalXML = 
+				  "<w:abstractNum xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" w:abstractNumId=\"0\">"
+				+ "<w:multiLevelType w:val=\"hybridMultilevel\"/>"
+				+ "<w:lvl w:ilvl=\"0.\"><w:start w:val=\"1\"/><w:numFmt w:val=\"decimal\"/><w:lvlText w:val=\"%1\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"720\" w:hanging=\"360\"/></w:pPr></w:lvl>"
+				+ "<w:lvl w:ilvl=\"1.\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"decimal\"/><w:lvlText w:val=\"%1.%2\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"1440\" w:hanging=\"360\"/></w:pPr></w:lvl>"
+				+ "<w:lvl w:ilvl=\"2.\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"decimal\"/><w:lvlText w:val=\"%1.%2.%3\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"2160\" w:hanging=\"360\"/></w:pPr></w:lvl>"
+				+ "</w:abstractNum>";
+
+				
+
+		XWPFParagraph paragrapha = document.createParagraph();
+		XWPFRun runa = paragrapha.createRun();
+		runa.setText("ANTEDEDENTES");
+		runa.setBold(true);
+		runa.setFontFamily("Century Gothic");
+		runa.setFontSize(9);
+
+		XWPFParagraph paragrapharun2 = document.createParagraph();
+		XWPFRun run2 = paragrapharun2.createRun();
+		run2.setText("LA PARTE VENDEDORA ES PROPIETARIO DE LOS BIENES INMUEBLES IDENTIFICADOS COMO: ");
+		run2.setFontFamily("Century Gothic");
+		run2.setFontFamily("Century Gothic");
+		run2.setFontSize(9);
+
+		CTNumbering cTNumbering = CTNumbering.Factory.parse(cTAbstractNumBulletXML);
+//		CTNumbering cTNumbering = CTNumbering.Factory.parse(cTAbstractNumDecimalXML);
+		CTAbstractNum cTAbstractNum = cTNumbering.getAbstractNumArray(0);
+		XWPFAbstractNum abstractNum = new XWPFAbstractNum(cTAbstractNum);
+		XWPFNumbering numbering = document.createNumbering();
+		BigInteger abstractNumID = numbering.addAbstractNum(abstractNum);
+		BigInteger numID = numbering.addNum(abstractNumID);
+
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		runa = paragrapha.createRun();
+		runa.setFontFamily("Century Gothic");
+		runa.setFontSize(9);
+		runa.setText(
+				"UBIC, RUR. VALLE DE CHANCAY / SECTOR YENCALA BOGGIANO / PREDIO LA CRUZ – COD. PREDIO. 7_6159260_80375, "
+						+ "ÁREA HA. 3.6000 U.C. 80375, DISTRITO DE LAMBAYEQUE, PROVINCIA DE LAMBAYEQUE, DEPARTAMENTO DE LAMBAYEQUE, "
+						+ "EN LO SUCESIVO DENOMINADO EL BIEN. LOS LINDEROS, MEDIDAS PERIMÉTRICAS, DESCRIPCIÓN Y DOMINIO DEL BIEN CORREN "
+						+ "INSCRITOS EN LA PARTIDA ELECTRÓNICA N° 02272200, DEL REGISTRO DE PREDIOS DE LA ZONA REGISTRAL N° II- SEDE CHICLAYO.");
+
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		runa = paragrapha.createRun();
+		runa.setFontFamily("Century Gothic");
+		runa.setFontSize(9);
+		runa.setText(
+				"LOS PREDIOS SEÑALADOS EN LOS PÁRRAFOS QUE PRECEDEN, FORMAN UN SOLO PREDIO EN TERRENO Y UBICACIÓN FÍSICA, "
+						+ "EN EL CUAL SE DESARROLLARÁ EL PROYECTO DE LOTIZACIÓN LOS ALTOS DE SAN ROQUE III Y EL CUAL ES MATERIA DE VENTA A "
+						+ "TRAVÉS DEL PRESENTE CONTRATO. ");
+		
+		
+		
+		paragrapha = document.createParagraph();
+		XWPFRun runSegundo = paragrapha.createRun();
+		runSegundo.setText("SEGUNDO.");
+		runSegundo.setBold(true);
+		runSegundo.setFontFamily("Century Gothic");
+		runSegundo.setFontSize(9);
+		runSegundo.setBold(true);
+		runSegundo.setUnderline(UnderlinePatterns.SINGLE);
+		
+		paragrapha = document.createParagraph();
+		XWPFRun runObj = paragrapha.createRun();
+		runObj.setText("OBJETO");
+		runObj.setBold(true);
+		runObj.setFontFamily("Century Gothic");
+		runObj.setFontSize(9);
+		
+		paragrapha = document.createParagraph();
+		XWPFRun runDesObj = paragrapha.createRun();
+		runDesObj.setText("POR EL PRESENTE CONTRATO, LA PARTE VENDEDORA VENDE A LA PARTE COMPRADORA EL (LOS) LOTE(S) DE TERRENO(S) "
+				+ "POR INDEPENDIZAR DEL BIEN DE MAYOR EXTENSIÓN ESPECIFICADO EN LA CLÁUSULA PRIMERA DE ESTE CONTRATO, EL (LOS) CUAL(ES) "
+				+ "TIENE(N) LAS SIGUIENTES CARACTERÍSTICAS: ");
+		runDesObj.setFontFamily("Century Gothic");
+		runDesObj.setFontSize(9);
+		
+		
+		
+		CTNumbering cTNumbering2 = CTNumbering.Factory.parse(cTAbstractNumBulletXML);
+		CTAbstractNum cTAbstractNum2 = cTNumbering2.getAbstractNumArray(0);
+		XWPFAbstractNum abstractNum2 = new XWPFAbstractNum(cTAbstractNum2);
+		XWPFNumbering numbering2 = document.createNumbering();
+		BigInteger abstractNumID2 = numbering2.addAbstractNum(abstractNum2);
+		BigInteger numID2 = numbering2.addNum(abstractNumID2);
+
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID2);
+		runa = paragrapha.createRun();
+		runa.setFontFamily("Century Gothic");
+		runa.setFontSize(9);
+		runa.setBold(true);
+		runa.setText("MANZANA ------ LOTE -------- (ÁREA TOTAL --------- M2)");
+		runa.addBreak();
+		runa = paragrapha.createRun();
+		runa.setFontFamily("Century Gothic");
+		runa.setFontSize(9);
+		runa.setText("EL ÁREA DE EL LOTE, MATERIA DE ESTE CONTRATO, SE ENCUENTRA DENTRO DE LA MANZANA ---- LOTE ---- "
+				+ "EN LA CUAL CONSTA UN ÁREA DE ---- M2 Y QUE FORMA PARTE DEL PROYECTO DE LOTIZACIÓN DEL BIEN DE MAYOR "
+				+ "EXTENSIÓN ESPECIFICADO EN LA CLÁUSULA PRIMERA DE ESTE CONTRATO PARTIDA ELECTRÓNICA: 02272200");
+		
+		runa.addBreak();
+		runa.addBreak();
+		runa = paragrapha.createRun();
+		runa.setFontFamily("Century Gothic");
+		runa.setFontSize(9);
+		runa.setBold(true);
+		runa.setUnderline(UnderlinePatterns.SINGLE); 
+		runa.setText("LINDEROS Y MEDIDAS PERIMÉTRICAS:");
+		
+
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID2);
+		runa = paragrapha.createRun();
+		runa.setFontFamily("Century Gothic");
+		runa.setFontSize(9);
+		runa.setText(
+				"LOS PREDIOS SEÑALADOS EN LOS PÁRRAFOS QUE PRECEDEN, FORMAN UN SOLO PREDIO EN TERRENO Y UBICACIÓN FÍSICA, "
+						+ "EN EL CUAL SE DESARROLLARÁ EL PROYECTO DE LOTIZACIÓN LOS ALTOS DE SAN ROQUE III Y EL CUAL ES MATERIA DE VENTA A "
+						+ "TRAVÉS DEL PRESENTE CONTRATO. ");
 		
 		try {			
 			 ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();

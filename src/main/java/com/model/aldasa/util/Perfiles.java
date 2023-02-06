@@ -2,7 +2,12 @@ package com.model.aldasa.util;
 
 public enum Perfiles {
 	
-	ADMINISTRADOR("Administrador",1),SUPERVISOR("Supervisor",3),ASESOR("Asesor",2), ASISTENTE_ADMINISTRATIVO("Asistente Administrativo",4),ASISTENCIA("Asistencia",11),
+	ADMINISTRADOR("Administrador",1),
+	SUPERVISOR("Supervisor",3),
+	ASESOR("Asesor",2), 
+	CONTABILIDAD("Contabilidad", 7),
+	ASISTENTE_ADMINISTRATIVO("Asistente Administrativo",4),
+	ASISTENCIA("Asistencia",11),
 	RECURSOS_HUMANOS("Recursos Humanos",6);
 	
 	private String name;

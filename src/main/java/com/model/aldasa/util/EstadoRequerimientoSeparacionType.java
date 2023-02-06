@@ -2,7 +2,7 @@ package com.model.aldasa.util;
 
 public enum EstadoRequerimientoSeparacionType {
 
-	PENDIENTE("Pendiente"), APROBADO("Aprobado"), RECHAZADO("Rechazado");
+	PENDIENTE("Pendiente"), APROBADO_CONTABILIDAD("Aprobado Contabilidad"),EJECUTADO("Ejecutado"), RECHAZADO("Rechazado");
 	
 	private String descripcion;
 

@@ -11,19 +11,20 @@
 		<h2 style="color: #007d4c;">PROSPECCIÓN > REQUERIMIENTO SEPARACIÓN</h2>
 		<p:selectOneButton value="#{requerimientoSeparacionBean.estado}" unselectable="false">
 			<f:selectItem itemLabel="Pendientes" itemValue="Pendiente"/>
-			<f:selectItem itemLabel="Aprobados" itemValue="Aprobado"/>
+			<f:selectItem itemLabel="Aprobados por Contabilidad" itemValue="Aprobado Contabilidad"/>
+			<f:selectItem itemLabel="Ejecutado" itemValue="Ejecutado"/>
 			<f:selectItem itemLabel="Rechazados" itemValue="Rechazado"/>
 			
-			<p:ajax update=":form:idTableReqsep" />
+			<p:ajax update=":form:idTableReqsep :form:menuTableReq" />
 		</p:selectOneButton>
 		<p:dataTable var="req" id="idTableReqsep" value="#{requerimientoSeparacionBean.lstReqSepLazy}" rowIndexVar="row" paginator="true" rows="5" size="small" 
-		emptyMessage="No se encontraron requerimientos de separación." paginatorPosition="bottom" rowKey="#{req.id}" selection="#{requerimientoSeparacionBean.requerimientoSeparacionSelected}" selectionMode="single"> 
+		emptyMessage="No se encontraron requerimientos de separación." paginatorPosition="bottom" rowKey="#{req.id}" selection="#{requerimientoSeparacionBean.requerimientoSeparacionSelected}" 
+		selectionMode="single"> 
 			<f:facet name="header">
 				<div class="p-d-flex p-ai-center p-jc-between">
 					<span>Lista de Requerimientos de Separación</span>
 				</div>
 			</f:facet>
-			<p:ajax event="rowSelect" listener="#{requerimientoSeparacionBean.modifyRequerimiento}" update=":dialogReqSep :formRequerimiento" oncomplete="PF('dialogRequerimiento').show();" />
 
 			<p:column style="width:42px;text-align: left">
 				<f:facet name="header">
@@ -90,6 +91,12 @@
 			
 		</p:dataTable>
 		
+		<p:contextMenu id="menuTableReq" for="idTableReqsep" >
+            <p:menuitem value="Aprobar" icon="pi pi-check" oncomplete="PF('aprobarConta').show()" rendered="#{requerimientoSeparacionBean.estado eq 'Pendiente' and requerimientoSeparacionBean.apruebaConta and requerimientoSeparacionBean.cantidad ne 0}" /> 
+            <p:menuitem value="Ejecutar" icon="pi pi-check" action="#{requerimientoSeparacionBean.modifyRequerimiento}" oncomplete="PF('dialogRequerimiento').show()" rendered="#{requerimientoSeparacionBean.estado eq 'Aprobado Contabilidad' and requerimientoSeparacionBean.ejecutaRequerimiento and requerimientoSeparacionBean.cantidad ne 0}" />
+            <p:menuitem value="Rechazar" icon="pi pi-times" oncomplete="PF('rechazaConta').show()" rendered="#{(requerimientoSeparacionBean.estado eq 'Pendiente' and requerimientoSeparacionBean.apruebaConta and requerimientoSeparacionBean.cantidad ne 0)  or (requerimientoSeparacionBean.estado eq 'Aprobado Contabilidad' and requerimientoSeparacionBean.ejecutaRequerimiento and requerimientoSeparacionBean.cantidad ne 0)}"/>
+        </p:contextMenu>
+		
 	</h:form>
 	
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="idImg" header="Voucher" widgetVar="dlg" resizable="false" closable="true"
@@ -99,38 +106,51 @@
 		</h:form>
     </p:dialog>
 	
-	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogReqSep" header="#{requerimientoSeparacionBean.titleDialog}" widgetVar="dialogRequerimiento" resizable="false" closable="true"
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogReqSep" header="Ejecutar" widgetVar="dialogRequerimiento" resizable="false" closable="true"
 		appendTo="@(body)" >
 		<h:form id="formRequerimiento" >
 		<p:messages id="messages" showDetail="true" closable="true">
 	            <p:autoUpdate/>
         </p:messages>
 		<h:panelGrid id="grid" columns="2"> 
-		
-			<h:outputText value="Estado: "  />
-			<p:selectOneMenu style="margin:5px" value="#{requerimientoSeparacionBean.cambioEstado}" >
-				<f:selectItem itemLabel="Pendiente" itemValue="Pendiente"/>
-				<f:selectItem itemLabel="Aprobado" itemValue="Aprobado"/>
-				<f:selectItem itemLabel="Rechazado" itemValue="Rechazado"/>
-				
-				<p:ajax update=":formRequerimiento:grid" />
-			</p:selectOneMenu>	
-		
-			<h:outputLabel value="Fecha de separación: "  rendered="#{requerimientoSeparacionBean.cambioEstado eq 'Aprobado'}"  />
-			<p:datePicker value="#{requerimientoSeparacionBean.fechaSeparacion}" readonlyInput="true" rendered="#{requerimientoSeparacionBean.cambioEstado eq 'Aprobado'}" > 
+			<h:outputLabel value="Fecha de separación: "/>
+			<p:datePicker value="#{requerimientoSeparacionBean.fechaSeparacion}" > 
 				<p:ajax update="messages" />
 			</p:datePicker>
 						
 		
-			<h:outputLabel  value="Fecha de vencimiento " rendered="#{requerimientoSeparacionBean.cambioEstado eq 'Aprobado'}" />
-			<p:datePicker value="#{requerimientoSeparacionBean.fechaVencimiento}" readonlyInput="true" rendered="#{requerimientoSeparacionBean.cambioEstado eq 'Aprobado'}"> 
+			<h:outputLabel  value="Fecha de vencimiento "/>
+			<p:datePicker value="#{requerimientoSeparacionBean.fechaVencimiento}"> 
 				<p:ajax update="messages" />
 			</p:datePicker>	
 			
 		</h:panelGrid>
-		<p:commandButton value="Guardar" action="#{requerimientoSeparacionBean.saveReqSep()}" update="form:idTableReqsep"/>
+		<p:commandButton value="Guardar" action="#{requerimientoSeparacionBean.ejecutarRequerimiento}" update="form:idTableReqsep"/>
 			
 		</h:form>
 	</p:dialog>
+	
+	<p:confirmDialog id="aprobarConta" message="¿Está seguro de aprobar el requerimiento de separación?" header="Confirmación"
+                      severity="alert" widgetVar="aprobarConta" appendTo="@(body)">
+        <h:form >
+            <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('aprobarConta').hide()" value="SI" update=":form:idTableReqsep" action="#{requerimientoSeparacionBean.aprobarPorContabilidad}"/>
+            <p:commandButton value="NO" oncomplete="PF('aprobarConta').hide()"/>
+        </h:form>
+    </p:confirmDialog>
+    
+    <p:confirmDialog id="rechazaConta" message="¿Está seguro de rechazar el requerimiento de separación?" header="Confirmación"
+                      severity="alert" widgetVar="rechazaConta" appendTo="@(body)">
+        <h:form >
+            <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('rechazaConta').hide()" value="SI" update=":form:idTableReqsep" action="#{requerimientoSeparacionBean.rechazarRequerimiento}"/>
+            <p:commandButton value="NO" oncomplete="PF('rechazaConta').hide()"/>
+        </h:form>
+    </p:confirmDialog>
+    
+    <pe:blockUI widgetVar="blockUIWidget">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+        
+    </pe:blockUI>
 
 </ui:composition>

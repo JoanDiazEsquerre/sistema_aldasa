@@ -193,12 +193,6 @@
 						   	
 					</h:panelGrid>
 					<p:commandButton value="Guardar" action="#{loteBean.saveLote()}" update=":form:idTableLote :formLoteDialog" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
-					
-
-					<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{loteBean.generarWord}"
-                         icon="pi pi-arrow-down" styleClass="mr-2" rendered="false">
-		            	<p:fileDownload value="#{loteBean.fileDes}"/> 
-		      		</p:commandButton>
 				</p:tab>
 				<p:tab title="Medidas" >
 					<h:panelGrid id="gridMedidas" columns="2">
@@ -275,6 +269,11 @@
 						<h:outputLabel value="Nro. de Cuotas: " id="lblNroCuota" for="nroCuota" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"/>
 						<p:inputNumber id="nroCuota" value="#{loteBean.loteSelected.numeroCuota}" style="margin:5px; width:220px" minValue="1" decimalPlaces="0" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"> <p:ajax update="messages" /> </p:inputNumber>
 					</h:panelGrid>
+					
+					<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{loteBean.generarWord}"
+                         icon="pi pi-arrow-down" styleClass="mr-2">
+		            	<p:fileDownload value="#{loteBean.fileDes}"/> 
+		      		</p:commandButton>
 				</p:tab> 
 			</p:tabView>	
 		</h:form>

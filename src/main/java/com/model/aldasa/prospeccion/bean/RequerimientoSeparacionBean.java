@@ -27,6 +27,7 @@ import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.ProspectionDetail;
 import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.Usuario;
+import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.ActionService;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.ProspectionDetailService;
@@ -36,6 +37,7 @@ import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.EstadoLote;
 import com.model.aldasa.util.EstadoRequerimientoSeparacionType;
+import com.model.aldasa.util.Perfiles;
 
 @ManagedBean
 @ViewScoped
@@ -59,104 +61,103 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	@ManagedProperty(value = "#{prospectionService}")
 	private ProspectionService prospectionService;
 	
+	@ManagedProperty(value = "#{navegacionBean}")
+	private NavegacionBean navegacionBean;
+	
 	private LazyDataModel<RequerimientoSeparacion> lstReqSepLazy;
 
 	private RequerimientoSeparacion requerimientoSeparacionSelected;
 	
 	private Date fechaSeparacion, fechaVencimiento;
 	private String estado = "Pendiente";
-	private String cambioEstado;
-	private String titleDialog;
-
-
+	private boolean apruebaConta = false;
+	private boolean ejecutaRequerimiento = false;
+	private int cantidad=0;
 
 	@PostConstruct
 	public void init() {
+		permisosAprobaciones();
 		iniciarLazy();
 	}
 	
+	public void permisosAprobaciones() {
+		if(navegacionBean.getUsuarioLogin().getProfile().getId() == Perfiles.CONTABILIDAD.getId()) {
+			apruebaConta= true;
+		}
+		
+		if(navegacionBean.getUsuarioLogin().getProfile().getId() == Perfiles.ASISTENTE_ADMINISTRATIVO.getId()) {
+			ejecutaRequerimiento= true;
+		}
+		
+		if(navegacionBean.getUsuarioLogin().getProfile().getId() == Perfiles.ADMINISTRADOR.getId()) {
+			apruebaConta= true;
+			ejecutaRequerimiento= true;
+		}
+		
+	}
+	
 	public void modifyRequerimiento() {
-		titleDialog ="REQUERIMIENTO DE SEPARACIÓN: ";
-		cambioEstado = requerimientoSeparacionSelected.getEstado();
 		fechaSeparacion = new Date();
 		fechaVencimiento = sumaRestarFecha(fechaSeparacion, 7);
 		
 	}
 	
-	public void saveReqSep() {
-		if(cambioEstado.equals("")) {
-			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar estado"));
+	public void ejecutarRequerimiento() {
+		if(fechaSeparacion == null) {
+			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar una fecha de Separación"));
+			return;
+		}
+		if(fechaVencimiento==null) {
+			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar una fecha de separación"));
 			return;
 		}
 		
-		if(cambioEstado.equals(EstadoRequerimientoSeparacionType.APROBADO.getDescripcion()) && fechaSeparacion.after(fechaVencimiento)) {
+		if(fechaSeparacion.after(fechaVencimiento)) {
 			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La fecha de vencimiento tiene que ser mayor a fecha de separación"));
 			return;
 		}
 		
-		if(cambioEstado.equals(EstadoRequerimientoSeparacionType.RECHAZADO.getDescripcion())) {
-			requerimientoSeparacionSelected.setEstado(EstadoRequerimientoSeparacionType.RECHAZADO.getDescripcion());
-			requerimientoSeparacionService.save(requerimientoSeparacionSelected);
-			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente." ));
 			
-		}else if(cambioEstado.equals(EstadoRequerimientoSeparacionType.APROBADO.getDescripcion())){
+		Lote lote = loteService.findById(requerimientoSeparacionSelected.getLote().getId());
+		if(lote.getStatus().equals(EstadoLote.DISPONIBLE.getName())) {
 			
-			Lote lote = loteService.findById(requerimientoSeparacionSelected.getLote().getId());
-			if(lote.getStatus().equals(EstadoLote.DISPONIBLE.getName())) {
-				
-				requerimientoSeparacionSelected.setEstado(EstadoRequerimientoSeparacionType.APROBADO.getDescripcion());
-				requerimientoSeparacionService.save(requerimientoSeparacionSelected);
-				
-				lote.setStatus(EstadoLote.SEPARADO.getName());
-				lote.setFechaSeparacion(fechaSeparacion);
-				lote.setFechaVencimiento(fechaVencimiento);
-				lote.setPersonSupervisor(requerimientoSeparacionSelected.getProspection().getPersonSupervisor());
-				lote.setPersonAssessor(requerimientoSeparacionSelected.getProspection().getPersonAssessor());
-				loteService.save(lote);
-				
-				ProspectionDetail detalle = new ProspectionDetail();
-				detalle.setDate(fechaSeparacion);
-				detalle.setScheduled(false);
-				
-				Optional<Action> accion = actionService.findById(9);
-				
-				detalle.setAction(accion.get());
-				detalle.setProspection(requerimientoSeparacionSelected.getProspection());
-				
-				ProspectionDetail save = prospectionDetailService.save(detalle);
-				if(save!=null) {
-					
-					if(detalle.getAction().getPorcentage()> requerimientoSeparacionSelected.getProspection().getPorcentage()) {
-						requerimientoSeparacionSelected.getProspection().setPorcentage(detalle.getAction().getPorcentage());
-						prospectionService.save(requerimientoSeparacionSelected.getProspection());
-					}
-					
-				}	
-				
-				FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente." ));
-
-			}else {
-				FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote se encuentra " + lote.getStatus()));
-
-			}
-			
-		} else {
-			requerimientoSeparacionSelected.setEstado(EstadoRequerimientoSeparacionType.PENDIENTE.getDescripcion());
+			requerimientoSeparacionSelected.setEstado(EstadoRequerimientoSeparacionType.EJECUTADO.getDescripcion());
 			requerimientoSeparacionService.save(requerimientoSeparacionSelected);
 			
-			Lote lote = loteService.findById(requerimientoSeparacionSelected.getLote().getId());
-			lote.setStatus(EstadoLote.DISPONIBLE.getName());
-			lote.setFechaSeparacion(null);
-			lote.setFechaVencimiento(null);
-			lote.setPersonAssessor(null);
-			lote.setPersonSupervisor(null);
-			lote.setPersonVenta(null);
-			
+			lote.setStatus(EstadoLote.SEPARADO.getName());
+			lote.setFechaSeparacion(fechaSeparacion);
+			lote.setFechaVencimiento(fechaVencimiento);
+			lote.setPersonSupervisor(requerimientoSeparacionSelected.getProspection().getPersonSupervisor());
+			lote.setPersonAssessor(requerimientoSeparacionSelected.getProspection().getPersonAssessor());
 			loteService.save(lote);
+			
+			ProspectionDetail detalle = new ProspectionDetail();
+			detalle.setDate(fechaSeparacion);
+			detalle.setScheduled(false);
+			
+			Optional<Action> accion = actionService.findById(9);
+			
+			detalle.setAction(accion.get());
+			detalle.setProspection(requerimientoSeparacionSelected.getProspection());
+			
+			ProspectionDetail save = prospectionDetailService.save(detalle);
+			if(save!=null) {
+				
+				if(detalle.getAction().getPorcentage()> requerimientoSeparacionSelected.getProspection().getPorcentage()) {
+					requerimientoSeparacionSelected.getProspection().setPorcentage(detalle.getAction().getPorcentage());
+					prospectionService.save(requerimientoSeparacionSelected.getProspection());
+				}
+				
+			}	
+			
+			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se ejecutó separación correctamente." ));
 
-			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente." ));
+		}else {
+			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote se encuentra " + lote.getStatus()));
 
 		}
+			
+		
 		
 
 	}
@@ -237,11 +238,21 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 				
 				
 				setRowCount((int) pageReqSep.getTotalElements());
+				cantidad = getRowCount();
 				return datasource = pageReqSep.getContent();
 			}
 		};
 	}
 
+	public void aprobarPorContabilidad () {
+		requerimientoSeparacionSelected.setEstado(EstadoRequerimientoSeparacionType.APROBADO_CONTABILIDAD.getDescripcion());
+		requerimientoSeparacionService.save(requerimientoSeparacionSelected);
+	}
+	
+	public void rechazarRequerimiento () {
+		requerimientoSeparacionSelected.setEstado(EstadoRequerimientoSeparacionType.RECHAZADO.getDescripcion());
+		requerimientoSeparacionService.save(requerimientoSeparacionSelected);
+	}
 	
 	
 	
@@ -269,12 +280,6 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	public void setRequerimientoSeparacionSelected(RequerimientoSeparacion requerimientoSeparacionSelected) {
 		this.requerimientoSeparacionSelected = requerimientoSeparacionSelected;
 	}
-	public String getTitleDialog() {
-		return titleDialog;
-	}
-	public void setTitleDialog(String titleDialog) {
-		this.titleDialog = titleDialog;
-	}
 	public Date getFechaSeparacion() {
 		return fechaSeparacion;
 	}
@@ -286,12 +291,6 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	}
 	public void setFechaVencimiento(Date fechaVencimiento) {
 		this.fechaVencimiento = fechaVencimiento;
-	}
-	public String getCambioEstado() {
-		return cambioEstado;
-	}
-	public void setCambioEstado(String cambioEstado) {
-		this.cambioEstado = cambioEstado;
 	}
 	public LoteService getLoteService() {
 		return loteService;
@@ -323,7 +322,28 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	public void setProspectionService(ProspectionService prospectionService) {
 		this.prospectionService = prospectionService;
 	}
-
-	
-	
+	public NavegacionBean getNavegacionBean() {
+		return navegacionBean;
+	}
+	public void setNavegacionBean(NavegacionBean navegacionBean) {
+		this.navegacionBean = navegacionBean;
+	}
+	public boolean isApruebaConta() {
+		return apruebaConta;
+	}
+	public void setApruebaConta(boolean apruebaConta) {
+		this.apruebaConta = apruebaConta;
+	}
+	public boolean isEjecutaRequerimiento() {
+		return ejecutaRequerimiento;
+	}
+	public void setEjecutaRequerimiento(boolean ejecutaRequerimiento) {
+		this.ejecutaRequerimiento = ejecutaRequerimiento;
+	}
+	public int getCantidad() {
+		return cantidad;
+	}
+	public void setCantidad(int cantidad) {
+		this.cantidad = cantidad;
+	}
 }
