@@ -123,13 +123,16 @@ public class RankingVentasBean implements Serializable {
 	
 	public double promedio3UltimosMenses(Empleado empleado) {
 		double prom = 0.0;
-		String mesActual=sdfM.format(new Date());
-		String anioActual=sdfY.format(new Date().getYear());
-		int ventaMesActual=lotesVendidoMes(mesActual, anioActual, empleado);
-		
 		
 		Date fechaActual= new Date();
 		fechaActual.setDate(1);
+		
+		String mesActual=sdfM.format(fechaActual);
+		String anioActual=sdfY.format(fechaActual);
+		int ventaMesActual=lotesVendidoMes(mesActual, anioActual, empleado);
+		
+		
+	
 		
 		Date mesAnterior = sumaRestaMeses(fechaActual,-1);
 		
@@ -163,6 +166,15 @@ public class RankingVentasBean implements Serializable {
 		
 		calendar.add(calendar.MONTH, mes);  
 		return calendar.getTime();
+	}
+	
+	public int mesesQueVendio() {
+		int noVendio = 0;
+		
+		
+		
+		
+		return noVendio;
 	}
 	
 	
