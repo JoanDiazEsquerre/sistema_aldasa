@@ -34,7 +34,7 @@
 			
 		</h:panelGrid>  
 		
-		<p:dataTable var="empleado" id="idTableEmpleado" value="#{rankingVentasBean.lstEmpleadoLazy}" widgetVar="empleadoTable" style="width:140%" rowIndexVar="row" paginator="true" rows="15" size="small"
+		<p:dataTable var="empleado" id="idTableEmpleado" value="#{rankingVentasBean.lstEmpleadoLazy}" widgetVar="empleadoTable" style="width:100%" rowIndexVar="row" paginator="true" rows="15" size="small"
 		emptyMessage="No se encontraron empleados."	paginatorPosition="bottom" rowKey="#{ranking.empleado.id}" selection="#{rankingVentasBean.empleadoSelected}" selectionMode="single">
 		
 			<f:facet name="header">
@@ -59,51 +59,51 @@
 		
 			
 			<p:column headerText="Enero"  filterMatchMode="contains" >
-				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('01',empleado)}"  />
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('01',rankingVentasBean.anio,empleado)}"  />
 			</p:column>
 			
 			<p:column headerText="Febrero"  filterMatchMode="contains">
-				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('02',empleado)}" />
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('02',rankingVentasBean.anio,empleado)}" />
 			</p:column>
 			
 			<p:column headerText="Marzo"  filterMatchMode="contains">
-				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('03',empleado)}" />
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('03',rankingVentasBean.anio,empleado)}" />
 			</p:column>
 			
 			<p:column headerText="Abril"  filterMatchMode="contains">
-				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('04',empleado)}" />
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('04',rankingVentasBean.anio,empleado)}" />
 			</p:column>
 			
 			<p:column headerText="Mayo"  filterMatchMode="contains">
-				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('05',empleado)}" />
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('05',rankingVentasBean.anio,empleado)}" />
 			</p:column>
 			
 			<p:column headerText="Junio"	filterMatchMode="contains">
-				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('06',empleado)}" />
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('06',rankingVentasBean.anio,empleado)}" />
 			</p:column>
 			
 			<p:column headerText="Julio" filterMatchMode="contains">
-				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('07',empleado)}" />
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('07',rankingVentasBean.anio,empleado)}" />
 			</p:column>
 			
 			<p:column headerText="Agosto" filterMatchMode="contains">
-				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('08',empleado)}" />
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('08',rankingVentasBean.anio,empleado)}" />
 			</p:column>
 			
 			<p:column headerText="Septiembre" filterMatchMode="contains">
-				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('09',empleado)}" />
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('09',rankingVentasBean.anio,empleado)}" />
 			</p:column>
 			
 			<p:column headerText="Octubre"  filterMatchMode="contains">
-				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('10',empleado)}" />
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('10',rankingVentasBean.anio,empleado)}" />
 			</p:column>
 			
 			<p:column headerText="Noviembre" filterMatchMode="contains">
-				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('11',empleado)}"  />
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('11',rankingVentasBean.anio,empleado)}"  />
 			</p:column>
 			
 			<p:column headerText="Diciembre" filterMatchMode="contains">
-				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('12',empleado)}" />
+				<h:outputText value="#{rankingVentasBean.lotesVendidoMes('12',rankingVentasBean.anio,empleado)}" />
 			</p:column>
 			
 			<p:column headerText="Total Lotes Vendidos" filterMatchMode="contains">
@@ -119,11 +119,11 @@
 			</p:column>
 			
 			<p:column headerText="Promedio Mensual de Ventas" filterMatchMode="contains">
-				<h:outputText />
+				<h:outputText value="#{rankingVentasBean.promedioMensualVentas(empleado)}" />
 			</p:column>
 			
 			<p:column headerText="Promedio 3 Últimos Meses" filterMatchMode="contains">
-				<h:outputText />
+				<h:outputText value="#{rankingVentasBean.promedio3UltimosMenses(empleado)}" />
 			</p:column>
 			
 		</p:dataTable>

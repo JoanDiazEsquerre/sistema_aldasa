@@ -2,6 +2,7 @@ package com.model.aldasa.ventas.bean;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,7 @@ public class RankingVentasBean implements Serializable {
 	SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	SimpleDateFormat sdfY = new SimpleDateFormat("yy");
+	SimpleDateFormat sdfM = new SimpleDateFormat("MM");
 
 	
 	@PostConstruct
@@ -60,8 +62,8 @@ public class RankingVentasBean implements Serializable {
 	iniciarLazy();
 	}
 	
-	public int lotesVendidoMes (String mes, Empleado empleado) {
-		String codigo = mes+anio;
+	public int lotesVendidoMes (String mes,String anioselected, Empleado empleado) {
+		String codigo = mes+anioselected;
 		Comision comision = comisionService.findByEstadoAndCodigo(true, codigo);
 		if (comision != null) {
 			List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(),empleado.getPerson().getDni() , comision.getFechaIni(), comision.getFechaCierre());
@@ -98,13 +100,70 @@ public class RankingVentasBean implements Serializable {
 		
 		
 		if(aniosDiferencia != 0) {
-			meses = (aniosDiferencia*12)-mesDiferencia;
-		}else {
-			meses = 12-mesDiferencia;
+				meses = (aniosDiferencia*12)-mesDiferencia;
+			 if (mesActual>mesIngreso) {
+				meses = (aniosDiferencia*12)+mesDiferencia;
+			}
+		}else  {
+			meses = mesDiferencia;
 		}
 		return meses;
 	}
 	
+	public double promedioMensualVentas(Empleado empleado) {
+		double prom = 0.0;
+		if(totalLotesVendido(empleado)>0) {
+			double tlv = totalLotesVendido(empleado) ;
+			double mt = mesesTrabajados(empleado);
+			return Math.round(tlv/mt * 100.0) / 100.0;
+		}
+		
+		return prom;
+	}
+	
+	public double promedio3UltimosMenses(Empleado empleado) {
+		double prom = 0.0;
+		String mesActual=sdfM.format(new Date());
+		String anioActual=sdfY.format(new Date().getYear());
+		int ventaMesActual=lotesVendidoMes(mesActual, anioActual, empleado);
+		
+		
+		Date fechaActual= new Date();
+		fechaActual.setDate(1);
+		
+		Date mesAnterior = sumaRestaMeses(fechaActual,-1);
+		
+		String mesPasado=sdfM.format(mesAnterior);
+		String anioMesPasado=sdfY.format(mesAnterior);
+		
+		int ventaMesAnterior= lotesVendidoMes(mesPasado, anioMesPasado, empleado);
+		
+		Date mesAnterior2 = sumaRestaMeses(fechaActual,-2);
+		
+		String mesAntePasado=sdfM.format(mesAnterior2);
+		String anioMesAntePasado=sdfY.format(mesAnterior2);
+		
+		int ventaMesAnteAnterior= lotesVendidoMes(mesAntePasado, anioMesAntePasado, empleado);
+		
+		double suma3UltimosMeses = ventaMesActual + ventaMesAnterior + ventaMesAnteAnterior;
+		if(suma3UltimosMeses != 0) {
+			return Math.round(suma3UltimosMeses/3 * 100.0) / 100.0;
+		}
+		
+		return prom;
+	}
+	
+	public Date sumaRestaMeses(Date fecha, int mes) {
+		
+		Calendar calendar = Calendar.getInstance(); 
+		calendar.setLenient(false);
+
+		calendar.setTime(fecha); // Configuramos la fecha que se recibe
+		
+		
+		calendar.add(calendar.MONTH, mes);  
+		return calendar.getTime();
+	}
 	
 	
 	
