@@ -51,7 +51,7 @@ public class NavegacionBean implements Serializable  {
 	private int[] permisoPerfiles= {idAdministrador};
 	private int[] permisoProyectos= {idAdministrador,idAsistentenAdmin};
 	private int[] permisoEquipos= {idAdministrador};
-	private int[] permisoCambiarConstrasenia= {idAdministrador,idSupervisor,idAsesor, idAsistentenAdmin,idRecursosHumanos};
+	private int[] permisoCambiarConstrasenia= {idAdministrador,idSupervisor,idAsesor, idAsistentenAdmin,idRecursosHumanos, idContabilidad};
 	private int[] permisoReporteAcciones= {idAdministrador,idSupervisor,idAsesor,idAsistentenAdmin};
 	private int[] permisoManzanas= {idAdministrador,idAsistentenAdmin};
 	private int[] permisoLotes= {idAdministrador,idSupervisor,idAsesor,idAsistentenAdmin};

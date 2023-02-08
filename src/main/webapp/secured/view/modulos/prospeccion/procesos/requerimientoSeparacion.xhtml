@@ -84,7 +84,7 @@
 			</p:column>
 			
 			<p:column width="10%" headerText="Voucher" filterMatchMode="contains">
-				<p:commandButton value="VER" oncomplete="PF('dlg').show()" update=":idFormImagen:imagenLoad"  process="@this :idFormImagen:imagenLoad">
+				<p:commandButton value="VER" oncomplete="PF('dlg').show()" update=":idFormImagen:tvVoucher:imagenLoad"  process="@this :idFormImagen:tvVoucher:imagenLoad">
 					<f:setPropertyActionListener value="#{req.nombreImagen}" target="#{loadImageBean.nombreArchivo}"  />
 				</p:commandButton>
 			</p:column>
@@ -102,7 +102,44 @@
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="idImg" header="Voucher" widgetVar="dlg" resizable="false" closable="true"
 		appendTo="@(body)" >	
 		<h:form id="idFormImagen"> 
-			<p:graphicImage width="400"  value="#{loadImageBean.image}" id="imagenLoad" cache="false"/>
+			<p:tabView id="tvVoucher"> 
+				<p:tab title="Voucher" > 
+					<p:graphicImage width="400"  value="#{loadImageBean.image}" id="imagenLoad" cache="false"/>
+				</p:tab>
+				<p:tab title="Registrar Voucher"> 
+					<p:messages id="messages" showDetail="true" closable="true">
+						<p:autoUpdate />
+					</p:messages>
+					<h:panelGrid id="grid" columns="4"> 
+						<h:outputLabel value="Cuenta Bancaria:" />
+						<p:selectOneMenu >
+							<f:selectItem itemLabel="[- Seleccionar -]" itemValue=""/>
+						</p:selectOneMenu>
+						
+						<h:outputLabel value="Monto:" />
+						<p:inputNumber value="0.0" modifyValueOnWheel="false"><p:ajax update="messages" /> </p:inputNumber>
+						
+						<h:outputLabel value="Tipo de transacción: " />
+						<p:selectOneMenu >
+							<f:selectItem itemLabel="[- Seleccionar -]" itemValue=""/>
+						</p:selectOneMenu>
+						
+						<h:outputLabel value="Nro. transacción:" />
+						<p:inputText />
+						
+						<h:outputLabel value="Fecha Operación:" />
+						<p:datePicker style="margin:5px; width:220px"> 
+							<p:ajax update="messages" />
+						</p:datePicker>
+						
+						
+						
+					</h:panelGrid>
+					
+					<p:commandButton value="Guardar"></p:commandButton>
+				</p:tab>
+			</p:tabView>
+			
 		</h:form>
     </p:dialog>
 	

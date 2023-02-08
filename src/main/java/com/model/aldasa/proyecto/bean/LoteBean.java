@@ -215,48 +215,55 @@ public class LoteBean implements Serializable{
 		
 		
 		
-		String cTAbstractNumBulletXML = 
-				  "<w:abstractNum xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" w:abstractNumId=\"0\">"
-				+ "<w:multiLevelType w:val=\"hybridMultilevel\"/>"
-				+ "<w:lvl w:ilvl=\"0\"><w:start w:val=\"1\"/><w:numFmt w:val=\"bullet\"/><w:lvlText w:val=\"\uF06E\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"720\" w:hanging=\"360\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Wingdings\" w:hAnsi=\"Wingdings\" w:hint=\"default\"/></w:rPr></w:lvl>"
-				+ "<w:lvl w:ilvl=\"1\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"bullet\"/><w:lvlText w:val=\"\u2013\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"1440\" w:hanging=\"360\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Courier New\" w:hAnsi=\"Courier New\" w:cs=\"Courier New\" w:hint=\"default\"/></w:rPr></w:lvl>"
-				+ "<w:lvl w:ilvl=\"2\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"bullet\"/><w:lvlText w:val=\"\u26Ac\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"2160\" w:hanging=\"360\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Courier New\" w:hAnsi=\"Courier New\" w:hint=\"default\"/></w:rPr></w:lvl>"
-				+ "</w:abstractNum>";
 
-		String cTAbstractNumDecimalXML = 
-				  "<w:abstractNum xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" w:abstractNumId=\"0\">"
-				+ "<w:multiLevelType w:val=\"hybridMultilevel\"/>"
-				+ "<w:lvl w:ilvl=\"0.\"><w:start w:val=\"1\"/><w:numFmt w:val=\"decimal\"/><w:lvlText w:val=\"%1\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"720\" w:hanging=\"360\"/></w:pPr></w:lvl>"
-				+ "<w:lvl w:ilvl=\"1.\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"decimal\"/><w:lvlText w:val=\"%1.%2\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"1440\" w:hanging=\"360\"/></w:pPr></w:lvl>"
-				+ "<w:lvl w:ilvl=\"2.\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"decimal\"/><w:lvlText w:val=\"%1.%2.%3\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"2160\" w:hanging=\"360\"/></w:pPr></w:lvl>"
-				+ "</w:abstractNum>";
+ String cTAbstractNumBulletXML = 
+        "<w:abstractNum xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" w:abstractNumId=\"0\">"
+                + "<w:multiLevelType w:val=\"hybridMultilevel\"/>"
+                + "<w:lvl w:ilvl=\"0\"><w:start w:val=\"1\"/><w:numFmt w:val=\"bullet\"/><w:lvlText w:val=\"\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"720\" w:hanging=\"360\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Symbol\" w:hAnsi=\"Symbol\" w:hint=\"default\"/></w:rPr></w:lvl>"
+                + "<w:lvl w:ilvl=\"1\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"bullet\"/><w:lvlText w:val=\"o\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"1440\" w:hanging=\"360\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Courier New\" w:hAnsi=\"Courier New\" w:cs=\"Courier New\" w:hint=\"default\"/></w:rPr></w:lvl>"
+                + "<w:lvl w:ilvl=\"2\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"bullet\"/><w:lvlText w:val=\"\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"2160\" w:hanging=\"360\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Wingdings\" w:hAnsi=\"Wingdings\" w:hint=\"default\"/></w:rPr></w:lvl>"
+                + "</w:abstractNum>";
+
+ String cTAbstractNumDecimalXML = 
+        "<w:abstractNum xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" w:abstractNumId=\"0\">"
+                + "<w:multiLevelType w:val=\"hybridMultilevel\"/>"
+                + "<w:lvl w:ilvl=\"0\"><w:start w:val=\"1\"/><w:numFmt w:val=\"decimal\"/><w:lvlText w:val=\"%1\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"720\" w:hanging=\"360\"/></w:pPr></w:lvl>"
+                + "<w:lvl w:ilvl=\"1\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"decimal\"/><w:lvlText w:val=\"%1.%2\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"1440\" w:hanging=\"360\"/></w:pPr></w:lvl>"
+                + "<w:lvl w:ilvl=\"2\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"decimal\"/><w:lvlText w:val=\"%1.%2.%3\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"2160\" w:hanging=\"360\"/></w:pPr></w:lvl>"
+                + "</w:abstractNum>";
 
 				
+ CTNumbering cTNumbering = CTNumbering.Factory.parse(cTAbstractNumBulletXML);
+//	CTNumbering cTNumbering = CTNumbering.Factory.parse(cTAbstractNumDecimalXML);
+	CTAbstractNum cTAbstractNum = cTNumbering.getAbstractNumArray(0);
+	XWPFAbstractNum abstractNum = new XWPFAbstractNum(cTAbstractNum);
+	XWPFNumbering numbering = document.createNumbering();
+	BigInteger abstractNumID = numbering.addAbstractNum(abstractNum);
+	BigInteger numID = numbering.addNum(abstractNumID);
+	
 
 		XWPFParagraph paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
 		XWPFRun runa = paragrapha.createRun();
 		runa.setText("ANTEDEDENTES");
 		runa.setBold(true);
 		runa.setFontFamily("Century Gothic");
 		runa.setFontSize(9);
 
-		XWPFParagraph paragrapharun2 = document.createParagraph();
-		XWPFRun run2 = paragrapharun2.createRun();
+		paragrapha = document.createParagraph();
+		XWPFRun run2 = paragrapha.createRun();
 		run2.setText("LA PARTE VENDEDORA ES PROPIETARIO DE LOS BIENES INMUEBLES IDENTIFICADOS COMO: ");
 		run2.setFontFamily("Century Gothic");
 		run2.setFontFamily("Century Gothic");
 		run2.setFontSize(9);
 
-		CTNumbering cTNumbering = CTNumbering.Factory.parse(cTAbstractNumBulletXML);
-//		CTNumbering cTNumbering = CTNumbering.Factory.parse(cTAbstractNumDecimalXML);
-		CTAbstractNum cTAbstractNum = cTNumbering.getAbstractNumArray(0);
-		XWPFAbstractNum abstractNum = new XWPFAbstractNum(cTAbstractNum);
-		XWPFNumbering numbering = document.createNumbering();
-		BigInteger abstractNumID = numbering.addAbstractNum(abstractNum);
-		BigInteger numID = numbering.addNum(abstractNumID);
+
 
 		paragrapha = document.createParagraph();
-		paragrapha.setNumID(numID);
+		paragrapha.setIndentationLeft(500);
+		runa = paragrapha.createRun();
+		runa.setText("1. ");
+		runa.setBold(true);
 		runa = paragrapha.createRun();
 		runa.setFontFamily("Century Gothic");
 		runa.setFontSize(9);
@@ -267,7 +274,10 @@ public class LoteBean implements Serializable{
 						+ "INSCRITOS EN LA PARTIDA ELECTRÓNICA N° 02272200, DEL REGISTRO DE PREDIOS DE LA ZONA REGISTRAL N° II- SEDE CHICLAYO.");
 
 		paragrapha = document.createParagraph();
-		paragrapha.setNumID(numID);
+		paragrapha.setIndentationLeft(500);
+		runa = paragrapha.createRun();
+		runa.setText("2. ");
+		runa.setBold(true);
 		runa = paragrapha.createRun();
 		runa.setFontFamily("Century Gothic");
 		runa.setFontSize(9);
@@ -288,6 +298,7 @@ public class LoteBean implements Serializable{
 		runSegundo.setUnderline(UnderlinePatterns.SINGLE);
 		
 		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
 		XWPFRun runObj = paragrapha.createRun();
 		runObj.setText("OBJETO");
 		runObj.setBold(true);
@@ -303,16 +314,9 @@ public class LoteBean implements Serializable{
 		runDesObj.setFontSize(9);
 		
 		
-		
-		CTNumbering cTNumbering2 = CTNumbering.Factory.parse(cTAbstractNumBulletXML);
-		CTAbstractNum cTAbstractNum2 = cTNumbering2.getAbstractNumArray(0);
-		XWPFAbstractNum abstractNum2 = new XWPFAbstractNum(cTAbstractNum2);
-		XWPFNumbering numbering2 = document.createNumbering();
-		BigInteger abstractNumID2 = numbering2.addAbstractNum(abstractNum2);
-		BigInteger numID2 = numbering2.addNum(abstractNumID2);
+	
 
 		paragrapha = document.createParagraph();
-		paragrapha.setNumID(numID2);
 		runa = paragrapha.createRun();
 		runa.setFontFamily("Century Gothic");
 		runa.setFontSize(9);
@@ -337,7 +341,6 @@ public class LoteBean implements Serializable{
 		
 
 		paragrapha = document.createParagraph();
-		paragrapha.setNumID(numID2);
 		runa = paragrapha.createRun();
 		runa.setFontFamily("Century Gothic");
 		runa.setFontSize(9);

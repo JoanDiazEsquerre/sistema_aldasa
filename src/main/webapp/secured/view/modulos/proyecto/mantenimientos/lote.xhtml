@@ -32,6 +32,11 @@
                           var="ase" itemLabel="#{ase.name}" itemValue="#{ase}" forceSelection="true"  > 
             	<p:ajax update="idTableLote" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
             </p:autoComplete>
+            
+            <p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{loteBean.generarWord}"
+                       icon="pi pi-arrow-down" styleClass="mr-2">
+            	<p:fileDownload value="#{loteBean.fileDes}"/> 
+      		</p:commandButton>
 		</p:panelGrid>
 		
 		
@@ -270,10 +275,7 @@
 						<p:inputNumber id="nroCuota" value="#{loteBean.loteSelected.numeroCuota}" style="margin:5px; width:220px" minValue="1" decimalPlaces="0" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"> <p:ajax update="messages" /> </p:inputNumber>
 					</h:panelGrid>
 					
-					<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{loteBean.generarWord}"
-                         icon="pi pi-arrow-down" styleClass="mr-2">
-		            	<p:fileDownload value="#{loteBean.fileDes}"/> 
-		      		</p:commandButton>
+					
 				</p:tab> 
 			</p:tabView>	
 		</h:form>
