@@ -130,10 +130,7 @@ public class RankingVentasBean implements Serializable {
 		String mesActual=sdfM.format(fechaActual);
 		String anioActual=sdfY.format(fechaActual);
 		int ventaMesActual=lotesVendidoMes(mesActual, anioActual, empleado);
-		
-		
-	
-		
+
 		Date mesAnterior = sumaRestaMeses(fechaActual,-1);
 		
 		String mesPasado=sdfM.format(mesAnterior);
@@ -168,9 +165,10 @@ public class RankingVentasBean implements Serializable {
 		return calendar.getTime();
 	}
 	
-	public int mesesQueVendio() {
+	public int mesesQueVendio(Empleado empleado) {
 		int noVendio = 0;
 		
+//		int siVendio = lotesVendidoMes(mes, anioselected, empleado);
 		
 		
 		

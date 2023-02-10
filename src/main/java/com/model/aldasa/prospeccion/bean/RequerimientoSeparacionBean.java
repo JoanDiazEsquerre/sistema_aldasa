@@ -1,6 +1,8 @@
 package com.model.aldasa.prospeccion.bean;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +14,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -23,17 +27,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Action;
+import com.model.aldasa.entity.Banco;
+import com.model.aldasa.entity.CuentaBancaria;
 import com.model.aldasa.entity.Lote;
+import com.model.aldasa.entity.Profile;
 import com.model.aldasa.entity.ProspectionDetail;
 import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.Usuario;
+import com.model.aldasa.entity.Voucher;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.ActionService;
+import com.model.aldasa.service.BancoService;
+import com.model.aldasa.service.CuentaBancariaService;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.ProspectionDetailService;
 import com.model.aldasa.service.ProspectionService;
 import com.model.aldasa.service.RequerimientoSeparacionService;
 import com.model.aldasa.service.UsuarioService;
+import com.model.aldasa.service.VoucherService;
 import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.EstadoLote;
 import com.model.aldasa.util.EstadoRequerimientoSeparacionType;
@@ -64,20 +75,54 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	@ManagedProperty(value = "#{navegacionBean}")
 	private NavegacionBean navegacionBean;
 	
+	@ManagedProperty(value = "#{cuentaBancariaService}")
+	private CuentaBancariaService cuentaBancariaService;
+	
+	@ManagedProperty(value = "#{voucherService}")
+	private VoucherService voucherService;
+	
 	private LazyDataModel<RequerimientoSeparacion> lstReqSepLazy;
 
 	private RequerimientoSeparacion requerimientoSeparacionSelected;
+	private CuentaBancaria cuentaBancariaSelected;
+
 	
 	private Date fechaSeparacion, fechaVencimiento;
 	private String estado = "Pendiente";
+	private String tipoTransaccion="";
+	private String numeroTransaccion="";
 	private boolean apruebaConta = false;
 	private boolean ejecutaRequerimiento = false;
+	private boolean mostrarBoton = false ;
 	private int cantidad=0;
+	private Double monto;
+	private Date fechaOperacion = new Date() ;
+	
+	
+	private List<CuentaBancaria> lstCuentaBancaria = new ArrayList<>();
 
 	@PostConstruct
 	public void init() {
 		permisosAprobaciones();
 		iniciarLazy();
+		listarCuentaBancaria();
+	}
+	
+	public void ocultarBotonAprobar() {
+		mostrarBoton=false;
+	}
+	
+	public void botonVer() {
+		mostrarBoton = false;
+		cuentaBancariaSelected = null;
+		monto = null;
+		tipoTransaccion = "";
+		numeroTransaccion = "";
+		fechaOperacion = null;
+	}
+	
+	public void listarCuentaBancaria() {
+		lstCuentaBancaria=cuentaBancariaService.findByEstado(true);
 	}
 	
 	public void permisosAprobaciones() {
@@ -93,7 +138,6 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 			apruebaConta= true;
 			ejecutaRequerimiento= true;
 		}
-		
 	}
 	
 	public void modifyRequerimiento() {
@@ -155,10 +199,7 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 		}else {
 			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote se encuentra " + lote.getStatus()));
 
-		}
-			
-		
-		
+		}		
 
 	}
 	
@@ -253,7 +294,99 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 		requerimientoSeparacionSelected.setEstado(EstadoRequerimientoSeparacionType.RECHAZADO.getDescripcion());
 		requerimientoSeparacionService.save(requerimientoSeparacionSelected);
 	}
+
 	
+	public void validar() {
+		
+		if(cuentaBancariaSelected == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar cuenta bancaria."));
+			return;
+		}
+		if(monto==null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar monto."));
+			return;
+		}
+		if(tipoTransaccion.equals("")) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar tipo de transacción."));
+			return;
+		}
+		if(numeroTransaccion.equals("")) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar Nro. Transacción."));
+			return;
+		}
+		if(fechaOperacion==null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar fecha de operación."));
+			return;
+		}
+		
+		Voucher validarVoucher = voucherService.findByCuentaBancariaAndMontoAndTipoTransaccionAndNumeroTransaccionAndFechaOperacion(cuentaBancariaSelected, monto, tipoTransaccion, numeroTransaccion, fechaOperacion);
+		if(validarVoucher!=null) {
+			mostrarBoton=false;
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El vaucher ya existe."));
+			return;
+		}else {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Voucher validado."));
+			mostrarBoton=true;
+			
+		}
+		
+	}
+	
+	public void aprobar() {
+		Voucher voucher = new Voucher();
+		voucher.setCuentaBancaria(cuentaBancariaSelected);
+		voucher.setMonto(monto);
+		voucher.setTipoTransaccion(tipoTransaccion);
+		voucher.setNumeroTransaccion(numeroTransaccion);
+		voucher.setFechaOperacion(fechaOperacion);
+		
+		voucherService.save(voucher);
+		
+		aprobarPorContabilidad();
+		addInfoMessage("Aprobado correctamente por contabilidad");
+
+	}
+	
+	public void obtenerBanco() {
+		if(cuentaBancariaSelected!=null) {
+			System.out.println("BANCO SELECCIONADO: "+ cuentaBancariaSelected.getBanco().getAbreviatura());
+		}else {
+			System.out.println("SIN SELECCIONAR ");
+		}
+		
+	}
+	
+	public void obtenerTipoT() {
+		System.out.println("TT SELECCIONADO: "+ tipoTransaccion);
+	}
+	
+	public Converter getConversorCuentaBancaria() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	CuentaBancaria c = null;
+                    for (CuentaBancaria si : lstCuentaBancaria) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((CuentaBancaria) value).getId() + "";
+                }
+            }
+        };
+    }
 	
 	
 	public RequerimientoSeparacionService getRequerimientoSeparacionService() {
@@ -346,4 +479,62 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
 	}
+	public CuentaBancariaService getCuentaBancariaService() {
+		return cuentaBancariaService;
+	}
+	public void setCuentaBancariaService(CuentaBancariaService cuentaBancariaService) {
+		this.cuentaBancariaService = cuentaBancariaService;
+	}
+	
+	public List<CuentaBancaria> getLstCuentaBancaria() {
+		return lstCuentaBancaria;
+	}
+	public void setLstCuentaBancaria(List<CuentaBancaria> lstCuentaBancaria) {
+		this.lstCuentaBancaria = lstCuentaBancaria;
+	}
+	public CuentaBancaria getCuentaBancariaSelected() {
+		return cuentaBancariaSelected;
+	}
+	public void setCuentaBancariaSelected(CuentaBancaria cuentaBancariaSelected) {
+		this.cuentaBancariaSelected = cuentaBancariaSelected;
+	}
+	public String getTipoTransaccion() {
+		return tipoTransaccion;
+	}
+	public void setTipoTransaccion(String tipoTransaccion) {
+		this.tipoTransaccion = tipoTransaccion;
+	}
+	public Double getMonto() {
+		return monto;
+	}
+	public void setMonto(Double monto) {
+		this.monto = monto;
+	}
+	public String getNumeroTransaccion() {
+		return numeroTransaccion;
+	}
+	public void setNumeroTransaccion(String numeroTransaccion) {
+		this.numeroTransaccion = numeroTransaccion;
+	}
+	public Date getFechaOperacion() {
+		return fechaOperacion;
+	}
+	public void setFechaOperacion(Date fechaOperacion) {
+		this.fechaOperacion = fechaOperacion;
+	}
+	public VoucherService getVoucherService() {
+		return voucherService;
+	}
+	public void setVoucherService(VoucherService voucherService) {
+		this.voucherService = voucherService;
+	}
+	public boolean isMostrarBoton() {
+		return mostrarBoton;
+	}
+	public void setMostrarBoton(boolean mostrarBoton) {
+		this.mostrarBoton = mostrarBoton;
+	}
+	
+
+	
 }

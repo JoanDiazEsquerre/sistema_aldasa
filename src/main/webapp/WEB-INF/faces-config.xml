@@ -521,6 +521,7 @@
 			<value>#{loteService}</value>
 		</managed-property>
 	</managed-bean>
+	
 	<managed-bean>
 		<managed-bean-name>requerimientoSeparacionBean</managed-bean-name>
 		<managed-bean-class>com.model.aldasa.prospeccion.bean.RequerimientoSeparacionBean</managed-bean-class>
@@ -553,7 +554,16 @@
 			<property-name>navegacionBean</property-name>
 			<value>#{navegacionBean}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>cuentaBancariaService</property-name>
+			<value>#{cuentaBancariaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>voucherService</property-name>
+			<value>#{voucherService}</value>
+		</managed-property>
 	</managed-bean>
+	
 	<managed-bean>
 		<managed-bean-name>loadImageBean</managed-bean-name>
 		<managed-bean-class>com.model.aldasa.prospeccion.bean.LoadImageBean</managed-bean-class>

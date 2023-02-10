@@ -35,6 +35,9 @@ public class RequerimientoSeparacion {
 	private String nombreImagen;
 	
 	
+	
+	
+	
 	public Integer getId() {
 		return id;
 	}
@@ -71,6 +74,7 @@ public class RequerimientoSeparacion {
 	public void setNombreImagen(String nombreImagen) {
 		this.nombreImagen = nombreImagen;
 	}
+	
 	
 	
 	

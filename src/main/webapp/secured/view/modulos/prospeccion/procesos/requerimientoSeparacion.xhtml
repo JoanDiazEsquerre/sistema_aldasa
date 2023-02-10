@@ -84,8 +84,9 @@
 			</p:column>
 			
 			<p:column width="10%" headerText="Voucher" filterMatchMode="contains">
-				<p:commandButton value="VER" oncomplete="PF('dlg').show()" update=":idFormImagen:tvVoucher:imagenLoad"  process="@this :idFormImagen:tvVoucher:imagenLoad">
+				<p:commandButton value="VER" oncomplete="PF('dlg').show()" update=":idFormImagen" process="@this :idFormImagen:tvVoucher:imagenLoad" actionListener="#{requerimientoSeparacionBean.botonVer}">
 					<f:setPropertyActionListener value="#{req.nombreImagen}" target="#{loadImageBean.nombreArchivo}"  />
+					<f:setPropertyActionListener value="#{req}" target="#{requerimientoSeparacionBean.requerimientoSeparacionSelected}"  />
 				</p:commandButton>
 			</p:column>
 			
@@ -106,37 +107,52 @@
 				<p:tab title="Voucher" > 
 					<p:graphicImage width="400"  value="#{loadImageBean.image}" id="imagenLoad" cache="false"/>
 				</p:tab>
-				<p:tab title="Registrar Voucher"> 
+				<p:tab id="tabReg" title="Registrar Voucher" rendered="#{requerimientoSeparacionBean.estado eq 'Pendiente'}"> 
 					<p:messages id="messages" showDetail="true" closable="true">
 						<p:autoUpdate />
 					</p:messages>
-					<h:panelGrid id="grid" columns="4"> 
-						<h:outputLabel value="Cuenta Bancaria:" />
-						<p:selectOneMenu >
-							<f:selectItem itemLabel="[- Seleccionar -]" itemValue=""/>
-						</p:selectOneMenu>
+					<h:panelGrid id="grid" columns="4">
+						<h:outputLabel  value="Cuenta Bancaria:" />
+						<p:selectOneMenu value="#{requerimientoSeparacionBean.cuentaBancariaSelected}" converter="#{requerimientoSeparacionBean.conversorCuentaBancaria}" >
+		                    <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
+		                    <f:selectItems value="#{requerimientoSeparacionBean.lstCuentaBancaria}" var="cb" itemLabel="#{cb.banco.abreviatura} : #{cb.numero}  (#{cb.moneda eq 'D'?'Dólares':'Soles'})" itemValue="#{cb}"/>
+		                	<p:ajax update="messages :idFormImagen:tvVoucher:gridBot" listener="#{requerimientoSeparacionBean.ocultarBotonAprobar}"/>
+		                </p:selectOneMenu>
 						
 						<h:outputLabel value="Monto:" />
-						<p:inputNumber value="0.0" modifyValueOnWheel="false"><p:ajax update="messages" /> </p:inputNumber>
+						<p:inputNumber value="#{requerimientoSeparacionBean.monto}" modifyValueOnWheel="false"> 
+						<p:ajax update="messages :idFormImagen:tvVoucher:gridBot" listener="#{requerimientoSeparacionBean.ocultarBotonAprobar}"/> 
+						</p:inputNumber>
 						
 						<h:outputLabel value="Tipo de transacción: " />
-						<p:selectOneMenu >
+						<p:selectOneMenu id="tipo" value="#{requerimientoSeparacionBean.tipoTransaccion}" >
 							<f:selectItem itemLabel="[- Seleccionar -]" itemValue=""/>
+							<f:selectItem itemLabel="DEPOSITO EN EFECTIVO" itemValue="DEPOSITO EN EFECTIVO"/>
+							<f:selectItem itemLabel="TRASFERENCIAS ENTRE TERCEROS" itemValue="TRASFERENCIAS ENTRE TERCEROS"/>
+							<f:selectItem itemLabel="TRASFERENCIA INTERBANCARIA" itemValue="TRASFERENCIA INTERBANCARIA"/>
+							<p:ajax update="messages :idFormImagen:tvVoucher:gridBot" listener="#{requerimientoSeparacionBean.ocultarBotonAprobar}"/>
 						</p:selectOneMenu>
 						
 						<h:outputLabel value="Nro. transacción:" />
-						<p:inputText />
+						<p:inputText value="#{requerimientoSeparacionBean.numeroTransaccion}"> 
+							<p:ajax update="messages :idFormImagen:tvVoucher:gridBot" listener="#{requerimientoSeparacionBean.ocultarBotonAprobar}"/>
+						</p:inputText>
 						
 						<h:outputLabel value="Fecha Operación:" />
-						<p:datePicker style="margin:5px; width:220px"> 
-							<p:ajax update="messages" />
+						<p:datePicker value="#{requerimientoSeparacionBean.fechaOperacion}"  showTime="true" style="margin:5px" pattern="dd/MM/yyyy hh:mm:ss a" readonlyInput="true"> 
+							<p:ajax update="messages :idFormImagen:tvVoucher:gridBot" listener="#{requerimientoSeparacionBean.ocultarBotonAprobar}"/>
 						</p:datePicker>
-						
 						
 						
 					</h:panelGrid>
 					
-					<p:commandButton value="Guardar"></p:commandButton>
+					<h:panelGrid id="gridBot" columns="2">
+					
+						<p:commandButton value="Validar" actionListener="#{requerimientoSeparacionBean.validar}" process="@this"  update=":idFormImagen:tvVoucher:gridBot"/>
+						<p:commandButton id="btnAproConta" update=":form:idTableReqsep :form:menuTableReq" oncomplete="PF('dlg').hide();" value="Aprobar" actionListener="#{requerimientoSeparacionBean.aprobar}" rendered="#{requerimientoSeparacionBean.mostrarBoton}" process="@this" />
+					
+					</h:panelGrid>
+
 				</p:tab>
 			</p:tabView>
 			
