@@ -44,6 +44,9 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFNumbering;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.apache.xmlbeans.XmlException;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTNumbering;
@@ -244,44 +247,46 @@ public class LoteBean implements Serializable{
 
 		XWPFParagraph paragrapha = document.createParagraph();
 		paragrapha.setNumID(numID);
-		XWPFRun runa = paragrapha.createRun();
-		runa.setText("ANTEDEDENTES");
-		runa.setBold(true);
-		runa.setFontFamily("Century Gothic");
-		runa.setFontSize(9);
+		run = paragrapha.createRun();
+		run.setText("ANTEDEDENTES");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
 
 		paragrapha = document.createParagraph();
-		XWPFRun run2 = paragrapha.createRun();
-		run2.setText("LA PARTE VENDEDORA ES PROPIETARIO DE LOS BIENES INMUEBLES IDENTIFICADOS COMO: ");
-		run2.setFontFamily("Century Gothic");
-		run2.setFontFamily("Century Gothic");
-		run2.setFontSize(9);
+		run = paragrapha.createRun();
+		run.setText("LA PARTE VENDEDORA ES PROPIETARIO DE LOS BIENES INMUEBLES IDENTIFICADOS COMO: ");
+		run.setFontFamily("Century Gothic");
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
 
 
 
 		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
 		paragrapha.setIndentationLeft(500);
-		runa = paragrapha.createRun();
-		runa.setText("1. ");
-		runa.setBold(true);
-		runa = paragrapha.createRun();
-		runa.setFontFamily("Century Gothic");
-		runa.setFontSize(9);
-		runa.setText(
+		run = paragrapha.createRun();
+		run.setText("1. ");
+		run.setBold(true);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText(
 				"UBIC, RUR. VALLE DE CHANCAY / SECTOR YENCALA BOGGIANO / PREDIO LA CRUZ – COD. PREDIO. 7_6159260_80375, "
 						+ "ÁREA HA. 3.6000 U.C. 80375, DISTRITO DE LAMBAYEQUE, PROVINCIA DE LAMBAYEQUE, DEPARTAMENTO DE LAMBAYEQUE, "
 						+ "EN LO SUCESIVO DENOMINADO EL BIEN. LOS LINDEROS, MEDIDAS PERIMÉTRICAS, DESCRIPCIÓN Y DOMINIO DEL BIEN CORREN "
 						+ "INSCRITOS EN LA PARTIDA ELECTRÓNICA N° 02272200, DEL REGISTRO DE PREDIOS DE LA ZONA REGISTRAL N° II- SEDE CHICLAYO.");
 
 		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
 		paragrapha.setIndentationLeft(500);
-		runa = paragrapha.createRun();
-		runa.setText("2. ");
-		runa.setBold(true);
-		runa = paragrapha.createRun();
-		runa.setFontFamily("Century Gothic");
-		runa.setFontSize(9);
-		runa.setText(
+		run = paragrapha.createRun();
+		run.setText("2. ");
+		run.setBold(true);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText(
 				"LOS PREDIOS SEÑALADOS EN LOS PÁRRAFOS QUE PRECEDEN, FORMAN UN SOLO PREDIO EN TERRENO Y UBICACIÓN FÍSICA, "
 						+ "EN EL CUAL SE DESARROLLARÁ EL PROYECTO DE LOTIZACIÓN LOS ALTOS DE SAN ROQUE III Y EL CUAL ES MATERIA DE VENTA A "
 						+ "TRAVÉS DEL PRESENTE CONTRATO. ");
@@ -289,23 +294,24 @@ public class LoteBean implements Serializable{
 		
 		
 		paragrapha = document.createParagraph();
-		XWPFRun runSegundo = paragrapha.createRun();
-		runSegundo.setText("SEGUNDO.");
-		runSegundo.setBold(true);
-		runSegundo.setFontFamily("Century Gothic");
-		runSegundo.setFontSize(9);
-		runSegundo.setBold(true);
-		runSegundo.setUnderline(UnderlinePatterns.SINGLE);
+		run = paragrapha.createRun();
+		run.setText("SEGUNDO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setUnderline(UnderlinePatterns.SINGLE);
 		
 		paragrapha = document.createParagraph();
 		paragrapha.setNumID(numID);
-		XWPFRun runObj = paragrapha.createRun();
-		runObj.setText("OBJETO");
-		runObj.setBold(true);
-		runObj.setFontFamily("Century Gothic");
-		runObj.setFontSize(9);
+		run = paragrapha.createRun();
+		run.setText("OBJETO");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
 		
 		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
 		XWPFRun runDesObj = paragrapha.createRun();
 		runDesObj.setText("POR EL PRESENTE CONTRATO, LA PARTE VENDEDORA VENDE A LA PARTE COMPRADORA EL (LOS) LOTE(S) DE TERRENO(S) "
 				+ "POR INDEPENDIZAR DEL BIEN DE MAYOR EXTENSIÓN ESPECIFICADO EN LA CLÁUSULA PRIMERA DE ESTE CONTRATO, EL (LOS) CUAL(ES) "
@@ -317,37 +323,688 @@ public class LoteBean implements Serializable{
 	
 
 		paragrapha = document.createParagraph();
-		runa = paragrapha.createRun();
-		runa.setFontFamily("Century Gothic");
-		runa.setFontSize(9);
-		runa.setBold(true);
-		runa.setText("MANZANA ------ LOTE -------- (ÁREA TOTAL --------- M2)");
-		runa.addBreak();
-		runa = paragrapha.createRun();
-		runa.setFontFamily("Century Gothic");
-		runa.setFontSize(9);
-		runa.setText("EL ÁREA DE EL LOTE, MATERIA DE ESTE CONTRATO, SE ENCUENTRA DENTRO DE LA MANZANA ---- LOTE ---- "
+		paragrapha.setIndentationLeft(500);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setText("1. MANZANA ------ LOTE -------- (ÁREA TOTAL --------- M2)");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("EL ÁREA DE EL LOTE, MATERIA DE ESTE CONTRATO, SE ENCUENTRA DENTRO DE LA MANZANA ---- LOTE ---- "
 				+ "EN LA CUAL CONSTA UN ÁREA DE ---- M2 Y QUE FORMA PARTE DEL PROYECTO DE LOTIZACIÓN DEL BIEN DE MAYOR "
 				+ "EXTENSIÓN ESPECIFICADO EN LA CLÁUSULA PRIMERA DE ESTE CONTRATO PARTIDA ELECTRÓNICA: 02272200");
 		
-		runa.addBreak();
-		runa.addBreak();
-		runa = paragrapha.createRun();
-		runa.setFontFamily("Century Gothic");
-		runa.setFontSize(9);
-		runa.setBold(true);
-		runa.setUnderline(UnderlinePatterns.SINGLE); 
-		runa.setText("LINDEROS Y MEDIDAS PERIMÉTRICAS:");
+		
+		paragrapha = document.createParagraph();
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setUnderline(UnderlinePatterns.SINGLE); 
+		run.setText("LINDEROS Y MEDIDAS PERIMÉTRICAS:");
 		
 
 		paragrapha = document.createParagraph();
-		runa = paragrapha.createRun();
-		runa.setFontFamily("Century Gothic");
-		runa.setFontSize(9);
-		runa.setText(
-				"LOS PREDIOS SEÑALADOS EN LOS PÁRRAFOS QUE PRECEDEN, FORMAN UN SOLO PREDIO EN TERRENO Y UBICACIÓN FÍSICA, "
-						+ "EN EL CUAL SE DESARROLLARÁ EL PROYECTO DE LOTIZACIÓN LOS ALTOS DE SAN ROQUE III Y EL CUAL ES MATERIA DE VENTA A "
-						+ "TRAVÉS DEL PRESENTE CONTRATO. ");
+		paragrapha.setIndentationLeft(500);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("Área del lote:     --------m2");
+		run.addBreak();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("Perímetro del lote:	--------ml ");
+		run.addBreak();
+		run.addBreak();
+		run.setText("LINDEROS");
+		run.addBreak();
+		run.setText("Frente         : Con Calle ----; con ---- ml.");
+		run.addBreak();
+		run.setText("Fondo         : Con -------; con ------ ml.");
+		run.addBreak();
+		run.setText("Derecha     : Con ---------; con ---- ml.");
+		run.addBreak();
+		run.setText("Izquierda    : Con ---------; con ----- ml.");
+		
+		paragrapha = document.createParagraph();
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("LA PARTE VENDEDORA SE COMPROMETE A ENTREGAR LA UNIDAD INMOBILIARIA MATERIA DE LA PRESENTE COMPRA VENTA EN LAS "
+				+ "CONDICIONES QUE SE ESTIPULAN EN EL PRESENTE CONTRATO Y QUE LA PARTE COMPRADORA ACEPTAN EXPRESAMENTE.");
+		
+		paragrapha = document.createParagraph();
+		run = paragrapha.createRun();
+		run.setText("TERCERO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setUnderline(UnderlinePatterns.SINGLE);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		paragrapha.setNumID(numID);
+		run = paragrapha.createRun();
+		run.setText("PRECIO DE COMPRA VENTA.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("EL PRECIO PACTADO POR LA VENTA DE EL (LOS) LOTE(S) DESCRITO EN LA CLÁUSULA SEGUNDA ES DE "
+				+ "S./------------- (-------------- Y -----/100 SOLES), EL CUAL SE PAGARÁ DE LA SIGUIENTE MANERA: ");
+		
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		paragrapha.setIndentationLeft(500);
+		run = paragrapha.createRun();
+		run.setText("1. ");
+		run.setBold(true);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("COMO INICIAL, EL MONTO DE S./---------- (---------- Y ---/100 SOLES) CON DEPÓSITO(S) EN CUENTA DEL "
+				+ "BANCO INTERBANK, CON NÚMERO DE CUENTA 8983003839960, CCI 00389800300383996043 Y/O EN CUENTA DEL BANCO "
+				+ "BBVA CON NÚMERO DE CUENTA  0011 0285 01 00180945, CCI 011 285 000100180945 46 Y/O EN CUENTA DE CAJA TRUJILLO "
+				+ "CON NÚMERO DE CUENTA 122321409341, CCI 80201200232140934153 Y/O EN CUENTA(S) DE CAJA PIURA EN SOLES 210-01-4775107, "
+				+ "CCI 80104521001477510763, EN DÓLARES 210-02-3090720, CCI 80104521002309072062, A FAVOR DE LA PARTE VENDEDORA, "
+				+ "EL MEDIO DE PAGO SE PRESENTA A LA FIRMA DEL PRESENTE CONTRATO.");
+
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		paragrapha.setIndentationLeft(500);
+		run = paragrapha.createRun();
+		run.setText("2. ");
+		run.setBold(true);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("LA FORMA DE PAGO DEL SALDO POR LA COMPRAVENTA DE EL (LOS) LOTE(S) SE DA A RAZÓN DE LA POLÍTICA DE FINANCIAMIENTO "
+				+ "DIRECTO QUE BRINDA LA PARTE VENDEDORA, PARA LO CUAL LA PARTE COMPRADORA TIENE VARIAS OPCIONES, LAS CUALES ADOPTARÁN "
+				+ "SEGÚN SU CRITERIO Y MEJOR PARECER; A CONTINUACIÓN, DENTRO DE LOS ESPACIOS SEÑALADOS ELEGIR LA OPCION DE PAGO: ");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setIndentationLeft(800);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("- PAGO DEL SALDO EN ---------- CUOTAS MENSUALES.");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("LOS PAGOS MENSUALES A QUE ALUDE LA CLÁUSULA PRECEDENTE, EN LA OPCIÓN SEÑALADA POR LA PARTE COMPRADORA SE "
+				+ "EFECTUARÁN EL DÍA -------- DE CADA MES CON DEPÓSITO EN LA CUENTA A FAVOR DE LA PARTE VENDEDORA, LA CUAL PERTENECE "
+				+ "AL BANCO INTERBANK, CON NÚMERO DE CUENTA 8983003839960, CCI 00389800300383996043 Y/O EN CUENTA DEL BANCO BBVA CON "
+				+ "NÚMERO DE CUENTA  0011 0285 01 00180945, CCI 011 285 000100180945 46 Y/O EN CUENTA DE CAJA TRUJILLO CON NÚMERO DE "
+				+ "CUENTA 122321409341, CCI 80201200232140934153 Y/O EN CUENTAS DE CAJA PIURA EN SOLES 210-01-4775107, CCI 80104521001477510763, "
+				+ "EN DÓLARES 210-02-3090720, CCI 80104521002309072062; SIN NECESIDAD DE NOTIFICACIÓN, CARTA CURSADA, MEDIO NOTARIAL O "
+				+ "REQUERIMIENTO ALGUNO, SI TRANSCURRIDO DICHO TÉRMINO, LA PARTE COMPRADORA INCURRE EN MORA, AUTOMÁTICAMENTE LA PARTE "
+				+ "VENDEDORA RECONOCERÁ COMO VÁLIDOS SOLAMENTE LOS PAGOS QUE SE EFECTÚEN DE ACUERDO A SUS SISTEMAS DE COBRANZAS Y DOCUMENTOS "
+				+ "EMITIDOS POR ÉL,  SI EXISTIERA UN RECIBO DE PAGO EFECTUADO RESPECTO A UNA CUOTA, NO CONSTITUYE PRESUNCIÓN DE HABER "
+				+ "CANCELADO LAS ANTERIORES.");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("SE ACUERDA ENTRE LAS PARTES QUE LOS PAGOS SE REALIZARÁN EN LAS FECHAS ESTABLECIDAS EN LOS PÁRRAFOS DE ESTA CLÁUSULA "
+				+ "TERCERA SIN PRÓRROGAS NI ALTERACIONES; MÁS QUE LAS CONVENIDAS EN ESTE CONTRATO. ");
+		
+		paragrapha = document.createParagraph();
+		run = paragrapha.createRun();
+		run.setText("CUARTO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setUnderline(UnderlinePatterns.SINGLE);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		run = paragrapha.createRun();
+		run.setText("TÉRMINOS DEL CONTRATO");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("TENIENDO EN CUENTA QUE EL OBJETO DEL PRESENTE CONTRATO ES LA COMPRAVENTA A PLAZOS DE ------- "
+				+ "MESES, MZ -----  LOTE (S) -------DE TERRENO(S) DE UN BIEN INMUEBLE DE MAYOR EXTENSIÓN, LAS PARTES PRECISAN QUE "
+				+ "POR ACUERDO INTERNO, LA PARTE COMPRADORA UNA VEZ CANCELADO EL SALDO POR EL TOTAL DEL PRECIO DE EL (LOS) LOTE(S), "
+				+ "SOLICITARÁ A LA PARTE VENDEDORA, LA FORMALIZACIÓN DE LA MINUTA Y POSTERIOR ESCRITURA PÚBLICA DE COMPRA VENTA, "
+				+ "PARA QUE PUEDA(N) REALIZAR LOS DIFERENTES PROCEDIMIENTOS ADMINISTRATIVOS, MUNICIPALES, NOTARIALES Y REGISTRALES "
+				+ "EN PRO DE SU INSCRIPCIÓN DE INDEPENDIZACIÓN, PARA LO CUAL LA PARTE COMPRADORA CORRERÁ CON LOS GASTOS Y TRÁMITES "
+				+ "QUE EL PROCESO ADMINISTRATIVO, MUNICIPAL, NOTARIAL Y REGISTRAL IMPLICA. ");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("LA PARTE COMPRADORA DECLARA CONOCER A CABALIDAD EL ESTADO DE CONSERVACIÓN FÍSICA Y SITUACIÓN TÉCNICO-LEGAL DEL "
+				+ "INMUEBLE, MOTIVO POR EL CUAL NO SE ACEPTARÁN RECLAMOS POR LOS INDICADOS CONCEPTOS, NI POR CUALQUIER OTRA CIRCUNSTANCIA "
+				+ "O ASPECTO, NI AJUSTES DE VALOR, EN RAZÓN DE TRANSFERIRSE EL INMUEBLE EN LA CONDICIÓN DE “CÓMO ESTÁ” Y “AD-CORPUS”. ");
+		
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		run = paragrapha.createRun();
+		run.setText("ALCANCES DE LA COMPRAVENTA DEFINITIVA");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("LA VENTA DE (LOS) LOTE(S), COMPRENDERÁ TODO CUANTO DE HECHO Y POR DERECHO CORRESPONDE A EL (LOS) LOTE(S), SIN "
+				+ "RESERVA NI LIMITACIÓN ALGUNA, INCLUYENDO EL SUELO, SUBSUELO, SOBRESUELO, LAS CONSTRUCCIONES Y DERECHOS SOBRE ÉL, "
+				+ "LOS AIRES, ENTRADAS, SALIDAS Y CUALQUIER DERECHO QUE LE CORRESPONDA A EL (LOS) LOTE(S).");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		run = paragrapha.createRun();
+		run.setText("ENTREGA DE “LOS LOTES”:");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("LAS PARTES PRECISAN, QUE LA ENTREGA DE LA POSESIÓN DE EL (LOS) LOTE(S), SE REALIZARÁ A LA CANCELACIÓN DEL SALDO "
+				+ "POR PARTE DE LA PARTE COMPRADORA CON LA VERIFICACIÓN DE LOS DEPÓSITOS REALIZADOS EN LA CUENTA DE LA PARTE VENDEDORA, "
+				+ "PARA LUEGO REALIZAR LA SUSCRIPCIÓN DE LA MINUTA CORRESPONDIENTE.");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		run = paragrapha.createRun();
+		run.setText("CONMUTATIVIDAD DE PRESTACIONES.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("LAS PARTES DECLARAN QUE ENTRE EL PRECIO Y EL (LOS) LOTE(S) QUE SE ENAJENA(N), EXISTE LA MÁS JUSTA Y PERFECTA "
+				+ "EQUIVALENCIA Y QUE SI HUBIERE ALGUNA DIFERENCIA DE MÁS O DE MENOS, SE HACEN MUTUAS Y RECÍPROCA DONACIÓN, RENUNCIANDO, "
+				+ "EN CONSECUENCIA, A CUALQUIER ACCIÓN POSTERIOR QUE TIENDA A INVALIDAR EL PRESENTE CONTRATO Y A LOS PLAZOS PARA INTERPONERLA.");
+		
+		paragrapha = document.createParagraph();
+		run = paragrapha.createRun();
+		run.setText("QUINTO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setUnderline(UnderlinePatterns.SINGLE);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		run = paragrapha.createRun();
+		run.setText("LIBRE DISPONIBILIDAD DE DOMINIO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("LA PARTE VENDEDORA DECLARA QUE TRANSFIERE A LA PARTE COMPRADORA EL (LOS) LOTE(S) OBJETO DE ESTE CONTRATO, "
+				+ "LIBRE DE TODA CARGA O GRAVAMEN, DERECHO REAL DE GARANTÍA, PROCEDIMIENTO Y/O PROCESO JUDICIAL DE PRESCRIPCIÓN "
+				+ "ADQUISITIVA DE DOMINIO, REIVINDICACIN, TÍTULOS SUPLETORIO, LABORAL, PROCESO ADMINISTRATIVO, EMBARGO, MEDIDA "
+				+ "INCOATIVA, Y/O CUALQUIER MEDIDA CAUTELAR, ACCIÓN JUDICIAL O EXTRAJUDICIAL Y, EN GENERAL, DE TODO ACTO JURÍDICO, "
+				+ "PROCESAL Y/O ADMINISTRATIVO, HECHO O CIRCUNSTANCIA QUE CUESTIONE, IMPIDA, PRIVE O LIMITE LA PROPIEDAD Y LIBRE "
+				+ "DISPOSICIÓN DE EL (LOS) LOTE(S) MATERIA DEL PRESENTE CONTRATO, POSESIÓN O USO EL (LOS) LOTE(S).");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("QUE, SIN PERJUICIO DE LO SEÑALADO EN EL PÁRRAFO ANTERIOR, CON RELACIÓN A EL (LOS) LOTE(S), NO EXISTE NINGUNA "
+				+ "ACCIÓN O LITIGIO JUDICIAL, ARBITRAL, ADMINISTRATIVO, NI DE CUALQUIER OTRA ÍNDOLE, IMPULSADO POR ALGÚN PRECARIO "
+				+ "Y/O COPROPIETARIO NO REGISTRADO, Y/O CUALQUIER TERCERO QUE ALEGUE, RECLAME Y/O INVOQUE DERECHO REAL, PERSONAL "
+				+ "Y/O DE CRÉDITO ALGUNO, Y EN GENERAL CUALQUIER DERECHO SUBJETIVO Y/O CONSTITUCIONAL.");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("QUE, EL (LOS) LOTE(S) NO SE ENCUENTRA(N) EN SUPERPOSICIÓN O DUPLICIDAD REGISTRAL, CON OTRO(S) BIEN(ES) INMUEBLE(S) "
+				+ "INSCRITO(S), EXTENDIÉNDOSE ESTA AFIRMACIÓN A CUALQUIER OTRO(S) BIEN(ES) INMUEBLE(S) NO INSCRITO(S), Y QUE NO SE "
+				+ "ENCUENTRA AFECTADO POR TRAZO DE VÍA(S) ALGUNA(S), NI UBICADO EN “ZONA DE RIESGO” QUE IMPIDA O DIFICULTE EL DESARROLLO "
+				+ "DE CUALQUIER CONSTRUCCIÓN Y/O PROYECTO INMOBILIARIO.");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("QUE, EL (LOS) LOTE(S) NO SE ENCUENTRA(N) EN ZONA MONUMENTAL O ZONA ARQUEOLÓGICA QUE IMPIDA O DIFICULTE EL DESARROLLO DE CUALQUIER PROYECTO INMOBILIARIO. ");
+		
+		paragrapha = document.createParagraph();
+		run = paragrapha.createRun();
+		run.setText("SEXTO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setUnderline(UnderlinePatterns.SINGLE);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		run = paragrapha.createRun();
+		run.setText("OBLIGACIONES DE LA PARTE COMPRADORA.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		run.addBreak();
+		run.setText("LA PARTE COMPRADORA SE OBLIGA A:"); 
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		paragrapha.setIndentationLeft(500);
+		run = paragrapha.createRun();
+		run.setText("A) ");
+		run.setBold(true);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("UNA VEZ CANCELADO EL SALDO TOTAL POR LA COMPRA VENTA DEL INMUEBLE, ES DE SU CARGO REALIZAR "
+				+ "LA INDEPENDIZACIÓN DE SU(S) LOTE(S)  ANTE LA MUNICIPALIDAD DISTRITAL CORRESPONDIENTE.");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		paragrapha.setIndentationLeft(500);
+		run = paragrapha.createRun();
+		run.setText("B) ");
+		run.setBold(true);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("UNA VEZ CANCELADO EL SALDO TOTAL POR LA COMPRA VENTA DEL INMUEBLE, ES DE SU CARGO REALIZAR "
+				+ "LA INDEPENDIZACIÓN DE SU(S) LOTE(S)  ANTE LA MUNICIPALIDAD DISTRITAL CORRESPONDIENTE.");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		paragrapha.setIndentationLeft(500);
+		run = paragrapha.createRun();
+		run.setText("C) ");
+		run.setBold(true);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("PAGAR EL IMPUESTO A LA ALCABALA EN CASO CORRESPONDA.");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		paragrapha.setIndentationLeft(500);
+		run = paragrapha.createRun();
+		run.setText("D) ");
+		run.setBold(true);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("PAGAR EL IMPUESTO PREDIAL Y ARBITRIOS, UNA VEZ ADQUIRIDO(S) EL (LOS) LOTE(S) Y DECLARADO(S) "
+				+ "ANTE LA MUNICIPALIDAD DISTRITAL RESPECTIVA.");
+		
+		
+		paragrapha = document.createParagraph();
+		run = paragrapha.createRun();
+		run.setText("SÉPTIMO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setUnderline(UnderlinePatterns.SINGLE);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		run = paragrapha.createRun();
+		run.setText("OBLIGACIONES DE LA PARTE VENDEDORA.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		run.addBreak();
+		run.setText("LA PARTE VENDEDORA SE OBLIGA A:"); 
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		paragrapha.setIndentationLeft(500);
+		run = paragrapha.createRun();
+		run.setText("A) ");
+		run.setBold(true);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("INSTALACIÓN DE LUZ Y AGUA EN EL PROYECTO INMOBILIARIO, CON REDES TRONCALES, MAS NO EN EL (LOS) LOTE(S) "
+				+ "MATERIA DE VENTA DEL CONTRATO.");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		paragrapha.setIndentationLeft(500);
+		run = paragrapha.createRun();
+		run.setText("B) ");
+		run.setBold(true);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("CONSTRUCCIÓN E INSTALACIÓN DE PÓRTICO DE ENTRADA, AFIRMAMENTO DE CALLES PRINCIPALES.");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		paragrapha.setIndentationLeft(500);
+		run = paragrapha.createRun();
+		run.setText("C) ");
+		run.setBold(true);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("OTORGAMIENTO DE MINUTAS Y ESCRITURAS PÚBLICAS A LA CANCELACIÓN DE LOS SALDOS POR COMPRA DE EL (LOS) LOTE(S).");
+		
+		paragrapha = document.createParagraph();
+		run = paragrapha.createRun();
+		run.setText("OCTAVO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setUnderline(UnderlinePatterns.SINGLE);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		run = paragrapha.createRun();
+		run.setText("PAGO DE TRIBUTOS Y OTRAS IMPOSICIONES.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("LA PARTE VENDEDORA SE SOLIDARIZA FRENTE AL FISCO RESPECTO DE CUALQUIER IMPUESTO, CONTRIBUCIÓN O DERECHOS DE "
+				+ "SERVICIO DE AGUA POTABLE O ENERGÍA ELÉCTRICA, ASÍ COMO EL IMPUESTO PREDIAL, ARBITRIOS MUNICIPALES Y CONTRIBUCIÓN "
+				+ "DE MEJORAS, QUE PUDIERA AFECTAR EL (LOS) LOTE(S) QUE SE VENDEN Y QUE SE ENCUENTREN PENDIENTES DE PAGO HASTA EL DIA "
+				+ "DE PRODUCIDA LA TRANSFERENCIA, FECHA A PARTIR DE LA CUAL SERÁN DE CARGO DE LA PARTE COMPRADORA.");
+		
+		paragrapha = document.createParagraph();
+		run = paragrapha.createRun();
+		run.setText("NOVENO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setUnderline(UnderlinePatterns.SINGLE);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		run = paragrapha.createRun();
+		run.setText("TRIBUTOS QUE AFECTAN AL CONTRATO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("ES DE CARGO DE  LA PARTE COMPRADORA EL PAGO DEL IMPUESTO DE ALCABALA A QUE HUBIERE LUGAR.");
+		
+		paragrapha = document.createParagraph();
+		run = paragrapha.createRun();
+		run.setText("DÉCIMO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setUnderline(UnderlinePatterns.SINGLE);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("LA PARTE COMPRADORA SE HARÁ CARGO DE LOS GASTOS NOTARIALES QUE GENEREN LA MINUTA Y ESCRITURA PÚBLICA DE COMPRAVENTA DEFINITIVA.");
+
+		
+		paragrapha = document.createParagraph();
+		run = paragrapha.createRun();
+		run.setText("DÉCIMO PRIMERO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setUnderline(UnderlinePatterns.SINGLE);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		run = paragrapha.createRun();
+		run.setText("CLAUSULA DE CESION DE POSICION CONTRACTUAL.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("POR LA PRESENTE CLÁUSULA, AMBAS PARTES DAN CONSENTIMIENTO PREVIO, EXPRESO E IRREVOCABLE DE CONFORMIDAD "
+				+ "CON EL ARTÍCULO N°1345 Y SIGUIENTES DEL CÓDIGO CIVIL, A QUE EL VENDEDOR PUEDA CEDER SU POSICIÓN CONTRACTUAL, "
+				+ "A FAVOR DE ALGÚN TERCERO. DE ESTE MODO, EL VENDEDOR PODRÁ APARTARSE TOTALMENTE DE LA RELACIÓN JURÍDICA PRIMIGENIA "
+				+ "Y AMBAS PARTES (VENDEDOR Y COMPRADOR) RECONOCEN QUE EL TERCERO AL QUE SE LE PODRÍA CEDER LA POSICIÓN DE VENDEDOR, "
+				+ "SERÍA EL ÚNICO RESPONSABLE DE TODAS LAS OBLIGACIONES Y DERECHOS COMPRENDIDO EN EL PRESENTE CONTRATO, SIN MÁS "
+				+ "RESTRICCIÓN QUE HACER DE CONOCIMIENTO CON UNA ANTICIPACIÓN DE 05 DÍAS A EL COMPRADOR A TRAVÉS DE CARTA SIMPLE, "
+				+ "NOTARIAL O CORREO ELECTRÓNICO;  LA SUSCRIPCIÓN DE LA PRESENTE ES PLENA SEÑAL DE CONSENTIMIENTO Y CONFORMIDAD DE AMBAS PARTES.");
+		
+		paragrapha = document.createParagraph();
+		run = paragrapha.createRun();
+		run.setText("DÉCIMO SEGUNDO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setUnderline(UnderlinePatterns.SINGLE);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		run = paragrapha.createRun();
+		run.setText("COMPETENCIA JURISDICCIONAL.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("PARA TODO LO RELACIONADO CON EL FIEL CUMPLIMIENTO DE LAS CLÁUSULAS DE ESTE CONTRATO, LAS PARTES ACUERDAN, "
+				+ "SOMETERSE A LA JURISDICCIÓN DE LOS JUECES Y TRIBUNALES DE CHICLAYO, RENUNCIANDO AL FUERO DE SUS DOMICILIOS Y "
+				+ "SEÑALANDO COMO TALES, LOS CONSIGNADOS EN LA INTRODUCCIÓN DEL PRESENTE DOCUMENTO.");
+		
+		paragrapha = document.createParagraph();
+		run = paragrapha.createRun();
+		run.setText("DÉCIMO TERCERO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setUnderline(UnderlinePatterns.SINGLE);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		run = paragrapha.createRun();
+		run.setText("DOMICILIO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("LAS PARTES SEÑALAN COMO SUS DOMICILIOS LOS INDICADOS EN LA INTRODUCCIÓN DEL PRESENTE DOCUMENTO, LUGARES A "
+				+ "LOS QUE SERÁN DIRIGIDAS TODAS LAS COMUNICACIONES O NOTIFICACIONES A QUE HUBIERA LUGAR. ");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("CUALQUIER CAMBIO DE DOMICILIO, PARA SER VÁLIDO, DEBERÁ SER COMUNICADO A LA OTRA PARTE MEDIANTE CARTA CURSADA POR "
+				+ "CONDUCTO NOTARIAL CON UNA ANTICIPACIÓN NO MENOR DE 5 (CINCO) DÍAS, ESTABLECIÉNDOSE QUE LOS CAMBIOS NO COMUNICADOS "
+				+ "EN LA FORMA PREVISTA EN ESTA CLÁUSULA SE TENDRÁN POR NO HECHOS Y SERÁN VALIDAS LAS COMUNICACIONES CURSADAS AL ÚLTIMO "
+				+ "DOMICILIO CONSTITUIDO SEGÚN LA PRESENTE CLÁUSULA.");
+		
+		paragrapha = document.createParagraph();
+		run = paragrapha.createRun();
+		run.setText("DÉCIMO CUARTO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setUnderline(UnderlinePatterns.SINGLE);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		run = paragrapha.createRun();
+		run.setText("BENEFICIO POR CONDUCTA DE BUEN PAGADOR.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("SI EL PAGO DE EL (LOS) LOTE(S) QUE ADQUIEREN LA PARTE COMPRADORA SE ADELANTA Y/O CANCELA EN SU TOTALIDAD, SE "
+				+ "OMITIRÁ TODO PAGO DE INTERÉS FUTURO, SE CONSIDERA PREPAGO DE CAPITAL; EN CASO, QUE EXISTA PREPAGO PARCIAL, SE OMITIRÁ "
+				+ "INTERESES FUTUROS POR EL MONTO QUE EL CLIENTE PRE-PAGUE Y SE GENERA UN NUEVO CRONOGRAMA DE PAGOS, EL CUAL PUEDE SER "
+				+ "ACORDADO CON “LA PARTE VENDEDORA”.");
+		
+		paragrapha = document.createParagraph();
+		run = paragrapha.createRun();
+		run.setText("DÉCIMO QUINTO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setUnderline(UnderlinePatterns.SINGLE);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		run = paragrapha.createRun();
+		run.setText("RESOLUCIÓN DE CONTRATO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("LAS PARTES ESTABLECEN MEDIANTE ESTA CLÁUSULA QUE; ANTE EL INCUMPLIMIENTO DE LA PARTE COMPRADORA DE TRES(03) "
+				+ "CUOTAS SUCESIVAS O NO DE LOS PAGOS EN LOS PLAZOS ESTABLECIDOS DE LAS CUOTAS CONSIGNADAS EN LA TERCERA CLÁUSULA DE "
+				+ "ESTE CONTRATO, LA PARTE VENDEDORA PUEDE UNILATERALMETE RESOLVER EL CONTRATO; O EN SU DEFECTO; EXIGIR EL PAGO TOTAL DEL "
+				+ "SALDO DEUDOR A  LA PARTE COMPRADORA, PARA LO CUAL REMITIRÁ LA NOTIFICACIÓN RESPECTIVA  AL DOMICILIO QUE LA PARTE COMPRADORA "
+				+ "HAYA SEÑALADO COMO SUYO EN LA PRIMERA CLÁUSULA DE ESTE CONTRATO, EL PLAZO MÁXIMO DE CONTESTACIÓN QUE TENDRÁN LA PARTE "
+				+ "COMPRADORA SERÁ DE TRES (03) DIAS CALENDARIO, A PARTIR DE HABER RECIBIDO LA NOTIFICACIÓN; SEA QUE HAYA SIDO RECIBIDA POR "
+				+ "LA PARTE COMPRADORA, ALGUNA PERSONA QUE RESIDA EN EL DOMICILIO INIDICADO O EN SU DEFECTO SE HAYA COLOCADO BAJO PUERTA (PARA "
+				+ "LO CUAL EL NOTIFICADOR SEÑALARA EN EL MISMO CARGO DE RECEPCIÓN DE LA NOTIFICACIÓN LAS CARACTERISTICAS DEL DOMICILIO, ASÍ COMO "
+				+ "UNA IMAGEN FOTOGRÁFICA DEL MISMO), LUEGO DE LO CUAL EL CONTRATO QUEDARÁ RESUELTO DE PLENO DERECHO Y EL MONTO O LOS MONTOS QUE "
+				+ "SE HAYAN EFECTUADO PASARÁN A CONSIGNARSE COMO UNA INDEMNIZACIÓN A FAVOR DE LA PARTE VENDEDORA.");
+		
+		paragrapha = document.createParagraph();
+		run = paragrapha.createRun();
+		run.setText("DÉCIMO SEXTO.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setBold(true);
+		run.setUnderline(UnderlinePatterns.SINGLE);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setNumID(numID);
+		run = paragrapha.createRun();
+		run.setText("APLICACIÓN SUPLETORIA DE LA LEY.");
+		run.setBold(true);
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("EN LO NO PREVISTO POR LAS PARTES EN EL PRESENTE CONTRATO, AMBAS SE SOMETEN A LO ESTABLECIDO POR LAS NORMAS DEL "
+				+ "CÓDIGO CIVIL Y DEMÁS DEL SISTEMA JURÍDICO NACIONAL QUE RESULTEN APLICABLES.");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setAlignment(ParagraphAlignment.BOTH);
+		run = paragrapha.createRun();
+		run.setFontFamily("Century Gothic");
+		run.setFontSize(9);
+		run.setText("EN SEÑAL DE CONFORMIDAD LAS PARTES SUSCRIBEN ESTE DOCUMENTO EN LA CIUDAD DE CHICLAYO A LOS --------------- (------) "
+				+ "DÍAS DEL MES DE  --------- DE 202-- (---------------).");
+		
+		paragrapha = document.createParagraph();
+		paragrapha.setPageBreak(true);
+		
+		XWPFTable table = document.createTable();
+
+        //Creating first Row
+        XWPFTableRow row1 = table.getRow(0);
+        row1.getCell(0).setText("CRONOGRAMA DE PAGOS");
+        row1.addNewTableCell().setText("");
+
+        //Creating second Row
+        XWPFTableRow row2 = table.createRow();
+        row2.getCell(0).setText("Second Row, First Column");
+        row2.getCell(1).setText("Second Row, Second Column");
+
+        //create third row
+        XWPFTableRow row3 = table.createRow();
+        row3.getCell(0).setText("Third Row, First Column");
+        row3.getCell(1).setText("Third Row, Second Column");
+		
+		
 		
 		try {			
 			 ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
