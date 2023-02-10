@@ -93,7 +93,6 @@
 		</p:dataTable>
 		
 		<p:contextMenu id="menuTableReq" for="idTableReqsep" >
-            <p:menuitem value="Aprobar" icon="pi pi-check" oncomplete="PF('aprobarConta').show()" rendered="#{requerimientoSeparacionBean.estado eq 'Pendiente' and requerimientoSeparacionBean.apruebaConta and requerimientoSeparacionBean.cantidad ne 0}" /> 
             <p:menuitem value="Ejecutar" icon="pi pi-check" action="#{requerimientoSeparacionBean.modifyRequerimiento}" oncomplete="PF('dialogRequerimiento').show()" rendered="#{requerimientoSeparacionBean.estado eq 'Aprobado Contabilidad' and requerimientoSeparacionBean.ejecutaRequerimiento and requerimientoSeparacionBean.cantidad ne 0}" />
             <p:menuitem value="Rechazar" icon="pi pi-times" oncomplete="PF('rechazaConta').show()" rendered="#{(requerimientoSeparacionBean.estado eq 'Pendiente' and requerimientoSeparacionBean.apruebaConta and requerimientoSeparacionBean.cantidad ne 0)  or (requerimientoSeparacionBean.estado eq 'Aprobado Contabilidad' and requerimientoSeparacionBean.ejecutaRequerimiento and requerimientoSeparacionBean.cantidad ne 0)}"/>
         </p:contextMenu>
@@ -182,14 +181,6 @@
 			
 		</h:form>
 	</p:dialog>
-	
-	<p:confirmDialog id="aprobarConta" message="¿Está seguro de aprobar el requerimiento de separación?" header="Confirmación"
-                      severity="alert" widgetVar="aprobarConta" appendTo="@(body)">
-        <h:form >
-            <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('aprobarConta').hide()" value="SI" update=":form:idTableReqsep" action="#{requerimientoSeparacionBean.aprobarPorContabilidad}"/>
-            <p:commandButton value="NO" oncomplete="PF('aprobarConta').hide()"/>
-        </h:form>
-    </p:confirmDialog>
     
     <p:confirmDialog id="rechazaConta" message="¿Está seguro de rechazar el requerimiento de separación?" header="Confirmación"
                       severity="alert" widgetVar="rechazaConta" appendTo="@(body)">
