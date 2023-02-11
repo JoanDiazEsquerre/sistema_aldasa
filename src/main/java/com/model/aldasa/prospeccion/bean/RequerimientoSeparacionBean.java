@@ -342,6 +342,7 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 			voucher.setTipoTransaccion(tipoTransaccion);
 			voucher.setNumeroTransaccion(numeroTransaccion);
 			voucher.setFechaOperacion(fechaOperacion);
+			voucher.setRequerimientoSeparacion(requerimientoSeparacionSelected);
 			
 			voucherService.save(voucher);
 			
