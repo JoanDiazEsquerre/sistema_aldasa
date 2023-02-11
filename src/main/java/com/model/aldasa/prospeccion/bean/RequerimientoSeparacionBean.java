@@ -333,17 +333,25 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	}
 	
 	public void aprobar() {
-		Voucher voucher = new Voucher();
-		voucher.setCuentaBancaria(cuentaBancariaSelected);
-		voucher.setMonto(monto);
-		voucher.setTipoTransaccion(tipoTransaccion);
-		voucher.setNumeroTransaccion(numeroTransaccion);
-		voucher.setFechaOperacion(fechaOperacion);
 		
-		voucherService.save(voucher);
+		Lote lote = loteService.findById(requerimientoSeparacionSelected.getLote().getId());
+		if(lote.getStatus().equals(EstadoLote.DISPONIBLE.getName())) {
+			Voucher voucher = new Voucher();
+			voucher.setCuentaBancaria(cuentaBancariaSelected);
+			voucher.setMonto(monto);
+			voucher.setTipoTransaccion(tipoTransaccion);
+			voucher.setNumeroTransaccion(numeroTransaccion);
+			voucher.setFechaOperacion(fechaOperacion);
+			
+			voucherService.save(voucher);
+			
+			aprobarPorContabilidad();
+			addInfoMessage("Aprobado correctamente por contabilidad");
+		}else {
+			addErrorMessage("El lote se encuentra " + lote.getStatus());
+
+		}		
 		
-		aprobarPorContabilidad();
-		addInfoMessage("Aprobado correctamente por contabilidad");
 
 	}
 	

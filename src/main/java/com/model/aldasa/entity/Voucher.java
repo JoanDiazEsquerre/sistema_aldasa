@@ -34,6 +34,9 @@ public class Voucher {
 	@Column(name="fechaoperacion")
 	private Date fechaOperacion;
 
+	@ManyToOne
+	@JoinColumn(name="idrequerimientoseparacion")
+	private RequerimientoSeparacion requerimientoSeparacion;
 	
 	
 	
@@ -75,6 +78,14 @@ public class Voucher {
 	public void setFechaOperacion(Date fechaOperacion) {
 		this.fechaOperacion = fechaOperacion;
 	}
+	public RequerimientoSeparacion getRequerimientoSeparacion() {
+		return requerimientoSeparacion;
+	}
+	public void setRequerimientoSeparacion(RequerimientoSeparacion requerimientoSeparacion) {
+		this.requerimientoSeparacion = requerimientoSeparacion;
+	}
+	
+	
 	
 	@Override
     public boolean equals(Object other) {
