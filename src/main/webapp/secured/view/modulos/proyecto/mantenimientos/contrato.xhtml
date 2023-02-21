@@ -1,0 +1,64 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	locale="#{localeBean.usedLocale}"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+	<h:form id="form" style="font-size: 11px;">
+		<h2 style="color: #007d4c;">PROYECTOS > CONTRATOS</h2>
+		<p:tabView id="tabView" style="font-size: 14px;">
+			<p:tab title="Lista de Contratos" style="font-size: 11px;">
+			</p:tab>
+			<p:tab title="Nuevo Contrato" style="font-size: 11px;">
+			
+				<h:panelGrid columns="5" id="gridNomLote"> 
+					<p:commandButton id="movieBtn" style="font-size: 14px;" value="Importar Lote" icon="pi pi-search" actionListener="#{contratoBean.listarLotesSinContrato}" update=":form:tabView:tableLote"/>
+					<p:overlayPanel for="movieBtn" dynamic="true" style="width:600px" widgetVar="moviePicker">
+						<p:dataTable var="lote" value="#{contratoBean.lstLotesSinContrato}" rows="5" paginator="true" selectionMode="single" rowIndexVar="row" paginatorPosition="bottom" 
+							selection="#{contratoBean.loteSelected}" rowKey="#{lote.id}" id="tableLote" emptyMessage="No se encontraron resultados" size="small">
+							<p:ajax event="rowSelect" listener="#{contratoBean.seleccionarLote()}" oncomplete="PF('moviePicker').hide()" update=":form:tabView:gridNomLote"/>
+	
+							<p:column headerText="Proyecto" >
+								<h:outputText value="#{lote.project.name}" style="font-size: 14px;"/>
+							</p:column>
+	
+							<p:column headerText="Nro. Lote" style="text-align:center">
+								<h:outputText value="#{lote.numberLote}" style="font-size: 14px;"/>
+							</p:column>
+	
+							<p:column headerText="Manza" style="text-align:center">
+								<h:outputText value="#{lote.manzana.name}" style="font-size: 14px;"/>
+							</p:column>
+							
+							<p:column headerText="Tipo Pago" style="text-align:center">
+								<h:outputText value="#{lote.tipoPago}" style="font-size: 14px;"/>
+							</p:column>
+							<p:column headerText="Fecha Venta" style="text-align:center">
+								<h:outputText value="#{lote.fechaVendido}" style="font-size: 14px;"> 
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+							
+						</p:dataTable>
+					</p:overlayPanel>
+				
+				
+					<h:outputText value="Lote: " style="font-size: 20px;font-weight: bolder;" rendered="#{contratoBean.loteSelected ne null}"/>
+					<h:outputText value="#{contratoBean.nombreLoteSelected}" style="font-size: 20px;color:#007d4c;font-weight: bolder;" rendered="#{contratoBean.loteSelected ne null}"/>
+					
+					<p:commandLink actionListener="#{contratoBean.eliminarLoteSelected}" update=":form:tabView:gridNomLote" title="ELIMINAR">
+                        <p:graphicImage value="/recursos/images/eliminar.gif" rendered="#{contratoBean.loteSelected ne null}" />
+                    </p:commandLink>
+				</h:panelGrid>
+				
+				
+			</p:tab>
+		</p:tabView>
+
+	</h:form>
+
+
+</ui:composition>

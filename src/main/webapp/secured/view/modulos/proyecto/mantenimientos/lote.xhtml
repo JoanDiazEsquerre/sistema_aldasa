@@ -32,11 +32,6 @@
                           var="ase" itemLabel="#{ase.name}" itemValue="#{ase}" forceSelection="true"  > 
             	<p:ajax update="idTableLote" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
             </p:autoComplete>
-            
-            <p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{loteBean.generarWord}"
-                       icon="pi pi-arrow-down" styleClass="mr-2">
-            	<p:fileDownload value="#{loteBean.fileDes}"/> 
-      		</p:commandButton>
 		</p:panelGrid>
 		
 		
@@ -173,31 +168,34 @@
 							<f:selectItem itemLabel="Separado" itemValue="Separado"/>
 							<f:selectItem itemLabel="Vendido" itemValue="Vendido"/>
 							<f:selectItem itemLabel="Inactivo" itemValue="Inactivo"/>
-							<p:ajax update="tabOpciones" listener="#{loteBean.changeCmbEstado}" />
+							<p:ajax update="tabOpciones" />
 						</p:selectOneMenu>
 						
 						<h:outputLabel id="lblFechaSep" for="fechaSeparado" value="Fecha Separación:" rendered="#{loteBean.loteSelected.status eq 'Separado'}"/>
-						<p:datePicker id="fechaSeparado" style="margin:5px; width:220px" value="#{loteBean.fechaSeparacion}" rendered="#{loteBean.loteSelected.status eq 'Separado'}" > 
+						<p:datePicker id="fechaSeparado" style="margin:5px; width:220px" value="#{loteBean.loteSelected.fechaSeparacion}" rendered="#{loteBean.loteSelected.status eq 'Separado'}" > 
 							<p:ajax listener="#{loteBean.calcularFechaVencimiento}" update=":formLoteDialog:tabOpciones:venc" />
 						</p:datePicker>
 						
 						<h:outputLabel id="lblFechaVenc" for="venc" value="Fecha Vencimiento:" rendered="#{loteBean.loteSelected.status eq 'Separado'}"/>
-						<p:datePicker id="venc" style="margin:5px; width:220px" value="#{loteBean.fechaVencimiento}" rendered="#{loteBean.loteSelected.status eq 'Separado'}" />
+						<p:datePicker id="venc" style="margin:5px; width:220px" value="#{loteBean.loteSelected.fechaVencimiento}" rendered="#{loteBean.loteSelected.status eq 'Separado'}" />
 						
 						<h:outputLabel for="optionTeam" value="Equipo:" rendered="#{loteBean.loteSelected.status eq 'Separado' or loteBean.loteSelected.status eq 'Vendido'}" />						
 						<p:selectOneMenu id="optionTeam" value="#{loteBean.teamSelected}" rendered="#{loteBean.loteSelected.status eq 'Separado' or loteBean.loteSelected.status eq 'Vendido'}" converter="#{loteBean.conversorTeam}" style="margin:5px; width:220px">
 							<f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}" />
 							<f:selectItems value="#{loteBean.lstTeam}" var="prof" itemLabel="#{prof.name} / #{prof.personSupervisor.surnames} #{prof.personSupervisor.names}" itemValue="#{prof}" />
-							<p:ajax listener="#{loteBean.cargarAsesorPorEquipo}"	update="optionAsesor" />
+							<p:ajax listener="#{loteBean.cargarAsesorPorEquipo}" update="optionAsesor" />
 						</p:selectOneMenu>
 
 						<h:outputLabel for="optionAsesor" value="Asesor:"  rendered="#{loteBean.loteSelected.status eq 'Separado' or loteBean.loteSelected.status eq 'Vendido'}" />
-						<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{loteBean.personAsesorSelected}" rendered="#{loteBean.loteSelected.status eq 'Separado' or loteBean.loteSelected.status eq 'Vendido'}" converter="#{loteBean.conversorPersonAsesor}" 
+						<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{loteBean.loteSelected.personAssessor}" rendered="#{loteBean.loteSelected.status eq 'Separado' or loteBean.loteSelected.status eq 'Vendido'}" converter="#{loteBean.conversorPersonAsesor}" 
 						   	id="optionAsesor" completeMethod="#{loteBean.completePersonAsesor}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" 
 						   	forceSelection="true" style="margin:5px; width:220px" />
 						   	
 					</h:panelGrid>
 					<p:commandButton value="Guardar" action="#{loteBean.saveLote()}" update=":form:idTableLote :formLoteDialog" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
+					<p:commandButton style="margin-left:20px" value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{loteBean.generarExcel}" icon="pi pi-arrow-down" styleClass="mr-2" rendered="#{loteBean.loteVendido}">
+            			<p:fileDownload value="#{loteBean.fileDes}"/> 
+      				</p:commandButton>
 				</p:tab>
 				<p:tab title="Medidas" >
 					<h:panelGrid id="gridMedidas" columns="2">
@@ -239,7 +237,7 @@
 					</h:panelGrid>
 				</p:tab>
 				<p:tab title="Datos de venta" rendered="#{loteBean.loteSelected.status eq 'Vendido'}">
-					<h:panelGrid id="gridDatosVenta" columns="2">
+					<h:panelGrid id="gridDatosVenta" columns="4">
 					
 					   	<h:outputLabel for="optionPerson" value="Comprador:" rendered="#{loteBean.loteSelected.status eq 'Separado' or loteBean.loteSelected.status eq 'Vendido'}" />
 		                <p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{loteBean.personVenta}" converter="#{loteBean.conversorPerson}" id="optionPerson"  completeMethod="#{loteBean.completePerson}" 
@@ -250,13 +248,15 @@
 							<p:column width="400px">
 								<h:outputLabel value="#{per.dni}" />
 							</p:column>
-
 							<p:ajax update="messages" />
 						</p:autoComplete>
 
 						<h:outputLabel id="lblFechaVend" for="vend" value="Fecha venta:" />
-						<p:datePicker id="vend" style="margin:5px; width:220px" value="#{loteBean.fechaVendido}" />
+						<p:datePicker id="vend" style="margin:5px; width:220px" value="#{loteBean.loteSelected.fechaVendido}" />
 						
+						<h:outputLabel value="Monto Venta:" for="montoVenta" />
+						<p:inputNumber id="montoVenta" value="#{loteBean.loteSelected.montoVenta}" style="margin:5px; width:220px" modifyValueOnWheel="false" > <p:ajax update="messages" /> </p:inputNumber>
+
 						<h:outputLabel value="Tipo de Pago:" for="optionPago" />
 						<p:selectOneMenu id="optionPago" value="#{loteBean.loteSelected.tipoPago}" style="margin:5px; width:220px" >
 							<f:selectItem itemLabel="Contado" itemValue="Contado" />
@@ -264,17 +264,15 @@
 							<p:ajax update="gridDatosVenta messages" />
 						</p:selectOneMenu>
 											
-						<h:outputLabel value="Monto Venta:" for="montoVenta" />
-						<p:inputNumber id="montoVenta" value="#{loteBean.loteSelected.montoVenta}" style="margin:5px; width:220px" modifyValueOnWheel="false" > <p:ajax update="messages" /> </p:inputNumber>
-						
-						
 						<h:outputLabel value="Monto Inicial: " id="lblMontoInicial" for="montoIni" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}" />
 						<p:inputNumber id="montoIni" value="#{loteBean.loteSelected.montoInicial}" style="margin:5px; width:220px" modifyValueOnWheel="false" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"> <p:ajax update="messages" /> </p:inputNumber>
 											
 						<h:outputLabel value="Nro. de Cuotas: " id="lblNroCuota" for="nroCuota" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"/>
 						<p:inputNumber id="nroCuota" value="#{loteBean.loteSelected.numeroCuota}" style="margin:5px; width:220px" minValue="1" decimalPlaces="0" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"> <p:ajax update="messages" /> </p:inputNumber>
-					</h:panelGrid>
 					
+						<h:outputLabel value="Interés:" for="interes" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"/>
+						<p:inputNumber id="interes" value="#{loteBean.loteSelected.interes}" style="margin:5px; width:220px" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"> <p:ajax update="messages" /> </p:inputNumber>
+					</h:panelGrid>
 					
 				</p:tab> 
 			</p:tabView>	

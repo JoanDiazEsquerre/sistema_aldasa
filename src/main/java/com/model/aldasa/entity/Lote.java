@@ -93,6 +93,11 @@ public class Lote {
 	@JoinColumn(name="idpersonsupervisor")
 	private Person personSupervisor;
 	
+	private Double interes;
+	
+	@Column(name="realizocontrato")
+	private String realizoContrato;
+	
 	private transient double comisionAsesor;
 	private transient double comisionSupervisor;
 	private transient double comisionSubgerente;
@@ -278,6 +283,20 @@ public class Lote {
 	public void setComisionSubgerente(double comisionSubgerente) {
 		this.comisionSubgerente = comisionSubgerente;
 	}
+	public Double getInteres() {
+		return interes;
+	}
+	public void setInteres(Double interes) {
+		this.interes = interes;
+	}
+	public String getRealizoContrato() {
+		return realizoContrato;
+	}
+	public void setRealizoContrato(String realizoContrato) {
+		this.realizoContrato = realizoContrato;
+	}
+	
+	
 	@Override
     public boolean equals(Object other) {
         return (other instanceof Lote) && (id != null)

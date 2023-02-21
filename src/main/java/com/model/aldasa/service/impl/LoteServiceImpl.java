@@ -33,7 +33,7 @@ public class LoteServiceImpl implements LoteService {
 	}
 	
 	@Override
-	public List<Lote> findByStatus(boolean status) {
+	public List<Lote> findByStatus(String status) {
 		return loteRepository.findByStatus(status);
 	}
 	

@@ -17,7 +17,7 @@ public interface LoteService {
 	Lote findById(int id);
 	Lote save(Lote lote);
 	void delete(Lote lote);
-	List<Lote> findByStatus(boolean status);
+	List<Lote> findByStatus(String status);
 	List<Lote> findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(Project project, Manzana manzana, String Status);
 	Lote findByNumberLoteAndManzanaAndProject (String name, Manzana manzana, Project project);
 	Lote findByNumberLoteAndManzanaAndProjectException(String name, int manzana, int project, int idLote);

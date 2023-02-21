@@ -24,12 +24,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Profile;
 import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
+import com.model.aldasa.service.EmpleadoService;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProfileService;
 import com.model.aldasa.service.ProspectService;
@@ -61,6 +63,9 @@ public class UserBean implements Serializable {
 	
 	@ManagedProperty(value = "#{prospectionService}")
 	private ProspectionService prospectionService;
+	
+	@ManagedProperty(value = "#{empleadoService}")
+	private EmpleadoService empleadoService;
 	
 	private LazyDataModel<Usuario> lstUsuarioLazy;
 	
@@ -238,6 +243,10 @@ public class UserBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar perfil."));
 			return ;
 		}
+		if(userSelected.getTeam()==null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar equipo."));
+			return ;
+		}
 			
 		
 		if(tituloDialog.equals("NUEVO USUARIO")) {
@@ -274,8 +283,13 @@ public class UserBean implements Serializable {
 			}
 		}
 
-		FacesContext.getCurrentInstance().addMessage(null,
-				new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente."));
+		FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente."));
+		Empleado empleado = empleadoService.findByPerson(userSelected.getPerson());
+		if(empleado != null) {
+			empleado.setEstado(false);
+			empleadoService.save(empleado);
+		}
+		
 		if (tituloDialog.equals("NUEVO USUARIO")) {
 			newUser();
 		}
@@ -467,6 +481,12 @@ public class UserBean implements Serializable {
 	}
 	public void setLstUsuarioLazy(LazyDataModel<Usuario> lstUsuarioLazy) {
 		this.lstUsuarioLazy = lstUsuarioLazy;
+	}
+	public EmpleadoService getEmpleadoService() {
+		return empleadoService;
+	}
+	public void setEmpleadoService(EmpleadoService empleadoService) {
+		this.empleadoService = empleadoService;
 	}
 
 	

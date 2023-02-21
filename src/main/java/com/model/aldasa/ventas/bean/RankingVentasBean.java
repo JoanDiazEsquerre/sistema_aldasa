@@ -2,6 +2,7 @@ package com.model.aldasa.ventas.bean;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +12,9 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -23,9 +27,13 @@ import org.springframework.data.domain.Sort;
 import com.model.aldasa.entity.Comision;
 import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Lote;
+import com.model.aldasa.entity.Team;
+import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.service.ComisionService;
 import com.model.aldasa.service.EmpleadoService;
 import com.model.aldasa.service.LoteService;
+import com.model.aldasa.service.TeamService;
+import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.EstadoLote;
 
 @ManagedBean
@@ -42,12 +50,15 @@ public class RankingVentasBean implements Serializable {
 	
 	@ManagedProperty(value = "#{loteService}")
 	private LoteService loteService;
+	
+	@ManagedProperty(value = "#{usuarioService}")
+	private UsuarioService usuarioService;
+	
 		
-	private LazyDataModel<Empleado> lstEmpleadoLazy;
+	private List<Usuario> lstUsuario;	
 	
-	private Empleado empleadoSelected;
+	private Usuario userSelected;
 	
-	private boolean estado = true;
 	private String anio;
 	
 	SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
@@ -59,14 +70,43 @@ public class RankingVentasBean implements Serializable {
 	@PostConstruct
 	public void init() {
 	anio=sdfY.format(new Date());
-	iniciarLazy();
+	listarUsuario();
 	}
 	
-	public int lotesVendidoMes (String mes,String anioselected, Empleado empleado) {
+	public void listarUsuario() {
+		lstUsuario = new ArrayList<>();
+		List<Usuario> lstusu = usuarioService.findByStatus(true);
+		for (Usuario a : lstusu) {
+			Empleado empleado = empleadoService.findByPerson(a.getPerson());
+			if(empleado != null) {
+				Date fechaActual = sumarDiasAFecha(new Date(), -1);
+				Date fechaFin = empleado.getFechaSalida();
+				
+				if(fechaFin.after(fechaActual)) {
+					lstUsuario.add(a);
+				}
+				
+			}
+		}
+	}
+	
+	public  Date sumarDiasAFecha(Date fecha, int dias){
+	      if (dias==0) return fecha;
+	      Calendar calendar = Calendar.getInstance();
+	      calendar.setTime(fecha); 
+	      calendar.add(Calendar.DAY_OF_YEAR, dias);  
+	      Date date= calendar.getTime(); 
+	      date.setHours(0);
+	      date.setMinutes(0); 
+	      date.setSeconds(0);
+	      return date; 
+	}
+	
+	public int lotesVendidoMes (String mes,String anioselected, Usuario usuario) {
 		String codigo = mes+anioselected;
 		Comision comision = comisionService.findByEstadoAndCodigo(true, codigo);
 		if (comision != null) {
-			List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(),empleado.getPerson().getDni() , comision.getFechaIni(), comision.getFechaCierre());
+			List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(),usuario.getPerson().getDni() , comision.getFechaIni(), comision.getFechaCierre());
 			if(!lstLotesVendidos.isEmpty()) {
 				return lstLotesVendidos.size();
 			}
@@ -74,76 +114,148 @@ public class RankingVentasBean implements Serializable {
 		return 0;
 	}
 	
-	public int totalLotesVendido(Empleado empleado) {
+	public int totalLotesVendido(Usuario usuario) {
 		int lot = 0;
-		List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(),empleado.getPerson().getDni() ,empleado.getFechaIngreso(), new Date());
-		if(!lstLotesVendidos.isEmpty()) {
-			return lstLotesVendidos.size();
+		Empleado empleado = empleadoService.findByPerson(usuario.getPerson());
+		if(empleado!=null) {
+			List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(),usuario.getPerson().getDni() ,empleado.getFechaIngreso(), new Date());
+			if(!lstLotesVendidos.isEmpty()) {
+				return lstLotesVendidos.size();
+			}
 		}
 		return lot;
 	}
 	
-	public int mesesTrabajados(Empleado empleado) {
+	public int mesesTrabajados(Usuario usuario) {
 		int meses = 0;
-		int anioIngreso = empleado.getFechaIngreso().getYear();
-		int anioActual= new Date().getYear(); 
-		int aniosDiferencia = anioActual-anioIngreso;
-		
-		int mesIngreso=empleado.getFechaIngreso().getMonth();
-		int mesActual=new Date().getMonth();
-		int mesDiferencia=0;
-		if(mesIngreso> mesActual) {
-			mesDiferencia = mesIngreso-mesActual;
-		}else if (mesActual>mesIngreso) {
-			mesDiferencia = mesActual-mesIngreso;
-		}
-		
-		
-		if(aniosDiferencia != 0) {
-				meses = (aniosDiferencia*12)-mesDiferencia;
-			 if (mesActual>mesIngreso) {
-				meses = (aniosDiferencia*12)+mesDiferencia;
+		Empleado empleado = empleadoService.findByPerson(usuario.getPerson());
+		if(empleado != null) {
+			int anioIngreso = empleado.getFechaIngreso().getYear();
+			int anioSalida = empleado.getFechaSalida().getYear();
+			int anioActual= new Date().getYear(); 
+			int aniosDiferencia = anioActual-anioIngreso;
+			
+			int mesIngreso=empleado.getFechaIngreso().getMonth();
+			int mesSalida = empleado.getFechaSalida().getMonth();
+			int mesActual=new Date().getMonth();
+			int mesDiferencia=0;
+			if(mesIngreso> mesActual) {
+				mesDiferencia = mesIngreso-mesActual;
+			}else if (mesActual>mesIngreso) {
+				mesDiferencia = mesActual-mesIngreso;
+			} 
+			if (mesActual>mesSalida) {
+				return 0;
 			}
-		}else  {
-			meses = mesDiferencia;
+			
+			
+			if(aniosDiferencia != 0) {
+					meses = (aniosDiferencia*12)-mesDiferencia;
+				 if (mesActual>mesIngreso) {
+					meses = (aniosDiferencia*12)+mesDiferencia;
+				}
+				 if(anioActual>anioSalida) {
+						return 0;
+					}
+				
+			}else  {
+				meses = mesDiferencia;
+				
+			}
+			meses++;
 		}
+		
 		return meses;
 	}
 	
-	public double promedioMensualVentas(Empleado empleado) {
+	public boolean validarMesNoTrabajado(Usuario usuario, String mes, String anio) {
+		boolean valor = false;
+		Empleado empleado = empleadoService.findByPerson(usuario.getPerson());
+		
+		if(empleado!=null) {
+			String anioMesEnviadoText = anio+mes;
+			int anioMesEnviado = Integer.parseInt(anioMesEnviadoText);
+
+			String anioMesIngresoText  =sdfY.format(empleado.getFechaIngreso())+ sdfM.format(empleado.getFechaIngreso()) ;
+			int anioMesIngreso =Integer.parseInt(anioMesIngresoText);
+			
+			if(anioMesEnviado < anioMesIngreso ) {
+				return true;
+			}
+			
+		}	
+		return valor;
+	}
+	
+	public int mesesQueVendio(Usuario usuario) {
+		int mesesVenta = 0;
+		Empleado empleado = empleadoService.findByPerson(usuario.getPerson());
+		if(empleado!=null) {
+			Date fechaIngreso = empleado.getFechaIngreso();
+			fechaIngreso.setDate(1);
+			
+			int mesesTrabajados = mesesTrabajados(usuario);
+			mesesTrabajados++;
+			
+			for(int i = 0; i<mesesTrabajados;i++) {
+				if(i==0) {
+					String mes = sdfM.format(fechaIngreso);
+					String anio = sdfY.format(fechaIngreso);
+					
+					int lotesVendidos = lotesVendidoMes(mes, anio, usuario);
+					if(lotesVendidos>0) {
+						mesesVenta++;
+					}
+				}else {
+					fechaIngreso = sumaRestaMeses(fechaIngreso, 1);
+					String mes = sdfM.format(fechaIngreso);
+					String anio = sdfY.format(fechaIngreso);
+					
+					int lotesVendidos = lotesVendidoMes(mes, anio, usuario);
+					if(lotesVendidos>0) {
+						mesesVenta++;
+					}
+				}
+			}
+		}
+		return mesesVenta;
+	}
+	
+	public double promedioMensualVentas(Usuario usuario) {
 		double prom = 0.0;
-		if(totalLotesVendido(empleado)>0) {
-			double tlv = totalLotesVendido(empleado) ;
-			double mt = mesesTrabajados(empleado);
+		Empleado empleado = empleadoService.findByPerson(usuario.getPerson());
+		if(totalLotesVendido(usuario)>0) {
+			double tlv = totalLotesVendido(usuario) ;
+			double mt = mesesTrabajados(usuario);
 			return Math.round(tlv/mt * 100.0) / 100.0;
 		}
 		
 		return prom;
 	}
 	
-	public double promedio3UltimosMenses(Empleado empleado) {
+	public double promedio3UltimosMenses(Usuario usuario) {
 		double prom = 0.0;
-		
+
 		Date fechaActual= new Date();
 		fechaActual.setDate(1);
 		
 		String mesActual=sdfM.format(fechaActual);
 		String anioActual=sdfY.format(fechaActual);
-		int ventaMesActual=lotesVendidoMes(mesActual, anioActual, empleado);
+		int ventaMesActual=lotesVendidoMes(mesActual, anioActual, usuario);
 
 		Date mesAnterior = sumaRestaMeses(fechaActual,-1);
 		
 		String mesPasado=sdfM.format(mesAnterior);
 		String anioMesPasado=sdfY.format(mesAnterior);
 		
-		int ventaMesAnterior= lotesVendidoMes(mesPasado, anioMesPasado, empleado);
+		int ventaMesAnterior= lotesVendidoMes(mesPasado, anioMesPasado, usuario);
 		
 		Date mesAnterior2 = sumaRestaMeses(fechaActual,-2);
 		
 		String mesAntePasado=sdfM.format(mesAnterior2);
 		String anioMesAntePasado=sdfY.format(mesAnterior2);
 		
-		int ventaMesAnteAnterior= lotesVendidoMes(mesAntePasado, anioMesAntePasado, empleado);
+		int ventaMesAnteAnterior= lotesVendidoMes(mesAntePasado, anioMesAntePasado, usuario);
 		
 		double suma3UltimosMeses = ventaMesActual + ventaMesAnterior + ventaMesAnteAnterior;
 		if(suma3UltimosMeses != 0) {
@@ -165,78 +277,30 @@ public class RankingVentasBean implements Serializable {
 		return calendar.getTime();
 	}
 	
-	public int mesesQueVendio(Empleado empleado) {
-		int noVendio = 0;
+	public String rendimiento (Usuario usuario) {
+		String a = "";
+		double promedio = promedio3UltimosMenses(usuario);
 		
-//		int siVendio = lotesVendidoMes(mes, anioselected, empleado);
+		if (promedio >= 5.0) {
+			String alto = String.format("ALTO", promedio);
+			return alto;
+		}
+		if (promedio >= 1.5) {
+			String medio = String.format("MEDIO", promedio);
+			return medio;
+		}
+		if (promedio >= 0.0) {
+			String bajo = String.format("BAJO", promedio);
+			return bajo;
+		}
 		
-		
-		
-		return noVendio;
+		return a;
 	}
 	
 	
 	
-	public void iniciarLazy() {
-
-		lstEmpleadoLazy = new LazyDataModel<Empleado>() {
-			private List<Empleado> datasource;
-            @Override
-            public void setRowIndex(int rowIndex) {
-                if (rowIndex == -1 || getPageSize() == 0) {
-                    super.setRowIndex(-1);
-                } else {
-                    super.setRowIndex(rowIndex % getPageSize());
-                }
-            }
-
-            @Override
-            public Empleado getRowData(String rowKey) {
-                int intRowKey = Integer.parseInt(rowKey);
-                for (Empleado empleado : datasource) {
-                    if (empleado.getId() == intRowKey) {
-                        return empleado;
-                    }
-                }
-                return null;
-            }
-
-            @Override
-            public String getRowKey(Empleado empleado) {
-                return String.valueOf(empleado.getId());
-            }
-
-			@Override
-			public List<Empleado> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-               
-				String names = "%" + (filterBy.get("person.surnames") != null ? filterBy.get("person.surnames").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
-
-                Sort sort=Sort.by("person.surnames").ascending();
-                if(sortBy!=null) {
-                	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
-                	   if(entry.getValue().getOrder().isAscending()) {
-                		   sort = Sort.by(entry.getKey()).descending();
-                	   }else {
-                		   sort = Sort.by(entry.getKey()).ascending();
-                		   
-                	   }
-                	}
-                }        
-                Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
-               
-                Page<Empleado> pageEmpleado=null;
-               
-                
-                pageEmpleado= empleadoService.findByPersonSurnamesLikeAndEstado(names, estado, pageable);
-                
-                setRowCount((int) pageEmpleado.getTotalElements());
-                return datasource = pageEmpleado.getContent();
-            }
-		};
-	}
 	
-	
-	
+
 	
 	
 	public EmpleadoService getEmpleadoService() {
@@ -245,25 +309,6 @@ public class RankingVentasBean implements Serializable {
 	public void setEmpleadoService(EmpleadoService empleadoService) {
 		this.empleadoService = empleadoService;
 	}
-	public LazyDataModel<Empleado> getLstEmpleadoLazy() {
-		return lstEmpleadoLazy;
-	}
-	public void setLstEmpleadoLazy(LazyDataModel<Empleado> lstEmpleadoLazy) {
-		this.lstEmpleadoLazy = lstEmpleadoLazy;
-	}
-	public Empleado getEmpleadoSelected() {
-		return empleadoSelected;
-	}
-	public void setEmpleadoSelected(Empleado empleadoSelected) {
-		this.empleadoSelected = empleadoSelected;
-	}
-	public boolean isEstado() {
-		return estado;
-	}
-	public void setEstado(boolean estado) {
-		this.estado = estado;
-	}
-	
 	public SimpleDateFormat getSdf2() {
 		return sdf2;
 	}
@@ -300,5 +345,29 @@ public class RankingVentasBean implements Serializable {
 	public void setSdf(SimpleDateFormat sdf) {
 		this.sdf = sdf;
 	}
-
+	public UsuarioService getUsuarioService() {
+		return usuarioService;
+	}
+	public void setUsuarioService(UsuarioService usuarioService) {
+		this.usuarioService = usuarioService;
+	}
+	public SimpleDateFormat getSdfM() {
+		return sdfM;
+	}
+	public void setSdfM(SimpleDateFormat sdfM) {
+		this.sdfM = sdfM;
+	}
+	public Usuario getUserSelected() {
+		return userSelected;
+	}
+	public void setUserSelected(Usuario userSelected) {
+		this.userSelected = userSelected;
+	}
+	public List<Usuario> getLstUsuario() {
+		return lstUsuario;
+	}
+	public void setLstUsuario(List<Usuario> lstUsuario) {
+		this.lstUsuario = lstUsuario;
+	}
+	
 }

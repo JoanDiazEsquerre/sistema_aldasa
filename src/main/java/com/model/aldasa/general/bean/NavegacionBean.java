@@ -40,7 +40,7 @@ public class NavegacionBean implements Serializable  {
 	
 	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
-					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas;
+					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato;
 	
 	private int[] permisoProspectos= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoProspeccion= {idAdministrador,idSupervisor,idAsesor};
@@ -63,6 +63,7 @@ public class NavegacionBean implements Serializable  {
 	private int[] permisoReporteAsistencia= {idAdministrador, idRecursosHumanos};
 	private int[] permisoRequerimientoSeparacion= {idAdministrador,idAsistentenAdmin,idContabilidad};
 	private int[] permisoRankingVentas= {idAdministrador};
+	private int[] permisoContrato= {idAdministrador};
 
 	@PostConstruct
 	public void init() {
@@ -92,8 +93,9 @@ public class NavegacionBean implements Serializable  {
 		subMenuManzanas = validaPermiso(permisoManzanas);
 		subMenuLotes= validaPermiso(permisoLotes);
 		subMenuComisiones= validaPermiso(permisoComisiones);
+		subMenuContrato = validaPermiso(permisoContrato);
 				
-		if(subMenuManzanas || subMenuLotes || subMenuProyectos || subMenuComisiones){
+		if(subMenuManzanas || subMenuLotes || subMenuProyectos || subMenuComisiones || subMenuContrato){
 			menuProyecto=true;
 		}
 		
@@ -149,69 +151,92 @@ public class NavegacionBean implements Serializable  {
 	
 	
 	public void getProcesoProspeccionPage() {
-	       ruta="modulos/prospeccion/procesos/prospeccion.xhtml";
-	    }
-		public void getProcesoSimuladorPage() {
-		       ruta="modulos/prospeccion/procesos/simulador.xhtml";
-		}
-		public void getProcesoAgendaPage() {
-	       ruta="modulos/prospeccion/procesos/agenda.xhtml";
-	    }
-		public void getProcesoRequerimientoSeparacionPage() {
-		       ruta="modulos/prospeccion/procesos/requerimientoSeparacion.xhtml";
-		    }
-		public void getProspectosPage() {
-	       ruta="modulos/prospeccion/mantenimientos/prospecto.xhtml";
-	    }
-		public void getProcesoReporteProspeccionPage() {
-	       ruta="modulos/prospeccion/procesos/reporteProspeccion.xhtml";
-	    }
-		public void getMantenimientoProjectPage() {
-	        ruta = "modulos/proyecto/mantenimientos/project.xhtml";
-	    }
-		public void getProyectoManzanasPage() {
-	        ruta = "modulos/proyecto/mantenimientos/manzana.xhtml";
-	    }
-		public void getProyectoLotesPage() {
-	        ruta = "modulos/proyecto/mantenimientos/lote.xhtml";
-	    }
-		public void getProyectoComisionesPage() {
-	        ruta = "modulos/proyecto/procesos/comisiones.xhtml";
-	    }
-		public void getProcesoReporteLotesPage() {
-	        ruta = "modulos/proyecto/procesos/reporteLotes.xhtml";
-	    }
-		public void getMantenimientoPersonasPage() {
-	        ruta = "modulos/general/mantenimientos/personas.xhtml";
-	    }
-		public void getMantenimientoUsersPage() {
-	        ruta = "modulos/general/mantenimientos/users.xhtml";
-	    }
-		public void getMantenimientoProfilePage() {
-	        ruta = "modulos/general/mantenimientos/profile.xhtml";
-	    }
-		public void getMantenimientoTeamPage() {
-	        ruta = "modulos/general/mantenimientos/team.xhtml";
-	    }
-		public void getMantenimientoEmpleadoPage() {
-	        ruta = "modulos/general/mantenimientos/empleado.xhtml";
-	    }
-		public void getMantenimientoComisionPage() {
-	        ruta = "modulos/general/mantenimientos/comision.xhtml";
-	    }
-		
-		public void getMantenimientoPasswordchangePage() {
-	        ruta = "modulos/general/mantenimientos/passwordchange.xhtml";
-	    }
-		public void getAsistenciaAsistenciaPage() {
-	        ruta = "modulos/asistencia/mantenimientos/asistencia.xhtml";
-	    }
-		public void getAsistenciaReporteAsistenciaPage() {
-	        ruta = "modulos/asistencia/procesos/reporteAsistencia.xhtml";
-	    }
-		public void getVentasRankingVentasPage() {
-	        ruta = "modulos/ventas/mantenimientos/rankingVentas.xhtml";
-	    }
+		ruta = "modulos/prospeccion/procesos/prospeccion.xhtml";
+	}
+
+	public void getProcesoSimuladorPage() {
+		ruta = "modulos/prospeccion/procesos/simulador.xhtml";
+	}
+
+	public void getProcesoAgendaPage() {
+		ruta = "modulos/prospeccion/procesos/agenda.xhtml";
+	}
+
+	public void getProcesoRequerimientoSeparacionPage() {
+		ruta = "modulos/prospeccion/procesos/requerimientoSeparacion.xhtml";
+	}
+
+	public void getProspectosPage() {
+		ruta = "modulos/prospeccion/mantenimientos/prospecto.xhtml";
+	}
+
+	public void getProcesoReporteProspeccionPage() {
+		ruta = "modulos/prospeccion/procesos/reporteProspeccion.xhtml";
+	}
+
+	public void getMantenimientoProjectPage() {
+		ruta = "modulos/proyecto/mantenimientos/project.xhtml";
+	}
+
+	public void getProyectoManzanasPage() {
+		ruta = "modulos/proyecto/mantenimientos/manzana.xhtml";
+	}
+
+	public void getProyectoLotesPage() {
+		ruta = "modulos/proyecto/mantenimientos/lote.xhtml";
+	}
+
+	public void getProyectoComisionesPage() {
+		ruta = "modulos/proyecto/procesos/comisiones.xhtml";
+	}
+
+	public void getProcesoReporteLotesPage() {
+		ruta = "modulos/proyecto/procesos/reporteLotes.xhtml";
+	}
+
+	public void getMantenimientoPersonasPage() {
+		ruta = "modulos/general/mantenimientos/personas.xhtml";
+	}
+
+	public void getMantenimientoUsersPage() {
+		ruta = "modulos/general/mantenimientos/users.xhtml";
+	}
+
+	public void getMantenimientoProfilePage() {
+		ruta = "modulos/general/mantenimientos/profile.xhtml";
+	}
+
+	public void getMantenimientoTeamPage() {
+		ruta = "modulos/general/mantenimientos/team.xhtml";
+	}
+
+	public void getMantenimientoEmpleadoPage() {
+		ruta = "modulos/general/mantenimientos/empleado.xhtml";
+	}
+
+	public void getMantenimientoComisionPage() {
+		ruta = "modulos/general/mantenimientos/comision.xhtml";
+	}
+
+	public void getMantenimientoPasswordchangePage() {
+		ruta = "modulos/general/mantenimientos/passwordchange.xhtml";
+	}
+
+	public void getAsistenciaAsistenciaPage() {
+		ruta = "modulos/asistencia/mantenimientos/asistencia.xhtml";
+	}
+
+	public void getAsistenciaReporteAsistenciaPage() {
+		ruta = "modulos/asistencia/procesos/reporteAsistencia.xhtml";
+	}
+
+	public void getVentasRankingVentasPage() {
+		ruta = "modulos/ventas/mantenimientos/rankingVentas.xhtml";
+	}
+
+	public void getContratosPage() {
+		ruta = "modulos/proyecto/mantenimientos/contrato.xhtml";
+	}
 	
 	public void cerrarSesion() {
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
@@ -572,5 +597,11 @@ public class NavegacionBean implements Serializable  {
 	}
 	public void setIdContabilidad(int idContabilidad) {
 		this.idContabilidad = idContabilidad;
+	}
+	public boolean isSubMenuContrato() {
+		return subMenuContrato;
+	}
+	public void setSubMenuContrato(boolean subMenuContrato) {
+		this.subMenuContrato = subMenuContrato;
 	}
 }

@@ -84,7 +84,7 @@
                 <h:outputLabel for="optionTeam" value="Equipo:" />
                 <p:selectOneMenu id="optionTeam" value="#{userBean.userSelected.team}" converter="#{userBean.conversorTeam}" style="margin:10px" >
              	   <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
-                    <f:selectItems value="#{userBean.lstTeam}" var="prof" itemLabel="#{prof.name} / #{prof.personSupervisor.surnames} #{prof.personSupervisor.names}" itemValue="#{prof}"/>
+                   <f:selectItems value="#{userBean.lstTeam}" var="prof" itemLabel="#{prof.name} / #{prof.personSupervisor.surnames} #{prof.personSupervisor.names}" itemValue="#{prof}"/>
                 </p:selectOneMenu>
                 
                 <h:outputLabel for="estado" value="Estado:" />

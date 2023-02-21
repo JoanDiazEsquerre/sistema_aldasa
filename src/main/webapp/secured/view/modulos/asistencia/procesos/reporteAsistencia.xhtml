@@ -27,12 +27,12 @@
                 
             <h:outputLabel value="Fecha inicio:" style="text-align:right"/>
 			<p:datePicker value="#{reporteAsistenciaBean.fechaIni}" readonlyInput="true">
-				<p:ajax update="idTableDet, grid" listener="#{reporteAsistenciaBean.mostrarBotonAutogenerar}"/>
+				<p:ajax update="idTableDet, grid" />
 			</p:datePicker>
 			
 			<h:outputLabel value="Fecha fin:" style="text-align:right"/>
 			<p:datePicker value="#{reporteAsistenciaBean.fechaFin}" readonlyInput="true" >
-				<p:ajax update="idTableDet, grid" listener="#{reporteAsistenciaBean.mostrarBotonAutogenerar}"/>
+				<p:ajax update="idTableDet, grid" />
 			</p:datePicker>
 			
 			<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{reporteAsistenciaBean.procesarExcel}"
@@ -40,7 +40,7 @@
             <p:fileDownload value="#{reporteAsistenciaBean.fileDes}"/> 
       		</p:commandButton>
       		
-      		<p:commandButton id="botonAuto" value="Auto-generar Registro" actionListener="#{reporteAsistenciaBean.autogenerarRegistro}"
+      		<p:commandButton id="botonAuto" value="Auto-generar Registro" actionListener="#{reporteAsistenciaBean.autogenerarRegistroMes}"
                          icon="pi pi-arrow-down" styleClass="mr-2" rendered="#{reporteAsistenciaBean.mostrarBoton}" update="idTableDet" >
       		</p:commandButton>
 		</h:panelGrid>
