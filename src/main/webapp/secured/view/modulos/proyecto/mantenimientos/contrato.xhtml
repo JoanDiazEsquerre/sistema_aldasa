@@ -11,6 +11,91 @@
 		<h2 style="color: #007d4c;">PROYECTOS > CONTRATOS</h2>
 		<p:tabView id="tabView" style="font-size: 14px;">
 			<p:tab title="Lista de Contratos" style="font-size: 11px;">
+				<p:selectOneButton value="#{contratoBean.estado}" unselectable="false">
+					<f:selectItem itemLabel="Activos" itemValue="#{true}" />
+					<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
+					<p:ajax  update="idTableContrato"/>
+				</p:selectOneButton> 
+				
+                <p:commandButton value="ACTUALIZAR" style="display:none;" onclick="PrimeFaces.monitorDownload(start, stop);" id="btnAct" styleClass="ui-button-success" icon="pi pi-check"> 
+                	<p:fileDownload value="#{contratoBean.fileDes}"/> 
+                </p:commandButton>
+				
+				<p:dataTable var="contrato" id="idTableContrato" value="#{contratoBean.lstContratoLazy}" widgetVar="contratoTable" rowIndexVar="row" paginator="true" rows="15" size="small"
+				emptyMessage="No se encontraron contratos."	paginatorPosition="bottom" rowKey="#{contrato.id}"  selectionMode="single" selection="#{contratoBean.contratoSelected}">
+				
+					<f:facet name="header">
+						<div class="p-d-flex p-ai-center p-jc-between">
+							<span>Lista de Contratos</span>
+						</div>
+					</f:facet>
+		
+					<p:column width="25px">
+			                      #{row +1}
+			        </p:column>
+			        
+			        <p:column headerText="Fecha Venta" filterMatchMode="contains" sortBy="#{contrato.fechaVenta}">
+						<h:outputText value="#{contrato.fechaVenta}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+			        
+					<p:column headerText="Monto Venta" filterMatchMode="contains">
+						<h:outputText value="#{contrato.montoVenta}"> 
+							<f:convertNumber type="currency" currencySymbol="S/"/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Tipo Pago" filterMatchMode="contains">
+						<h:outputText value="#{contrato.tipoPago}"/>
+					</p:column>
+					
+					<p:column headerText="Monto Inicial" filterMatchMode="contains">
+						<h:outputText value="#{contrato.montoInicial}"> 
+							<f:convertNumber type="currency" currencySymbol="S/"/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Número Cuotas" filterMatchMode="contains">
+						<h:outputText value="#{contrato.numeroCuota}"/>
+					</p:column>
+					
+					<p:column headerText="Interés" filterMatchMode="contains">
+						<h:outputText value="#{contrato.interes}#{contrato.interes eq null?'':'%'}">  
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Fecha 1ra Cuota" filterMatchMode="contains">
+						<h:outputText value="#{contrato.fechaPrimeraCuota}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Persona Venta 1" filterMatchMode="contains">
+						<h:outputText value="#{contrato.personVenta.surnames} #{contrato.personVenta.names}"/>
+					</p:column>
+					
+					<p:column headerText="Persona Venta 2" filterMatchMode="contains">
+						<h:outputText  value="#{contrato.personVenta2.surnames} #{contrato.personVenta2.names}"/>
+					</p:column>
+					
+					<p:column headerText="Persona Venta 3" filterMatchMode="contains">
+						<h:outputText  value="#{contrato.personVenta3.surnames} #{contrato.personVenta3.names}"/>
+					</p:column>
+					
+					<p:column headerText="Persona Venta 4" filterMatchMode="contains">
+						<h:outputText  value="#{contrato.personVenta4.surnames} #{contrato.personVenta4.names}"/>
+					</p:column>
+					
+					<p:column headerText="Persona Venta 5" filterMatchMode="contains">
+						<h:outputText  value="#{contrato.personVenta5.surnames} #{contrato.personVenta5.names}"/>
+					</p:column>
+				</p:dataTable>
+				
+				<p:contextMenu id="menuTableReq" for="idTableContrato" >
+		            <p:menuitem value="Descargar Contrato" icon="pi pi-check" action="#{contratoBean.generarExcel}" oncomplete="hacerClick('#{p:resolveFirstComponentWithId('btnAct', view).clientId}');"  />
+		        </p:contextMenu>
 			</p:tab>
 			<p:tab title="Nuevo Contrato" style="font-size: 11px;">
 			
@@ -19,7 +104,7 @@
 					<p:overlayPanel for="movieBtn" dynamic="true" style="width:600px" widgetVar="moviePicker">
 						<p:dataTable var="lote" value="#{contratoBean.lstLotesSinContrato}" rows="5" paginator="true" selectionMode="single" rowIndexVar="row" paginatorPosition="bottom" 
 							selection="#{contratoBean.loteSelected}" rowKey="#{lote.id}" id="tableLote" emptyMessage="No se encontraron resultados" size="small">
-							<p:ajax event="rowSelect" listener="#{contratoBean.seleccionarLote()}" oncomplete="PF('moviePicker').hide()" update=":form:tabView:gridNomLote"/>
+							<p:ajax event="rowSelect" listener="#{contratoBean.seleccionarLote()}" oncomplete="PF('moviePicker').hide()" update=":form:tabView:gridNomLote :form:tabView:grid"/>
 	
 							<p:column headerText="Proyecto" >
 								<h:outputText value="#{lote.project.name}" style="font-size: 14px;"/>
@@ -49,16 +134,77 @@
 					<h:outputText value="Lote: " style="font-size: 20px;font-weight: bolder;" rendered="#{contratoBean.loteSelected ne null}"/>
 					<h:outputText value="#{contratoBean.nombreLoteSelected}" style="font-size: 20px;color:#007d4c;font-weight: bolder;" rendered="#{contratoBean.loteSelected ne null}"/>
 					
-					<p:commandLink actionListener="#{contratoBean.eliminarLoteSelected}" update=":form:tabView:gridNomLote" title="ELIMINAR">
+					<p:commandLink actionListener="#{contratoBean.eliminarLoteSelected}" update=":form:tabView:gridNomLote" title="ELIMINAR" rendered="#{contratoBean.loteSelected ne null}">
                         <p:graphicImage value="/recursos/images/eliminar.gif" rendered="#{contratoBean.loteSelected ne null}" />
                     </p:commandLink>
 				</h:panelGrid>
 				
+				<h:panelGrid id="grid" columns="4" > 				
+					
+					<h:outputLabel  value="Fecha de venta: " />
+					<p:datePicker  value="#{contratoBean.fechaVenta}" />
+					
+					<h:outputLabel  value="Monto de venta: " />
+					<p:inputNumber  value="#{contratoBean.montoVenta}" />
+					
+					<h:outputLabel value="Tipo de Pago:"  />
+					<p:selectOneMenu  value="#{contratoBean.tipoPago}" style="margin:5px; width:220px" >
+						<f:selectItem itemLabel="Contado" itemValue="Contado" />
+						<f:selectItem itemLabel="Crédito" itemValue="Crédito"/>
+						<p:ajax update="grid" />
+					</p:selectOneMenu>
+										
+					<h:outputLabel value="Monto Inicial: " id="lblMontoInicial" rendered="#{contratoBean.tipoPago eq 'Crédito'}" />
+					<p:inputNumber  value="#{contratoBean.montoInicial}" style="margin:5px; width:220px" modifyValueOnWheel="false" rendered="#{contratoBean.tipoPago eq 'Crédito'}"/> 
+										
+					<h:outputLabel value="Nro. de Cuotas: " id="lblNroCuota"  rendered="#{contratoBean.tipoPago eq 'Crédito'}"/>
+					<p:inputNumber  value="#{contratoBean.nroCuotas}" style="margin:5px; width:220px" minValue="1" decimalPlaces="0" rendered="#{contratoBean.tipoPago eq 'Crédito'}"/> 
+				
+					<h:outputLabel value="Interés:"  rendered="#{contratoBean.tipoPago eq 'Crédito'}"/>
+					<p:inputNumber value="#{contratoBean.interes}" style="margin:5px; width:220px" rendered="#{contratoBean.tipoPago eq 'Crédito'}"/>
+					
+					<h:outputLabel value="Fecha de 1ra Cuota: " rendered="#{contratoBean.tipoPago eq 'Crédito'}"/>
+					<p:datePicker value="#{contratoBean.fechaPrimeraCuota}" rendered="#{contratoBean.tipoPago eq 'Crédito'}"/>
+					
+					<h:outputLabel value="Persona de venta 1: " />
+					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona1}" converter="#{contratoBean.conversorPersonSurnames}"  
+					completeMethod="#{contrato.completePersonSurnames}"  var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:10px" />
+		             
+					<h:outputLabel value="Persona de venta 2: " />
+					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona2}" converter="#{contratoBean.conversorPersonSurnames}"  
+					completeMethod="#{contratoBean.completePersonSurnames}"  var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:10px" />
+		                
+		            <h:outputLabel  value="Persona de venta 3: " />
+					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona3}" converter="#{contratoBean.conversorPersonSurnames}" 
+					completeMethod="#{contratoBean.completePersonSurnames}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:10px" />
+		                
+					<h:outputLabel  value="Persona de venta 4: " />
+					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona4}" converter="#{contratoBean.conversorPersonSurnames}" 
+					completeMethod="#{contratoBean.completePersonSurnames}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:10px" />
+					
+					<h:outputLabel  value="Persona de venta 5: " />
+					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona5}" converter="#{contratoBean.conversorPersonSurnames}" 
+					completeMethod="#{contratoBean.completePersonSurnames}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:10px" />
+
+
+				</h:panelGrid>
+				
+				<p:commandButton value="Guardar" actionListener="#{contratoBean.guardarContrato()}" update=":form:tabView:gridNomLote :form:tabView:grid :form:tabView:idTableContrato"/> 
 				
 			</p:tab>
 		</p:tabView>
 
 	</h:form>
+	
+	
+	<script type="text/javascript">
+        
+        function hacerClick(elementName) {
+            element = document.getElementById(elementName);
+            element.click();
+        }
+
+    </script>
 
 
 </ui:composition>

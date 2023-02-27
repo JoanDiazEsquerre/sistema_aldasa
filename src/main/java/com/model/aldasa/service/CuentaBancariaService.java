@@ -10,8 +10,7 @@ public interface CuentaBancariaService {
 	Optional<CuentaBancaria> findById(Integer id);
 	CuentaBancaria save(CuentaBancaria entity);
 	void delete(CuentaBancaria entity);
-	
-	   List<CuentaBancaria> findByEstado(boolean estado);
+	List<CuentaBancaria> findByEstadoAndMonedaLike(boolean estado, String moneda);
 
 
 }

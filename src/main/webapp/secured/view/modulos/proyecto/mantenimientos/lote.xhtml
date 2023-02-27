@@ -193,9 +193,7 @@
 						   	
 					</h:panelGrid>
 					<p:commandButton value="Guardar" action="#{loteBean.saveLote()}" update=":form:idTableLote :formLoteDialog" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
-					<p:commandButton style="margin-left:20px" value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{loteBean.generarExcel}" icon="pi pi-arrow-down" styleClass="mr-2" rendered="#{loteBean.loteVendido}">
-            			<p:fileDownload value="#{loteBean.fileDes}"/> 
-      				</p:commandButton>
+					
 				</p:tab>
 				<p:tab title="Medidas" >
 					<h:panelGrid id="gridMedidas" columns="2">

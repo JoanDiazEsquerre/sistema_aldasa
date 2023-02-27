@@ -16,6 +16,16 @@
 	</lifecycle>
 
 	<managed-bean>
+		<managed-bean-name>loginBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.general.bean.LoginBean</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+		<managed-property>
+			<property-name>authenticationManager</property-name>
+			<value>#{authenticationManager}</value>
+		</managed-property>
+	</managed-bean>
+
+	<managed-bean>
 		<managed-bean-name>navegacionBean</managed-bean-name>
 		<managed-bean-class>com.model.aldasa.general.bean.NavegacionBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
@@ -604,7 +614,18 @@
 			<property-name>loteService</property-name>
 			<value>#{loteService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>personService</property-name>
+			<value>#{personService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>contratoService</property-name>
+			<value>#{contratoService}</value>
+		</managed-property>
+		<managed-property> 
+			<property-name>cuentaBancariaService</property-name>
+			<value>#{cuentaBancariaService}</value>
+		</managed-property>
 	</managed-bean>
 		
 </faces-config>
-

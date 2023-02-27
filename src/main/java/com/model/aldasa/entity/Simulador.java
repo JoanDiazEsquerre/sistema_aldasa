@@ -1,11 +1,12 @@
 package com.model.aldasa.entity;
 
+import java.util.Date;
+
 public class Simulador {
 
 	private String nroCuota;
 	private Double inicial, cuotaSI, interes, cuotaTotal;
-	
-	
+
 	
 	
 	
@@ -38,8 +39,7 @@ public class Simulador {
 	}
 	public void setCuotaTotal(Double cuotaTotal) {
 		this.cuotaTotal = cuotaTotal;
-	}
-	
+	}	
 	
 	
 }

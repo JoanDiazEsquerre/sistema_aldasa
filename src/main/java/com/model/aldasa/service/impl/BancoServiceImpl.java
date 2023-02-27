@@ -1,5 +1,6 @@
 package com.model.aldasa.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,12 @@ public class BancoServiceImpl implements BancoService {
 	public void delete(Banco entity) {
 		// TODO Auto-generated method stub
 		bancoRepository.delete(entity);
+	}
+
+	@Override
+	public List<Banco> findByEstado(boolean estado) {
+		// TODO Auto-generated method stub
+		return bancoRepository.findByEstado(estado);
 	}
 
 
