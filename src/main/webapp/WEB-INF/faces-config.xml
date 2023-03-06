@@ -23,6 +23,19 @@
 			<property-name>authenticationManager</property-name>
 			<value>#{authenticationManager}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>sucursalService</property-name>
+			<value>#{sucursalService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>usuarioSucursalService</property-name>
+			<value>#{usuarioSucursalService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>usuarioService</property-name>
+			<value>#{usuarioService}</value>
+		</managed-property>
+		
 	</managed-bean>
 
 	<managed-bean>
@@ -83,6 +96,18 @@
 			<property-name>empleadoService</property-name>
 			<value>#{empleadoService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>sucursalService</property-name>
+			<value>#{sucursalService}</value>
+		</managed-property> 
+		<managed-property>
+			<property-name>empresaService</property-name>
+			<value>#{empresaService}</value>
+		</managed-property> 
+		<managed-property>
+			<property-name>usuarioSucursalService</property-name>
+			<value>#{usuarioSucursalService}</value>
+		</managed-property> 
 	</managed-bean>
 
 	<managed-bean>

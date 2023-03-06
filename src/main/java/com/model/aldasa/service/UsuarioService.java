@@ -21,6 +21,10 @@ public interface UsuarioService {
 	Usuario findByUsername(String username);
 	Usuario findByUsernameException(String username, int idUser);
 	Usuario findByPersonException(int idPersona, int idUser);
+	Usuario findByUsernameAndPassword(String username, String password);
+	
+	
+	
 	List<Usuario> findByProfileIdAndStatus(Integer idProfile,boolean status);
 	List<Usuario> findByTeamPersonSupervisorAndStatus(Person personSupervisor,boolean status);
 	List<Usuario> findByTeam(Team team);

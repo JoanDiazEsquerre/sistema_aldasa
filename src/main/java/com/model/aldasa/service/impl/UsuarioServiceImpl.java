@@ -95,6 +95,12 @@ public class UsuarioServiceImpl implements UsuarioService {
 		// TODO Auto-generated method stub
 		return usuarioRepository.findAll();
 	}
+
+	@Override
+	public Usuario findByUsernameAndPassword(String username, String password) {
+		// TODO Auto-generated method stub
+		return usuarioRepository.findByUsernameAndPassword(username, password);
+	}
 	
 
 }

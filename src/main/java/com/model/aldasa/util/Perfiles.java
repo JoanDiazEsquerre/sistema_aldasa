@@ -8,7 +8,8 @@ public enum Perfiles {
 	CONTABILIDAD("Contabilidad", 7),
 	ASISTENTE_ADMINISTRATIVO("Asistente Administrativo",4),
 	ASISTENCIA("Asistencia",11),
-	RECURSOS_HUMANOS("Recursos Humanos",6);
+	RECURSOS_HUMANOS("Recursos Humanos",6),
+	ASISTENTE_VENTA("Asistente de Venta",12);
 	
 	private String name;
 	private int id;

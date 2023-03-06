@@ -11,6 +11,7 @@ import javax.faces.context.FacesContext;
 import org.apache.commons.fileupload.RequestContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.Perfiles;
@@ -27,8 +28,9 @@ public class NavegacionBean implements Serializable  {
 	private UsuarioService usuarioService;
 	
 	private String ruta;
-	private String username;
+	private String username;                              
 	private Usuario usuarioLogin = new Usuario();
+	private Sucursal sucursalLogin;
 	
 	private int idAdministrador = Perfiles.ADMINISTRADOR.getId();
 	private int idSupervisor = Perfiles.SUPERVISOR.getId();
@@ -37,6 +39,8 @@ public class NavegacionBean implements Serializable  {
 	private int idAsistencia = Perfiles.ASISTENCIA.getId();
 	private int idRecursosHumanos = Perfiles.RECURSOS_HUMANOS.getId();
 	private int idContabilidad = Perfiles.CONTABILIDAD.getId();
+	private int idAsistenteVenta = Perfiles.ASISTENTE_VENTA.getId();
+
 	
 	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
@@ -46,27 +50,33 @@ public class NavegacionBean implements Serializable  {
 	private int[] permisoProspeccion= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoAgenda= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoSimulador= {idAdministrador,idSupervisor,idAsesor};
-	private int[] permisoPersonas= {idAdministrador,idAsistentenAdmin};
-	private int[] permisoUsuarios= {idAdministrador, idAsistentenAdmin};
+	private int[] permisoPersonas= {idAdministrador,idAsistentenAdmin, idAsistenteVenta};
+	private int[] permisoUsuarios= {idAdministrador, idAsistentenAdmin, idAsistenteVenta};
 	private int[] permisoPerfiles= {idAdministrador};
-	private int[] permisoProyectos= {idAdministrador,idAsistentenAdmin};
+	private int[] permisoProyectos= {idAdministrador,idAsistentenAdmin,idAsistenteVenta};
 	private int[] permisoEquipos= {idAdministrador};
-	private int[] permisoCambiarConstrasenia= {idAdministrador,idSupervisor,idAsesor, idAsistentenAdmin,idRecursosHumanos, idContabilidad};
-	private int[] permisoReporteAcciones= {idAdministrador,idSupervisor,idAsesor,idAsistentenAdmin};
-	private int[] permisoManzanas= {idAdministrador,idAsistentenAdmin};
-	private int[] permisoLotes= {idAdministrador,idSupervisor,idAsesor,idAsistentenAdmin};
+	private int[] permisoCambiarConstrasenia= {idAdministrador,idSupervisor,idAsesor, idAsistentenAdmin,idAsistenteVenta,idRecursosHumanos, idContabilidad};
+	private int[] permisoReporteAcciones= {idAdministrador,idSupervisor,idAsesor,idAsistentenAdmin, idAsistenteVenta};
+	private int[] permisoManzanas= {idAdministrador,idAsistentenAdmin,idAsistenteVenta};
+	private int[] permisoLotes= {idAdministrador,idSupervisor,idAsesor,idAsistentenAdmin,idAsistenteVenta};
 	private int[] permisoComisiones= {idAdministrador};
 	private int[] permisoComision= {idAdministrador};
 	private int[] permisoEmpleado= {idAdministrador, idRecursosHumanos};
 	private int[] permisoReporteLotes= {idAdministrador};
 	private int[] permisoAsistencia= {idAdministrador, idAsistencia, idRecursosHumanos};
 	private int[] permisoReporteAsistencia= {idAdministrador, idRecursosHumanos};
-	private int[] permisoRequerimientoSeparacion= {idAdministrador,idAsistentenAdmin,idContabilidad};
+	private int[] permisoRequerimientoSeparacion= {idAdministrador,idAsistentenAdmin,idAsistenteVenta,idContabilidad};
 	private int[] permisoRankingVentas= {idAdministrador};
 	private int[] permisoContrato= {idAdministrador};
 
 	@PostConstruct
 	public void init() {
+		sucursalLogin = (Sucursal)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("sucursalLog"); 
+		if(sucursalLogin==null) {
+			cerrarSesion();
+			return;
+			
+		}
 		ruta = "modulos/general/mantenimientos/inicio.xhtml";
 		username = SecurityContextHolder.getContext().getAuthentication().getName();
 		usuarioLogin = usuarioService.findByUsername(username);
@@ -604,4 +614,24 @@ public class NavegacionBean implements Serializable  {
 	public void setSubMenuContrato(boolean subMenuContrato) {
 		this.subMenuContrato = subMenuContrato;
 	}
+	public Sucursal getSucursalLogin() {
+		return sucursalLogin;
+	}
+	public void setSucursalLogin(Sucursal sucursalLogin) {
+		this.sucursalLogin = sucursalLogin;
+	}
+	public int getIdAsistenteVenta() {
+		return idAsistenteVenta;
+	}
+	public void setIdAsistenteVenta(int idAsistenteVenta) {
+		this.idAsistenteVenta = idAsistenteVenta;
+	}
+	public int[] getPermisoContrato() {
+		return permisoContrato;
+	}
+	public void setPermisoContrato(int[] permisoContrato) {
+		this.permisoContrato = permisoContrato;
+	}
+	
+	
 }

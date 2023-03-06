@@ -27,6 +27,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
     @Query(nativeQuery = true,value = " SELECT * FROM user  WHERE idPerson = :idPersona and id<>:idUser")
     Usuario findByPersonException(int idPersona, int idUser);
     
+	Usuario findByUsernameAndPassword(String username, String password);
+
+    
 	//@Query(value = "select p from user p WHERE p.estado=:estado order by p.nombre")
 	//List<Usuario> findByRolJP(@Param(value = "estado") String estado);
 	

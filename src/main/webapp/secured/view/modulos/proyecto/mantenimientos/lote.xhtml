@@ -250,7 +250,7 @@
 						</p:autoComplete>
 
 						<h:outputLabel id="lblFechaVend" for="vend" value="Fecha venta:" />
-						<p:datePicker id="vend" style="margin:5px; width:220px" value="#{loteBean.loteSelected.fechaVendido}" />
+						<p:datePicker id="vend" style="margin:5px; width:220px" value="#{loteBean.loteSelected.fechaVendido}" > <p:ajax update="messages" /> </p:datePicker>
 						
 						<h:outputLabel value="Monto Venta:" for="montoVenta" />
 						<p:inputNumber id="montoVenta" value="#{loteBean.loteSelected.montoVenta}" style="margin:5px; width:220px" modifyValueOnWheel="false" > <p:ajax update="messages" /> </p:inputNumber>

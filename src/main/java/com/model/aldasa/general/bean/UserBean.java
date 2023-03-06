@@ -25,24 +25,31 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Empleado;
+import com.model.aldasa.entity.Empresa;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Profile;
 import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.Prospection;
+import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
+import com.model.aldasa.entity.UsuarioSucursal;
 import com.model.aldasa.service.EmpleadoService;
+import com.model.aldasa.service.EmpresaService;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProfileService;
 import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.ProspectionService;
+import com.model.aldasa.service.SucursalService;
 import com.model.aldasa.service.TeamService;
 import com.model.aldasa.service.UsuarioService;
+import com.model.aldasa.service.UsuarioSucursalService;
+import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.EstadoProspeccion;
 
 @ManagedBean
 @ViewScoped
-public class UserBean implements Serializable {
+public class UserBean extends BaseBean implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -67,14 +74,31 @@ public class UserBean implements Serializable {
 	@ManagedProperty(value = "#{empleadoService}")
 	private EmpleadoService empleadoService;
 	
+	@ManagedProperty(value = "#{sucursalService}")
+	private SucursalService sucursalService;
+	
+	@ManagedProperty(value = "#{empresaService}")
+	private EmpresaService empresaService;
+	
+	@ManagedProperty(value = "#{usuarioSucursalService}")
+	private UsuarioSucursalService usuarioSucursalService;
+	
 	private LazyDataModel<Usuario> lstUsuarioLazy;
 	
 	private List<Usuario> lstUsers;
 	private List<Person> lstPerson;
 	private List<Profile> lstProfile;
 	private List<Team> lstTeam;
+    private List<Sucursal> lstSucursal;
+    private List<Empresa> lstEmpresa ;
+    private List<UsuarioSucursal> lstUsuarioSucursal ;
+
 	
 	private Usuario userSelected;
+    private Sucursal sucursal;
+    private Empresa empresa ;
+    private UsuarioSucursal usuarioSucursalSelected;
+    private UsuarioSucursal joan;
 
 	private boolean estado=true;
 	private boolean validaUsuario;
@@ -84,9 +108,19 @@ public class UserBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		iniciarLazy();
-	
-	}
+    	lstEmpresa = empresaService.findByEstado(true);
+    	empresa = lstEmpresa.get(0);
+    	listarSucursalPorEmpresa();
+    }
 
+	public void listarSucursalPorEmpresa() {
+		lstSucursal = sucursalService.findByEmpresaAndEstado(empresa, true);
+		if(!lstSucursal.isEmpty()) {
+			sucursal=lstSucursal.get(0);
+		}
+		
+				
+	}
 	
 	public void iniciarLazy() {
 
@@ -155,9 +189,15 @@ public class UserBean implements Serializable {
 		};
 	}
 	
-//	public void listarUsuarios() {
-//		lstUsers=usuarioService.findByStatus(estado);
-//	}
+	public void restablecerValores() {
+		lstEmpresa = empresaService.findByEstado(true);
+    	empresa = lstEmpresa.get(0);
+    	listarSucursalPorEmpresa();
+    	
+    	lstUsuarioSucursal = usuarioSucursalService.findByUsuario(userSelected);
+    	
+    	
+	}
 	
 	public void listarPersonas() {
 		lstPerson=personService.findByStatus(true);
@@ -190,6 +230,37 @@ public class UserBean implements Serializable {
 		listarTeam();
 	}
 	
+	public void asignarSucursal() {
+		
+		if(sucursal==null) {
+			addErrorMessage("Selecionar una sucursal.");
+			return;
+		}
+		
+		UsuarioSucursal usuSucur = usuarioSucursalService.findByUsuarioAndSucursal(userSelected, sucursal);
+		
+		if(usuSucur!=null) {
+			addErrorMessage("El usuario tiene asignada la sucursal.");
+			return;
+		}else {
+			UsuarioSucursal asigSucur = new UsuarioSucursal();
+			asigSucur.setSucursal(sucursal);
+			asigSucur.setUsuario(userSelected);
+			usuarioSucursalService.save(asigSucur);
+	    	lstUsuarioSucursal = usuarioSucursalService.findByUsuario(userSelected);
+			addInfoMessage("Sucursal asignado correctamente.");
+
+		}
+		
+	}
+	
+	public void desasignarSucursal() {
+		usuarioSucursalService.delete(joan);
+    	lstUsuarioSucursal = usuarioSucursalService.findByUsuario(userSelected);
+		addInfoMessage("Desasignado correctamente.");
+
+
+	}
 	
 	public void saveUpdateUser() {
 		
@@ -392,6 +463,62 @@ public class UserBean implements Serializable {
         };
     }
 
+	public Converter getConversorSucursal() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Sucursal c = null;
+                    for (Sucursal si : lstSucursal) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Sucursal) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorEmpresa() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Empresa c = null;
+                    for (Empresa si : lstEmpresa) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Empresa) value).getId() + "";
+                }
+            }
+        };
+    }
+	
 	public UsuarioService getUsuarioService() {
 		return usuarioService;
 	}
@@ -487,6 +614,68 @@ public class UserBean implements Serializable {
 	}
 	public void setEmpleadoService(EmpleadoService empleadoService) {
 		this.empleadoService = empleadoService;
+	}
+	public List<Sucursal> getLstSucursal() {
+		return lstSucursal;
+	}
+	public void setLstSucursal(List<Sucursal> lstSucursal) {
+		this.lstSucursal = lstSucursal;
+	}
+	public Sucursal getSucursal() {
+		return sucursal;
+	}
+	public void setSucursal(Sucursal sucursal) {
+		this.sucursal = sucursal;
+	}
+	public SucursalService getSucursalService() {
+		return sucursalService;
+	}
+	public void setSucursalService(SucursalService sucursalService) {
+		this.sucursalService = sucursalService;
+	}
+	public EmpresaService getEmpresaService() {
+		return empresaService;
+	}
+	public void setEmpresaService(EmpresaService empresaService) {
+		this.empresaService = empresaService;
+	}
+	public List<Empresa> getLstEmpresa() {
+		return lstEmpresa;
+	}
+	public void setLstEmpresa(List<Empresa> lstEmpresa) {
+		this.lstEmpresa = lstEmpresa;
+	}
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
+	}
+	public UsuarioSucursalService getUsuarioSucursalService() {
+		return usuarioSucursalService;
+	}
+	public void setUsuarioSucursalService(UsuarioSucursalService usuarioSucursalService) {
+		this.usuarioSucursalService = usuarioSucursalService;
+	}
+	public List<UsuarioSucursal> getLstUsuarioSucursal() {
+		return lstUsuarioSucursal;
+	}
+	public void setLstUsuarioSucursal(List<UsuarioSucursal> lstUsuarioSucursal) {
+		this.lstUsuarioSucursal = lstUsuarioSucursal;
+	}
+	public UsuarioSucursal getUsuarioSucursalSelected() {
+		return usuarioSucursalSelected;
+	}
+	public void setUsuarioSucursalSelected(UsuarioSucursal usuarioSucursalSelected) {
+		this.usuarioSucursalSelected = usuarioSucursalSelected;
+	}
+
+	public UsuarioSucursal getJoan() {
+		return joan;
+	}
+
+	public void setJoan(UsuarioSucursal joan) {
+		this.joan = joan;
 	}
 
 	

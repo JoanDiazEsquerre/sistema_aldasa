@@ -55,7 +55,60 @@
             
             
         </p:dataTable>
+        
+        <p:contextMenu for="idTableUser">
+            <p:menuitem value="Seleccionar Sucursal" update="dialogSucursal" icon="pi pi-search" oncomplete="PF('sucursalDialog').show()" actionListener="#{userBean.restablecerValores}"/>
+        </p:contextMenu>
+        
     </h:form>
+    
+    <p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogSucursal" header="Asignar sucursal a : #{userBean.userSelected.person.names} #{userBean.userSelected.person.surnames}" 
+    	widgetVar="sucursalDialog" resizable="false" closable="true" appendTo="@(body)" width="55%">
+		<h:form id="formsucursalDialog">
+	       
+	        
+	        <h:panelGrid id="grid" columns="5" width="50%">
+				
+				<h:outputLabel for="empresa" value="Empresa:" /> 
+               	<p:selectOneMenu id="empresa" value="#{userBean.empresa}" style="margin:5px;width:250px" converter="#{userBean.conversorEmpresa}">
+					<f:selectItems value="#{userBean.lstEmpresa}" var="empre" itemLabel="#{empre.nombre}" itemValue="#{empre}"/>
+					<p:ajax update="sucursal" listener="#{userBean.listarSucursalPorEmpresa}"  />		
+				</p:selectOneMenu>
+			
+				<h:outputLabel for="sucursal" value="Sucursal:" /> 
+               	<p:selectOneMenu id="sucursal" value="#{userBean.sucursal}" style="margin:5px;width:250px" converter="#{userBean.conversorSucursal}">
+					<f:selectItems value="#{userBean.lstSucursal}" var="sucur" itemLabel="#{sucur.razonSocial}" itemValue="#{sucur}"/>
+				</p:selectOneMenu>
+                
+                <p:commandButton value="Asignar" action="#{userBean.asignarSucursal()}" update="idSucurTable" />
+						   	
+			</h:panelGrid>
+			
+			<p:dataTable var="sucurs" id="idSucurTable" value="#{userBean.lstUsuarioSucursal}" widgetVar="idTeamTable" rowIndexVar="row" paginator="true" rows="4" 
+				size="small" emptyMessage="No se encontratos resultados." paginatorPosition="bottom" rowKey="#{sucurs.id}" selection="#{userBean.usuarioSucursalSelected}" selectionMode="single">
+				
+				<p:column width="25px">
+	                      #{row +1}
+	        	</p:column>
+	        	
+				<p:column headerText="Sucursal"  filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{sucurs.sucursal.razonSocial}"  />
+				</p:column>
+				
+				<p:column headerText="Empresa" filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{sucurs.sucursal.empresa.nombre}" />
+				</p:column>
+				
+				<p:column width="10%" filterMatchMode="contains">
+					<p:commandButton action="#{userBean.desasignarSucursal}"  icon="pi pi-trash" styleClass="rounded-button ui-button-danger" process="@this" update="idSucurTable" >
+						<f:setPropertyActionListener value="#{sucurs}" target="#{userBean.joan}" />
+					</p:commandButton>
+				</p:column>
+				
+			</p:dataTable>
+			
+	    </h:form>
+	</p:dialog>
     
     <p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogProyecto" header="#{userBean.tituloDialog}" widgetVar="proyectoNewDialog" resizable="false" closable="true"
         appendTo="@(body)" style="width:auto">

@@ -134,7 +134,7 @@
 					<h:outputText value="Lote: " style="font-size: 20px;font-weight: bolder;" rendered="#{contratoBean.loteSelected ne null}"/>
 					<h:outputText value="#{contratoBean.nombreLoteSelected}" style="font-size: 20px;color:#007d4c;font-weight: bolder;" rendered="#{contratoBean.loteSelected ne null}"/>
 					
-					<p:commandLink actionListener="#{contratoBean.eliminarLoteSelected}" update=":form:tabView:gridNomLote" title="ELIMINAR" rendered="#{contratoBean.loteSelected ne null}">
+					<p:commandLink actionListener="#{contratoBean.eliminarLoteSelected}" update=":form:tabView:gridNomLote :form:tabView:grid" title="ELIMINAR" rendered="#{contratoBean.loteSelected ne null}">
                         <p:graphicImage value="/recursos/images/eliminar.gif" rendered="#{contratoBean.loteSelected ne null}" />
                     </p:commandLink>
 				</h:panelGrid>
@@ -142,10 +142,10 @@
 				<h:panelGrid id="grid" columns="4" > 				
 					
 					<h:outputLabel  value="Fecha de venta: " />
-					<p:datePicker  value="#{contratoBean.fechaVenta}" />
+					<p:datePicker  value="#{contratoBean.fechaVenta}" style="margin:5px; width:220px" />
 					
 					<h:outputLabel  value="Monto de venta: " />
-					<p:inputNumber  value="#{contratoBean.montoVenta}" />
+					<p:inputNumber  value="#{contratoBean.montoVenta}" style="margin:5px; width:220px" />
 					
 					<h:outputLabel value="Tipo de Pago:"  />
 					<p:selectOneMenu  value="#{contratoBean.tipoPago}" style="margin:5px; width:220px" >
@@ -168,23 +168,23 @@
 					
 					<h:outputLabel value="Persona de venta 1: " />
 					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona1}" converter="#{contratoBean.conversorPersonSurnames}"  
-					completeMethod="#{contrato.completePersonSurnames}"  var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:10px" />
+					completeMethod="#{contrato.completePersonSurnames}"  var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px"  />
 		             
 					<h:outputLabel value="Persona de venta 2: " />
 					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona2}" converter="#{contratoBean.conversorPersonSurnames}"  
-					completeMethod="#{contratoBean.completePersonSurnames}"  var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:10px" />
+					completeMethod="#{contratoBean.completePersonSurnames}"  var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px"  />
 		                
 		            <h:outputLabel  value="Persona de venta 3: " />
 					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona3}" converter="#{contratoBean.conversorPersonSurnames}" 
-					completeMethod="#{contratoBean.completePersonSurnames}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:10px" />
+					completeMethod="#{contratoBean.completePersonSurnames}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px" />
 		                
 					<h:outputLabel  value="Persona de venta 4: " />
 					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona4}" converter="#{contratoBean.conversorPersonSurnames}" 
-					completeMethod="#{contratoBean.completePersonSurnames}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:10px" />
+					completeMethod="#{contratoBean.completePersonSurnames}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px"  />
 					
 					<h:outputLabel  value="Persona de venta 5: " />
 					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona5}" converter="#{contratoBean.conversorPersonSurnames}" 
-					completeMethod="#{contratoBean.completePersonSurnames}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:10px" />
+					completeMethod="#{contratoBean.completePersonSurnames}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px"  />
 
 
 				</h:panelGrid>
