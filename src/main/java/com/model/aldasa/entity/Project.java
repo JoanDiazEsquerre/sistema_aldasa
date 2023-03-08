@@ -45,6 +45,9 @@ public class Project {
 	@Column(name="zonaregistral")
 	private String zonaRegistral;
 	
+	@ManyToOne
+    @JoinColumn(name="idsucursal")
+    private Sucursal sucursal;
 	
 	
 	
@@ -121,6 +124,13 @@ public class Project {
 	}
 	public void setZonaRegistral(String zonaRegistral) {
 		this.zonaRegistral = zonaRegistral;
+	}
+
+	public Sucursal getSucursal() {
+		return sucursal;
+	}
+	public void setSucursal(Sucursal sucursal) {
+		this.sucursal = sucursal;
 	}
 	@Override
     public boolean equals(Object other) {

@@ -10,6 +10,7 @@ import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
+import com.model.aldasa.entity.Sucursal;
 
 
 public interface ContratoService {
@@ -20,6 +21,8 @@ public interface ContratoService {
 	List<Contrato> findAll();
 	
 	Page<Contrato> findByEstado(boolean status, Pageable pageable);
+	Page<Contrato> findByEstadoAndLoteProjectSucursal(boolean status, Sucursal sucursal, Pageable pageable);
+
 
 
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.model.aldasa.entity.Profile;
 import com.model.aldasa.entity.Project;
+import com.model.aldasa.entity.Sucursal;
 
 public interface ProjectService {
 	
@@ -12,6 +13,8 @@ public interface ProjectService {
 	Project save(Project project) ;
 	void delete(Project project);
 	List<Project> findByStatus(boolean status);
+	List<Project> findByStatusAndSucursal(boolean status, Sucursal sucursal);
+
 	Project findByName (String name);
 	Project findByNameException(String name, int idProject);
 

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Project;
+import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.repository.ProjectRepository; 
 import com.model.aldasa.service.ProjectService;
 
@@ -50,6 +51,12 @@ public class ProjectServiceImpl implements ProjectService {
 	public Project findByNameException(String name, int idProject) {
 		// TODO Auto-generated method stub
 		return projectRepository.findByNameException(name, idProject); 
+	}
+
+	@Override
+	public List<Project> findByStatusAndSucursal(boolean status, Sucursal sucursal) {
+		// TODO Auto-generated method stub
+		return projectRepository.findByStatusAndSucursal(status, sucursal);
 	}
 	
 

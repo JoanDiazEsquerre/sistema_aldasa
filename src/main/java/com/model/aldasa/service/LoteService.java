@@ -11,6 +11,7 @@ import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Manzana;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Project;
+import com.model.aldasa.entity.Sucursal;
 
 public interface LoteService {
  
@@ -18,11 +19,13 @@ public interface LoteService {
 	Lote save(Lote lote);
 	void delete(Lote lote);
 	List<Lote> findByStatus(String status);
+	List<Lote> findByStatusAndProjectSucursal(String status, Sucursal sucursal);
+
 	List<Lote> findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(Project project, Manzana manzana, String Status);
 	Lote findByNumberLoteAndManzanaAndProject (String name, Manzana manzana, Project project);
 	Lote findByNumberLoteAndManzanaAndProjectException(String name, int manzana, int project, int idLote);
 	
-	Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(String numberLote, String nameManzana,String projectName ,String status,Pageable pageable);
+	Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLikeAndProjectSucursal(String numberLote, String nameManzana,String projectName ,String status,Sucursal sucursal,Pageable pageable);
 	Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndStatusLike(String numberLote,  String nameManzana, String status,Pageable pageable);
 	Page<Lote> findAllByStatusAndFechaVencimientoBetween(String status,Date fechaIni , Date fechaFin,Pageable pageable);
 	Page<Lote> findAllByStatusAndFechaVencimientoLessThan(String status,Date fechaIni, Pageable pageable);

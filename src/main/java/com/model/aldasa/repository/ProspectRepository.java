@@ -8,26 +8,27 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Prospect;
+import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.entity.Usuario;
 
 public interface ProspectRepository extends PagingAndSortingRepository<Prospect, Integer> {
 	
 	//para asesor
-	Page<Prospect> findByPersonDniLikeAndPersonSurnamesLikeAndPersonAssessor(String dniPerson,String surnamesPerson,Person assessor,Pageable pageable);
-	Page<Prospect> findByPersonSurnamesLikeAndPersonAssessor(String surnamesPerson,Person assessor,Pageable pageable);
+	Page<Prospect> findByPersonDniLikeAndPersonSurnamesLikeAndPersonAssessorAndSucursal(String dniPerson,String surnamesPerson,Person assessor,Sucursal sucursal,Pageable pageable);
+	Page<Prospect> findByPersonSurnamesLikeAndPersonAssessorAndSucursal(String surnamesPerson,Person assessor,Sucursal sucursal,Pageable pageable);
 	
 	
 	//Para supervisor
-		Page<Prospect> findByPersonDniLikeAndPersonSurnamesLikeAndPersonSupervisor(String dni, String surnamesPerson,Person supervisor,Pageable pageable);
-		Page<Prospect> findByPersonSurnamesLikeAndPersonSupervisor(String surnamesPerson,Person supervisor,Pageable pageable);
+		Page<Prospect> findByPersonDniLikeAndPersonSurnamesLikeAndPersonSupervisorAndSucursal(String dni, String surnamesPerson,Person supervisor,Sucursal sucursal,Pageable pageable);
+		Page<Prospect> findByPersonSurnamesLikeAndPersonSupervisorAndSucursal(String surnamesPerson,Person supervisor,Sucursal sucursal,Pageable pageable);
 		
 		
 	//para administrador
-	Page<Prospect> findByPersonSurnamesLikeAndPersonDniLike(String surnamesPerson, String dni , Pageable pageable);
-	Page<Prospect> findByPersonSurnamesLike(String surnamesPerson, Pageable pageable);
+	Page<Prospect> findByPersonSurnamesLikeAndPersonDniLikeAndSucursal(String surnamesPerson, String dni ,Sucursal sucursal, Pageable pageable);
+	Page<Prospect> findByPersonSurnamesLikeAndSucursal(String surnamesPerson, Sucursal sucursal, Pageable pageable);
 	
 	
-	Prospect findByPerson(Person entity);
+	Prospect findByPersonAndSucursal(Person entity, Sucursal sucursal);
 	
 	List<Prospect> findByPersonAssessor(Person assessor);
 	List<Prospect> findByPersonSupervisor(Person supervisor);

@@ -68,6 +68,7 @@ import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Simulador;
+import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.ContratoService;
 import com.model.aldasa.service.CuentaBancariaService;
 import com.model.aldasa.service.LoteService;
@@ -93,6 +94,9 @@ public class ContratoBean extends BaseBean implements Serializable{
 	
 	@ManagedProperty(value = "#{cuentaBancariaService}")
 	private CuentaBancariaService cuentaBancariaService;
+	
+	@ManagedProperty(value = "#{navegacionBean}")
+	private NavegacionBean navegacionBean;
 	
 	private String meses[]= {"ENERO","FEBRERO","MARZO","ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE","DICIEMBRE"};
 	
@@ -1105,7 +1109,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 	
 	public void listarLotesSinContrato() {
 		lstLotesSinContrato = new ArrayList<>();
-		List<Lote> lstLotesVendidos = loteService.findByStatus(EstadoLote.VENDIDO.getName());
+		List<Lote> lstLotesVendidos = loteService.findByStatusAndProjectSucursal(EstadoLote.VENDIDO.getName(), navegacionBean.getSucursalLogin());
 		if(!lstLotesVendidos.isEmpty()) {
 			for(Lote lote:lstLotesVendidos) {
 				if(lote.getRealizoContrato().equals("N")) {
@@ -1270,7 +1274,7 @@ public class ContratoBean extends BaseBean implements Serializable{
                 Page<Contrato> pageContrato=null;
                
                 
-                pageContrato= contratoService.findByEstado( estado, pageable); 
+                pageContrato= contratoService.findByEstadoAndLoteProjectSucursal(estado, navegacionBean.getSucursalLogin(), pageable);
                 
                 setRowCount((int) pageContrato.getTotalElements());
                 return datasource = pageContrato.getContent();
@@ -2364,6 +2368,14 @@ public class ContratoBean extends BaseBean implements Serializable{
 
 	public void setSdfDay(SimpleDateFormat sdfDay) {
 		this.sdfDay = sdfDay;
+	}
+
+	public NavegacionBean getNavegacionBean() {
+		return navegacionBean;
+	}
+
+	public void setNavegacionBean(NavegacionBean navegacionBean) {
+		this.navegacionBean = navegacionBean;
 	}
 
 

@@ -260,7 +260,7 @@ public class ReporteLotesBean implements Serializable{
 //				if(projectFilter.equals("")) {
 //					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndStatusLike(numberLote,"%"+manzana+"%","%"+status+"%", pageable);
 //				}else {
-					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(numberLote, "%"+manzana+"%",proyecto,"%"+status+"%", pageable);
+					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLikeAndProjectSucursal(numberLote, "%"+manzana+"%",proyecto,"%"+status+"%", navegacionBean.getSucursalLogin(), pageable);
 				
 //				}
 				setRowCount((int) pageLote.getTotalElements());

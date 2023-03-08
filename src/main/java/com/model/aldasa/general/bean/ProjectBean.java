@@ -19,11 +19,13 @@ import com.model.aldasa.entity.Department;
 import com.model.aldasa.entity.District;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Province;
+import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.service.CountryService;
 import com.model.aldasa.service.DepartmentService;
 import com.model.aldasa.service.DistrictService;
 import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.ProvinceService;
+import com.model.aldasa.service.SucursalService;
 
 @ManagedBean
 @ViewScoped
@@ -46,7 +48,12 @@ public class ProjectBean implements Serializable {
 	@ManagedProperty(value = "#{districtService}")
 	private DistrictService districtService;
 	
+	@ManagedProperty(value = "#{navegacionBean}")
+	private NavegacionBean navegacionBean;
+	
+	
 	private List<Project> listProject;
+
 	private Project projectSelected;
 	private boolean estado = true;
 	
@@ -100,7 +107,9 @@ public class ProjectBean implements Serializable {
 	}
 	
 	public void listarProject (){
-		listProject= projectService.findByStatus(estado);
+		
+		listProject= projectService.findByStatusAndSucursal(estado, navegacionBean.getSucursalLogin());
+		
 	}
 	
 	public void newProject() {
@@ -192,6 +201,7 @@ public class ProjectBean implements Serializable {
 		if (tituloDialog.equals("NUEVO PROYECTO")) {
 			Project validarExistencia = projectService.findByName(projectSelected.getName());
 			if (validarExistencia == null) {
+				projectSelected.setSucursal(navegacionBean.getSucursalLogin());
 				projectService.save(projectSelected);
 				newProject();
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
@@ -431,8 +441,12 @@ public class ProjectBean implements Serializable {
 	public void setDistrictService(DistrictService districtService) {
 		this.districtService = districtService;
 	}
-
-	
+	public NavegacionBean getNavegacionBean() {
+		return navegacionBean;
+	}
+	public void setNavegacionBean(NavegacionBean navegacionBean) {
+		this.navegacionBean = navegacionBean;
+	}
 
 	
 	

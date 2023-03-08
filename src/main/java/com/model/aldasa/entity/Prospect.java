@@ -34,6 +34,11 @@ public class Prospect {
 	@Column(name="dateblock")
 	private Date dateBlock;
 	
+	@ManyToOne
+	@JoinColumn(name="idsucursal")
+	private Sucursal sucursal;
+	
+	
 	
 	public Integer getId() {
 		return id;
@@ -65,7 +70,14 @@ public class Prospect {
 	public void setPersonSupervisor(Person personSupervisor) {
 		this.personSupervisor = personSupervisor;
 	}
-
+	public Sucursal getSucursal() {
+		return sucursal;
+	}
+	public void setSucursal(Sucursal sucursal) {
+		this.sucursal = sucursal;
+	}
+	
+	
 	
 	
 	@Override

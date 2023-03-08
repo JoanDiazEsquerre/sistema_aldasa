@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Prospect;
+import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.repository.ProspectRepository;
 import com.model.aldasa.service.ProspectService;
@@ -36,38 +37,38 @@ public class ProspectServiceImpl implements ProspectService{
 	}
 
 	@Override
-	public Page<Prospect> findByPersonDniLikeAndPersonSurnamesLikeAndPersonAssessor(String dniPerson,String surnamesPerson,Person assessor,Pageable pageable) {
-		return prospectRepository.findByPersonDniLikeAndPersonSurnamesLikeAndPersonAssessor( dniPerson, surnamesPerson, assessor, pageable); 
+	public Page<Prospect> findByPersonDniLikeAndPersonSurnamesLikeAndPersonAssessorAndSucursal(String dniPerson,String surnamesPerson,Person assessor,Sucursal sucursal,Pageable pageable) {
+		return prospectRepository.findByPersonDniLikeAndPersonSurnamesLikeAndPersonAssessorAndSucursal( dniPerson, surnamesPerson, assessor, sucursal, pageable); 
 	}
 	
 	@Override
-	public Page<Prospect> findByPersonSurnamesLikeAndPersonAssessor(String surnamesPerson,Person assessor,Pageable pageable) {
-		return prospectRepository.findByPersonSurnamesLikeAndPersonAssessor( surnamesPerson, assessor, pageable); 
+	public Page<Prospect> findByPersonSurnamesLikeAndPersonAssessorAndSucursal(String surnamesPerson,Person assessor,Sucursal sucursal,Pageable pageable) {
+		return prospectRepository.findByPersonSurnamesLikeAndPersonAssessorAndSucursal( surnamesPerson, assessor, sucursal, pageable); 
 	}
 	
 	@Override
-	public Page<Prospect> findByPersonDniLikeAndPersonSurnamesLikeAndPersonSupervisor(String dni, String surnamesPerson,Person supervisor,Pageable pageable) {
-		return prospectRepository.findByPersonDniLikeAndPersonSurnamesLikeAndPersonSupervisor(dni, surnamesPerson, supervisor, pageable); 
+	public Page<Prospect> findByPersonDniLikeAndPersonSurnamesLikeAndPersonSupervisorAndSucursal(String dni, String surnamesPerson,Person supervisor,Sucursal sucursal,Pageable pageable) {
+		return prospectRepository.findByPersonDniLikeAndPersonSurnamesLikeAndPersonSupervisorAndSucursal(dni, surnamesPerson, supervisor, sucursal, pageable); 
 	}
 	
 	@Override
-	public Page<Prospect> findByPersonSurnamesLikeAndPersonSupervisor(String surnamesPerson,Person supervisor,Pageable pageable) {
-		return prospectRepository.findByPersonSurnamesLikeAndPersonSupervisor(surnamesPerson, supervisor, pageable); 
+	public Page<Prospect> findByPersonSurnamesLikeAndPersonSupervisorAndSucursal(String surnamesPerson,Person supervisor,Sucursal sucursal,Pageable pageable) {
+		return prospectRepository.findByPersonSurnamesLikeAndPersonSupervisorAndSucursal(surnamesPerson, supervisor, sucursal, pageable); 
 	}
 
 	@Override
-	public Page<Prospect> findByPersonSurnamesLikeAndPersonDniLike(String surnamesPerson, String dni , Pageable pageable) {
-		return prospectRepository.findByPersonSurnamesLikeAndPersonDniLike(surnamesPerson, dni, pageable);
+	public Page<Prospect> findByPersonSurnamesLikeAndPersonDniLikeAndSucursal(String surnamesPerson, String dni , Sucursal sucursal, Pageable pageable) {
+		return prospectRepository.findByPersonSurnamesLikeAndPersonDniLikeAndSucursal(surnamesPerson, dni, sucursal, pageable);
 	}
 	
 	@Override
-	public Page<Prospect> findByPersonSurnamesLike(String surnamesPerson, Pageable pageable) {
-		return prospectRepository.findByPersonSurnamesLike(surnamesPerson, pageable);
+	public Page<Prospect> findByPersonSurnamesLikeAndSucursal(String surnamesPerson, Sucursal sucursal, Pageable pageable) {
+		return prospectRepository.findByPersonSurnamesLikeAndSucursal(surnamesPerson, sucursal, pageable);
 	}
 
 	@Override
-	public Prospect findByPerson(Person entity) {
-		return prospectRepository.findByPerson(entity);
+	public Prospect findByPersonAndSucursal(Person entity, Sucursal sucursal) {
+		return prospectRepository.findByPersonAndSucursal(entity,sucursal);
 	}
 
 	@Override

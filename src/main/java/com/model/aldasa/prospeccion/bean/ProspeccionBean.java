@@ -318,7 +318,7 @@ public class ProspeccionBean extends BaseBean{
 			Person buscarPersona = personService.findByDni(personNew.getDni());
 			if (buscarPersona != null) {
 				personNew.setId(buscarPersona.getId());
-				Prospect buscarProspecto = prospectService.findByPerson(buscarPersona);
+				Prospect buscarProspecto = prospectService.findByPersonAndSucursal(buscarPersona, navegacionBean.getSucursalLogin());
 				if (buscarProspecto != null) {
 					Date fechaRest = sumaRestarFecha(buscarProspecto.getDateBlock(), 180);
 					if(fechaRest.after(new Date())) {

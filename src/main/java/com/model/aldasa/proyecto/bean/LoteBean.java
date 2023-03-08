@@ -259,7 +259,7 @@ public class LoteBean extends BaseBean implements Serializable{
 	}
 	
 	public void listarProject(){
-		lstProject= projectService.findByStatus(true);
+		lstProject= projectService.findByStatusAndSucursal(true, navegacionBean.getSucursalLogin());
 	}
 	
 	public void listarLotes(){		
@@ -332,7 +332,7 @@ public class LoteBean extends BaseBean implements Serializable{
 //				if(projectFilter.equals("")) {
 //					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndStatusLike(numberLote,"%"+manzana+"%","%"+status+"%", pageable);
 //				}else {
-					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(numberLote, "%"+manzana+"%",proyecto,"%"+status+"%", pageable);
+					pageLote= loteService.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLikeAndProjectSucursal(numberLote, "%"+manzana+"%",proyecto,"%"+status+"%", navegacionBean.getSucursalLogin(), pageable);
 				
 //				}
 				setRowCount((int) pageLote.getTotalElements());

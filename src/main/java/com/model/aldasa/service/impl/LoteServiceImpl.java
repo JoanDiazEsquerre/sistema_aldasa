@@ -13,6 +13,7 @@ import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Manzana;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Project;
+import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.repository.LoteRepository; 
 import com.model.aldasa.service.LoteService;
 
@@ -51,11 +52,6 @@ public class LoteServiceImpl implements LoteService {
 	@Override
 	public Lote findById(int id) {
 		return loteRepository.findById(id);
-	}
-
-	@Override
-	public Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(String numberLote, String nameManzana,String projectName ,String status,Pageable pageable) {
-		return loteRepository.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLike(numberLote, nameManzana, projectName, status, pageable);
 	}
 
 	@Override
@@ -104,6 +100,20 @@ public class LoteServiceImpl implements LoteService {
 			String tipoPago, Date fechaIni, Date fechaFin) {
 		// TODO Auto-generated method stub
 		return loteRepository.findByStatusAndPersonAssessorDniAndTipoPagoAndFechaVendidoBetween(Status, dniAsesor, tipoPago, fechaIni, fechaFin);
+	}
+
+	@Override
+	public Page<Lote> findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLikeAndProjectSucursal(
+			String numberLote, String nameManzana, String projectName, String status, Sucursal sucursal,
+			Pageable pageable) {
+		// TODO Auto-generated method stub
+		return loteRepository.findAllByNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndStatusLikeAndProjectSucursal(numberLote, nameManzana, projectName, status, sucursal, pageable);
+	}
+
+	@Override
+	public List<Lote> findByStatusAndProjectSucursal(String status, Sucursal sucursal) {
+		// TODO Auto-generated method stub
+		return loteRepository.findByStatusAndProjectSucursal(status, sucursal);
 	}
 
 	

@@ -28,6 +28,9 @@ public class Sucursal {
 	@JoinColumn(name="idempresa")
 	private Empresa empresa;
 	
+	private String ruc;
+
+	
 	
 	
 	
@@ -60,6 +63,12 @@ public class Sucursal {
 	}
 	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
+	}
+	public String getRuc() {
+		return ruc;
+	}
+	public void setRuc(String ruc) {
+		this.ruc = ruc;
 	}
 	
 	
