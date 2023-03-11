@@ -64,6 +64,7 @@
 			            
 			            <p:submenu label="Ventas" rendered="#{navegacionBean.menuVentas}">
 			            	<p:menuitem value="Ranking de Ventas" ajax="false" icon="pi pi-chart-line" update=":contenedor" actionListener="#{navegacionBean.getVentasRankingVentasPage()}" rendered="#{navegacionBean.subMenuRankingVentas}"/>
+			            	<p:menuitem value="Documento de Ventas" ajax="false" icon="pi pi-file" update=":contenedor" actionListener="#{navegacionBean.getVentasDocumentoVentaPage()}" rendered="#{navegacionBean.subMenuDocumentoVenta}"/>			            
 			            </p:submenu>
 			            
 						<p:submenu label="Mantenimientos" rendered="#{navegacionBean.menuMantenimiento}">

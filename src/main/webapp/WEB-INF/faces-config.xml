@@ -660,5 +660,15 @@
 			<value>#{navegacionBean}</value>
 		</managed-property>
 	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>documentoVentaBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.ventas.bean.DocumentoVentaBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>documentoVentaService</property-name>
+			<value>#{documentoVentaService}</value>
+		</managed-property>
+	</managed-bean>
 		
 </faces-config>

@@ -44,7 +44,7 @@ public class NavegacionBean implements Serializable  {
 	
 	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
-					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato;
+					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato, subMenuDocumentoVenta;
 	
 	private int[] permisoProspectos= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoProspeccion= {idAdministrador,idSupervisor,idAsesor};
@@ -68,6 +68,7 @@ public class NavegacionBean implements Serializable  {
 	private int[] permisoRequerimientoSeparacion= {idAdministrador,idAsistentenAdmin,idAsistenteVenta,idContabilidad};
 	private int[] permisoRankingVentas= {idAdministrador};
 	private int[] permisoContrato= {idAdministrador};
+	private int[] permisoDocumentoVentas= {idAdministrador};
 
 	@PostConstruct
 	public void init() {
@@ -111,8 +112,9 @@ public class NavegacionBean implements Serializable  {
 		
 		//******************************************************************************
 		subMenuRankingVentas= validaPermiso(permisoRankingVentas);
+		subMenuDocumentoVenta=validaPermiso(permisoDocumentoVentas);
 				
-		if(subMenuRankingVentas){
+		if(subMenuRankingVentas || subMenuDocumentoVenta){
 			menuVentas=true;
 		}
 		
@@ -242,6 +244,10 @@ public class NavegacionBean implements Serializable  {
 
 	public void getVentasRankingVentasPage() {
 		ruta = "modulos/ventas/mantenimientos/rankingVentas.xhtml";
+	}
+	
+	public void getVentasDocumentoVentaPage() {
+		ruta = "modulos/ventas/mantenimientos/documentoVenta.xhtml";
 	}
 
 	public void getContratosPage() {
@@ -631,6 +637,18 @@ public class NavegacionBean implements Serializable  {
 	}
 	public void setPermisoContrato(int[] permisoContrato) {
 		this.permisoContrato = permisoContrato;
+	}
+	public boolean isSubMenuDocumentoVenta() {
+		return subMenuDocumentoVenta;
+	}
+	public void setSubMenuDocumentoVenta(boolean subMenuDocumentoVenta) {
+		this.subMenuDocumentoVenta = subMenuDocumentoVenta;
+	}
+	public int[] getPermisoDocumentoVentas() {
+		return permisoDocumentoVentas;
+	}
+	public void setPermisoDocumentoVentas(int[] permisoDocumentoVentas) {
+		this.permisoDocumentoVentas = permisoDocumentoVentas;
 	}
 	
 	

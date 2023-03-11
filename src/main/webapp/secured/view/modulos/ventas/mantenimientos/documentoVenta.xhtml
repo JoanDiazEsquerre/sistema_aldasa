@@ -1,0 +1,128 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	locale="#{localeBean.usedLocale}"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+	<h:form id="form">
+		<h2 style="color: #007d4c;">VENTAS > DOCUMENTO DE VENTA</h2>
+		<p:tabView id="tabView">
+			<p:tab title="Lista de Documentos de Venta" id="tabListDoc">
+				<p:selectOneButton value="#{documentoVentaBean.estado}" unselectable="false">
+					<f:selectItem itemLabel="Activos" itemValue="#{true}" />
+					<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
+					<p:ajax update=":form:tabView:idTableListDoc" listener="#{documentoVentaBean.iniciarLazy()}" />
+				</p:selectOneButton> 
+				
+					<p:dataTable var="documento" id="idTableListDoc" value="#{documentoVentaBean.lstDocumentoVentaLazy}" rowIndexVar="row" paginator="true" rows="15" size="small"
+					emptyMessage="No se encontraron documentos de venta." style="width:130%" 	paginatorPosition="bottom" rowKey="#{documento.id}" selection="#{documentoVentaBean.documentoVentaSelected}" selectionMode="single">
+					
+						<f:facet name="header">
+							<div class="p-d-flex p-ai-center p-jc-between">
+								<span>Lista de Empleados</span>
+							</div>
+						</f:facet>
+				
+						<p:column width="25px">
+				                      #{row +1}
+				        </p:column>
+				        
+						<p:column headerText="Cliente" sortBy="#{documento.cliente.person.surnames}" filterBy="#{documento.cliente.person.surnames}" filterMatchMode="contains">
+							<h:outputText value="#{documento.cliente.person.surnames} #{documento.cliente.person.names}" />
+						</p:column>
+						
+						<p:column headerText="Documento Venta" filterMatchMode="contains">
+							<h:outputText value="#{documento.documentoVentaRef}" />
+						</p:column>
+						
+						<p:column headerText="Sucursal" sortBy="#{documento.sucursal.razonSocial}" filterBy="#{documento.sucursal.razonSocial}" filterMatchMode="contains">
+							<h:outputText value="#{documento.sucursal.razonSocial}" />
+						</p:column>
+						
+						<p:column headerText="Tipo Comprobante" filterMatchMode="contains">
+							<h:outputText value="#{documento.tipoComprobante}" />
+						</p:column>
+						
+						<p:column headerText="Serie" filterMatchMode="contains">
+							<h:outputText value="#{documento.serie}" />
+						</p:column>
+						
+						<p:column headerText="Número" filterMatchMode="contains">
+							<h:outputText value="#{documento.numero}" />
+						</p:column>
+						
+						<p:column headerText="Ruc"  filterMatchMode="contains">
+							<h:outputText value="#{documento.ruc}" />
+						</p:column>
+						
+						<p:column headerText="DNI"  filterMatchMode="contains">
+							<h:outputText value="#{documento.dni}" />
+						</p:column>
+						
+						<p:column headerText="Razón Social"  filterMatchMode="contains">
+							<h:outputText value="#{documento.razonSocial}" />
+						</p:column>
+						
+						<p:column headerText="Nombre Comercial"  filterMatchMode="contains">
+							<h:outputText value="#{documento.nombreComercial}" />
+						</p:column>
+						
+						<p:column headerText="Dirección" filterMatchMode="contains">
+							<h:outputText value="#{documento.direccion}" />
+						</p:column>
+						
+						<p:column headerText="Fecha Emision" filterMatchMode="contains">
+							<h:outputText value="#{documento.fechaEmision}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Tipo Moneda" filterMatchMode="contains">
+							<h:outputText value="#{documento.tipoMoneda}" />
+						</p:column>
+						
+						<p:column headerText="Observación" filterMatchMode="contains">
+							<h:outputText value="#{documento.observacion}" />
+						</p:column>
+						
+						<p:column headerText="Condición Pago"  filterMatchMode="contains">
+							<h:outputText value="#{documento.condionPago}" />
+						</p:column>
+						
+						<p:column headerText="SubTotal" filterMatchMode="contains">
+							<h:outputText value="#{documento.subTotal}" />
+						</p:column>
+						
+						<p:column headerText="IGV" filterMatchMode="contains">
+							<h:outputText value="#{documento.igv}" />
+						</p:column>
+						
+						<p:column headerText="Total"  filterMatchMode="contains">
+							<h:outputText value="#{documento.total}" />
+						</p:column>
+			
+						<p:column headerText="Fecha Registro" filterMatchMode="contains">
+							<h:outputText value="#{documento.fechaRegistro}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Usuario Registro" sortBy="#{documento.usuarioRegistro.username}" filterBy="#{documento.usuarioRegistro.username}" filterMatchMode="contains">
+							<h:outputText value="#{documento.usuarioRegistro.username}" />
+						</p:column>
+						
+					</p:dataTable>
+			</p:tab>
+			<p:tab title="Nuevo Documento de Venta" >
+				<h:outputLabel for="dateStart" value="Fecha: " />
+				<p:datePicker id="dateStart" value="#{prospeccionBean.prospectionNew.dateStart}" style="margin:5px;"/>
+				<p:spacer></p:spacer>	
+				
+			</p:tab>
+		</p:tabView>
+	</h:form>
+	
+</ui:composition>
