@@ -247,7 +247,7 @@ public class NavegacionBean implements Serializable  {
 	}
 	
 	public void getVentasDocumentoVentaPage() {
-		ruta = "modulos/ventas/mantenimientos/documentoVenta.xhtml";
+		ruta = "modulos/ventas/procesos/documentoVenta.xhtml";
 	}
 
 	public void getContratosPage() {

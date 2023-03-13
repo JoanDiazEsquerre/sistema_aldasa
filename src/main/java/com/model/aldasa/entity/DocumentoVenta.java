@@ -58,8 +58,8 @@ public class DocumentoVenta {
 	
 	private String observacion;
 	
-	@Column(name="condicionpago")
-	private String condicionPago;
+	@Column(name="tipopago")
+	private String tipoPago;
 	
 	@Column(name="subtotal")
 	private Double subTotal;
@@ -78,9 +78,7 @@ public class DocumentoVenta {
 	private boolean estado;
 
 	
-	
-	
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -135,7 +133,6 @@ public class DocumentoVenta {
 	public void setDni(String dni) {
 		this.dni = dni;
 	}
-	
 	public String getRazonSocial() {
 		return razonSocial;
 	}
@@ -172,12 +169,6 @@ public class DocumentoVenta {
 	public void setObservacion(String observacion) {
 		this.observacion = observacion;
 	}
-	public String getCondicionPago() {
-		return condicionPago;
-	}
-	public void setCondicionPago(String condicionPago) {
-		this.condicionPago = condicionPago;
-	}
 	public Double getSubTotal() {
 		return subTotal;
 	}
@@ -213,6 +204,12 @@ public class DocumentoVenta {
 	}
 	public void setEstado(boolean estado) {
 		this.estado = estado;
+	}
+	public String getTipoPago() {
+		return tipoPago;
+	}
+	public void setTipoPago(String tipoPago) {
+		this.tipoPago = tipoPago;
 	}
 	
 	

@@ -76,7 +76,8 @@ public class DocumentoVentaBean implements Serializable{
 	
 	private Date fechaEmi ;
 	private String fechaTextoVista;
-	private String tipoDocumento ; 
+	private String tipoDocumento, ruc, nombreRazonSocial, direccion ; 
+	private String tipoPago = "Contado";
 	
 	SimpleDateFormat sdf = new SimpleDateFormat("dd 'de'  MMMMM 'del' yyyy");
 	
@@ -318,6 +319,38 @@ public class DocumentoVentaBean implements Serializable{
 	}
 	public void setVoucherSelected(Voucher voucherSelected) {
 		this.voucherSelected = voucherSelected;
+	}
+
+	public String getRuc() {
+		return ruc;
+	}
+
+	public void setRuc(String ruc) {
+		this.ruc = ruc;
+	}
+
+	public String getNombreRazonSocial() {
+		return nombreRazonSocial;
+	}
+
+	public void setNombreRazonSocial(String nombreRazonSocial) {
+		this.nombreRazonSocial = nombreRazonSocial;
+	}
+
+	public String getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	public String getTipoPago() {
+		return tipoPago;
+	}
+
+	public void setTipoPago(String tipoPago) {
+		this.tipoPago = tipoPago;
 	}
 	
 	

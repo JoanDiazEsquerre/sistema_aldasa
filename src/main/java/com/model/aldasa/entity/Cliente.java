@@ -30,8 +30,8 @@ public class Cliente {
 	private String nombreComercial;
 	
 	private String ruc;
-	
 	private String dni;
+	private String direccion;
 	
 	private boolean estado;
 	
@@ -98,6 +98,12 @@ public class Cliente {
 	}
 	public void setIdUsuarioRegistro(Usuario idUsuarioRegistro) {
 		this.idUsuarioRegistro = idUsuarioRegistro;
+	}
+	public String getDireccion() {
+		return direccion;
+	}
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
 	}
 	
 	
