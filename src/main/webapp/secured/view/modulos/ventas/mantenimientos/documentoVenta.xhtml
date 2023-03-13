@@ -116,10 +116,138 @@
 						
 					</p:dataTable>
 			</p:tab>
+			
 			<p:tab title="Nuevo Documento de Venta" >
-				<h:outputLabel for="dateStart" value="Fecha: " />
-				<p:datePicker id="dateStart" value="#{prospeccionBean.prospectionNew.dateStart}" style="margin:5px;"/>
-				<p:spacer></p:spacer>	
+			<h:panelGrid columns="8" id="gridNuevoDoc"> 
+			
+				<h:outputLabel  value="Fecha: " />
+				<p:datePicker  value="#{documentoVentaBean.documentoVentaNew.fechaEmision}" style="margin:5px;"> 
+					<p:ajax update="txt_fecha_Formated" />				
+				</p:datePicker>
+				
+				<h:outputText style="font-size: 22px; font-weight: bold; color: #547E11;" id="txt_fecha_Formated" value="#{documentoVentaBean.documentoVentaNew.fechaEmision}" >
+                    <f:convertDateTime pattern="EEEEE, dd MMMM yyyy"/>
+                </h:outputText>
+								
+				<h:outputLabel value="Documento:"  />
+				<p:selectOneMenu  value="#{documentoVentaBean.tipoDocumento}" style="margin:5px; width:100px">
+					<f:selectItem itemLabel="Factura" itemValue="F" /> 
+					<f:selectItem itemLabel="Boleta" itemValue="B"/>
+					<p:ajax listener="#{documentoVentaBean.listarSerie}" update="optionSerie, num"></p:ajax>
+				</p:selectOneMenu>
+					
+				<h:outputLabel value="Serie-Número:"  />
+                
+                <p:selectOneMenu id="optionSerie" value="#{documentoVentaBean.serieDocumentoSelected}" converter="#{documentoVentaBean.conversorSerie}" style="margin:10px" >
+                   <f:selectItems value="#{documentoVentaBean.lstSerieDocumento}" var="serie" itemLabel="#{serie.serie}" itemValue="#{serie}"/>
+                </p:selectOneMenu>
+                
+				<p:inputText value="#{documentoVentaBean.serieDocumentoSelected.numero}" style="margin:10px" id="num" > </p:inputText> 
+			
+			</h:panelGrid>	
+				
+			<h:panelGrid columns="2" > 
+			
+			<h:panelGrid columns="8" id="gridImpCuota"> 
+					<p:commandButton id="movieBtn" style="font-size: 14px;" value="Importar Cuota" icon="pi pi-search" actionListener="#{documentoVentaBean.listarCuota()}" update=":form:tabView:tableCuota"/>
+					<p:overlayPanel for="movieBtn" dynamic="true" style="width:600px" widgetVar="moviePicker" >
+						<p:dataTable var="cuota" value="#{documentoVentaBean.lstCuota}"  rows="5" paginator="true" selectionMode="single" rowIndexVar="row" paginatorPosition="bottom" 
+							selection="#{documentoVentaBean.cuotaSelected}" rowKey="#{cuota.id}" id="tableCuota" emptyMessage="No se encontraron resultados" size="small">
+<!-- 							<p:ajax event="rowSelect" listener="#{contratoBean.seleccionarLote()}" oncomplete="PF('moviePicker').hide()" update=":form:tabView:gridImpCuota"/> -->
+	
+							<p:column headerText="Mz-Lt" style="text-align:center; width:60px">
+								<h:outputText value="#{cuota.contrato.lote.manzana.name} - #{cuota.contrato.lote.numberLote}" style="font-size: 14px;"/>
+							</p:column>
+							
+							<p:column headerText="Persona Venta" style="text-align:center; width:60px" >
+								<h:outputText value="#{cuota.contrato.personVenta.surnames}" style="font-size: 14px;"/>
+							</p:column>
+							
+							<p:column headerText="Fecha Pago" style="text-align:center; width:60px">
+								<h:outputText value="#{cuota.fechaPago}" style="font-size: 14px;"> 
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+	
+							<p:column headerText="Cuota SI" style="text-align:center; width:60px">
+								<h:outputText value="#{cuota.cuotaSI}" style="font-size: 14px;"/>
+							</p:column>
+	
+							<p:column headerText="Interés" style="text-align:center; width:60px">
+								<h:outputText value="#{cuota.interes}" style="font-size: 14px;"/>
+							</p:column>
+							
+							<p:column headerText="Cuota Total" style="text-align:center; width:60px">
+								<h:outputText value="#{cuota.cuotaTotal}" style="font-size: 14px;"/>
+							</p:column>
+							
+							<p:column headerText="Adelanto" style="text-align:center; width:60px">
+								<h:outputText value="#{cuota.adelanto}" style="font-size: 14px;"/>
+							</p:column>
+							
+							<p:column headerText="Pago Total" style="text-align:center; width:60px">
+								<h:outputText value="#{cuota.pagoTotal}" style="font-size: 14px;"/>
+							</p:column>
+							
+						</p:dataTable>
+					</p:overlayPanel>
+				
+				
+					<h:outputText value="Lote: " style="font-size: 20px;font-weight: bolder;" rendered="#{contratoBean.loteSelected ne null}"/>
+					<h:outputText value="#{contratoBean.nombreLoteSelected}" style="font-size: 20px;color:#007d4c;font-weight: bolder;" rendered="#{contratoBean.loteSelected ne null}"/>
+					
+					<p:commandLink actionListener="#{contratoBean.eliminarLoteSelected}" update=":form:tabView:gridImpCuota" title="ELIMINAR" >
+                        <p:graphicImage value="/recursos/images/eliminar.gif" rendered="#{contratoBean.loteSelected ne null}" />
+                    </p:commandLink>
+				</h:panelGrid>
+				
+				<h:panelGrid columns="5" id="gridImpVoucher"> 
+					<p:commandButton id="movieBtnVou" style="font-size: 14px;" value="Importar Voucher Inicial" icon="pi pi-search" actionListener="#{documentoVentaBean.listarVoucher()}" update=":form:tabView:tableVoucher"/>
+					<p:overlayPanel for="movieBtnVou" dynamic="true" style="width:600px" widgetVar="moviePicker" >
+						<p:dataTable var="voucher" value="#{documentoVentaBean.lstVoucher}"  rows="5" paginator="true" selectionMode="single" rowIndexVar="row" paginatorPosition="bottom" 
+							selection="#{documentoVentaBean.voucherSelected}" rowKey="#{voucher.id}" id="tableVoucher" emptyMessage="No se encontraron resultados" size="small">
+<!-- 							<p:ajax event="rowSelect" listener="#{contratoBean.seleccionarLote()}" oncomplete="PF('moviePicker').hide()" update=":form:tabView:gridImpVoucher"/> -->
+	
+							<p:column headerText="Cuenta Bancaria" style="text-align:center; width:60px">
+								<h:outputText value="#{voucher.cuentaBancaria.numero}" style="font-size: 14px;"/>
+							</p:column>
+							
+							<p:column headerText="Monto" style="text-align:center; width:60px" >
+								<h:outputText value="#{voucher.monto}" style="font-size: 14px;"/>
+							</p:column>
+							
+							<p:column headerText="Tipo Transacción" style="text-align:center; width:60px">
+								<h:outputText value="#{voucher.tipoTransaccion}" style="font-size: 14px;"/>
+							</p:column>
+							
+							<p:column headerText="Número Transacción" style="text-align:center; width:60px">
+								<h:outputText value="#{voucher.numeroTransaccion}" style="font-size: 14px;"/>
+							</p:column>
+							
+							<p:column headerText="Fecha Operación" style="text-align:center; width:60px">
+								<h:outputText value="#{voucher.fechaOperacion}" style="font-size: 14px;"> 
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+	
+						</p:dataTable>
+					</p:overlayPanel>
+				
+				
+					<h:outputText value="Lote: " style="font-size: 20px;font-weight: bolder;" rendered="#{contratoBean.loteSelected ne null}"/>
+					<h:outputText value="#{contratoBean.nombreLoteSelected}" style="font-size: 20px;color:#007d4c;font-weight: bolder;" rendered="#{contratoBean.loteSelected ne null}"/>
+					
+					<p:commandLink actionListener="#{contratoBean.eliminarLoteSelected}" update=":form:tabView:gridImpVoucher" title="ELIMINAR" >
+                        <p:graphicImage value="/recursos/images/eliminar.gif" rendered="#{contratoBean.loteSelected ne null}" />
+                    </p:commandLink>
+				</h:panelGrid>
+								
+								
+				</h:panelGrid>
+				
+				
+				
+				
 				
 			</p:tab>
 		</p:tabView>

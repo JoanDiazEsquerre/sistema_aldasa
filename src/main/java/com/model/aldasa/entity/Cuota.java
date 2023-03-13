@@ -30,7 +30,7 @@ public class Cuota {
 	@Column(name="cuotatotal")
 	private Double cuotaTotal;
 
-	private Double adelante;
+	private Double adelanto;
 	
 	@Column(name="pagototal")
 	private String pagoTotal;
@@ -38,6 +38,8 @@ public class Cuota {
 	@ManyToOne
 	@JoinColumn(name="idcontrato")
 	private Contrato contrato;
+	
+	private boolean estado;
 
 	
 	
@@ -68,11 +70,11 @@ public class Cuota {
 	public void setCuotaTotal(Double cuotaTotal) {
 		this.cuotaTotal = cuotaTotal;
 	}
-	public Double getAdelante() {
-		return adelante;
+	public Double getAdelanto() {
+		return adelanto;
 	}
-	public void setAdelante(Double adelante) {
-		this.adelante = adelante;
+	public void setAdelanto(Double adelanto) {
+		this.adelanto = adelanto;
 	}
 	public String getPagoTotal() {
 		return pagoTotal;
@@ -85,6 +87,18 @@ public class Cuota {
 	}
 	public void setContrato(Contrato contrato) {
 		this.contrato = contrato;
+	}
+	public Date getFechaPago() {
+		return fechaPago;
+	}
+	public void setFechaPago(Date fechaPago) {
+		this.fechaPago = fechaPago;
+	}
+	public boolean isEstado() {
+		return estado;
+	}
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 	
 }

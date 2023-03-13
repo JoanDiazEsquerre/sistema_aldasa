@@ -1,6 +1,7 @@
 package com.model.aldasa.service.impl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,13 @@ public class VoucherServiceImpl implements VoucherService {
 		// TODO Auto-generated method stub
 		return voucherRepository.findByCuentaBancariaAndMontoAndTipoTransaccionAndNumeroTransaccionAndFechaOperacion(cuentaBancaria, monto, tipoTransaccion, numeroTransaccion, fechaOperacion);
 	}
+
+	@Override
+	public List<Voucher> findByEstado(String estado) {
+		// TODO Auto-generated method stub
+		return voucherRepository.findByEstado(estado);
+	}
+
 
 	
 }

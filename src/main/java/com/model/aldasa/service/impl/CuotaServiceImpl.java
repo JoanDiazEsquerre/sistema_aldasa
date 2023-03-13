@@ -1,5 +1,6 @@
 package com.model.aldasa.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +33,13 @@ public class CuotaServiceImpl implements CuotaService{
 		// TODO Auto-generated method stub
 		cuotaRepository.delete(entity);
 	}
+
+	@Override
+	public List<Cuota> findByPagoTotalAndEstado(String pagoTotal, boolean estado) {
+		// TODO Auto-generated method stub
+		return cuotaRepository.findByPagoTotalAndEstado(pagoTotal, estado);
+	}
+
+
 
 }

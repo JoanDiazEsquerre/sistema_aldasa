@@ -38,6 +38,8 @@ public class Voucher {
 	@JoinColumn(name="idrequerimientoseparacion")
 	private RequerimientoSeparacion requerimientoSeparacion;
 	
+	private String estado;
+	
 	
 	
 	
@@ -85,8 +87,13 @@ public class Voucher {
 		this.requerimientoSeparacion = requerimientoSeparacion;
 	}
 	
-	
-	
+
+	public String getEstado() {
+		return estado;
+	}
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
 	@Override
     public boolean equals(Object other) {
         return (other instanceof Voucher) && (id != null)

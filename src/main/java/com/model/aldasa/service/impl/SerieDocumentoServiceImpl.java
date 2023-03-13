@@ -1,11 +1,13 @@
 package com.model.aldasa.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.SerieDocumento;
+import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.repository.SerieDocumentoRepository;
 import com.model.aldasa.service.SerieDocumentoService;
 
@@ -32,4 +34,12 @@ public class SerieDocumentoServiceImpl  implements SerieDocumentoService {
 		// TODO Auto-generated method stub
 		serieDocumentoRepository.delete(entity);
 	}
+
+	@Override
+	public List<SerieDocumento> findByTipoDocumentoAndSucursal(String tipoDocumento, Sucursal sucural) {
+		// TODO Auto-generated method stub
+		return serieDocumentoRepository.findByTipoDocumentoAndSucursal(tipoDocumento, sucural);
+	}
+
+
 }
