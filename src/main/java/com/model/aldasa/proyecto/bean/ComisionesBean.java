@@ -1,6 +1,7 @@
 package com.model.aldasa.proyecto.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -88,9 +89,9 @@ public class ComisionesBean implements Serializable {
 	private Integer comisionContado=8;
 	private Integer comisionCredito=4;
 		
-	private double totalSolesContado = 0;
-	private double totalSolesInicial = 0;
-	private double totalSolesPendiente = 0;
+	private BigDecimal totalSolesContado = BigDecimal.ZERO;
+	private BigDecimal totalSolesInicial = BigDecimal.ZERO;
+	private BigDecimal totalSolesPendiente = BigDecimal.ZERO;
 	
 //	private List<Person> lstPersonAsesor;
 	private List<Comision> lstComision;
@@ -281,8 +282,8 @@ public class ComisionesBean implements Serializable {
 		
 	}
 	
-	public double obtenerSueldoBasicoAsesor(Person asesor) {
-		double sueldo = 0.0;
+	public BigDecimal obtenerSueldoBasicoAsesor(Person asesor) {
+		BigDecimal sueldo = BigDecimal.ZERO;
 		Empleado empleado = empleadoService.findByPerson(asesor);
 		if(empleado != null) {
 			sueldo = empleado.getSueldoBasico();
@@ -292,8 +293,8 @@ public class ComisionesBean implements Serializable {
 		
 	}
 	
-	public double obtenerSueldoBasicoAsesorBono(Person asesor) {
-		double sueldo = 0.0;
+	public BigDecimal obtenerSueldoBasicoAsesorBono(Person asesor) {
+		BigDecimal sueldo = BigDecimal.ZERO;
 		if(asesor.getLotesVendidos()>=2 && asesor.getLotesVendidos()<=4) {
 			sueldo = comisionSelected.getBasicoJunior();
 		}
@@ -307,8 +308,8 @@ public class ComisionesBean implements Serializable {
 		return sueldo;
 	}
 	
-	public double obtenerBonoAsesor(Person asesor) {
-		double bono = 0.0;
+	public BigDecimal obtenerBonoAsesor(Person asesor) {
+		BigDecimal bono = BigDecimal.ZERO;
 		if(asesor.getLotesVendidos()>=2 && asesor.getLotesVendidos()<=4) {
 			bono = comisionSelected.getBonoJunior();
 		}
@@ -322,20 +323,20 @@ public class ComisionesBean implements Serializable {
 		return bono;
 	}
 	
-	public double pagoMesAsesor(Person person) {
-		double pagoMes = 0.0;
+	public BigDecimal pagoMesAsesor(Person person) {
+		BigDecimal pagoMes = BigDecimal.ZERO;
 		String tipoBono = asignarTipoBono(person);
 		if(tipoBono.equals("Ninguno")) {
-			pagoMes = obtenerSueldoBasicoAsesor(person)+ person.getTotalComision();
+			pagoMes = obtenerSueldoBasicoAsesor(person).add(person.getTotalComision());
 		}else {
-			pagoMes = person.getTotalComision()+ obtenerBonoAsesor(person)+obtenerSueldoBasicoAsesorBono(person);
+			pagoMes = person.getTotalComision().add(obtenerBonoAsesor(person)).add(obtenerSueldoBasicoAsesorBono(person));
 		}
 		
 		return pagoMes;
 	}
 	
-	public double calcularSueldoMesAsesor(Person asesor) {
-		double sueldoMes = 0.0;
+	public BigDecimal calcularSueldoMesAsesor(Person asesor) {
+		BigDecimal sueldoMes = BigDecimal.ZERO;
 		if(asesor.getLotesVendidos()>=2 && asesor.getLotesVendidos()<=4) {
 			sueldoMes = comisionSelected.getBonoJunior();
 		}
@@ -349,8 +350,8 @@ public class ComisionesBean implements Serializable {
 		return sueldoMes;
 	}
 	
-	public double obtenerTotoalComisionesAsesor(Person asesor) {
-		double sueldo = 0.0;
+	public BigDecimal obtenerTotoalComisionesAsesor(Person asesor) {
+		BigDecimal sueldo = BigDecimal.ZERO;
 		Empleado empleado = empleadoService.findByPerson(asesor);
 		if(empleado != null) {
 			sueldo = empleado.getSueldoBasico();
@@ -366,11 +367,11 @@ public class ComisionesBean implements Serializable {
 		
 	}
 	
-	public double calcularComisionSubgerente(Lote lote) {
+	public BigDecimal calcularComisionSubgerente(Lote lote) {
 
-		double comision = 0;
-		double porcSubgerente =  Double.parseDouble(comisionSelected.getSubgerente()+"")  / 100;
-		comision = lote.getMontoVenta() * porcSubgerente;
+		BigDecimal comision = BigDecimal.ZERO;
+		BigDecimal porcSubgerente = new BigDecimal(comisionSelected.getSubgerente()).divide(new BigDecimal(100));
+		comision = lote.getMontoVenta().multiply(porcSubgerente);
 
 		return comision;
 	}
@@ -385,21 +386,21 @@ public class ComisionesBean implements Serializable {
 		
 	}
 	
-	public double calcularComisionAsesor(Lote lote) {
-		 double comision = 0;
+	public BigDecimal calcularComisionAsesor(Lote lote) {
+		BigDecimal comision = BigDecimal.ZERO;
 		if (lote.getTipoPago().equals("Contado")) {
-			double porcentaje = Double.parseDouble(comisionSelected.getComisionContado()+"") /100;
-			comision = porcentaje * lote.getMontoVenta();
+			BigDecimal porcentaje = new BigDecimal(comisionSelected.getComisionContado()).divide(new BigDecimal(100));
+			comision = porcentaje.multiply(lote.getMontoVenta());
 		}
 		if(lote.getTipoPago().equals("Crédito")) {
-			double porcentaje = Double.parseDouble(comisionSelected.getComisionCredito()+"") /100;
-			comision = porcentaje * lote.getMontoVenta();
+			BigDecimal porcentaje = new BigDecimal(comisionSelected.getComisionCredito()).divide(new BigDecimal(100));
+			comision = porcentaje.multiply(lote.getMontoVenta());
 		}
 		return  comision;
 	}
 	
-	public double calcularSolesContado(Team team) {
-		double solesContado = 0;
+	public BigDecimal calcularSolesContado(Team team) {
+		BigDecimal solesContado = BigDecimal.ZERO;
 		
 		if(team.getName().equals("INTERNOS")) {
 			
@@ -419,11 +420,11 @@ public class ComisionesBean implements Serializable {
 			if(!listLotesVendido.isEmpty()) {
 				for(Lote lote : listLotesVendido){
 					if(lote.getTipoPago().equals("Contado")) {
-						solesContado = solesContado + lote.getMontoVenta();
+						solesContado = solesContado.add(lote.getMontoVenta());
 					}
 				}
 			}
-			totalSolesContado = totalSolesContado +solesContado;
+			totalSolesContado = totalSolesContado.add(solesContado);
 			
 		}else if(team.getName().equals("EXTERNOS")) {
 			
@@ -443,22 +444,22 @@ public class ComisionesBean implements Serializable {
 			if(!listLotesVendido.isEmpty()) {
 				for(Lote lote : listLotesVendido){
 					if(lote.getTipoPago().equals("Contado")) {
-						solesContado = solesContado + lote.getMontoVenta();
+						solesContado = solesContado.add(lote.getMontoVenta());
 					}
 				}
 			}
-			totalSolesContado = totalSolesContado +solesContado;
+			totalSolesContado = totalSolesContado.add(solesContado);
 			
 		}else {
 			List<Lote> listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(),"%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
 			if(!listaLotes.isEmpty()) {
 				for(Lote lote : listaLotes){
 					if(lote.getTipoPago().equals("Contado")) {
-						solesContado = solesContado + lote.getMontoVenta();
+						solesContado = solesContado.add(lote.getMontoVenta());
 					}
 				}
 			}
-			totalSolesContado = totalSolesContado +solesContado;
+			totalSolesContado = totalSolesContado.add(solesContado);
 			
 		}
 		
@@ -466,8 +467,8 @@ public class ComisionesBean implements Serializable {
 		return solesContado;
 	}
 	
-	public double calcularSolesInicial(Team team) {
-		double solesCredito = 0;
+	public BigDecimal calcularSolesInicial(Team team) {
+		BigDecimal solesCredito = BigDecimal.ZERO;
 		
 		if(team.getName().equals("INTERNOS")) {
 			List<Lote> listLotesVendido = new ArrayList<>();
@@ -486,11 +487,11 @@ public class ComisionesBean implements Serializable {
 			if(!listLotesVendido.isEmpty()) {
 				for(Lote lote : listLotesVendido){
 					if(lote.getTipoPago().equals("Crédito")) {
-						solesCredito = solesCredito + lote.getMontoInicial();
+						solesCredito = solesCredito.add(lote.getMontoInicial());
 					}
 				}
 			}
-			totalSolesInicial = totalSolesInicial + solesCredito;
+			totalSolesInicial = totalSolesInicial.add(solesCredito);
 			
 		}else if(team.getName().equals("EXTERNOS")) {
 			
@@ -510,22 +511,22 @@ public class ComisionesBean implements Serializable {
 			if(!listLotesVendido.isEmpty()) {
 				for(Lote lote : listLotesVendido){
 					if(lote.getTipoPago().equals("Crédito")) {
-						solesCredito = solesCredito + lote.getMontoInicial();
+						solesCredito = solesCredito.add(lote.getMontoInicial());
 					}
 				}
 			}
-			totalSolesInicial = totalSolesInicial + solesCredito;
+			totalSolesInicial = totalSolesInicial.add(solesCredito);
 			
 		}else {
 			List<Lote> listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(),"%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
 			if(!listaLotes.isEmpty()) {
 				for(Lote lote : listaLotes){
 					if(lote.getTipoPago().equals("Crédito")) {
-						solesCredito = solesCredito + lote.getMontoInicial();
+						solesCredito = solesCredito.add(lote.getMontoInicial());
 					}
 				}
 			}
-			totalSolesInicial = totalSolesInicial + solesCredito;
+			totalSolesInicial = totalSolesInicial.add(solesCredito);
 		}
 		
 		
@@ -533,8 +534,8 @@ public class ComisionesBean implements Serializable {
 		return solesCredito;
 	}
 	
-	public double calcularSolesPendiente(Team team) {
-		double solesPendiente = 0;
+	public BigDecimal calcularSolesPendiente(Team team) {
+		BigDecimal solesPendiente = BigDecimal.ZERO;
 		
 		if(team.getName().equals("INTERNOS")) {
 			List<Lote> listLotesVendido = new ArrayList<>();
@@ -553,12 +554,12 @@ public class ComisionesBean implements Serializable {
 			if(!listLotesVendido.isEmpty()) {
 				for(Lote lote : listLotesVendido){
 					if(lote.getTipoPago().equals("Crédito")) {
-						double saldo = lote.getMontoVenta() - lote.getMontoInicial();
-						solesPendiente = solesPendiente+saldo;
+						BigDecimal saldo = lote.getMontoVenta().subtract(lote.getMontoInicial());
+						solesPendiente = solesPendiente.add(saldo);
 					}
 				}
 			}
-			totalSolesPendiente = totalSolesPendiente + solesPendiente;
+			totalSolesPendiente = totalSolesPendiente.add(solesPendiente);
 			
 		}else if(team.getName().equals("EXTERNOS")) {
 			
@@ -578,24 +579,24 @@ public class ComisionesBean implements Serializable {
 			if(!listLotesVendido.isEmpty()) {
 				for(Lote lote : listLotesVendido){
 					if(lote.getTipoPago().equals("Crédito")) {
-						double saldo = lote.getMontoVenta() - lote.getMontoInicial();
-						solesPendiente = solesPendiente+saldo;
+						BigDecimal saldo = lote.getMontoVenta().subtract(lote.getMontoInicial());
+						solesPendiente = solesPendiente.add(saldo);
 					}
 				}
 			}
-			totalSolesPendiente = totalSolesPendiente + solesPendiente;
+			totalSolesPendiente = totalSolesPendiente.add(solesPendiente);
 			
 		}else {
 			List<Lote> listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(),"%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
 			if(!listaLotes.isEmpty()) {
 				for(Lote lote : listaLotes){
 					if(lote.getTipoPago().equals("Crédito")) {
-						double saldo = lote.getMontoVenta() - lote.getMontoInicial();
-						solesPendiente = solesPendiente+saldo;
+						BigDecimal saldo = lote.getMontoVenta().subtract(lote.getMontoInicial());
+						solesPendiente = solesPendiente.add(saldo);
 					}
 				}
 			}
-			totalSolesPendiente = totalSolesPendiente + solesPendiente;
+			totalSolesPendiente = totalSolesPendiente.add(solesPendiente);
 		}
 		
 		
@@ -604,9 +605,9 @@ public class ComisionesBean implements Serializable {
 	}
 	
 	public void mostrarMeta() {
-		totalSolesContado=0;
-		totalSolesInicial=0;
-		totalSolesPendiente=0;
+		totalSolesContado=BigDecimal.ZERO;
+		totalSolesInicial=BigDecimal.ZERO;
+		totalSolesPendiente=BigDecimal.ZERO;
 		lstMeta = new ArrayList<>();
 		List<Person> lstSupervisoresCampo = personService.getPersonSupervisorCampo(comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
 		if (!lstSupervisoresCampo.isEmpty()) {
@@ -618,29 +619,30 @@ public class ComisionesBean implements Serializable {
 				meta.setLotesVendidos(lstLotesVendidos.size());
 				
 				MetaSupervisor metaSupervisor = metaSupervisorService.findByComisionAndEstadoAndPersonSupervisor(comisionSelected, true, persona);
-				double calculo = 0;
+				BigDecimal calculo = BigDecimal.ZERO;
 				if(metaSupervisor != null) {
-					calculo = (lstLotesVendidos.size()*100)/metaSupervisor.getMeta();
+					BigDecimal multiplicado = new BigDecimal(lstLotesVendidos.size()).multiply(new BigDecimal(100));    
+					calculo = multiplicado.divide(new BigDecimal(metaSupervisor.getMeta()));
 				}
 				
-				meta.setPorcentajeMeta((int) calculo);
+				meta.setPorcentajeMeta(calculo.intValue());
 				
-				double contado = 0 ;
-				double inicial = 0 ;
-				double saldo = 0 ;
+				BigDecimal contado = BigDecimal.ZERO ;
+				BigDecimal inicial = BigDecimal.ZERO ;
+				BigDecimal saldo = BigDecimal.ZERO ;
 				
 				for(Lote lote : lstLotesVendidos) {
 					if(lote.getTipoPago().equals("Contado")) {
-						contado = contado + lote.getMontoVenta();
+						contado = contado.add(lote.getMontoVenta());
 					}else {
-						inicial = inicial + lote.getMontoInicial();
-						double calculaSaldo = lote.getMontoVenta() - lote.getMontoInicial();
-						saldo =saldo + calculaSaldo ;
+						inicial = inicial.add(lote.getMontoInicial());
+						BigDecimal calculaSaldo = lote.getMontoVenta().subtract(lote.getMontoInicial());
+						saldo =saldo.add(calculaSaldo) ;
 					}
 				}
-				totalSolesContado = totalSolesContado + contado;
-				totalSolesInicial = totalSolesInicial + inicial;
-				totalSolesPendiente = totalSolesPendiente + saldo;
+				totalSolesContado = totalSolesContado.add(contado);
+				totalSolesInicial = totalSolesInicial.add(inicial);
+				totalSolesPendiente = totalSolesPendiente.add(saldo);
 
 				meta.setMontoContado(contado);
 				meta.setMontoInicial(inicial);
@@ -658,22 +660,22 @@ public class ComisionesBean implements Serializable {
 			
 			meta.setPorcentajeMeta(0);
 			
-			double contado = 0 ;
-			double inicial = 0 ;
-			double saldo = 0 ;
+			BigDecimal contado = BigDecimal.ZERO;
+			BigDecimal inicial = BigDecimal.ZERO ;
+			BigDecimal saldo = BigDecimal.ZERO ;
 			
 			for(Comisiones comisiones : lstInternos) {
 				if(comisiones.getLote().getTipoPago().equals("Contado")) {
-					contado = contado + comisiones.getLote().getMontoVenta();
+					contado = contado.add(comisiones.getLote().getMontoVenta());
 				}else {
-					inicial = inicial + comisiones.getLote().getMontoInicial();
-					double calculoSaldo = comisiones.getLote().getMontoVenta() - comisiones.getLote().getMontoInicial();
-					saldo = saldo + calculoSaldo;
+					inicial = inicial.add(comisiones.getLote().getMontoInicial());
+					BigDecimal calculoSaldo = comisiones.getLote().getMontoVenta().subtract(comisiones.getLote().getMontoInicial());
+					saldo = saldo.add(calculoSaldo);
 				}
 			}
-			totalSolesContado = totalSolesContado + contado;
-			totalSolesInicial = totalSolesInicial + inicial;
-			totalSolesPendiente = totalSolesPendiente + saldo ;
+			totalSolesContado = totalSolesContado.add(contado);
+			totalSolesInicial = totalSolesInicial.add(inicial);
+			totalSolesPendiente = totalSolesPendiente.add(saldo) ;
 
 			
 			meta.setMontoContado(contado);
@@ -690,22 +692,22 @@ public class ComisionesBean implements Serializable {
 			meta.setLotesVendidos(lstExternos.size());
 			meta.setPorcentajeMeta(0);
 			
-			double contado = 0 ;
-			double inicial = 0 ;
-			double saldo = 0 ;
+			BigDecimal contado = BigDecimal.ZERO ;
+			BigDecimal inicial = BigDecimal.ZERO ;
+			BigDecimal saldo = BigDecimal.ZERO ;
 			
 			for(Comisiones comisiones : lstExternos) {
 				if(comisiones.getLote().getTipoPago().equals("Contado")) {
-					contado = contado + comisiones.getLote().getMontoVenta();
+					contado = contado.add(comisiones.getLote().getMontoVenta());
 				}else {
-					inicial = inicial + comisiones.getLote().getMontoInicial();
-					double calculoSaldo = comisiones.getLote().getMontoVenta() - comisiones.getLote().getMontoInicial();
-					saldo = saldo + calculoSaldo;
+					inicial = inicial.add(comisiones.getLote().getMontoInicial());
+					BigDecimal calculoSaldo = comisiones.getLote().getMontoVenta().subtract(comisiones.getLote().getMontoInicial());
+					saldo = saldo.add(calculoSaldo);
 				}
 			}
-			totalSolesContado = totalSolesContado + contado;
-			totalSolesInicial = totalSolesInicial + inicial;
-			totalSolesPendiente = totalSolesPendiente + saldo ;
+			totalSolesContado = totalSolesContado.add(contado);
+			totalSolesInicial = totalSolesInicial.add(inicial);
+			totalSolesPendiente = totalSolesPendiente.add(saldo) ;
 			
 			meta.setMontoContado(contado);
 			meta.setMontoInicial(inicial);
@@ -721,29 +723,30 @@ public class ComisionesBean implements Serializable {
 			meta.setLotesVendidos(lstOnline.size());
 			
 			MetaSupervisor metaSupervisor = metaSupervisorService.findByComisionAndEstadoAndPersonSupervisor(comisionSelected, true, lstOnline.get(0).getLote().getPersonSupervisor());
-			double calculo = 0;
+			BigDecimal calculo = BigDecimal.ZERO;
 			if(metaSupervisor != null) {
-				calculo = (lstOnline.size()*100)/metaSupervisor.getMeta();
+				BigDecimal multiplicacion = new BigDecimal(lstOnline.size()).multiply(new BigDecimal(100));
+				calculo = multiplicacion.divide(new BigDecimal(metaSupervisor.getMeta()));
 			}
 			
-			meta.setPorcentajeMeta((int) calculo);
+			meta.setPorcentajeMeta(calculo.intValue());
 						
-			double contado = 0 ;
-			double inicial = 0 ;
-			double saldo = 0 ;
+			BigDecimal contado = BigDecimal.ZERO ;
+			BigDecimal inicial = BigDecimal.ZERO ;
+			BigDecimal saldo = BigDecimal.ZERO ;
 			
 			for(Comisiones comisiones : lstOnline) {
 				if(comisiones.getLote().getTipoPago().equals("Contado")) {
-					contado = contado + comisiones.getLote().getMontoVenta();
+					contado = contado.add(comisiones.getLote().getMontoVenta());
 				}else {
-					inicial = inicial + comisiones.getLote().getMontoInicial();
-					double calculoSaldo = comisiones.getLote().getMontoVenta() - comisiones.getLote().getMontoInicial();
-					saldo = saldo + calculoSaldo;
+					inicial = inicial.add(comisiones.getLote().getMontoInicial());
+					BigDecimal calculoSaldo = comisiones.getLote().getMontoVenta().subtract(comisiones.getLote().getMontoInicial());
+					saldo = saldo.add(calculoSaldo);
 				}
 			}
-			totalSolesContado = totalSolesContado + contado;
-			totalSolesInicial = totalSolesInicial + inicial;
-			totalSolesPendiente = totalSolesPendiente + saldo ;
+			totalSolesContado = totalSolesContado.add(contado);
+			totalSolesInicial = totalSolesInicial.add(inicial);
+			totalSolesPendiente = totalSolesPendiente.add(saldo) ;
 
 			
 			meta.setMontoContado(contado);
@@ -1054,25 +1057,25 @@ public class ComisionesBean implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	public double getTotalSolesContado() {
+	public BigDecimal getTotalSolesContado() {
 		return totalSolesContado;
 	}
-	public void setTotalSolesContado(double totalSolesContado) {
+	public void setTotalSolesContado(BigDecimal totalSolesContado) {
 		this.totalSolesContado = totalSolesContado;
 	}
-	public double getTotalSolesInicial() {
+	public BigDecimal getTotalSolesInicial() {
 		return totalSolesInicial;
 	}
-	public void setTotalSolesInicial(double totalSolesInicial) {
+	public void setTotalSolesInicial(BigDecimal totalSolesInicial) {
 		this.totalSolesInicial = totalSolesInicial;
 	}
-	public double getTotalSolesPendiente() {
+	public BigDecimal getTotalSolesPendiente() {
 		return totalSolesPendiente;
 	}
-	public void setTotalSolesPendiente(double totalSolesPendiente) {
+	public void setTotalSolesPendiente(BigDecimal totalSolesPendiente) {
 		this.totalSolesPendiente = totalSolesPendiente;
 	}
-//	public LazyDataModel<Lote> getLstLoteVendidoLazy() {
+	//	public LazyDataModel<Lote> getLstLoteVendidoLazy() {
 //		return lstLoteVendidoLazy;
 //	}
 //	public void setLstLoteVendidoLazy(LazyDataModel<Lote> lstLoteVendidoLazy) {

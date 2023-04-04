@@ -89,6 +89,10 @@
 				<h:outputText value="#{asistencia.empleado.area.nombre}" />
 			</p:column>
 		</p:dataTable>
+		
+		<p:contextMenu for="idTableDet" >
+	            <p:menuitem value="Eliminar" update="idTableDet" icon="pi pi-times" action="#{reporteAsistenciaBean.eliminarAsistencia()}" />
+       	</p:contextMenu>
 
 	</h:form>
 	 <p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogAsistencia" header="#{reporteAsistenciaBean.tituloDialog}" widgetVar="asistenciaNewDialog" resizable="false" closable="true"

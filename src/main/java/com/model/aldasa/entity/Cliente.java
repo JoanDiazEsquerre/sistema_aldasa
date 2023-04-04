@@ -30,8 +30,10 @@ public class Cliente {
 	private String nombreComercial;
 	
 	private String ruc;
-	private String dni;
 	private String direccion;
+	
+	@Column(name="personanatural")
+	private boolean personaNatural;
 	
 	private boolean estado;
 	
@@ -75,12 +77,6 @@ public class Cliente {
 	public void setRuc(String ruc) {
 		this.ruc = ruc;
 	}
-	public String getDni() {
-		return dni;
-	}
-	public void setDni(String dni) {
-		this.dni = dni;
-	}
 	public boolean isEstado() {
 		return estado;
 	}
@@ -104,6 +100,12 @@ public class Cliente {
 	}
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
+	}
+	public boolean isPersonaNatural() {
+		return personaNatural;
+	}
+	public void setPersonaNatural(boolean personaNatural) {
+		this.personaNatural = personaNatural;
 	}
 	
 	

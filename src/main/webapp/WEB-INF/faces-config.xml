@@ -659,6 +659,22 @@
 			<property-name>navegacionBean</property-name>
 			<value>#{navegacionBean}</value>
 		</managed-property>
+		<managed-property> 
+			<property-name>cuotaService</property-name>
+			<value>#{cuotaService}</value>
+		</managed-property>
+		<managed-property> 
+			<property-name>requerimientoSeparacionService</property-name>
+			<value>#{requerimientoSeparacionService}</value>
+		</managed-property>
+		<managed-property> 
+			<property-name>voucherService</property-name>
+			<value>#{voucherService}</value>
+		</managed-property>
+		<managed-property> 
+			<property-name>detalleDocumentoVentaService</property-name>
+			<value>#{detalleDocumentoVentaService}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>
@@ -684,6 +700,18 @@
 		<managed-property>
 			<property-name>voucherService</property-name>
 			<value>#{voucherService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>productoService</property-name>
+			<value>#{productoService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>clienteService</property-name>
+			<value>#{clienteService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>detalleDocumentoVentaService</property-name>
+			<value>#{detalleDocumentoVentaService}</value>
 		</managed-property>
 	</managed-bean>
 		

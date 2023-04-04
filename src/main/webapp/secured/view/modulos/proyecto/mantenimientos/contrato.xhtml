@@ -7,13 +7,13 @@
 	xmlns:f="http://java.sun.com/jsf/core">
 
 
-	<h:form id="form" style="font-size: 11px;">
+	<h:form id="form" style="font-size: 11px;">  
 		<h2 style="color: #007d4c;">PROYECTOS > CONTRATOS</h2>
 		<p:tabView id="tabView" style="font-size: 14px;">
 			<p:tab title="Lista de Contratos" style="font-size: 11px;">
 				<p:selectOneButton value="#{contratoBean.estado}" unselectable="false">
 					<f:selectItem itemLabel="Activos" itemValue="#{true}" />
-					<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
+					<f:selectItem itemLabel="Anulados" itemValue="#{false}" />
 					<p:ajax  update="idTableContrato"/>
 				</p:selectOneButton> 
 				
@@ -95,16 +95,17 @@
 				
 				<p:contextMenu id="menuTableReq" for="idTableContrato" >
 		            <p:menuitem value="Descargar Contrato" icon="pi pi-check" action="#{contratoBean.generarExcel}" oncomplete="hacerClick('#{p:resolveFirstComponentWithId('btnAct', view).clientId}');"  />
+		            <p:menuitem value="Anular" icon="pi pi-trash" oncomplete="PF('anulaContra').show()"  />		        
 		        </p:contextMenu>
 			</p:tab>
-			<p:tab title="Nuevo Contrato" style="font-size: 11px;">
+			<p:tab title="Nuevo Contrato"  style="font-size: 11px;">
 			
 				<h:panelGrid columns="5" id="gridNomLote"> 
 					<p:commandButton id="movieBtn" style="font-size: 14px;" value="Importar Lote" icon="pi pi-search" actionListener="#{contratoBean.listarLotesSinContrato}" update=":form:tabView:tableLote"/>
 					<p:overlayPanel for="movieBtn" dynamic="true" style="width:600px" widgetVar="moviePicker">
 						<p:dataTable var="lote" value="#{contratoBean.lstLotesSinContrato}" rows="5" paginator="true" selectionMode="single" rowIndexVar="row" paginatorPosition="bottom" 
 							selection="#{contratoBean.loteSelected}" rowKey="#{lote.id}" id="tableLote" emptyMessage="No se encontraron resultados" size="small">
-							<p:ajax event="rowSelect" listener="#{contratoBean.seleccionarLote()}" oncomplete="PF('moviePicker').hide()" update=":form:tabView:gridNomLote :form:tabView:grid"/>
+							<p:ajax event="rowSelect" listener="#{contratoBean.seleccionarLote()}" oncomplete="PF('moviePicker').hide()" update=":form:tabView:gridNomLote :form:tabView:grid  "/>
 	
 							<p:column headerText="Proyecto" >
 								<h:outputText value="#{lote.project.name}" style="font-size: 14px;"/>
@@ -134,8 +135,7 @@
 					<h:outputText value="Lote: " style="font-size: 20px;font-weight: bolder;" rendered="#{contratoBean.loteSelected ne null}"/>
 					<h:outputText value="#{contratoBean.nombreLoteSelected}" style="font-size: 20px;color:#007d4c;font-weight: bolder;" rendered="#{contratoBean.loteSelected ne null}"/>
 					
-					<p:commandLink actionListener="#{contratoBean.eliminarLoteSelected}" update=":form:tabView:gridNomLote :form:tabView:grid" title="ELIMINAR" 
->
+					<p:commandLink actionListener="#{contratoBean.eliminarLoteSelected}" update=":form:tabView:gridNomLote :form:tabView:grid" title="ELIMINAR" >
                         <p:graphicImage value="/recursos/images/eliminar.gif" rendered="#{contratoBean.loteSelected ne null}" />
                     </p:commandLink>
 				</h:panelGrid>
@@ -152,24 +152,24 @@
 					<p:selectOneMenu  value="#{contratoBean.tipoPago}" style="margin:5px; width:220px" >
 						<f:selectItem itemLabel="Contado" itemValue="Contado" />
 						<f:selectItem itemLabel="Crédito" itemValue="Crédito"/>
-						<p:ajax update="grid" />
+						<p:ajax listener="#{contratoBean.cambiarTipoPago}" update=":form:tabView:grid" />
 					</p:selectOneMenu>
 										
 					<h:outputLabel value="Monto Inicial: " id="lblMontoInicial" rendered="#{contratoBean.tipoPago eq 'Crédito'}" />
-					<p:inputNumber  value="#{contratoBean.montoInicial}" style="margin:5px; width:220px" modifyValueOnWheel="false" rendered="#{contratoBean.tipoPago eq 'Crédito'}"/> 
+					<p:inputNumber id="nbrMontoInicial" value="#{contratoBean.montoInicial}" style="margin:5px; width:220px" modifyValueOnWheel="false" rendered="#{contratoBean.tipoPago eq 'Crédito'}"/> 
 										
 					<h:outputLabel value="Nro. de Cuotas: " id="lblNroCuota"  rendered="#{contratoBean.tipoPago eq 'Crédito'}"/>
-					<p:inputNumber  value="#{contratoBean.nroCuotas}" style="margin:5px; width:220px" minValue="1" decimalPlaces="0" rendered="#{contratoBean.tipoPago eq 'Crédito'}"/> 
+					<p:inputNumber  value="#{contratoBean.nroCuotas}" style="margin:5px; width:220px"  decimalPlaces="0" rendered="#{contratoBean.tipoPago eq 'Crédito'}"/> 
 				
-					<h:outputLabel value="Interés:"  rendered="#{contratoBean.tipoPago eq 'Crédito'}"/>
+					<h:outputLabel value="Interés:" id="lblInteres"  rendered="#{contratoBean.tipoPago eq 'Crédito'}"/>
 					<p:inputNumber value="#{contratoBean.interes}" style="margin:5px; width:220px" rendered="#{contratoBean.tipoPago eq 'Crédito'}"/>
 					
 					<h:outputLabel value="Fecha de 1ra Cuota: " rendered="#{contratoBean.tipoPago eq 'Crédito'}"/>
-					<p:datePicker value="#{contratoBean.fechaPrimeraCuota}" rendered="#{contratoBean.tipoPago eq 'Crédito'}"/>
+					<p:datePicker value="#{contratoBean.fechaPrimeraCuota}" style="margin:5px; width:220px" rendered="#{contratoBean.tipoPago eq 'Crédito'}"/>
 					
 					<h:outputLabel value="Persona de venta 1: " />
 					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona1}" converter="#{contratoBean.conversorPersonSurnames}"  
-					completeMethod="#{contrato.completePersonSurnames}"  var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px"  />
+					completeMethod="#{contratoBean.completePersonSurnames}"  var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px"  />
 		             
 					<h:outputLabel value="Persona de venta 2: " />
 					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona2}" converter="#{contratoBean.conversorPersonSurnames}"  
@@ -188,14 +188,81 @@
 					completeMethod="#{contratoBean.completePersonSurnames}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px"  />
 
 
+					<p:commandButton value="Guardar" oncomplete="PF('saveContra').show()"  style="margin-right:10px"/> 
+					<p:commandButton id="btnCuotas"  actionListener="#{contratoBean.botonVerCuota(false,null)}" oncomplete="mostrarSimulacion(xhr, status, args)"  value="Ver Cuotas" update="dialogSimulador" rendered="#{contratoBean.tipoPago eq 'Crédito' and contratoBean.loteSelected ne null}"/> 
+					
+
 				</h:panelGrid>
 				
-				<p:commandButton value="Guardar" actionListener="#{contratoBean.guardarContrato()}" update=":form:tabView:gridNomLote :form:tabView:grid :form:tabView:idTableContrato"/> 
 				
 			</p:tab>
 		</p:tabView>
-
 	</h:form>
+	
+	<p:dialog modal="true" height="600px" dynamic="true" closeOnEscape="true" id="dialogSimulador" header="Cronograma de pagos" widgetVar="cronogramaDialog" resizable="false" closable="true"
+		appendTo="@(body)"  width="50%">
+		<h:form id="formCronogramaDialog">
+			<p:dataTable var="cuota" value="#{contratoBean.lstSimuladorPrevio}"  paginator="true" selectionMode="single" rowIndexVar="row" paginatorPosition="bottom" 
+				 emptyMessage="No se encontraron resultados" size="small" rowKey="#{cuota.nroCuota}">
+
+				<p:column headerText="Nro Cuota" style="text-align:center">
+					<h:outputText value="#{cuota.nroCuota}" style="font-size: 14px;"/>
+				</p:column>
+
+				<p:column headerText="Periodo" style="text-align:center">
+					<h:outputText value="#{cuota.fechaPago}" style="font-size: 14px;"> 
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				
+				<p:column  headerText="Cuota Inicial" >
+				S/
+					<h:outputText   value="#{cuota.inicial}" style="font-size: 14px;"> 
+						<f:convertNumber type="currency" currencySymbol=""  />
+					</h:outputText>
+				</p:column>
+				
+				<p:column headerText="Cuota SI" style="text-align:center">
+				S/
+					<h:outputText value="#{cuota.cuotaSI}" style="font-size: 14px;"> 
+						<f:convertNumber type="currency" currencySymbol=""/>
+					</h:outputText>
+				</p:column>
+				
+				<p:column headerText="Interés" style="text-align:center">
+				S/
+					<h:outputText value="#{cuota.interes}" style="font-size: 14px;"> 
+						<f:convertNumber type="currency" currencySymbol=""/>
+					</h:outputText>
+				</p:column>
+				
+				<p:column headerText="Cuota Total" style="text-align:center">
+				S/
+					<h:outputText value="#{cuota.cuotaTotal}" style="font-size: 14px;"> 
+						<f:convertNumber type="currency" currencySymbol=""/>
+					</h:outputText>
+				</p:column>
+				
+				
+			</p:dataTable>
+		</h:form>
+	</p:dialog>
+	
+	<p:confirmDialog id="anulaContra" message="¿Está seguro de anular el cotrato?" header="Confirmación"
+                      severity="alert" widgetVar="anulaContra" appendTo="@(body)">
+        <h:form >
+            <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('anulaContra').hide()" value="SI" action="#{contratoBean.anularContrato}" update=":form:tabView:idTableContrato"/>
+            <p:commandButton value="NO" oncomplete="PF('anulaContra').hide()"/>
+        </h:form>
+    </p:confirmDialog>
+    
+    <p:confirmDialog id="saveContra" message="¿Está seguro de guardar el cotrato?" header="Confirmación"
+                      severity="alert" widgetVar="saveContra" appendTo="@(body)">
+        <h:form >
+            <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('saveContra').hide()" value="SI" actionListener="#{contratoBean.saveContrato()}" update=":form:tabView:gridNomLote :form:tabView:grid :form:tabView:idTableContrato" />
+            <p:commandButton value="NO" oncomplete="PF('saveContra').hide()"/>
+        </h:form>
+    </p:confirmDialog>
 	
 	
 	<script type="text/javascript">
@@ -203,6 +270,12 @@
         function hacerClick(elementName) {
             element = document.getElementById(elementName);
             element.click();
+        }
+        
+        function mostrarSimulacion(xhr, status, args) {
+            if (args.noEsValido) {
+            	 PF('cronogramaDialog').show();
+            }
         }
 
     </script>

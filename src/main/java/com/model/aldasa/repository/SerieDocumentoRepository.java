@@ -9,7 +9,7 @@ import com.model.aldasa.entity.Sucursal;
 
 public interface SerieDocumentoRepository extends JpaRepository<SerieDocumento, Integer>{
 	
-	List<SerieDocumento> findByTipoDocumentoAndSucursal(String tipoDocumento, Sucursal sucural);
+	List<SerieDocumento> findByTipoComprobanteAndSucursal(String tipoComprobante, Sucursal sucural);
 
 
 }

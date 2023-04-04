@@ -1,6 +1,7 @@
 package com.model.aldasa.prospeccion.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -95,7 +96,7 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	private boolean ejecutaRequerimiento = false;
 	private boolean mostrarBoton = false ;
 	private int cantidad=0;
-	private Double monto;
+	private BigDecimal monto;
 	private Date fechaOperacion = new Date() ;
 	
 	
@@ -195,7 +196,7 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 			}	
 			
 			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se ejecutó separación correctamente." ));
-
+			
 		}else {
 			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote se encuentra " + lote.getStatus()));
 
@@ -285,11 +286,6 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 		};
 	}
 
-	public void aprobarPorContabilidad () {
-		requerimientoSeparacionSelected.setEstado(EstadoRequerimientoSeparacionType.APROBADO_CONTABILIDAD.getDescripcion());
-		requerimientoSeparacionService.save(requerimientoSeparacionSelected);
-	}
-	
 	public void rechazarRequerimiento () {
 		requerimientoSeparacionSelected.setEstado(EstadoRequerimientoSeparacionType.RECHAZADO.getDescripcion());
 		requerimientoSeparacionService.save(requerimientoSeparacionSelected);
@@ -343,11 +339,22 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 			voucher.setNumeroTransaccion(numeroTransaccion);
 			voucher.setFechaOperacion(fechaOperacion);
 			voucher.setRequerimientoSeparacion(requerimientoSeparacionSelected);
-			
+			voucher.setEstado(true);
+			voucher.setGeneraDocumento(false);
 			voucherService.save(voucher);
 			
-			aprobarPorContabilidad();
-			addInfoMessage("Aprobado correctamente por contabilidad");
+			requerimientoSeparacionSelected.setEstado("Atendido");
+			requerimientoSeparacionService.save(requerimientoSeparacionSelected);
+			
+			lote.setStatus(EstadoLote.SEPARADO.getName());
+			lote.setFechaSeparacion(new Date());
+			lote.setFechaVencimiento(sumaRestarFecha(new Date(), 7));
+			lote.setPersonSupervisor(requerimientoSeparacionSelected.getProspection().getPersonSupervisor());
+			lote.setPersonAssessor(requerimientoSeparacionSelected.getProspection().getPersonAssessor());
+			
+			loteService.save(lote);
+			
+			addInfoMessage("Aprobado correctamente.");
 		}else {
 			addErrorMessage("El lote se encuentra " + lote.getStatus());
 
@@ -513,10 +520,10 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	public void setTipoTransaccion(String tipoTransaccion) {
 		this.tipoTransaccion = tipoTransaccion;
 	}
-	public Double getMonto() {
+	public BigDecimal getMonto() {
 		return monto;
 	}
-	public void setMonto(Double monto) {
+	public void setMonto(BigDecimal monto) {
 		this.monto = monto;
 	}
 	public String getNumeroTransaccion() {

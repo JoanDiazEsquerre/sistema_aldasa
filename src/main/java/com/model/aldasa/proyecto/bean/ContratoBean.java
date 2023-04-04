@@ -5,7 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,15 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -39,7 +36,6 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.apache.xmlbeans.XmlException;
-import org.eclipse.jdt.internal.compiler.env.IUpdatableModule.AddExports;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTJc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTNumbering;
@@ -52,6 +48,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STJc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STVerticalJc;
+import org.primefaces.context.PrimeRequestContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -64,15 +61,22 @@ import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.CuentaBancaria;
-import com.model.aldasa.entity.Empleado;
+import com.model.aldasa.entity.Cuota;
+import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
+import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.Simulador;
+import com.model.aldasa.entity.Voucher;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.ContratoService;
 import com.model.aldasa.service.CuentaBancariaService;
+import com.model.aldasa.service.CuotaService;
+import com.model.aldasa.service.DetalleDocumentoVentaService;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.PersonService;
+import com.model.aldasa.service.RequerimientoSeparacionService;
+import com.model.aldasa.service.VoucherService;
 import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.EstadoLote;
 import com.model.aldasa.util.NumeroALetra;
@@ -98,6 +102,18 @@ public class ContratoBean extends BaseBean implements Serializable{
 	@ManagedProperty(value = "#{navegacionBean}")
 	private NavegacionBean navegacionBean;
 	
+	@ManagedProperty(value = "#{cuotaService}")
+	private CuotaService cuotaService;
+	
+	@ManagedProperty(value = "#{requerimientoSeparacionService}")
+	private RequerimientoSeparacionService requerimientoSeparacionService;
+	
+	@ManagedProperty(value = "#{voucherService}")
+	private VoucherService voucherService;
+	
+	@ManagedProperty(value = "#{detalleDocumentoVentaService}")
+	private DetalleDocumentoVentaService detalleDocumentoVentaService;
+	
 	private String meses[]= {"ENERO","FEBRERO","MARZO","ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE","DICIEMBRE"};
 	
 	private LazyDataModel<Contrato> lstContratoLazy;
@@ -106,6 +122,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 	private List<Person> lstPerson;
 	private List<CuentaBancaria> lstCuentaBancaria = new ArrayList<>();
 	private List<Simulador> lstSimulador = new ArrayList<>();
+	private List<Simulador> lstSimuladorPrevio = new ArrayList<>();
 
 	private Lote loteSelected;
 	private Contrato contratoSelected;
@@ -116,9 +133,9 @@ public class ContratoBean extends BaseBean implements Serializable{
 	private String nombreLoteSelected;
 	private Date fechaVenta, fechaPrimeraCuota; 
 	private Person persona1, persona2, persona3, persona4, persona5;
-	private Double montoVenta, montoInicial, interes;
+	private BigDecimal montoVenta, montoInicial, interes; 
 	private String tipoPago ="";
-	private Integer nroCuotas;
+	private int nroCuotas;
 	private boolean estado;
 	
 	private NumeroALetra numeroAletra = new NumeroALetra();
@@ -135,6 +152,231 @@ public class ContratoBean extends BaseBean implements Serializable{
 		iniciarLazy();
 		listarPersonas();
 		lstCuentaBancaria = cuentaBancariaService.findByEstadoAndMonedaLike(true, "%S%");
+		
+	}
+	
+	public void cambiarTipoPago() {
+		if(tipoPago.equals("Contado")) {
+			montoInicial=null;
+			nroCuotas=0;
+			interes=null;
+
+		}
+	}
+	
+	public void botonVerCuota(boolean agregaBD, Contrato contrato) {
+		PrimeRequestContext context = PrimeRequestContext.getCurrentInstance(); 
+		if(fechaVenta==null) {
+			addErrorMessage("Ingresar Fecha de Venta.");
+			context.getCallbackParams().put("noEsValido", false);
+			return;
+		}
+		if(montoVenta==null) {
+			addErrorMessage("Ingresar Monto de Venta.");
+			context.getCallbackParams().put("noEsValido", false);
+			return;
+		}else if(montoVenta==BigDecimal.ZERO) {
+			addErrorMessage("El monto de venta debe ser mayor a 0.");
+			context.getCallbackParams().put("noEsValido", false);
+			return;
+		}
+		if(montoInicial==null) {
+			addErrorMessage("Ingresar Monto Inicial.");
+			context.getCallbackParams().put("noEsValido", false);
+			return;
+		}else if(montoInicial==BigDecimal.ZERO) {
+			addErrorMessage("El monto inicial debe ser mayor a 0.");
+			context.getCallbackParams().put("noEsValido", false);
+			return;
+		}
+		if(nroCuotas==0) {
+			addErrorMessage("El número de cuotas debe ser mayor a 0.");
+			context.getCallbackParams().put("noEsValido", false);
+			return;
+		}
+		if(interes==null) {
+			addErrorMessage("Ingresar Interés.");
+			context.getCallbackParams().put("noEsValido", false);
+			return;
+		}
+		if(fechaPrimeraCuota==null) {
+			addErrorMessage("Ingresar Fecha de Primera Cuota.");
+			context.getCallbackParams().put("noEsValido", false);
+			return;
+		}
+		if(persona1==null) {
+			addErrorMessage("Ingresar Persona de Venta.");
+			context.getCallbackParams().put("noEsValido", false);
+			return;
+		}
+		
+		
+		lstSimuladorPrevio.clear();
+		
+		Simulador filaInicio = new Simulador();
+		filaInicio.setNroCuota("0");
+		filaInicio.setFechaPago(fechaVenta);
+		filaInicio.setInicial(montoInicial);
+		filaInicio.setCuotaSI(BigDecimal.ZERO);
+		filaInicio.setInteres(BigDecimal.ZERO);
+		filaInicio.setCuotaTotal(BigDecimal.ZERO);
+		lstSimuladorPrevio.add(filaInicio);
+		
+		if(agregaBD) {
+			Cuota cuotaCero = new Cuota();
+			cuotaCero.setNroCuota(0);
+			cuotaCero.setFechaPago(fechaVenta);
+			cuotaCero.setCuotaSI(montoInicial);
+			cuotaCero.setInteres(BigDecimal.ZERO);
+			cuotaCero.setCuotaTotal(montoInicial);
+			cuotaCero.setAdelanto(BigDecimal.ZERO);
+
+			RequerimientoSeparacion requerimiento = requerimientoSeparacionService.findAllByLoteAndEstado(contrato.getLote(), "Atendido");
+			if(requerimiento!=null) {
+				Voucher voucher = voucherService.findByRequerimientoSeparacion(requerimiento);
+				if(voucher!=null) {
+					DetalleDocumentoVenta detalle = detalleDocumentoVentaService.findByVoucherIdAndEstado(voucher.getId(), true);
+					if(detalle!=null) {
+						cuotaCero.setAdelanto(detalle.getImporteVenta());
+					}
+					
+				}
+			} 
+			
+			cuotaCero.setPagoTotal("N");
+			cuotaCero.setContrato(contrato);
+			cuotaCero.setEstado(true);
+			cuotaService.save(cuotaCero);
+		}
+		
+		
+		BigDecimal montoInteres=BigDecimal.ZERO;
+		BigDecimal montoDeuda = montoVenta.subtract(montoInicial);
+		if(interes==BigDecimal.ZERO) {
+			montoInteres=BigDecimal.ZERO;
+			
+			BigDecimal cuota = montoDeuda.divide(new BigDecimal(nroCuotas), 2, RoundingMode.HALF_UP);
+			
+			
+			BigDecimal sumaTotal=BigDecimal.ZERO;
+			for(int i=0; i<nroCuotas;i++) {                
+				Simulador filaCouta = new Simulador();
+				if(i==0) {
+					filaCouta.setFechaPago(fechaPrimeraCuota);
+				}else {
+					filaCouta.setFechaPago(sumarRestarMeses(fechaPrimeraCuota, i));
+				}
+				filaCouta.setNroCuota((i+1)+"");
+				filaCouta.setInicial(BigDecimal.ZERO);
+				filaCouta.setCuotaSI(cuota);
+				filaCouta.setInteres(BigDecimal.ZERO);
+				filaCouta.setCuotaTotal(cuota);
+				lstSimuladorPrevio.add(filaCouta);
+				if(agregaBD) {
+					Cuota cuotaBD = new Cuota();
+					cuotaBD.setNroCuota(Integer.parseInt(filaCouta.getNroCuota()) );
+					cuotaBD.setFechaPago(filaCouta.getFechaPago());
+					cuotaBD.setCuotaSI(filaCouta.getCuotaSI());
+					cuotaBD.setInteres(filaCouta.getInteres());
+					cuotaBD.setCuotaTotal(filaCouta.getCuotaTotal());
+					cuotaBD.setAdelanto(filaCouta.getInicial());
+					cuotaBD.setPagoTotal("N");
+					cuotaBD.setContrato(contrato);
+					cuotaBD.setEstado(true);
+					cuotaService.save(cuotaBD);
+					
+					
+				}
+				
+				sumaTotal = sumaTotal.add(filaCouta.getCuotaSI());
+			}
+			
+			Simulador filaTotal = new Simulador();
+			filaTotal.setNroCuota("TOTAL");
+			filaTotal.setInicial(montoInicial);
+			filaTotal.setCuotaSI(montoDeuda);
+			filaTotal.setInteres(BigDecimal.ZERO);
+			filaTotal.setCuotaTotal(montoDeuda);
+			lstSimuladorPrevio.add(filaTotal);
+			
+		}else {
+			BigDecimal sumaTotal=BigDecimal.ZERO;
+			
+			BigDecimal porc=interes;
+			BigDecimal porcMin= (porc.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+			montoInteres = montoDeuda.multiply(porcMin);       
+			
+			
+			BigDecimal cuota = montoDeuda.divide(new BigDecimal(nroCuotas), 2, RoundingMode.HALF_UP);
+			BigDecimal sumaItems=BigDecimal.ZERO;
+			BigDecimal sumaInteresItem=BigDecimal.ZERO;
+			for(int i=0; i<nroCuotas;i++) {
+				Simulador filaCouta = new Simulador();
+				if(i==0) {
+					filaCouta.setFechaPago(fechaPrimeraCuota);
+				}else {
+					filaCouta.setFechaPago(sumarRestarMeses(fechaPrimeraCuota, i));
+				}
+				filaCouta.setNroCuota((i+1)+"");
+				filaCouta.setInicial(BigDecimal.ZERO);
+				filaCouta.setCuotaSI(cuota);
+				filaCouta.setInteres(montoInteres.divide(new BigDecimal(nroCuotas), 2, RoundingMode.HALF_UP));
+				filaCouta.setCuotaTotal(filaCouta.getCuotaSI().add(filaCouta.getInteres()));
+				lstSimuladorPrevio.add(filaCouta);
+				
+				if(agregaBD) {
+					Cuota cuotaBD = new Cuota();
+					cuotaBD.setNroCuota(Integer.parseInt(filaCouta.getNroCuota()) );
+					cuotaBD.setFechaPago(filaCouta.getFechaPago());
+					cuotaBD.setCuotaSI(filaCouta.getCuotaSI());
+					cuotaBD.setInteres(filaCouta.getInteres());
+					cuotaBD.setCuotaTotal(filaCouta.getCuotaTotal());
+					cuotaBD.setAdelanto(filaCouta.getInicial());
+					cuotaBD.setPagoTotal("N");
+					cuotaBD.setContrato(contrato);
+					cuotaBD.setEstado(true);
+					cuotaService.save(cuotaBD);
+					
+					
+				}
+				
+				sumaItems = sumaItems.add(filaCouta.getCuotaSI());
+				sumaInteresItem = sumaInteresItem.add(filaCouta.getInteres());
+				sumaTotal=sumaTotal.add(filaCouta.getCuotaTotal());
+			}
+			
+			BigDecimal sumaCuotaSI=BigDecimal.ZERO;
+			
+			Simulador filaTotal = new Simulador();
+			filaTotal.setNroCuota("TOTAL");
+			filaTotal.setInicial(montoInicial);
+			filaTotal.setCuotaSI(sumaItems);
+			filaTotal.setInteres(montoInteres);
+			filaTotal.setCuotaTotal(sumaTotal);
+			lstSimuladorPrevio.add(filaTotal);
+			
+		}
+		
+		context.getCallbackParams().put("noEsValido", true);
+	}
+	
+	public void anularContrato() {
+		contratoSelected.setEstado(false);
+		contratoService.save(contratoSelected);
+		contratoSelected.getLote().setRealizoContrato("N");
+		loteService.save(contratoSelected.getLote());
+		addInfoMessage("Contrato Anulado Correctamente.");
+
+		
+		if(contratoSelected.getTipoPago().equals("Crédito")) {
+			List<Cuota> lstcuota = cuotaService.findByContratoAndEstado(contratoSelected, true);
+			for(Cuota c:lstcuota) {
+				c.setEstado(false);
+				cuotaService.save(c);
+			}
+		}
+		
+		
 	}
 	
 	public void listarPersonas() {
@@ -887,7 +1129,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 		run = paragrapha.createRun();run.setText("LA PARTE COMPRADORA ");estiloNegritaTexto(run);
 		run = paragrapha.createRun();run.setText("DE TRES (03)CUOTAS SUCESIVAS O NO DE LOS PAGOS EN LOS PLAZOS ESTABLECIDOS DE LAS CUOTAS CONSIGNADAS EN LA TERCERA CLÁUSULA DE ESTE CONTRATO, ");estiloNormalTexto(run);
 		run = paragrapha.createRun();run.setText("LA PARTE VENDEDORA ");estiloNegritaTexto(run);
-		run = paragrapha.createRun();run.setText("PUEDE UNILATERALMETE RESOLVER EL CONTRATO; O EN SU DEFECTO; EXIGIR EL PAGO TOTAL DEL SALDO DEUDOR A  ");estiloNormalTexto(run);
+		run = paragrapha.createRun();run.setText("PUEDE UNILATERALMETE RESOLVER EL CONTRATO; O EN SU DEFECTO; EXIGIR EL PAGO TOTAL DEL  DEUDOR A  ");estiloNormalTexto(run);
 		run = paragrapha.createRun();run.setText("LA PARTE COMPRADORA, ");estiloNegritaTexto(run);
 		run = paragrapha.createRun();run.setText("PARA LO CUAL REMITIRÁ LA NOTIFICACIÓN RESPECTIVA  AL DOMICILIO QUE ");estiloNormalTexto(run);
 		run = paragrapha.createRun();run.setText("LA PARTE COMPRADORA ");estiloNegritaTexto(run);
@@ -961,7 +1203,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 		lstTexto.add(text4.toUpperCase());
 		
 		String text5 = "Monto Total: S/"+String.format("%,.2f",contratoSelected.getMontoVenta());lstTexto.add(text5);
-		String text6 = "Monto Deuda: S/"+String.format("%,.2f",contratoSelected.getMontoVenta()-contratoSelected.getMontoInicial());lstTexto.add(text6);
+		String text6 = "Monto Deuda: S/"+String.format("%,.2f",contratoSelected.getMontoVenta().subtract(contratoSelected.getMontoInicial()));lstTexto.add(text6);
 		String text7 = "N° Cuotas: "+contratoSelected.getNumeroCuota();lstTexto.add(text7);
 		String text8 = "Moneda: Soles";lstTexto.add(text8);
 		String text9 = "Cuotas Pendientes: "+contratoSelected.getNumeroCuota();lstTexto.add(text9);
@@ -1004,7 +1246,7 @@ public class ContratoBean extends BaseBean implements Serializable{
         mergeCellsHorizontal(tablePagos,0,0,5);
         mergeCellsHorizontal(tablePagos,tablePagos.getNumberOfRows()-1,0,1);  
         int index = 0;
-        simularCuotas();
+        simularCuotas(contratoSelected);
         for (int rowIndex = 0; rowIndex < tablePagos.getNumberOfRows(); rowIndex++) {  
             if(rowIndex==0) {
                 //Creating first Row
@@ -1032,19 +1274,7 @@ public class ContratoBean extends BaseBean implements Serializable{
             	
             	XWPFTableRow rowContenido = tablePagos.getRow(rowIndex);
             	rowContenido.getCell(0).setText(sim.getNroCuota());
-            	
-            	if(index <=1) {
-            		if(index==0) {
-            			rowContenido.getCell(1).setText(sdf.format(contratoSelected.getFechaVenta()));
-            		}else {
-            			rowContenido.getCell(1).setText(sdf.format(contratoSelected.getFechaPrimeraCuota())); 
-            		}
-            		 
-            	}else {
-            		rowContenido.getCell(1).setText(sdf.format(sumarRestarMeses(contratoSelected.getFechaPrimeraCuota(),index-1))); 
-            	}
-            	
-            	
+            	rowContenido.getCell(1).setText(sim.getFechaPago() != null?sdf.format(sim.getFechaPago()):""); 
             	rowContenido.getCell(2).setText("S/"+String.format("%,.2f",sim.getInicial()));
             	rowContenido.getCell(3).setText("S/"+String.format("%,.2f",sim.getCuotaSI()));
             	rowContenido.getCell(4).setText("S/"+String.format("%,.2f",sim.getInteres()));
@@ -1122,13 +1352,25 @@ public class ContratoBean extends BaseBean implements Serializable{
 	public void seleccionarLote() {
 		nombreLoteSelected = loteSelected.getNumberLote()+" -  MZ "+loteSelected.getManzana().getName()+" / "+ loteSelected.getProject().getName();
 		
-		fechaVenta = loteSelected.getFechaVendido();
-		montoVenta = loteSelected.getMontoVenta();
-		tipoPago = loteSelected.getTipoPago();
-		montoInicial = loteSelected.getMontoInicial();
-		nroCuotas = loteSelected.getNumeroCuota();
-		interes = loteSelected.getInteres();
-		persona1 = loteSelected.getPersonVenta();
+		if(loteSelected.getTipoPago().equals("Crédito")) {
+			montoInicial = loteSelected.getMontoInicial();
+			nroCuotas = loteSelected.getNumeroCuota();
+			interes = loteSelected.getInteres();
+		}else {
+			montoInicial = BigDecimal.ZERO;
+			nroCuotas = 0 ;
+			interes = BigDecimal.ZERO;
+		}
+			
+			fechaVenta = loteSelected.getFechaVendido();
+			montoVenta = loteSelected.getMontoVenta();
+			tipoPago = loteSelected.getTipoPago();
+			persona1 = loteSelected.getPersonVenta();
+	
+		
+		
+		
+		
 		
 	}
 	
@@ -1139,7 +1381,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 		montoVenta = null;
 		tipoPago = null;
 		montoInicial = null;
-		nroCuotas = null;
+		nroCuotas = 0;
 		interes = null;
 		persona1 = null;
 		persona2=null;
@@ -1149,7 +1391,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 		fechaPrimeraCuota=null;
 	}
 	
-	public void guardarContrato() {
+	public void saveContrato() {
 	
 		if(loteSelected == null) {
 			addErrorMessage("Seleccionar un lote.");
@@ -1162,6 +1404,9 @@ public class ContratoBean extends BaseBean implements Serializable{
 		if(montoVenta==null) {
 			addErrorMessage("Ingresar monto de venta.");
 			return ;  
+		}else if(montoVenta==BigDecimal.ZERO){
+			addErrorMessage("Monto venta debe ser mayor a 0.");
+			return ;
 		}
 		
 		if(tipoPago.equals("")) {
@@ -1171,10 +1416,13 @@ public class ContratoBean extends BaseBean implements Serializable{
 			if(montoInicial==null) {
 				addErrorMessage("Ingresar monto inicial.");
 				return ;  
+			}else if (montoInicial==BigDecimal.ZERO){
+				addErrorMessage("Monto inicial debe ser mayor a 0.");
+				return ;
 			}
-			if(nroCuotas==null) {
-				addErrorMessage("Ingresar número de cuotas.");
-				return ;  
+			if(nroCuotas==0){
+				addErrorMessage("Número de cuotas debe ser mayor a 0.");
+				return ;
 			}
 			if(interes==null) {
 				addErrorMessage("Ingresar interes.");
@@ -1215,11 +1463,44 @@ public class ContratoBean extends BaseBean implements Serializable{
 		contrato.setPersonVenta4(persona4);      
 		contrato.setPersonVenta5(persona5);
 		
-		contratoService.save(contrato);
+		Contrato contratoSave = contratoService.save(contrato);
+		
+		if(contratoSave!= null) {
+			if(contratoSave.getTipoPago().equals("Crédito")) {
+				botonVerCuota(true, contratoSave); 
+			}else {
+				Cuota cuota = new Cuota();
+				cuota.setNroCuota(0);
+				cuota.setFechaPago(fechaVenta);
+				cuota.setCuotaSI(montoVenta);
+				cuota.setInteres(BigDecimal.ZERO);
+				cuota.setCuotaTotal(montoVenta);
+				cuota.setAdelanto(BigDecimal.ZERO);
+				
+				RequerimientoSeparacion requerimiento = requerimientoSeparacionService.findAllByLoteAndEstado(contrato.getLote(), "Atendido");
+				if(requerimiento!=null) {
+					Voucher voucher = voucherService.findByRequerimientoSeparacion(requerimiento);
+					if(voucher!=null) {
+						DetalleDocumentoVenta detalle = detalleDocumentoVentaService.findByVoucherIdAndEstado(voucher.getId(), true); 
+						cuota.setAdelanto(detalle.getImporteVenta());
+					}
+				} 
+				
+				cuota.setPagoTotal("N");
+				cuota.setContrato(contrato);
+				cuota.setEstado(true);
+				cuotaService.save(cuota);
+			}
+			
+		}
+		
 		loteSelected.setRealizoContrato("S"); 
 		loteService.save(loteSelected);
 		eliminarLoteSelected();
 		addInfoMessage("Se guardó correctamente el contrato"); 
+		
+	
+		
 
 	}
 	
@@ -1238,7 +1519,7 @@ public class ContratoBean extends BaseBean implements Serializable{
             }
 
             @Override
-            public Contrato getRowData(String rowKey) {
+            public Contrato getRowData(String rowKey) {     
                 int intRowKey = Integer.parseInt(rowKey);
                 for (Contrato contrato : datasource) {
                     if (contrato.getId() == intRowKey) {
@@ -1996,108 +2277,48 @@ public class ContratoBean extends BaseBean implements Serializable{
 		return calendar.getTime();
 	}
 	
-	public void simularCuotas () {
+	public void simularCuotas (Contrato contrato) {
 		lstSimulador.clear();
 		
 		Simulador filaInicio = new Simulador();
 		filaInicio.setNroCuota("0");
-		filaInicio.setInicial(contratoSelected.getMontoInicial());
-		filaInicio.setCuotaSI(0.0);
-		filaInicio.setInteres(0.0);
-		filaInicio.setCuotaTotal(0.0);
+		filaInicio.setFechaPago(contrato.getFechaVenta());
+		filaInicio.setInicial(contrato.getMontoInicial());
+		filaInicio.setCuotaSI(BigDecimal.ZERO);
+		filaInicio.setInteres(BigDecimal.ZERO);
+		filaInicio.setCuotaTotal(BigDecimal.ZERO);
 		lstSimulador.add(filaInicio);
 		
-		double montoInteres=0.0;
-		double montoDeuda = contratoSelected.getMontoVenta()-contratoSelected.getMontoInicial();
-		if(contratoSelected.getInteres()==0) {
-			montoInteres=0.0;
+		// una pista
+		BigDecimal totalSI=BigDecimal.ZERO;
+		BigDecimal totalInteres=BigDecimal.ZERO;
+		BigDecimal totalCuotaTotal=BigDecimal.ZERO;
+		
+		List<Cuota> lstCuotaContrato = cuotaService.findByContratoAndEstado(contrato, true); 
+		for(Cuota c:lstCuotaContrato) {
+			Simulador simulador = new Simulador();
+			simulador.setNroCuota(c.getNroCuota()+"");
+			simulador.setFechaPago(c.getFechaPago()); 
+			simulador.setInicial(BigDecimal.ZERO);
+			simulador.setCuotaSI(c.getCuotaSI());
+			simulador.setInteres(c.getInteres());
+			simulador.setCuotaTotal(c.getCuotaTotal());
+			lstSimulador.add(simulador);
 			
-			double cuota = montoDeuda / contratoSelected.getNumeroCuota();
-			
-			
-			double sumaTotal=0.0;
-			List<Simulador> listaPrevia = new ArrayList<>();
-			for(int i=0; i<contratoSelected.getNumeroCuota()-1;i++) {
-				Simulador filaCouta = new Simulador();
-				filaCouta.setNroCuota((i+2)+"");
-				filaCouta.setInicial(0.0);
-				filaCouta.setCuotaSI((double)Math.round(cuota));
-				filaCouta.setInteres(0.0);
-				filaCouta.setCuotaTotal((double)Math.round(cuota));
-				listaPrevia.add(filaCouta);
-				
-				sumaTotal = sumaTotal + filaCouta.getCuotaSI();
-			}
-			
-			Simulador filaPrimeraCuota = new Simulador();
-			filaPrimeraCuota.setNroCuota("1");
-			filaPrimeraCuota.setInicial(0.0);
-			filaPrimeraCuota.setCuotaSI(montoDeuda-sumaTotal);
-			filaPrimeraCuota.setInteres(0.0);
-			filaPrimeraCuota.setCuotaTotal(montoDeuda-sumaTotal);
-			lstSimulador.add(filaPrimeraCuota);
-			
-			
-			for(Simulador sim:listaPrevia) {
-				lstSimulador.add(sim);
-			}
-			
-			Simulador filaTotal = new Simulador();
-			filaTotal.setNroCuota("TOTAL");
-			filaTotal.setInicial(contratoSelected.getMontoInicial());
-			filaTotal.setCuotaSI(montoDeuda);
-			filaTotal.setInteres(0.0);
-			filaTotal.setCuotaTotal(montoDeuda);
-			lstSimulador.add(filaTotal);
-			
-		}else {
-			double sumaTotal=0.0;
-			
-			double porc=contratoSelected.getInteres();
-			double porcMin= (porc/100);
-			montoInteres = montoDeuda*porcMin;
-			
-			double cuota = montoDeuda / contratoSelected.getNumeroCuota();
-			double sumaItems=0.0;
-			double sumaInteresItem=0.0;
-			List<Simulador> listaPrevia = new ArrayList<>();
-			for(int i=0; i<contratoSelected.getNumeroCuota()-1;i++) {
-				Simulador filaCouta = new Simulador();
-				filaCouta.setNroCuota((i+2)+"");
-				filaCouta.setInicial(0.0);
-				filaCouta.setCuotaSI((double)Math.round(cuota));
-				filaCouta.setInteres((double)Math.round(montoInteres/contratoSelected.getNumeroCuota()));
-				filaCouta.setCuotaTotal(filaCouta.getCuotaSI()+filaCouta.getInteres());
-				listaPrevia.add(filaCouta);
-				
-				sumaItems = sumaItems + filaCouta.getCuotaSI();
-				sumaInteresItem = sumaInteresItem+filaCouta.getInteres();
-				sumaTotal=sumaTotal+filaCouta.getCuotaTotal();
-			}
-			
-			Simulador filaPrimeraCuota = new Simulador();
-			filaPrimeraCuota.setNroCuota("1");
-			filaPrimeraCuota.setInicial(0.0);
-			filaPrimeraCuota.setCuotaSI(montoDeuda-sumaItems);
-			filaPrimeraCuota.setInteres(montoInteres-sumaInteresItem);
-			filaPrimeraCuota.setCuotaTotal(filaPrimeraCuota.getCuotaSI()+filaPrimeraCuota.getInteres());
-			sumaTotal=sumaTotal+filaPrimeraCuota.getCuotaTotal();
-			lstSimulador.add(filaPrimeraCuota);
-			
-			double sumaCuotaSI=0.0;
-			for(Simulador sim:listaPrevia) {
-				lstSimulador.add(sim);
-			}
-			
-			Simulador filaTotal = new Simulador();
-			filaTotal.setNroCuota("TOTAL");
-			filaTotal.setInicial(contratoSelected.getMontoInicial());
-			filaTotal.setCuotaSI(sumaItems+filaPrimeraCuota.getCuotaSI());
-			filaTotal.setInteres(montoInteres);
-			filaTotal.setCuotaTotal(sumaTotal);
-			lstSimulador.add(filaTotal);
-			
+			totalSI = totalSI.add(simulador.getCuotaSI()); //totalSI+simulador.getCuotaSI(); lo sbigdecimal se sunan de estam manera
+			totalInteres = totalInteres.add(simulador.getInteres());
+			totalCuotaTotal = totalCuotaTotal.add(simulador.getCuotaTotal());
 		}
+			
+		Simulador filaTotal = new Simulador();
+		filaTotal.setNroCuota("TOTAL");
+		filaTotal.setInicial(contrato.getMontoInicial());
+		filaTotal.setCuotaSI(totalSI);
+		filaTotal.setInteres(totalInteres);
+		filaTotal.setCuotaTotal(totalCuotaTotal); 
+		lstSimulador.add(filaTotal);
+			
+		
 	}
 		
 
@@ -2207,22 +2428,22 @@ public class ContratoBean extends BaseBean implements Serializable{
 	public void setPersona5(Person persona5) {
 		this.persona5 = persona5;
 	}
-	public Double getMontoVenta() {
+	public BigDecimal getMontoVenta() {
 		return montoVenta;
 	}
-	public void setMontoVenta(Double montoVenta) {
+	public void setMontoVenta(BigDecimal montoVenta) {
 		this.montoVenta = montoVenta;
 	}
-	public Double getMontoInicial() {
+	public BigDecimal getMontoInicial() {
 		return montoInicial;
 	}
-	public void setMontoInicial(Double montoInicial) {
+	public void setMontoInicial(BigDecimal montoInicial) {
 		this.montoInicial = montoInicial;
 	}
-	public Double getInteres() {
+	public BigDecimal getInteres() {
 		return interes;
 	}
-	public void setInteres(Double interes) {
+	public void setInteres(BigDecimal interes) {
 		this.interes = interes;
 	}
 	public String getTipoPago() {
@@ -2273,112 +2494,117 @@ public class ContratoBean extends BaseBean implements Serializable{
 	public void setContratoSelected(Contrato contratoSelected) {
 		this.contratoSelected = contratoSelected;
 	}
-
 	public CuentaBancariaService getCuentaBancariaService() {
 		return cuentaBancariaService;
 	}
-
 	public void setCuentaBancariaService(CuentaBancariaService cuentaBancariaService) {
 		this.cuentaBancariaService = cuentaBancariaService;
 	}
-
 	public String[] getMeses() {
 		return meses;
 	}
-
 	public void setMeses(String[] meses) {
 		this.meses = meses;
 	}
-
 	public List<CuentaBancaria> getLstCuentaBancaria() {
 		return lstCuentaBancaria;
 	}
-
 	public void setLstCuentaBancaria(List<CuentaBancaria> lstCuentaBancaria) {
 		this.lstCuentaBancaria = lstCuentaBancaria;
 	}
-
 	public List<Simulador> getLstSimulador() {
 		return lstSimulador;
 	}
-
 	public void setLstSimulador(List<Simulador> lstSimulador) {
 		this.lstSimulador = lstSimulador;
 	}
-
 	public StreamedContent getFileDes() {
 		return fileDes;
 	}
-
 	public void setFileDes(StreamedContent fileDes) {
 		this.fileDes = fileDes;
 	}
-
 	public String getNombreArchivo() {
 		return nombreArchivo;
 	}
-
 	public void setNombreArchivo(String nombreArchivo) {
 		this.nombreArchivo = nombreArchivo;
 	}
-
 	public NumeroALetra getNumeroAletra() {
 		return numeroAletra;
 	}
-
 	public void setNumeroAletra(NumeroALetra numeroAletra) {
 		this.numeroAletra = numeroAletra;
 	}
-
 	public SimpleDateFormat getSdf() {
 		return sdf;
 	}
-
 	public void setSdf(SimpleDateFormat sdf) {
 		this.sdf = sdf;
 	}
-
 	public SimpleDateFormat getSdfM() {
 		return sdfM;
 	}
-
 	public void setSdfM(SimpleDateFormat sdfM) {
 		this.sdfM = sdfM;
 	}
-
 	public SimpleDateFormat getSdfY() {
 		return sdfY;
 	}
-
 	public void setSdfY(SimpleDateFormat sdfY) {
 		this.sdfY = sdfY;
 	}
-
 	public SimpleDateFormat getSdfY2() {
 		return sdfY2;
 	}
-
 	public void setSdfY2(SimpleDateFormat sdfY2) {
 		this.sdfY2 = sdfY2;
 	}
-
 	public SimpleDateFormat getSdfDay() {
 		return sdfDay;
 	}
-
 	public void setSdfDay(SimpleDateFormat sdfDay) {
 		this.sdfDay = sdfDay;
 	}
-
 	public NavegacionBean getNavegacionBean() {
 		return navegacionBean;
 	}
-
 	public void setNavegacionBean(NavegacionBean navegacionBean) {
 		this.navegacionBean = navegacionBean;
 	}
-
-
+	public List<Simulador> getLstSimuladorPrevio() {
+		return lstSimuladorPrevio;
+	}
+	public void setLstSimuladorPrevio(List<Simulador> lstSimuladorPrevio) {
+		this.lstSimuladorPrevio = lstSimuladorPrevio;
+	}
+	public CuotaService getCuotaService() {
+		return cuotaService;
+	}
+	public void setCuotaService(CuotaService cuotaService) {
+		this.cuotaService = cuotaService;
+	}
+	public RequerimientoSeparacionService getRequerimientoSeparacionService() {
+		return requerimientoSeparacionService;
+	}
+	public void setRequerimientoSeparacionService(RequerimientoSeparacionService requerimientoSeparacionService) {
+		this.requerimientoSeparacionService = requerimientoSeparacionService;
+	}
+	public void setNroCuotas(int nroCuotas) {
+		this.nroCuotas = nroCuotas;
+	}
+	public VoucherService getVoucherService() {
+		return voucherService;
+	}
+	public void setVoucherService(VoucherService voucherService) {
+		this.voucherService = voucherService;
+	}
+	public DetalleDocumentoVentaService getDetalleDocumentoVentaService() {
+		return detalleDocumentoVentaService;
+	}
+	public void setDetalleDocumentoVentaService(DetalleDocumentoVentaService detalleDocumentoVentaService) {
+		this.detalleDocumentoVentaService = detalleDocumentoVentaService;
+	}
 	
 	
 	

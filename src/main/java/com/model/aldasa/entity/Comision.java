@@ -1,5 +1,6 @@
 package com.model.aldasa.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -33,22 +34,22 @@ public class Comision {
 	private Integer comisionCredito;
 		
 	@Column(name="basicojunior")
-	private Double basicoJunior;
+	private BigDecimal basicoJunior;
 	
 	@Column(name="bonojunior")
-	private Double bonoJunior;
+	private BigDecimal bonoJunior;
 	
 	@Column(name="basicosenior")
-	private Double basicoSenior;
+	private BigDecimal basicoSenior;
 	
 	@Column(name="bonosenior")
-	private Double bonoSenior;
+	private BigDecimal bonoSenior;
 	
 	@Column(name="basicomaster")
-	private Double basicoMaster;
+	private BigDecimal basicoMaster;
 	
 	@Column(name="bonomaster")
-	private Double bonoMaster;
+	private BigDecimal bonoMaster;
 
 	@Column(name="comisionsupervisor")
 	private Integer comisionSupervisor;
@@ -57,7 +58,7 @@ public class Comision {
 	private Integer comisionMetaSupervisor;
 
 	@Column(name="bonometasupervisor")
-	private Double bonoMetaSupervisor;
+	private BigDecimal bonoMetaSupervisor;
 
 	private Integer subgerente;
 	
@@ -65,16 +66,16 @@ public class Comision {
 	private Integer metaOnline;
 	
 	@Column(name="primeraventacreditoonline")
-	private Double primeraVentaCreditoOnline;
+	private BigDecimal primeraVentaCreditoOnline;
 	
 	@Column(name="primeraventacontadoonline")
-	private Double primeraVentaContadoOnline;
+	private BigDecimal primeraVentaContadoOnline;
 	
 	@Column(name="bonocreditoonline")
-	private Double bonoCreditoOnline;
+	private BigDecimal bonoCreditoOnline;
 	
 	@Column(name="bonocontadoonline")
-	private Double bonoContadoOnline;
+	private BigDecimal bonoContadoOnline;
 	
 	private Boolean estado;
 	
@@ -82,10 +83,10 @@ public class Comision {
 	private Integer metaAsesorExterno;
 	
 	@Column(name="basicoasesorexterno")
-	private Double basicoAsesorExterno;
+	private BigDecimal basicoAsesorExterno;
 	
 	@Column(name="comisionsupervisoronline")
-	private Double comisionSupervisorOnline;
+	private BigDecimal comisionSupervisorOnline;
 
 	
 	public Integer getId() {
@@ -118,42 +119,7 @@ public class Comision {
 	public void setComisionCredito(Integer comisionCredito) {
 		this.comisionCredito = comisionCredito;
 	}
-	public Double getBasicoJunior() {
-		return basicoJunior;
-	}
-	public void setBasicoJunior(Double basicoJunior) {
-		this.basicoJunior = basicoJunior;
-	}
-	public Double getBonoJunior() {
-		return bonoJunior;
-	}
-	public void setBonoJunior(Double bonoJunior) {
-		this.bonoJunior = bonoJunior;
-	}
-	public Double getBasicoSenior() {
-		return basicoSenior;
-	}
-	public void setBasicoSenior(Double basicoSenior) {
-		this.basicoSenior = basicoSenior;
-	}
-	public Double getBonoSenior() {
-		return bonoSenior;
-	}
-	public void setBonoSenior(Double bonoSenior) {
-		this.bonoSenior = bonoSenior;
-	}
-	public Double getBasicoMaster() {
-		return basicoMaster;
-	}
-	public void setBasicoMaster(Double basicoMaster) {
-		this.basicoMaster = basicoMaster;
-	}
-	public Double getBonoMaster() {
-		return bonoMaster;
-	}
-	public void setBonoMaster(Double bonoMaster) {
-		this.bonoMaster = bonoMaster;
-	}
+
 	public Integer getComisionSupervisor() {
 		return comisionSupervisor;
 	}
@@ -166,12 +132,7 @@ public class Comision {
 	public void setComisionMetaSupervisor(Integer comisionMetaSupervisor) {
 		this.comisionMetaSupervisor = comisionMetaSupervisor;
 	}
-	public Double getBonoMetaSupervisor() {
-		return bonoMetaSupervisor;
-	}
-	public void setBonoMetaSupervisor(Double bonoMetaSupervisor) {
-		this.bonoMetaSupervisor = bonoMetaSupervisor;
-	}
+	
 	public Integer getSubgerente() {
 		return subgerente;
 	}
@@ -184,29 +145,84 @@ public class Comision {
 	public void setMetaOnline(Integer metaOnline) {
 		this.metaOnline = metaOnline;
 	}
-	public Double getPrimeraVentaCreditoOnline() {
+
+	public BigDecimal getBasicoJunior() {
+		return basicoJunior;
+	}
+	public void setBasicoJunior(BigDecimal basicoJunior) {
+		this.basicoJunior = basicoJunior;
+	}
+	public BigDecimal getBonoJunior() {
+		return bonoJunior;
+	}
+	public void setBonoJunior(BigDecimal bonoJunior) {
+		this.bonoJunior = bonoJunior;
+	}
+	public BigDecimal getBasicoSenior() {
+		return basicoSenior;
+	}
+	public void setBasicoSenior(BigDecimal basicoSenior) {
+		this.basicoSenior = basicoSenior;
+	}
+	public BigDecimal getBonoSenior() {
+		return bonoSenior;
+	}
+	public void setBonoSenior(BigDecimal bonoSenior) {
+		this.bonoSenior = bonoSenior;
+	}
+	public BigDecimal getBasicoMaster() {
+		return basicoMaster;
+	}
+	public void setBasicoMaster(BigDecimal basicoMaster) {
+		this.basicoMaster = basicoMaster;
+	}
+	public BigDecimal getBonoMaster() {
+		return bonoMaster;
+	}
+	public void setBonoMaster(BigDecimal bonoMaster) {
+		this.bonoMaster = bonoMaster;
+	}
+	public BigDecimal getBonoMetaSupervisor() {
+		return bonoMetaSupervisor;
+	}
+	public void setBonoMetaSupervisor(BigDecimal bonoMetaSupervisor) {
+		this.bonoMetaSupervisor = bonoMetaSupervisor;
+	}
+	public BigDecimal getPrimeraVentaCreditoOnline() {
 		return primeraVentaCreditoOnline;
 	}
-	public void setPrimeraVentaCreditoOnline(Double primeraVentaCreditoOnline) {
+	public void setPrimeraVentaCreditoOnline(BigDecimal primeraVentaCreditoOnline) {
 		this.primeraVentaCreditoOnline = primeraVentaCreditoOnline;
 	}
-	public Double getPrimeraVentaContadoOnline() {
+	public BigDecimal getPrimeraVentaContadoOnline() {
 		return primeraVentaContadoOnline;
 	}
-	public void setPrimeraVentaContadoOnline(Double primeraVentaContadoOnline) {
+	public void setPrimeraVentaContadoOnline(BigDecimal primeraVentaContadoOnline) {
 		this.primeraVentaContadoOnline = primeraVentaContadoOnline;
 	}
-	public Double getBonoCreditoOnline() {
+	public BigDecimal getBonoCreditoOnline() {
 		return bonoCreditoOnline;
 	}
-	public void setBonoCreditoOnline(Double bonoCreditoOnline) {
+	public void setBonoCreditoOnline(BigDecimal bonoCreditoOnline) {
 		this.bonoCreditoOnline = bonoCreditoOnline;
 	}
-	public Double getBonoContadoOnline() {
+	public BigDecimal getBonoContadoOnline() {
 		return bonoContadoOnline;
 	}
-	public void setBonoContadoOnline(Double bonoContadoOnline) {
+	public void setBonoContadoOnline(BigDecimal bonoContadoOnline) {
 		this.bonoContadoOnline = bonoContadoOnline;
+	}
+	public BigDecimal getBasicoAsesorExterno() {
+		return basicoAsesorExterno;
+	}
+	public void setBasicoAsesorExterno(BigDecimal basicoAsesorExterno) {
+		this.basicoAsesorExterno = basicoAsesorExterno;
+	}
+	public BigDecimal getComisionSupervisorOnline() {
+		return comisionSupervisorOnline;
+	}
+	public void setComisionSupervisorOnline(BigDecimal comisionSupervisorOnline) {
+		this.comisionSupervisorOnline = comisionSupervisorOnline;
 	}
 	public Boolean getEstado() {
 		return estado;
@@ -226,18 +242,7 @@ public class Comision {
 	public void setMetaAsesorExterno(Integer metaAsesorExterno) {
 		this.metaAsesorExterno = metaAsesorExterno;
 	}
-	public Double getBasicoAsesorExterno() {
-		return basicoAsesorExterno;
-	}
-	public void setBasicoAsesorExterno(Double basicoAsesorExterno) {
-		this.basicoAsesorExterno = basicoAsesorExterno;
-	}
-	public Double getComisionSupervisorOnline() {
-		return comisionSupervisorOnline;
-	}
-	public void setComisionSupervisorOnline(Double comisionSupervisorOnline) {
-		this.comisionSupervisorOnline = comisionSupervisorOnline;
-	}
+
 	
 	@Override
     public boolean equals(Object other) {

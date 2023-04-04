@@ -33,4 +33,10 @@ public class ProductoServiceImpl implements ProductoService{
 		productoRepository.delete(entity);
 	}
 
+	@Override
+	public Producto findByEstadoAndTipoProducto(boolean estado, String tipoProducto) {
+		// TODO Auto-generated method stub
+		return productoRepository.findByEstadoAndTipoProducto(estado, tipoProducto);
+	}
+
 }

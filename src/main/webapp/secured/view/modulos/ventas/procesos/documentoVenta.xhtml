@@ -8,29 +8,28 @@
 
 
 	<h:form id="form">
+		<p:growl id="msgs" showDetail="true"/>
 		<h2 style="color: #007d4c;">VENTAS > DOCUMENTO DE VENTA</h2>
 		<p:tabView id="tabView">
 			<p:tab title="Lista de Documentos de Venta" id="tabListDoc">
-				<p:selectOneButton value="#{documentoVentaBean.estado}"	unselectable="false">
+				<p:selectOneButton value="#{documentoVentaBean.estado}"
+					unselectable="false">
 					<f:selectItem itemLabel="Activos" itemValue="#{true}" />
 					<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
-					<p:ajax update=":form:tabView:idTableListDoc" listener="#{documentoVentaBean.iniciarLazy()}" />
+					<p:ajax update=":form:tabView:idTableListDoc"
+						listener="#{documentoVentaBean.iniciarLazy()}" />
 				</p:selectOneButton>
 
-				<p:dataTable var="documento" id="idTableListDoc"
-					value="#{documentoVentaBean.lstDocumentoVentaLazy}"
-					rowIndexVar="row" paginator="true" rows="15" size="small"
-					emptyMessage="No se encontraron documentos de venta."
-					style="width:130%" paginatorPosition="bottom"
-					rowKey="#{documento.id}"
-					selection="#{documentoVentaBean.documentoVentaSelected}"
-					selectionMode="single">
+				<p:dataTable var="documento" id="idTableListDoc" value="#{documentoVentaBean.lstDocumentoVentaLazy}" rowIndexVar="row" paginator="true" rows="15" size="small" style="width:130%"
+					emptyMessage="No se encontraron documentos de venta." paginatorPosition="bottom" rowKey="#{documento.id}" selection="#{documentoVentaBean.documentoVentaSelected}" selectionMode="single">
 
 					<f:facet name="header">
 						<div class="p-d-flex p-ai-center p-jc-between">
 							<span>Lista de Empleados</span>
 						</div>
 					</f:facet>
+					
+					<p:ajax event="rowSelect" listener="#{documentoVentaBean.BoletaDocumentoVenta()}" update=":formDocumentoVentaDialog :dialogDocumentoVenta" oncomplete="PF('docVentDialog').show();" />
 
 					<p:column width="25px">
 				                      #{row +1}
@@ -44,43 +43,20 @@
 							value="#{documento.cliente.person.surnames} #{documento.cliente.person.names}" />
 					</p:column>
 
-					<p:column headerText="Documento Venta" filterMatchMode="contains">
-						<h:outputText value="#{documento.documentoVentaRef}" />
-					</p:column>
-
-					<p:column headerText="Sucursal"
-						sortBy="#{documento.sucursal.razonSocial}"
-						filterBy="#{documento.sucursal.razonSocial}"
-						filterMatchMode="contains">
-						<h:outputText value="#{documento.sucursal.razonSocial}" />
-					</p:column>
-
 					<p:column headerText="Tipo Comprobante" filterMatchMode="contains">
-						<h:outputText value="#{documento.tipoComprobante}" />
-					</p:column>
-
-					<p:column headerText="Serie" filterMatchMode="contains">
-						<h:outputText value="#{documento.serie}" />
+						<h:outputText value="#{documento.tipoComprobante eq 'B'?'Boleta':'Factura'}" />
 					</p:column>
 
 					<p:column headerText="Número" filterMatchMode="contains">
-						<h:outputText value="#{documento.numero}" />
+						<h:outputText value="#{documento.serie}-#{documento.numero}" />
 					</p:column>
 
-					<p:column headerText="Ruc" filterMatchMode="contains">
+					<p:column headerText="RUC/DNI" filterMatchMode="contains">
 						<h:outputText value="#{documento.ruc}" />
-					</p:column>
-
-					<p:column headerText="DNI" filterMatchMode="contains">
-						<h:outputText value="#{documento.dni}" />
 					</p:column>
 
 					<p:column headerText="Razón Social" filterMatchMode="contains">
 						<h:outputText value="#{documento.razonSocial}" />
-					</p:column>
-
-					<p:column headerText="Nombre Comercial" filterMatchMode="contains">
-						<h:outputText value="#{documento.nombreComercial}" />
 					</p:column>
 
 					<p:column headerText="Dirección" filterMatchMode="contains">
@@ -94,27 +70,29 @@
 					</p:column>
 
 					<p:column headerText="Tipo Moneda" filterMatchMode="contains">
-						<h:outputText value="#{documento.tipoMoneda}" />
+						<h:outputText value="#{documento.tipoMoneda eq 'S'?'Soles':'Dólares'}" />
 					</p:column>
 
-					<p:column headerText="Observación" filterMatchMode="contains">
-						<h:outputText value="#{documento.observacion}" />
-					</p:column>
-
-					<p:column headerText="Condición Pago" filterMatchMode="contains">
-						<h:outputText value="#{documento.condionPago}" />
+					<p:column headerText="Tipo Pago" filterMatchMode="contains">
+						<h:outputText value="#{documento.tipoPago}" />
 					</p:column>
 
 					<p:column headerText="SubTotal" filterMatchMode="contains">
-						<h:outputText value="#{documento.subTotal}" />
+						<h:outputText value="#{documento.subTotal}" > 
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
 					</p:column>
 
 					<p:column headerText="IGV" filterMatchMode="contains">
-						<h:outputText value="#{documento.igv}" />
+						<h:outputText value="#{documento.igv}" > 
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
 					</p:column>
 
 					<p:column headerText="Total" filterMatchMode="contains">
-						<h:outputText value="#{documento.total}" />
+						<h:outputText value="#{documento.total}" > 
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
 					</p:column>
 
 					<p:column headerText="Fecha Registro" filterMatchMode="contains">
@@ -123,77 +101,74 @@
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Usuario Registro"
-						sortBy="#{documento.usuarioRegistro.username}"
-						filterBy="#{documento.usuarioRegistro.username}"
-						filterMatchMode="contains">
+					<p:column headerText="Usuario Registro"	sortBy="#{documento.usuarioRegistro.username}" filterMatchMode="contains">
 						<h:outputText value="#{documento.usuarioRegistro.username}" />
 					</p:column>
 
 				</p:dataTable>
+				
+				
+		
+				
 			</p:tab>
 
 			<p:tab title="Nuevo Documento de Venta">
 				<h:panelGrid columns="8" id="gridNuevoDoc">
 
 					<h:outputLabel value="Fecha: " />
-					<p:datePicker
-						value="#{documentoVentaBean.documentoVentaNew.fechaEmision}"
-						style="margin:5px;">
-						<p:ajax update="txt_fecha_Formated" />
+					<p:datePicker id="fecha" value="#{documentoVentaBean.fechaEmision}" style="margin:5px;">
+						<p:ajax update="txt_fecha_Formated, fecha" listener="#{documentoVentaBean.validacionFecha}" />
 					</p:datePicker>
 
-					<h:outputText
-						style="font-size: 22px; font-weight: bold; color: #547E11;"
-						id="txt_fecha_Formated"
-						value="#{documentoVentaBean.documentoVentaNew.fechaEmision}">
+					<h:outputText style="font-size: 22px; font-weight: bold; color: #547E11;" id="txt_fecha_Formated" value="#{documentoVentaBean.fechaEmision}">
 						<f:convertDateTime pattern="EEEEE, dd MMMM yyyy" />
 					</h:outputText>
 
 					<h:outputLabel value="Documento:" />
-					<p:selectOneMenu value="#{documentoVentaBean.tipoDocumento}"
-						style="margin:5px; width:100px">
-						<f:selectItem itemLabel="Factura" itemValue="F" />
+					<p:selectOneMenu id="idTipoComprobante" value="#{documentoVentaBean.tipoComprobante}" style="margin:5px; width:100px" disabled="#{documentoVentaBean.cuotaSelected eq null ? false : true }">
 						<f:selectItem itemLabel="Boleta" itemValue="B" />
-						<p:ajax listener="#{documentoVentaBean.listarSerie}"
-							update="optionSerie, num"></p:ajax>
+						<f:selectItem itemLabel="Factura" itemValue="F" />
+						<p:ajax listener="#{documentoVentaBean.listarSerie}" update="optionSerie, num, pnl"/>
 					</p:selectOneMenu>
 
 					<h:outputLabel value="Serie-Número:" />
 
-					<p:selectOneMenu id="optionSerie"
-						value="#{documentoVentaBean.serieDocumentoSelected}"
-						converter="#{documentoVentaBean.conversorSerie}"
-						style="margin:10px">
-						<f:selectItems value="#{documentoVentaBean.lstSerieDocumento}"
-							var="serie" itemLabel="#{serie.serie}" itemValue="#{serie}" />
+					<p:selectOneMenu id="optionSerie" value="#{documentoVentaBean.serieDocumentoSelected}" converter="#{documentoVentaBean.conversorSerie}" style="margin:10px">
+						<f:selectItems value="#{documentoVentaBean.lstSerieDocumento}" var="serie" itemLabel="#{serie.serie}" itemValue="#{serie}" />
+						<p:ajax listener="#{documentoVentaBean.cambiarSerie}" update="num" /> 
 					</p:selectOneMenu>
 
-					<p:inputText
-						value="#{documentoVentaBean.serieDocumentoSelected.numero}"
-						style="margin:10px" id="num">
-					</p:inputText>
+					<p:inputText value="#{documentoVentaBean.numero}"  style="margin:10px" id="num"/>
 
 				</h:panelGrid>
 
 				<h:panelGrid columns="2">
-
 					<h:panelGrid id="gridImpCuota">
-						<p:commandButton id="movieBtn" style="font-size: 14px;" value="Importar Cuota" icon="pi pi-search" actionListener="#{documentoVentaBean.listarCuota()}" update=":form:tabView:tableCuota" />
-						<p:overlayPanel for="movieBtn" dynamic="true" style="width:800px" widgetVar="moviePickerCuota">
-							<p:dataTable var="cuota" value="#{documentoVentaBean.lstCuota}" rows="5" paginator="true" selectionMode="single" rowIndexVar="row" paginatorPosition="bottom"
-								selection="#{documentoVentaBean.cuotaSelected}" rowKey="#{cuota.id}" id="tableCuota" emptyMessage="No se encontraron resultados" size="small">
-								<!-- <p:ajax event="rowSelect" listener="#{contratoBean.seleccionarLote()}" oncomplete="PF('moviePicker').hide()" update=":form:tabView:gridImpCuota"/> -->
+						<p:commandButton id="movieBtn" style="font-size: 14px;" value="Importar Cuota" icon="pi pi-search" update=":form:tabView:tableCuota" />
+						<p:overlayPanel for="movieBtn" dynamic="true" style="width:1000px" widgetVar="moviePickerCuota">
+							<p:dataTable var="cuota" value="#{documentoVentaBean.lstCuotaLazy}" rows="5" paginator="true" selectionMode="single" rowIndexVar="row" 
+								paginatorPosition="bottom" selection="#{documentoVentaBean.cuotaSelected}" rowKey="#{cuota.id}" id="tableCuota"
+								emptyMessage="No se encontraron resultados" size="small">
+								<p:ajax event="rowSelect" listener="#{documentoVentaBean.importarCuota}" oncomplete="PF('moviePickerCuota').hide()" 
+								update=":form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante" />
+
+								<p:column headerText="Nro Cuota" style="text-align:center; width:60px">
+									<h:outputText value="#{cuota.nroCuota}" style="font-size: 14px;" />
+								</p:column>
 
 								<p:column headerText="Mz-Lt" style="text-align:center; width:60px">
 									<h:outputText value="#{cuota.contrato.lote.manzana.name} - #{cuota.contrato.lote.numberLote}" style="font-size: 14px;" />
 								</p:column>
-
-								<p:column headerText="Persona Venta" style="text-align:center; width:60px">
-									<h:outputText value="#{cuota.contrato.personVenta.surnames}" style="font-size: 14px;" />
+								
+								<p:column headerText="DNI" sortBy="#{cuota.contrato.personVenta.dni}" filterBy="#{cuota.contrato.personVenta.dni}" style="text-align:center; width:120px">
+									<h:outputText value="#{cuota.contrato.personVenta.dni}" style="font-size: 14px;" />
 								</p:column>
 
-								<p:column headerText="Fecha Pago" style="text-align:center; width:60px">
+								<p:column headerText="Persona Venta" sortBy="#{cuota.contrato.personVenta.surnames}" filterBy="#{cuota.contrato.personVenta.surnames}, #{cuota.contrato.personVenta.names}, #{cuota.contrato.personVenta.dni}" style="text-align:center; width:120px">
+									<h:outputText value="#{cuota.contrato.personVenta.surnames} #{cuota.contrato.personVenta.names}" style="font-size: 14px;" />
+								</p:column>
+								
+								<p:column headerText="Fecha Pago" style="text-align:center; width:60px" sortBy="#{cuota.fechaPago}">
 									<h:outputText value="#{cuota.fechaPago}" style="font-size: 14px;">
 										<f:convertDateTime pattern="dd/MM/yyyy" />
 									</h:outputText>
@@ -210,24 +185,28 @@
 								<p:column headerText="Cuota Total" style="text-align:center; width:60px">
 									<h:outputText value="#{cuota.cuotaTotal}" style="font-size: 14px;" />
 								</p:column>
-
-								<p:column headerText="Adelanto"	style="text-align:center; width:60px">
+								
+								<p:column headerText="Adelanto" style="text-align:center; width:60px">
 									<h:outputText value="#{cuota.adelanto}" style="font-size: 14px;" />
 								</p:column>
 
-								<p:column headerText="Pago Total" style="text-align:center; width:60px">
-									<h:outputText value="#{cuota.pagoTotal}" style="font-size: 14px;" />
+								<p:column headerText="Saldo" style="text-align:center; width:60px">
+									<h:outputText value="#{cuota.cuotaTotal - cuota.adelanto}" style="font-size: 14px;" />
 								</p:column>
+
 							</p:dataTable>
 						</p:overlayPanel>
 					</h:panelGrid>
 
 					<h:panelGrid id="gridImpVoucher">
-						<p:commandButton id="movieBtnVou" style="font-size: 14px;" value="Importar Voucher Inicial" icon="pi pi-search" actionListener="#{documentoVentaBean.listarVoucher()}" update=":form:tabView:tableVoucher" />
+						<p:commandButton id="movieBtnVou" style="font-size: 14px;" value="Importar Voucher Inicial" icon="pi pi-search" update=":form:tabView:tableVoucher" />
 						<p:overlayPanel for="movieBtnVou" dynamic="true" style="width:600px" widgetVar="moviePickerVoucher">
-							<p:dataTable var="voucher" value="#{documentoVentaBean.lstVoucher}" rows="5" paginator="true" selectionMode="single" rowIndexVar="row"
-								paginatorPosition="bottom" selection="#{documentoVentaBean.voucherSelected}" rowKey="#{voucher.id}" id="tableVoucher" emptyMessage="No se encontraron resultados" size="small">
-								<!--<p:ajax event="rowSelect" listener="#{contratoBean.seleccionarLote()}" oncomplete="PF('moviePicker').hide()" update=":form:tabView:gridImpVoucher"/> -->
+							<p:dataTable var="voucher" value="#{documentoVentaBean.lstVoucherLazy}" rows="5" paginator="true" selectionMode="single" rowIndexVar="row"
+								paginatorPosition="bottom" selection="#{documentoVentaBean.voucherSelected}" rowKey="#{voucher.id}" id="tableVoucher"
+								emptyMessage="No se encontraron resultados" size="small">
+								
+								<p:ajax event="rowSelect" listener="#{documentoVentaBean.importarVoucher()}" oncomplete="PF('moviePickerVoucher').hide()" 
+								update=":form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante"/>
 
 								<p:column headerText="Cuenta Bancaria" style="text-align:center; width:60px">
 									<h:outputText value="#{voucher.cuentaBancaria.numero}" style="font-size: 14px;" />
@@ -256,54 +235,365 @@
 					</h:panelGrid>
 				</h:panelGrid>
 				
-				<p:panel id="pnl" header="Datos del Cliente" toggleable="true" toggleSpeed="500" widgetVar="panel" style="width:70%">
-                	<h:panelGrid styleClass="companyHeaderGrid" > 
-                		<p:row> 
-                			<p:column> 
-                				<h:outputText value="Ruc / Dni: " />
-                			</p:column>
-                			<p:column> 
-                				<p:inputText id="txt_ruc" style="width:120px;" label="" value="#{documentoVentaBean.ruc}" maxlength="11" /> 
-                			</p:column>
-                			<p:column> 
-                				<h:outputText style="margin-left:20px" value="Nombre o Razón Social: " />   
-                			</p:column>
-                			<p:column> 
-                				<p:inputText id="txt_nombre" style="width:500px;" label="" value="#{documentoVentaBean.ruc}" maxlength="11" />
-                			</p:column> 
-                    	
-                		</p:row>
-                		<p:row> 
-                			<p:column> 
-                				<h:outputText  value="Dirección: " />
-                			</p:column>
-                			<p:column colspan="3"> 
-                				<p:inputText id="txt_direccion" style="width:810px;" label="" value="#{documentoVentaBean.direccion}" maxlength="200" /> 
-                			</p:column>
-	                              
-	                    </p:row>
-	            	</h:panelGrid>
-            	</p:panel>
-            	
-            	<p:panel id="pnlCond" header="Condiciones de venta" toggleable="true" toggleSpeed="500" widgetVar="panelCondVen" style="width:70%; margin-top:10px">
-            		<h:panelGrid styleClass="companyHeaderGrid" > 
-            			<p:row> 
-            				<p:column> 
-            					<h:outputText value="Tipo Pago: " />
-            					<h:selectOneMenu value="#{documentoVentaBean.tipoPago}"	unselectable="false">
-									<f:selectItem itemLabel="Contado" itemValue="Contado" />
-								</h:selectOneMenu>
-            				</p:column>
-            				
-            				
-            			
-            			</p:row>
-            		
-            		
-            		</h:panelGrid>
-            	</p:panel>
+				<h:panelGrid style="width:60%;float:left" columns="1" > 
+					<p:panel id="pnl" header="Datos del Cliente" toggleable="true" toggleSpeed="500" widgetVar="panelDatos" style="width:100%">
+						<h:panelGrid styleClass="companyHeaderGrid">
+							<p:row>
+								<p:column>
+									<h:outputText value="RUC: " rendered="#{documentoVentaBean.tipoComprobante eq 'F'}" />
+									<h:outputText value="DNI: " rendered="#{documentoVentaBean.tipoComprobante eq 'B'}" />
+								</p:column>
+								<p:column>
+									<p:inputText id="txt_ruc" style="width:120px;" label="" value="#{documentoVentaBean.ruc}" maxlength="11" />
+								</p:column>
+								
+								<p:column>
+									<h:outputText style="margin-left:20px" value="Nombre: " rendered="#{documentoVentaBean.tipoComprobante eq 'B'}" />
+									<h:outputText style="margin-left:20px" value="Razón Social: " rendered="#{documentoVentaBean.tipoComprobante eq 'F'}" />
+								</p:column>
+								<p:column>
+									<p:inputText id="txt_nombre" style="width:420px;" label="" value="#{documentoVentaBean.nombreRazonSocial}" maxlength="100" > 
+										<p:ajax listener="#{documentoVentaBean.listarNombreRazonSocial}"  />
+									</p:inputText>
+								</p:column>
+
+							</p:row>
+							<p:row>
+								<p:column>
+									<h:outputText value="Dirección: " />
+								</p:column>
+								<p:column colspan="3">
+									<p:inputText id="txt_direccion" style="width:800px;" label="" value="#{documentoVentaBean.direccion}" maxlength="200" />
+								</p:column>
+
+							</p:row>
+						</h:panelGrid>
+					</p:panel>
+						
+					<p:panel id="pnlCond" header="Condiciones de venta" toggleable="true" toggleSpeed="500" widgetVar="panelCondVen" style="width:100%; margin-top:10px;">
+						<h:panelGrid styleClass="companyHeaderGrid" columns="6">
+							<p:row>
+								<p:column>
+									<h:outputText value="Tipo Pago: " />
+									<h:selectOneMenu value="#{documentoVentaBean.tipoPago}" unselectable="false">
+										<f:selectItem itemLabel="Contado" itemValue="Contado" />
+									</h:selectOneMenu>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="Moneda: " style="margin-left:10px" />
+									<h:selectOneMenu value="#{documentoVentaBean.moneda}" unselectable="false">
+										<f:selectItem itemLabel="Soles" itemValue="S" />
+									</h:selectOneMenu>
+
+								</p:column>
+
+								<p:column>
+									<h:outputText value="Observación:" style="margin-left:10px" />
+								</p:column>
+								<p:column colspan="3">
+									<p:inputText id="txt_observacion" style="width:450px;" label="" value="#{documentoVentaBean.observacion}" maxlength="200" />
+								</p:column>
+								
+								<p:commandButton value="Guardar" oncomplete="PF('saveDocumento').show()"   style="margin-left:50px" icon="pi pi-save"  />
+
+							</p:row>
+
+						</h:panelGrid>
+					
+					</p:panel>
+				
+				</h:panelGrid>
+
+				<h:panelGrid id="gridMontos" style="width:40%;float:right;" columns="1" >	
+					<p:panel  header="Montos" toggleable="true" toggleSpeed="500" widgetVar="panelMontos" >
+						<h:panelGrid id="pnlMontos" columns="3" styleClass="companyHeaderGrid">
+						
+							<h:outputText value="Anticipos:" />
+							<h:outputText value="S/"/>
+            				<h:outputText value="#{documentoVentaBean.anticipos}" />
+							
+							<h:outputText value="Op. Gravada:" />
+							<h:outputText value="S/"/>
+            				<h:outputText value="#{documentoVentaBean.opGravada}" />
+
+							<h:outputText value="Op. Exonerada:" />
+							<h:outputText value="S/"/>
+            				<h:outputText value="#{documentoVentaBean.opExonerada}" />
+
+							<h:outputText value="Op. Inafecta:" />
+							<h:outputText value="S/"/>
+            				<h:outputText value="#{documentoVentaBean.opInafecta}"  />
+
+							<h:outputText value="Op. Gratuita:" />
+							<h:outputText value="S/"/>
+            				<h:outputText value="#{documentoVentaBean.opGratuita}"  />
+
+							<h:outputText value="Descuentos:" />
+							<h:outputText value="S/"/>
+            				<h:outputText value="#{documentoVentaBean.descuentos}"  />
+
+							<h:outputText value="ISC:" />
+							<h:outputText value="S/"/>
+            				<h:outputText value="#{documentoVentaBean.ISC}" />
+
+							<h:outputText value="IGV:" />
+							<h:outputText value="S/"/>
+            				<h:outputText value="#{documentoVentaBean.IGV}" />
+
+							<h:outputText value="Otros Cargos:" />
+							<h:outputText value="S/"/>
+            				<h:outputText value="#{documentoVentaBean.otrosCargos}" />
+
+							<h:outputText value="Otros Tributos:" />
+							<h:outputText value="S/"/>
+            				<h:outputText value="#{documentoVentaBean.otrosTributos}" />
+
+							
+							<h:outputText value="Importe Total:" style="margin-right:20px;font-weight: bolder" />
+							<h:outputText value="S/" style="font-weight: bolder"/>
+							<h:outputText value="#{documentoVentaBean.importeTotal}" style="font-weight: bolder" />
+							
+						</h:panelGrid>
+					</p:panel>
+	
+				</h:panelGrid>
+				
+				<h:panelGrid >
+				
+					<p:commandButton value="Aplicar Pre-Pago" action="#{documentoVentaBean.aplicarPrePago()}"  icon="pi pi-save"  />
+				
+				</h:panelGrid>
+				
+				<h:panelGrid  style="width:80%;float:left">
+				
+					<p:dataTable var="detalle" id="idTableDetalleDocVenta" value="#{documentoVentaBean.lstDetalleDocumentoVenta}" widgetVar="detalleTable" rowIndexVar="row" paginator="true" rows="15" size="small"
+					emptyMessage="No se encontraron detalles de documento de venta." editable="true" style="width:100%"  editMode="cell" paginatorPosition="bottom" rowKey="#{detalle.id}"  selectionMode="single" selection="#{documentoVentaBean.detalleDocumentoVentaSelected}">
+			
+						
+						<f:facet name="header">
+							<div class="p-d-flex p-ai-center p-jc-between">
+								<span>Lista de Detalles de Venta</span>
+							</div>
+						</f:facet>   
+												
+				        <p:column headerText="Nro"  width="25px" filterMatchMode="contains">
+							#{row +1}
+						</p:column>
+						
+						<p:column headerText="Producto" filterMatchMode="contains" >
+							<h:outputText value="#{detalle.producto.descripcion}" />
+						</p:column>
+						
+						<p:column headerText="Descripción" filterMatchMode="contains" style="width:500px">
+							<h:outputText value="#{detalle.descripcion}"/>
+						</p:column>
+						
+						<p:column headerText="Amortización" filterMatchMode="contains">
+							
+							<p:cellEditor>
+			                    <f:facet name="output">
+			                    	S/
+			                        <h:outputText value="#{detalle.amortizacion}">
+			                            <f:convertNumber type="currency" currencySymbol=""/>
+			                        </h:outputText>
+			                    </f:facet>
+			                    <f:facet name="input">
+			                        <p:inputNumber value="#{detalle.amortizacion}" style="width:90%" label="Price" symbol=""> 
+			                        	<p:ajax listener="#{documentoVentaBean.updateAmortizacion(detalle)}" update=":form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos" />
+			                    	</p:inputNumber> 
+			                    </f:facet>	
+			                </p:cellEditor>
+						</p:column>
+						
+						<p:column headerText="Interés" filterMatchMode="contains" style="text-align:center"  >
+							<p:cellEditor>
+			                    <f:facet name="output">
+			                    	S/
+			                        <h:outputText value="#{detalle.interes}">
+			                            <f:convertNumber type="currency" currencySymbol=""/>
+			                        </h:outputText>
+			                    </f:facet>
+			                    <f:facet name="input">
+			                        <p:inputNumber value="#{detalle.interes}" style="width:90%" label="Price" symbol="" minValue="0"> 
+			                        	<p:ajax listener="#{documentoVentaBean.updateInteres(detalle)}" update=":form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos" />
+			                    	</p:inputNumber> 
+			                    </f:facet>	
+			                </p:cellEditor>
+						</p:column>
+						
+						<p:column headerText="Adelanto" filterMatchMode="contains" style="text-align:center"  >
+							<p:cellEditor>
+			                    <f:facet name="output">
+			                    	S/
+			                        <h:outputText value="#{detalle.adelanto}">
+			                            <f:convertNumber type="currency" currencySymbol=""/>
+			                        </h:outputText>
+			                    </f:facet>
+			                    <f:facet name="input">
+			                        <p:inputNumber value="#{detalle.adelanto}" style="width:90%" label="Price" symbol="" minValue="0"> 
+			                        	<p:ajax listener="#{documentoVentaBean.updateAdelanto(detalle)}" update=":form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos" />
+			                    	</p:inputNumber> 
+			                    </f:facet>	
+			                </p:cellEditor>
+						</p:column>
+						
+						<p:column headerText="Importe Venta" filterMatchMode="contains">
+							<h:outputText value="#{detalle.importeVenta}"/>
+						</p:column>
+						
+						<p:column width="10%" filterMatchMode="contains">
+							<p:commandButton rendered="#{detalle.producto.tipoProducto eq 'C'}"  icon="pi pi-trash" styleClass="rounded-button ui-button-danger" action="#{documentoVentaBean.eliminarDetalleVenta(row)}" 
+							update=":form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante"/>
+						</p:column>
+				
+					</p:dataTable>
+				
+				</h:panelGrid>
+				
+
 			</p:tab>
 		</p:tabView>
 	</h:form>
+	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogDocumentoVenta" header="#{documentoVentaBean.tituloDialog}" widgetVar="docVentDialog" resizable="false" closable="true"
+		appendTo="@(body)" style="background-color:green;" width="80%" >
+		<h:form id="formDocumentoVentaDialog">
+
+			<h:panelGrid width="100%" columns="2" styleClass="companyHeaderGrid"> 
+			
+				<p:graphicImage  value="/recursos/images/LOGO.png"  library="demo" style="width:150px"/>	
+
+	        	<h:panelGrid columns="1" style="float:right" >	
+	        		<h:panelGrid columns="1" >	
+	        			<h:outputText value="#{documentoVentaBean.documentoVentaSelected.tipoComprobante eq 'B'?'BOLETA':'FACTURA'} DE VENTA N° #{documentoVentaBean.documentoVentaSelected.serie}-#{documentoVentaBean.documentoVentaSelected.numero}" style="width : 100px;color:#337CFF;font-size: 20px;"/>				
+					</h:panelGrid>
+					<h:panelGrid columns="2" >	
+						<h:outputText value="Fecha Emisión:" style="float:right"/>
+		        		<h:outputText value="#{documentoVentaBean.documentoVentaSelected.fechaEmision}" style="float:right" > 
+		        			<f:convertDateTime pattern="dd/MM/yyyy" />
+		        		</h:outputText>
+					</h:panelGrid>
+					
+				</h:panelGrid>
+			</h:panelGrid>
+			
+			
+			
+			<h:panelGrid columns="2" styleClass="companyHeaderGrid">
+	
+				<h:outputText value="Ruc:" />
+	        	<h:outputText value="#{documentoVentaBean.documentoVentaSelected.ruc}" />
+				
+				<h:outputText value="Cliente:" />
+	        	<h:outputText value="#{documentoVentaBean.documentoVentaSelected.razonSocial}" />
+	
+				<h:outputText value="Dirección:" />
+	        	<h:outputText value="#{documentoVentaBean.documentoVentaSelected.direccion}" />
+	
+				<h:outputText value="Tipo Pago:" />
+	        	<h:outputText value="#{documentoVentaBean.documentoVentaSelected.tipoPago}"  />
+	        	
+	        	<h:outputText value="Moneda:" />
+	        	<h:outputText value="#{documentoVentaBean.documentoVentaSelected.tipoMoneda eq 'S'?'Soles':'Dólares'}"  />
+	        	
+	        	<h:outputText value="Observación:" />
+	        	<h:outputText value="#{documentoVentaBean.documentoVentaSelected.observacion}"  />
+	
+			</h:panelGrid>   
+				
+			<h:panelGrid>
+		
+				<p:dataTable var="det" id="idTableDetalleDocumento" value="#{documentoVentaBean.lstDetalleDocumentoVentaSelected}"  rowIndexVar="row" paginator="true" rows="15" size="small"
+				emptyMessage="No se encontraron detalles de documento de venta." style="width:100%" paginatorPosition="bottom" rowKey="#{det.id}"  selectionMode="single" selection="#{documentoVentaBean.detalleDocumentoVenta}">
+	
+					<p:column headerText="Cantidad" filterMatchMode="contains" style="text-align:center">
+						<h:outputText value="1"/>
+					</p:column>
+					
+					<p:column headerText="Descripción" filterMatchMode="contains" style="text-align:center;width:400px" >
+						<h:outputText value="#{det.descripcion}"  style="width:400px"/>
+					</p:column>
+	
+					<p:column headerText="Amortización" filterMatchMode="contains" style="text-align:center">
+						<h:outputText value="#{det.amortizacion}"> 
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Interés" filterMatchMode="contains" style="text-align:center">
+						<h:outputText value="#{det.interes}"> 
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Adelanto" filterMatchMode="contains" style="text-align:center">
+						<h:outputText value="#{det.adelanto}"> 
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Importe de Venta(**)" filterMatchMode="contains" style="text-align:center">
+						<h:outputText value="#{det.importeVenta}"> 
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
+					</p:column>
+			
+				</p:dataTable>
+	
+			</h:panelGrid>
+			
+			<h:panelGrid style="width:40%;float:left;" columns="1" >	
+				<h:panelGrid  columns="2" styleClass="companyHeaderGrid">
+				
+					<h:outputText value="Son:" />
+	         		<h:outputText value="#{documentoVentaBean.montoLetra}" />
+	
+				</h:panelGrid>
+	
+			</h:panelGrid>
+				
+			<h:panelGrid style="width:40%;float:right;" columns="1" >	
+				<h:panelGrid  columns="3" styleClass="companyHeaderGrid">
+				
+					<h:outputText value="Sub-Total:" />
+					<h:outputText value="S/" />	         		
+	         		<h:outputText value="#{documentoVentaBean.documentoVentaSelected.subTotal}"> 
+						<f:convertNumber type="currency" currencySymbol=""/>
+					</h:outputText>
+				
+					<h:outputText value="Igv:" />
+					<h:outputText value="S/" />		
+	         		<h:outputText value="#{documentoVentaBean.documentoVentaSelected.igv}"> 
+						<f:convertNumber type="currency" currencySymbol=""/>
+					</h:outputText>
+	
+					<h:outputText value="Total:" style="color:blue"/>
+					<h:outputText value="S/" style="color:blue"/>	         		
+	         		<h:outputText value="#{documentoVentaBean.documentoVentaSelected.total}" style="color:blue"> 
+						<f:convertNumber type="currency" currencySymbol=""/>
+					</h:outputText>
+	
+				</h:panelGrid>
+	
+			</h:panelGrid>
+			
+			<h:panelGrid style="width:100%" columns="1" >
+			
+			<p:commandButton value="Descargar PDF"   style="margin-left:50px" icon="pi pi-file-pdf" />
+			
+			</h:panelGrid>
+			
+		</h:form>
+	</p:dialog>
+	
+	<p:confirmDialog id="saveDocumento" message="¿Está seguro de guardar el documento de venta?" header="Confirmación"
+                      severity="alert" widgetVar="saveDocumento" appendTo="@(body)">
+        <h:form >
+            <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('saveDocumento').hide()" value="SI" action="#{documentoVentaBean.saveDocumentoVenta()}" update=":form:tabView:idTableListDoc :form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante"/>
+            <p:commandButton value="NO" oncomplete="PF('saveDocumento').hide()"/>
+        </h:form>
+    </p:confirmDialog>
+	
 
 </ui:composition>

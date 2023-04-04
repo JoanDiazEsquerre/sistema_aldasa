@@ -1,5 +1,7 @@
 package com.model.aldasa.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,13 +24,13 @@ public class Comisiones {
     private Lote lote;
 	
 	@Column(name="comisionasesor")
-	private double comisionAsesor;
+	private BigDecimal comisionAsesor;
 	
 	@Column(name="comisionsupervisor")
-	private double comisionSupervisor;
+	private BigDecimal comisionSupervisor;
 	
 	@Column(name="comisionsubgerente")
-	private double comisionSubgerente;
+	private BigDecimal comisionSubgerente;
 	
 	private boolean estado;
 	
@@ -48,22 +50,22 @@ public class Comisiones {
 	public void setLote(Lote lote) {
 		this.lote = lote;
 	}
-	public double getComisionAsesor() {
+	public BigDecimal getComisionAsesor() {
 		return comisionAsesor;
 	}
-	public void setComisionAsesor(double comisionAsesor) {
+	public void setComisionAsesor(BigDecimal comisionAsesor) {
 		this.comisionAsesor = comisionAsesor;
 	}
-	public double getComisionSupervisor() {
+	public BigDecimal getComisionSupervisor() {
 		return comisionSupervisor;
 	}
-	public void setComisionSupervisor(double comisionSupervisor) {
+	public void setComisionSupervisor(BigDecimal comisionSupervisor) {
 		this.comisionSupervisor = comisionSupervisor;
 	}
-	public double getComisionSubgerente() {
+	public BigDecimal getComisionSubgerente() {
 		return comisionSubgerente;
 	}
-	public void setComisionSubgerente(double comisionSubgerente) {
+	public void setComisionSubgerente(BigDecimal comisionSubgerente) {
 		this.comisionSubgerente = comisionSubgerente;
 	}
 	public boolean isEstado() {

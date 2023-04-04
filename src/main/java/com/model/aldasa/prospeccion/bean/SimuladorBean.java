@@ -1,6 +1,7 @@
 package com.model.aldasa.prospeccion.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,20 +13,19 @@ import javax.faces.bean.ViewScoped;
 import org.primefaces.PrimeFaces;
 
 import com.model.aldasa.entity.Simulador;
+import com.model.aldasa.util.BaseBean;
 
 @ManagedBean
 @ViewScoped
-public class SimuladorBean  implements Serializable {
+public class SimuladorBean extends BaseBean  implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String montoTotalText,montoInicialText;
-	private Double montoTotal,montoInteres;
-	private Double montoInicial;
-	private Double montoDeuda=0.0;
+	private BigDecimal montoTotal,montoInteres;
+	private BigDecimal montoInicial;
+	private BigDecimal montoDeuda=BigDecimal.ZERO;
 	private Integer numeroCuotas;
 	private Integer porcentaje=0; 
-	private String textoDeuda =String.format("%,.2f",montoDeuda);
 	private List<Simulador> lstSimulador = new ArrayList<>();
 	
 	@PostConstruct
@@ -34,12 +34,10 @@ public class SimuladorBean  implements Serializable {
 	}
 	
 	public void limpiar() {
-		montoTotalText=null;
-		montoInicialText=null;
+		
 		montoTotal=null;
 		montoInicial=null;
-		montoDeuda=0.0;
-		textoDeuda =String.format("%,.2f",montoDeuda);
+		montoDeuda=BigDecimal.ZERO;
 		porcentaje=0; 
 		numeroCuotas=6;
 		lstSimulador.clear();
@@ -72,45 +70,13 @@ public class SimuladorBean  implements Serializable {
 		}
 	}
 	
-	public void validaMontoTotal() {
-		lstSimulador.clear();
-		if(montoTotalText!=null || !montoTotalText.isEmpty()) {
-			if(montoTotalText.substring(0,montoTotalText.length()).matches("[0-9]*")) {
-				montoTotal = Double.valueOf(montoTotalText);
-				calcularMontoDeuda();
-			}else {
-				montoTotal=null;
-				montoDeuda = 0.0;
-				textoDeuda = String.format("%,.2f",montoDeuda);
-				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "MONTO TOTAL incorrecto, solo ingresar caracteres numéricos");
-				PrimeFaces.current().dialog().showMessageDynamic(message);
-			}
-		}
-	}
-	
-	public void validaMontoInicial() {
-		lstSimulador.clear();
-		if(montoInicialText!=null || !montoInicialText.isEmpty()) {
-			if(montoInicialText.substring(0,montoInicialText.length()).matches("[0-9]*")) {
-				montoInicial = Double.valueOf(montoInicialText);
-				calcularMontoDeuda();
-			}else {
-				montoInicial=null;
-				montoDeuda = 0.0;
-				textoDeuda = String.format("%,.2f",montoDeuda);
-				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "MONTO INICIAL incorrecto, solo ingresar caracteres numéricos");
-				PrimeFaces.current().dialog().showMessageDynamic(message);
-			}
-		}
-	}
-	
 	public void calcularMontoDeuda() {
+		lstSimulador.clear();
+
 		if (montoTotal == null || montoInicial == null) {
-			montoDeuda = 0.0;
-			textoDeuda = String.format("%,.2f",montoDeuda);
+			montoDeuda = BigDecimal.ZERO;
 		} else{
-			montoDeuda = montoTotal-montoInicial;
-			textoDeuda = String.format("%,.2f",montoDeuda);
+			montoDeuda = montoTotal.subtract(montoInicial);
 		}
 		
 	}
@@ -118,43 +84,24 @@ public class SimuladorBean  implements Serializable {
 	public void simularCuotas () {
 		lstSimulador.clear();
 		
-		if(montoTotalText!=null || !montoTotalText.isEmpty()) {
-			if(!montoTotalText.substring(0,montoTotalText.length()).matches("[0-9]*")) {
-				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "MONTO TOTAL incorrecto, solo ingresar caracteres numéricos");
-				PrimeFaces.current().dialog().showMessageDynamic(message);
-				return;
-			}
-		}
-		
-		if(montoInicialText!=null || !montoInicialText.isEmpty()) {
-			if(!montoInicialText.substring(0,montoInicialText.length()).matches("[0-9]*")) {
-				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "MONTO INICIAL incorrecto, solo ingresar caracteres numéricos");
-				PrimeFaces.current().dialog().showMessageDynamic(message);
-				return;
-			}
-		}
-		
 		if(montoTotal==null) {
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingrese el monto total");
-			PrimeFaces.current().dialog().showMessageDynamic(message);
+			addErrorMessage("Ingresar monto total.");
+			return;
+		}else if(montoTotal==BigDecimal.ZERO) {
+			addErrorMessage("El monto total debe ser mayor a 0.");
 			return;
 		}
 		
 		if(montoInicial==null) {
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingrese el monto inicial");
-			PrimeFaces.current().dialog().showMessageDynamic(message);
+			addErrorMessage("Ingresar monto inicial.");
 			return;
-		}
-		
-		if(montoInicial >= montoTotal) {
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El monto inicial tiene que ser menor al monto total");
-			PrimeFaces.current().dialog().showMessageDynamic(message);
+		}else if(montoInicial==BigDecimal.ZERO) {
+			addErrorMessage("El monto inicial debe ser mayor a 0.");
 			return;
 		}
 		
 		if(porcentaje==null) {
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingrese el porcentaje de interés");
-            PrimeFaces.current().dialog().showMessageDynamic(message);
+           addErrorMessage("Ingrese el porcentaje de interés");
             return;
         }
 		
@@ -162,37 +109,37 @@ public class SimuladorBean  implements Serializable {
 		Simulador filaInicio = new Simulador();
 		filaInicio.setNroCuota("0");
 		filaInicio.setInicial(montoInicial);
-		filaInicio.setCuotaSI(0.0);
-		filaInicio.setInteres(0.0);
-		filaInicio.setCuotaTotal(0.0);
+		filaInicio.setCuotaSI(BigDecimal.ZERO);
+		filaInicio.setInteres(BigDecimal.ZERO);
+		filaInicio.setCuotaTotal(BigDecimal.ZERO);
 		lstSimulador.add(filaInicio);
 		
 		if(porcentaje==0) {
-			montoInteres=0.0;
+			montoInteres=BigDecimal.ZERO;
 			
-			double cuota = montoDeuda / numeroCuotas;
+			BigDecimal cuota = montoDeuda.divide(new BigDecimal(numeroCuotas));
 			
 			
-			double sumaTotal=0.0;
+			BigDecimal sumaTotal=BigDecimal.ZERO;
 			List<Simulador> listaPrevia = new ArrayList<>();
 			for(int i=0; i<numeroCuotas-1;i++) {
 				Simulador filaCouta = new Simulador();
 				filaCouta.setNroCuota((i+2)+"");
-				filaCouta.setInicial(0.0);
-				filaCouta.setCuotaSI((double)Math.round(cuota));
-				filaCouta.setInteres(0.0);
-				filaCouta.setCuotaTotal((double)Math.round(cuota));
+				filaCouta.setInicial(BigDecimal.ZERO);
+				filaCouta.setCuotaSI(cuota);
+				filaCouta.setInteres(BigDecimal.ZERO);
+				filaCouta.setCuotaTotal(cuota);
 				listaPrevia.add(filaCouta);
 				
-				sumaTotal = sumaTotal + filaCouta.getCuotaSI();
+				sumaTotal = sumaTotal.add(filaCouta.getCuotaSI());
 			}
 			
 			Simulador filaPrimeraCuota = new Simulador();
 			filaPrimeraCuota.setNroCuota("1");
-			filaPrimeraCuota.setInicial(0.0);
-			filaPrimeraCuota.setCuotaSI(montoDeuda-sumaTotal);
-			filaPrimeraCuota.setInteres(0.0);
-			filaPrimeraCuota.setCuotaTotal(montoDeuda-sumaTotal);
+			filaPrimeraCuota.setInicial(BigDecimal.ZERO);
+			filaPrimeraCuota.setCuotaSI(montoDeuda.subtract(sumaTotal));
+			filaPrimeraCuota.setInteres(BigDecimal.ZERO);
+			filaPrimeraCuota.setCuotaTotal(montoDeuda.subtract(sumaTotal));
 			lstSimulador.add(filaPrimeraCuota);
 			
 			
@@ -204,45 +151,45 @@ public class SimuladorBean  implements Serializable {
 			filaTotal.setNroCuota("TOTAL");
 			filaTotal.setInicial(montoInicial);
 			filaTotal.setCuotaSI(montoDeuda);
-			filaTotal.setInteres(0.0);
+			filaTotal.setInteres(BigDecimal.ZERO);
 			filaTotal.setCuotaTotal(montoDeuda);
 			lstSimulador.add(filaTotal);
 			
 		}else {
-			double sumaTotal=0.0;
+			BigDecimal sumaTotal=BigDecimal.ZERO;
 			
-			double porc=porcentaje;
-			double porcMin= (porc/100);
-			montoInteres = montoDeuda*porcMin;
+			BigDecimal porc= new BigDecimal(porcentaje);
+			BigDecimal porcMin= porc.divide(new BigDecimal(100));
+			montoInteres = montoDeuda.multiply(porcMin);
 			
-			double cuota = montoDeuda / numeroCuotas;
-			double sumaItems=0.0;
-			double sumaInteresItem=0.0;
+			BigDecimal cuota = montoDeuda.divide(new BigDecimal(numeroCuotas));
+			BigDecimal sumaItems=BigDecimal.ZERO;
+			BigDecimal sumaInteresItem=BigDecimal.ZERO;
 			List<Simulador> listaPrevia = new ArrayList<>();
 			for(int i=0; i<numeroCuotas-1;i++) {
 				Simulador filaCouta = new Simulador();
 				filaCouta.setNroCuota((i+2)+"");
-				filaCouta.setInicial(0.0);
-				filaCouta.setCuotaSI((double)Math.round(cuota));
-				filaCouta.setInteres((double)Math.round(montoInteres/numeroCuotas));
-				filaCouta.setCuotaTotal(filaCouta.getCuotaSI()+filaCouta.getInteres());
+				filaCouta.setInicial(BigDecimal.ZERO);
+				filaCouta.setCuotaSI(cuota);
+				filaCouta.setInteres(montoInteres.divide( new BigDecimal(numeroCuotas)));
+				filaCouta.setCuotaTotal(filaCouta.getCuotaSI().add(filaCouta.getInteres()));
 				listaPrevia.add(filaCouta);
 				
-				sumaItems = sumaItems + filaCouta.getCuotaSI();
-				sumaInteresItem = sumaInteresItem+filaCouta.getInteres();
-				sumaTotal=sumaTotal+filaCouta.getCuotaTotal();
+				sumaItems = sumaItems.add(filaCouta.getCuotaSI());
+				sumaInteresItem = sumaInteresItem.add(filaCouta.getInteres());
+				sumaTotal=sumaTotal.add(filaCouta.getCuotaTotal());
 			}
 			
 			Simulador filaPrimeraCuota = new Simulador();
 			filaPrimeraCuota.setNroCuota("1");
-			filaPrimeraCuota.setInicial(0.0);
-			filaPrimeraCuota.setCuotaSI(montoDeuda-sumaItems);
-			filaPrimeraCuota.setInteres(montoInteres-sumaInteresItem);
-			filaPrimeraCuota.setCuotaTotal(filaPrimeraCuota.getCuotaSI()+filaPrimeraCuota.getInteres());
-			sumaTotal=sumaTotal+filaPrimeraCuota.getCuotaTotal();
+			filaPrimeraCuota.setInicial(BigDecimal.ZERO);
+			filaPrimeraCuota.setCuotaSI(montoDeuda.subtract(sumaItems));
+			filaPrimeraCuota.setInteres(montoInteres.subtract(sumaInteresItem));
+			filaPrimeraCuota.setCuotaTotal(filaPrimeraCuota.getCuotaSI().add(filaPrimeraCuota.getInteres()));
+			sumaTotal=sumaTotal.add(filaPrimeraCuota.getCuotaTotal());
 			lstSimulador.add(filaPrimeraCuota);
 			
-			double sumaCuotaSI=0.0;
+			BigDecimal sumaCuotaSI=BigDecimal.ZERO;
 			for(Simulador sim:listaPrevia) {
 				lstSimulador.add(sim);
 			}
@@ -250,99 +197,61 @@ public class SimuladorBean  implements Serializable {
 			Simulador filaTotal = new Simulador();
 			filaTotal.setNroCuota("TOTAL");
 			filaTotal.setInicial(montoInicial);
-			filaTotal.setCuotaSI(sumaItems+filaPrimeraCuota.getCuotaSI());
+			filaTotal.setCuotaSI(sumaItems.add(filaPrimeraCuota.getCuotaSI()));
 			filaTotal.setInteres(montoInteres);
 			filaTotal.setCuotaTotal(sumaTotal);
 			lstSimulador.add(filaTotal);
 			
-		}
-		
-		
-		
-		
+		}	
 	}
+	
+	
+	
+	
+	
 
-	public Double getMontoTotal() {
+	public BigDecimal getMontoTotal() {
 		return montoTotal;
 	}
-
-	public void setMontoTotal(Double montoTotal) {
+	public void setMontoTotal(BigDecimal montoTotal) {
 		this.montoTotal = montoTotal;
 	}
-
-	public Double getMontoInicial() {
+	public BigDecimal getMontoInteres() {
+		return montoInteres;
+	}
+	public void setMontoInteres(BigDecimal montoInteres) {
+		this.montoInteres = montoInteres;
+	}
+	public BigDecimal getMontoInicial() {
 		return montoInicial;
 	}
-
-	public void setMontoInicial(Double montoInicial) {
+	public void setMontoInicial(BigDecimal montoInicial) {
 		this.montoInicial = montoInicial;
 	}
-
+	public BigDecimal getMontoDeuda() {
+		return montoDeuda;
+	}
+	public void setMontoDeuda(BigDecimal montoDeuda) {
+		this.montoDeuda = montoDeuda;
+	}
 	public Integer getNumeroCuotas() {
 		return numeroCuotas;
 	}
-
 	public void setNumeroCuotas(Integer numeroCuotas) {
 		this.numeroCuotas = numeroCuotas;
 	}
-
 	public Integer getPorcentaje() {
 		return porcentaje;
 	}
-
 	public void setPorcentaje(Integer porcentaje) {
 		this.porcentaje = porcentaje;
 	}
-
-	public Double getMontoDeuda() {
-		return montoDeuda;
-	}
-
-	public void setMontoDeuda(Double montoDeuda) {
-		this.montoDeuda = montoDeuda;
-	}
-
-	public String getTextoDeuda() {
-		return textoDeuda;
-	}
-
-	public void setTextoDeuda(String textoDeuda) {
-		this.textoDeuda = textoDeuda;
-	}
-
 	public List<Simulador> getLstSimulador() {
 		return lstSimulador;
 	}
-
 	public void setLstSimulador(List<Simulador> lstSimulador) {
 		this.lstSimulador = lstSimulador;
 	}
-
-	public Double getMontoInteres() {
-		return montoInteres;
-	}
-
-	public void setMontoInteres(Double montoInteres) {
-		this.montoInteres = montoInteres;
-	}
-
-	public String getMontoTotalText() {
-		return montoTotalText;
-	}
-
-	public void setMontoTotalText(String montoTotalText) {
-		this.montoTotalText = montoTotalText;
-	}
-
-	public String getMontoInicialText() {
-		return montoInicialText;
-	}
-
-	public void setMontoInicialText(String montoInicialText) {
-		this.montoInicialText = montoInicialText;
-	}
-
-	
 	
 
 }

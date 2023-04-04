@@ -1,5 +1,6 @@
 package com.model.aldasa.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -26,18 +27,18 @@ public class Contrato {
 	Date fechaVenta;
 	
 	@Column(name="montoventa")
-	double montoVenta;
+	BigDecimal montoVenta;
 	
 	@Column(name="tipopago")
 	String tipoPago;
 	
 	@Column(name="montoinicial")
-	Double montoInicial;
+	BigDecimal montoInicial;
 	
 	@Column(name="nrocuota")
 	Integer numeroCuota;
 	
-	Double interes;
+	BigDecimal interes;
 	
 	@ManyToOne
 	@JoinColumn(name="idpersonventa")
@@ -47,7 +48,7 @@ public class Contrato {
 	@JoinColumn(name="idpersonventa2")
 	private Person personVenta2;
 	
-	@ManyToOne
+	@ManyToOne 
 	@JoinColumn(name="idpersonventa3")
 	private Person personVenta3;
 	
@@ -86,23 +87,12 @@ public class Contrato {
 	public void setFechaVenta(Date fechaVenta) {
 		this.fechaVenta = fechaVenta;
 	}
-	public double getMontoVenta() {
-		return montoVenta;
-	}
-	public void setMontoVenta(double montoVenta) {
-		this.montoVenta = montoVenta;
-	}
+	
 	public String getTipoPago() {
 		return tipoPago;
 	}
 	public void setTipoPago(String tipoPago) {
 		this.tipoPago = tipoPago;
-	}
-	public Double getMontoInicial() {
-		return montoInicial;
-	}
-	public void setMontoInicial(Double montoInicial) {
-		this.montoInicial = montoInicial;
 	}
 	public Integer getNumeroCuota() {
 		return numeroCuota;
@@ -110,10 +100,22 @@ public class Contrato {
 	public void setNumeroCuota(Integer numeroCuota) {
 		this.numeroCuota = numeroCuota;
 	}
-	public Double getInteres() {
+	public BigDecimal getMontoVenta() {
+		return montoVenta;
+	}
+	public void setMontoVenta(BigDecimal montoVenta) {
+		this.montoVenta = montoVenta;
+	}
+	public BigDecimal getMontoInicial() {
+		return montoInicial;
+	}
+	public void setMontoInicial(BigDecimal montoInicial) {
+		this.montoInicial = montoInicial;
+	}
+	public BigDecimal getInteres() {
 		return interes;
 	}
-	public void setInteres(Double interes) {
+	public void setInteres(BigDecimal interes) {
 		this.interes = interes;
 	}
 	public Person getPersonVenta() {

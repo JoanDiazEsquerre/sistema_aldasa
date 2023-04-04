@@ -1,6 +1,7 @@
 package com.model.aldasa.general.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -187,25 +188,25 @@ public class ComisionBean implements Serializable {
 		setfechaInicioFin();
 		comisionSelected.setComisionContado(8);
 		comisionSelected.setComisionCredito(4);
-		comisionSelected.setBasicoJunior(1025.00);
-		comisionSelected.setBonoJunior(200.00);
-		comisionSelected.setBasicoSenior(1200.00);
-		comisionSelected.setBonoSenior(300.00);
-		comisionSelected.setBasicoMaster(1500.00);
-		comisionSelected.setBonoMaster(500.00);
+		comisionSelected.setBasicoJunior(new BigDecimal(1025.00));
+		comisionSelected.setBonoJunior(new BigDecimal(200.00));
+		comisionSelected.setBasicoSenior(new BigDecimal(1200.00));
+		comisionSelected.setBonoSenior(new BigDecimal(300.00));
+		comisionSelected.setBasicoMaster(new BigDecimal(1500.00));
+		comisionSelected.setBonoMaster(new BigDecimal(500.00));
 		comisionSelected.setComisionSupervisor(1);
 		comisionSelected.setComisionMetaSupervisor(2); 
-		comisionSelected.setBonoMetaSupervisor(500.00);
+		comisionSelected.setBonoMetaSupervisor(new BigDecimal(500.00));
 		comisionSelected.setSubgerente(1);
 		comisionSelected.setMetaOnline(10);
-		comisionSelected.setPrimeraVentaCreditoOnline(300.00);
-		comisionSelected.setPrimeraVentaContadoOnline(500.00);
-		comisionSelected.setBonoCreditoOnline(400.00); 
-		comisionSelected.setBonoContadoOnline(400.00);
+		comisionSelected.setPrimeraVentaCreditoOnline(new BigDecimal(300.00));
+		comisionSelected.setPrimeraVentaContadoOnline(new BigDecimal(500.00));
+		comisionSelected.setBonoCreditoOnline(new BigDecimal(400.00)); 
+		comisionSelected.setBonoContadoOnline(new BigDecimal(400.00));
 		comisionSelected.setEstado(true);
 		comisionSelected.setMetaAsesorExterno(5); 
-		comisionSelected.setBasicoAsesorExterno(1025.00); 
-		comisionSelected.setComisionSupervisorOnline(0.5);
+		comisionSelected.setBasicoAsesorExterno(new BigDecimal(1025.00)); 
+		comisionSelected.setComisionSupervisorOnline(new BigDecimal(0.5));
 	}
 	
 	public void modifyComision( ) {

@@ -1,5 +1,7 @@
 package com.model.aldasa.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,17 +29,24 @@ public class DetalleDocumentoVenta{
 	
 	private String descripcion;
 	
-	private Double amortizacion;
+	private BigDecimal amortizacion;
 	
-	private Double interes;
+	private BigDecimal interes;
+	private BigDecimal adelanto;
 	
 	@Column(name="importeventa")
-	private Double importeVenta;
+	private BigDecimal importeVenta;
 
 	@ManyToOne
 	@JoinColumn(name="idcuota")
 	private Cuota cuota;
 	
+	@ManyToOne
+	@JoinColumn(name="idvoucher")
+	private Voucher voucher;
+	
+	
+	private boolean estado;
 		
 	
 	
@@ -66,22 +75,22 @@ public class DetalleDocumentoVenta{
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-	public Double getAmortizacion() {
+	public BigDecimal getAmortizacion() {
 		return amortizacion;
 	}
-	public void setAmortizacion(Double amortizacion) {
+	public void setAmortizacion(BigDecimal amortizacion) {
 		this.amortizacion = amortizacion;
 	}
-	public Double getInteres() {
+	public BigDecimal getInteres() {
 		return interes;
 	}
-	public void setInteres(Double interes) {
+	public void setInteres(BigDecimal interes) {
 		this.interes = interes;
 	}
-	public Double getImporteVenta() {
+	public BigDecimal getImporteVenta() {
 		return importeVenta;
 	}
-	public void setImporteVenta(Double importeVenta) {
+	public void setImporteVenta(BigDecimal importeVenta) {
 		this.importeVenta = importeVenta;
 	}
 	public Cuota getCuota() {
@@ -89,6 +98,24 @@ public class DetalleDocumentoVenta{
 	}
 	public void setCuota(Cuota cuota) {
 		this.cuota = cuota;
+	}
+	public boolean isEstado() {
+		return estado;
+	}
+	public void setEstado(boolean estado) {
+		this.estado = estado;
+	}
+	public Voucher getVoucher() {
+		return voucher;
+	}
+	public void setVoucher(Voucher voucher) {
+		this.voucher = voucher;
+	}
+	public BigDecimal getAdelanto() {
+		return adelanto;
+	}
+	public void setAdelanto(BigDecimal adelanto) {
+		this.adelanto = adelanto;
 	}
 
 	

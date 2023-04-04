@@ -359,6 +359,7 @@ public class UserBean extends BaseBean implements Serializable {
 		if(empleado != null) {
 			empleado.setEstado(false);
 			empleadoService.save(empleado);
+			listarPersonas();
 		}
 		
 		if (tituloDialog.equals("NUEVO USUARIO")) {

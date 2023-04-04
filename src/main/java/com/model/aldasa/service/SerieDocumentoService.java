@@ -12,6 +12,6 @@ public interface SerieDocumentoService {
 	SerieDocumento save(SerieDocumento entity);
 	void delete(SerieDocumento entity);
 	
-	List<SerieDocumento> findByTipoDocumentoAndSucursal(String tipoDocumento, Sucursal sucural);
+	List<SerieDocumento> findByTipoComprobanteAndSucursal(String tipoComprobante, Sucursal sucural);
 
 }

@@ -11,8 +11,7 @@
 		<h2 style="color: #007d4c;">PROSPECCIÓN > REQUERIMIENTO SEPARACIÓN</h2>
 		<p:selectOneButton value="#{requerimientoSeparacionBean.estado}" unselectable="false">
 			<f:selectItem itemLabel="Pendientes" itemValue="Pendiente"/>
-			<f:selectItem itemLabel="Aprobados por Contabilidad" itemValue="Aprobado Contabilidad"/>
-			<f:selectItem itemLabel="Ejecutado" itemValue="Ejecutado"/>
+			<f:selectItem itemLabel="Atendidos" itemValue="Atendido"/>
 			<f:selectItem itemLabel="Rechazados" itemValue="Rechazado"/>
 			
 			<p:ajax update=":form:idTableReqsep :form:menuTableReq" />

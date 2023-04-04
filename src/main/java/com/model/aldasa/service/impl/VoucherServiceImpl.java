@@ -1,13 +1,17 @@
 package com.model.aldasa.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.CuentaBancaria;
+import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.Voucher;
 import com.model.aldasa.repository.CuentaBancariaRepository;
 import com.model.aldasa.repository.VoucherRepository;
@@ -40,16 +44,30 @@ public class VoucherServiceImpl implements VoucherService {
 
 	@Override
 	public Voucher findByCuentaBancariaAndMontoAndTipoTransaccionAndNumeroTransaccionAndFechaOperacion(
-			CuentaBancaria cuentaBancaria, Double monto, String tipoTransaccion, String numeroTransaccion,
+			CuentaBancaria cuentaBancaria, BigDecimal monto, String tipoTransaccion, String numeroTransaccion,
 			Date fechaOperacion) {
 		// TODO Auto-generated method stub
 		return voucherRepository.findByCuentaBancariaAndMontoAndTipoTransaccionAndNumeroTransaccionAndFechaOperacion(cuentaBancaria, monto, tipoTransaccion, numeroTransaccion, fechaOperacion);
 	}
 
 	@Override
-	public List<Voucher> findByEstado(String estado) {
+	public List<Voucher> findByEstado(boolean estado) {
 		// TODO Auto-generated method stub
 		return voucherRepository.findByEstado(estado);
+	}
+
+
+
+	@Override
+	public Page<Voucher> findByEstadoAndGeneraDocumento(boolean estado, boolean generoDocumento, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return voucherRepository.findByEstadoAndGeneraDocumento(estado, generoDocumento, pageable);
+	}
+
+	@Override
+	public Voucher findByRequerimientoSeparacion(RequerimientoSeparacion requerimientoSeparacion) {
+		// TODO Auto-generated method stub
+		return voucherRepository.findByRequerimientoSeparacion(requerimientoSeparacion);
 	}
 
 

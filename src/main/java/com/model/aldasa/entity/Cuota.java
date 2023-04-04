@@ -1,5 +1,6 @@
 package com.model.aldasa.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -18,19 +19,22 @@ public class Cuota {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+
+	@Column(name="nrocuota")
+	private Integer nroCuota;
 	
 	@Column(name="fechapago")
 	private Date fechaPago;
 	
 	@Column(name="cuotasi")
-	private Double cuotaSI;
+	private BigDecimal cuotaSI;
 	
-	private Double interes;
+	private BigDecimal interes;
 	
 	@Column(name="cuotatotal")
-	private Double cuotaTotal;
+	private BigDecimal cuotaTotal;
 
-	private Double adelanto;
+	private BigDecimal adelanto;
 	
 	@Column(name="pagototal")
 	private String pagoTotal;
@@ -40,40 +44,49 @@ public class Cuota {
 	private Contrato contrato;
 	
 	private boolean estado;
+	
+	
 
 	
 	
 	
 	
 	
+	public Integer getNroCuota() {
+		return nroCuota;
+	}
+	public void setNroCuota(Integer nroCuota) {
+		this.nroCuota = nroCuota;
+	}
 	public Integer getId() {
 		return id;
 	}
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public Double getCuotaSI() {
+	
+	public BigDecimal getCuotaSI() {
 		return cuotaSI;
 	}
-	public void setCuotaSI(Double cuotaSI) {
+	public void setCuotaSI(BigDecimal cuotaSI) {
 		this.cuotaSI = cuotaSI;
 	}
-	public Double getInteres() {
+	public BigDecimal getInteres() {
 		return interes;
 	}
-	public void setInteres(Double interes) {
+	public void setInteres(BigDecimal interes) {
 		this.interes = interes;
 	}
-	public Double getCuotaTotal() {
+	public BigDecimal getCuotaTotal() {
 		return cuotaTotal;
 	}
-	public void setCuotaTotal(Double cuotaTotal) {
+	public void setCuotaTotal(BigDecimal cuotaTotal) {
 		this.cuotaTotal = cuotaTotal;
 	}
-	public Double getAdelanto() {
+	public BigDecimal getAdelanto() {
 		return adelanto;
 	}
-	public void setAdelanto(Double adelanto) {
+	public void setAdelanto(BigDecimal adelanto) {
 		this.adelanto = adelanto;
 	}
 	public String getPagoTotal() {

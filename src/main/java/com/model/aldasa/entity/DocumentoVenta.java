@@ -1,5 +1,6 @@
 package com.model.aldasa.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -40,8 +41,6 @@ public class DocumentoVenta {
 
 	private String ruc;
 
-	private String dni;
-
 	@Column(name="razonsocial")
 	private String razonSocial;
 	
@@ -62,11 +61,11 @@ public class DocumentoVenta {
 	private String tipoPago;
 	
 	@Column(name="subtotal")
-	private Double subTotal;
+	private BigDecimal subTotal;
 	
-	private Double igv;
+	private BigDecimal igv;
 	
-	private Double total;
+	private BigDecimal total;
 	
 	@Column(name="fecharegistro")
 	private Date fechaRegistro;
@@ -77,6 +76,36 @@ public class DocumentoVenta {
 	
 	private boolean estado;
 
+	private BigDecimal anticipos;
+	
+	@Column(name="opgravada")
+	private BigDecimal opGravada;
+	
+	@Column(name="opexonerada")
+	private BigDecimal opExonerada;
+	
+	@Column(name="opinafecta")
+	private BigDecimal opInafecta;
+	
+	@Column(name="opgratuita")
+	private BigDecimal opGratuita;
+	
+	private BigDecimal descuentos;
+	
+	private BigDecimal isc;
+	
+	@Column(name="otroscargos")
+	private BigDecimal otrosCargos;
+	
+	@Column(name="otrostributos")
+	private BigDecimal otrosTributos;
+
+
+	
+	
+	
+	
+	
 	
 
 	public Integer getId() {
@@ -127,12 +156,6 @@ public class DocumentoVenta {
 	public void setRuc(String ruc) {
 		this.ruc = ruc;
 	}
-	public String getDni() {
-		return dni;
-	}
-	public void setDni(String dni) {
-		this.dni = dni;
-	}
 	public String getRazonSocial() {
 		return razonSocial;
 	}
@@ -169,22 +192,22 @@ public class DocumentoVenta {
 	public void setObservacion(String observacion) {
 		this.observacion = observacion;
 	}
-	public Double getSubTotal() {
+	public BigDecimal getSubTotal() {
 		return subTotal;
 	}
-	public void setSubTotal(Double subTotal) {
+	public void setSubTotal(BigDecimal subTotal) {
 		this.subTotal = subTotal;
 	}
-	public Double getIgv() {
+	public BigDecimal getIgv() {
 		return igv;
 	}
-	public void setIgv(Double igv) {
+	public void setIgv(BigDecimal igv) {
 		this.igv = igv;
 	}
-	public Double getTotal() {
+	public BigDecimal getTotal() {
 		return total;
 	}
-	public void setTotal(Double total) {
+	public void setTotal(BigDecimal total) {
 		this.total = total;
 	}
 	public Date getFechaRegistro() {
@@ -211,6 +234,61 @@ public class DocumentoVenta {
 	public void setTipoPago(String tipoPago) {
 		this.tipoPago = tipoPago;
 	}
+	public BigDecimal getAnticipos() {
+		return anticipos;
+	}
+	public void setAnticipos(BigDecimal anticipos) {
+		this.anticipos = anticipos;
+	}
+	public BigDecimal getOpGravada() {
+		return opGravada;
+	}
+	public void setOpGravada(BigDecimal opGravada) {
+		this.opGravada = opGravada;
+	}
+	public BigDecimal getOpExonerada() {
+		return opExonerada;
+	}
+	public void setOpExonerada(BigDecimal opExonerada) {
+		this.opExonerada = opExonerada;
+	}
+	public BigDecimal getOpInafecta() {
+		return opInafecta;
+	}
+	public void setOpInafecta(BigDecimal opInafecta) {
+		this.opInafecta = opInafecta;
+	}
+	public BigDecimal getOpGratuita() {
+		return opGratuita;
+	}
+	public void setOpGratuita(BigDecimal opGratuita) {
+		this.opGratuita = opGratuita;
+	}
+	public BigDecimal getDescuentos() {
+		return descuentos;
+	}
+	public void setDescuentos(BigDecimal descuentos) {
+		this.descuentos = descuentos;
+	}
+	public BigDecimal getIsc() {
+		return isc;
+	}
+	public void setIsc(BigDecimal isc) {
+		this.isc = isc;
+	}
+	public BigDecimal getOtrosCargos() {
+		return otrosCargos;
+	}
+	public void setOtrosCargos(BigDecimal otrosCargos) {
+		this.otrosCargos = otrosCargos;
+	}
+	public BigDecimal getOtrosTributos() {
+		return otrosTributos;
+	}
+	public void setOtrosTributos(BigDecimal otrosTributos) {
+		this.otrosTributos = otrosTributos;
+	}
+
 	
 	
 }

@@ -36,10 +36,12 @@ public class SerieDocumentoServiceImpl  implements SerieDocumentoService {
 	}
 
 	@Override
-	public List<SerieDocumento> findByTipoDocumentoAndSucursal(String tipoDocumento, Sucursal sucural) {
+	public List<SerieDocumento> findByTipoComprobanteAndSucursal(String tipoComprobante, Sucursal sucural) {
 		// TODO Auto-generated method stub
-		return serieDocumentoRepository.findByTipoDocumentoAndSucursal(tipoDocumento, sucural);
+		return serieDocumentoRepository.findByTipoComprobanteAndSucursal(tipoComprobante, sucural);
 	}
+
+	
 
 
 }

@@ -1,5 +1,7 @@
 package com.model.aldasa.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,9 +39,9 @@ public class Person {
 	private transient int lotesVendidos;
 	private transient int lotesContado;
 	private transient int lotesCredito;
-	private transient double totalComision;
-	private transient double comisionContado;
-	private transient double comisionCredito;
+	private transient BigDecimal totalComision;
+	private transient BigDecimal comisionContado;
+	private transient BigDecimal comisionCredito;
 	
 	
 	public Person getPersonconyuge() {
@@ -151,22 +153,22 @@ public class Person {
 	public void setLotesCredito(int lotesCredito) {
 		this.lotesCredito = lotesCredito;
 	}
-	public double getTotalComision() {
+	public BigDecimal getTotalComision() {
 		return totalComision;
 	}
-	public void setTotalComision(double totalComision) {
+	public void setTotalComision(BigDecimal totalComision) {
 		this.totalComision = totalComision;
 	}
-	public double getComisionContado() {
+	public BigDecimal getComisionContado() {
 		return comisionContado;
 	}
-	public void setComisionContado(double comisionContado) {
+	public void setComisionContado(BigDecimal comisionContado) {
 		this.comisionContado = comisionContado;
 	}
-	public double getComisionCredito() {
+	public BigDecimal getComisionCredito() {
 		return comisionCredito;
 	}
-	public void setComisionCredito(double comisionCredito) {
+	public void setComisionCredito(BigDecimal comisionCredito) {
 		this.comisionCredito = comisionCredito;
 	}
 	@Override

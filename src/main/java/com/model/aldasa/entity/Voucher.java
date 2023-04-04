@@ -1,5 +1,6 @@
 package com.model.aldasa.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -23,7 +24,7 @@ public class Voucher {
 	@JoinColumn(name="idcuentabancaria")
 	private CuentaBancaria cuentaBancaria;
 	
-	private Double monto;
+	private BigDecimal monto;
 	
 	@Column(name="tipotransaccion")
 	private String tipoTransaccion;
@@ -38,7 +39,10 @@ public class Voucher {
 	@JoinColumn(name="idrequerimientoseparacion")
 	private RequerimientoSeparacion requerimientoSeparacion;
 	
-	private String estado;
+	private boolean estado;
+	
+	@Column(name="generadocumento")
+	private boolean generaDocumento;
 	
 	
 	
@@ -56,10 +60,10 @@ public class Voucher {
 	public void setCuentaBancaria(CuentaBancaria cuentaBancaria) {
 		this.cuentaBancaria = cuentaBancaria;
 	}
-	public Double getMonto() {
+	public BigDecimal getMonto() {
 		return monto;
 	}
-	public void setMonto(Double monto) {
+	public void setMonto(BigDecimal monto) {
 		this.monto = monto;
 	}
 	public String getTipoTransaccion() {
@@ -86,14 +90,21 @@ public class Voucher {
 	public void setRequerimientoSeparacion(RequerimientoSeparacion requerimientoSeparacion) {
 		this.requerimientoSeparacion = requerimientoSeparacion;
 	}
-	
-
-	public String getEstado() {
+	public boolean isEstado() {
 		return estado;
 	}
-	public void setEstado(String estado) {
+	public void setEstado(boolean estado) {
 		this.estado = estado;
 	}
+	public boolean isGeneraDocumento() {
+		return generaDocumento;
+	}
+	public void setGeneraDocumento(boolean generaDocumento) {
+		this.generaDocumento = generaDocumento;
+	}
+	
+	
+	
 	@Override
     public boolean equals(Object other) {
         return (other instanceof Voucher) && (id != null)

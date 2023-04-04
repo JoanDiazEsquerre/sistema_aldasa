@@ -1,6 +1,7 @@
 package com.model.aldasa.entity;
 
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -26,7 +27,7 @@ public class Empleado {
 	private Person person;
 	
 	@Column(name="sueldobasico")
-	private Double sueldoBasico;
+	private BigDecimal sueldoBasico;
 	
 	private boolean estado;
 	
@@ -61,10 +62,11 @@ public class Empleado {
 	public void setEstado(boolean estado) {
 		this.estado = estado;
 	}
-	public Double getSueldoBasico() {
+	
+	public BigDecimal getSueldoBasico() {
 		return sueldoBasico;
 	}
-	public void setSueldoBasico(Double sueldoBasico) {
+	public void setSueldoBasico(BigDecimal sueldoBasico) {
 		this.sueldoBasico = sueldoBasico;
 	}
 	public Area getArea() {

@@ -1,5 +1,6 @@
 package com.model.aldasa.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -74,7 +75,7 @@ public class Lote {
 	private Date fechaVendido;
 	
 	@Column(name="montoventa")
-	private Double montoVenta;
+	private BigDecimal montoVenta;
 	
 	@Column(name="tipopago")
 	private String tipoPago;
@@ -83,7 +84,7 @@ public class Lote {
 	private Integer numeroCuota;
 	
 	@Column(name="montoinicial")
-	private Double montoInicial;
+	private BigDecimal montoInicial;
 	
 	@ManyToOne
 	@JoinColumn(name="idpersonassessor")
@@ -93,7 +94,7 @@ public class Lote {
 	@JoinColumn(name="idpersonsupervisor")
 	private Person personSupervisor;
 	
-	private Double interes;
+	private BigDecimal interes;
 	
 	@Column(name="realizocontrato")
 	private String realizoContrato;
@@ -229,12 +230,7 @@ public class Lote {
 	public void setPersonVenta(Person personVenta) {
 		this.personVenta = personVenta;
 	}
-	public Double getMontoVenta() {
-		return montoVenta;
-	}
-	public void setMontoVenta(Double montoVenta) {
-		this.montoVenta = montoVenta;
-	}
+	
 	public String getTipoPago() {
 		return tipoPago;
 	}
@@ -247,12 +243,7 @@ public class Lote {
 	public void setNumeroCuota(Integer numeroCuota) {
 		this.numeroCuota = numeroCuota;
 	}
-	public Double getMontoInicial() {
-		return montoInicial;
-	}
-	public void setMontoInicial(Double montoInicial) {
-		this.montoInicial = montoInicial;
-	}
+	
 	public Person getPersonAssessor() {
 		return personAssessor;
 	}
@@ -283,10 +274,22 @@ public class Lote {
 	public void setComisionSubgerente(double comisionSubgerente) {
 		this.comisionSubgerente = comisionSubgerente;
 	}
-	public Double getInteres() {
+	public BigDecimal getMontoVenta() {
+		return montoVenta;
+	}
+	public void setMontoVenta(BigDecimal montoVenta) {
+		this.montoVenta = montoVenta;
+	}
+	public BigDecimal getMontoInicial() {
+		return montoInicial;
+	}
+	public void setMontoInicial(BigDecimal montoInicial) {
+		this.montoInicial = montoInicial;
+	}
+	public BigDecimal getInteres() {
 		return interes;
 	}
-	public void setInteres(Double interes) {
+	public void setInteres(BigDecimal interes) {
 		this.interes = interes;
 	}
 	public String getRealizoContrato() {

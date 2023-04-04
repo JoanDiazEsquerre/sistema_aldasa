@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.repository.CuotaRepository;
 import com.model.aldasa.service.CuotaService;
@@ -39,6 +42,28 @@ public class CuotaServiceImpl implements CuotaService{
 		// TODO Auto-generated method stub
 		return cuotaRepository.findByPagoTotalAndEstado(pagoTotal, estado);
 	}
+
+	@Override
+	public List<Cuota> findByContratoAndEstado(Contrato contrato, boolean estado) {
+		// TODO Auto-generated method stub
+		return cuotaRepository.findByContratoAndEstado(contrato, estado);
+	}
+
+	@Override
+	public Page<Cuota> findByPagoTotalAndEstado(String pagoTotal, boolean estado, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return cuotaRepository.findByPagoTotalAndEstado(pagoTotal, estado, pageable);
+	}
+
+	@Override
+	public Page<Cuota> findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLike(
+			String pagoTotal, boolean estado, String personSurnames, String personDni, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return cuotaRepository.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLike(pagoTotal, estado, personSurnames, personDni, pageable);
+	}
+
+
+
 
 
 

@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URL;
 import java.nio.file.Files;
@@ -449,10 +450,11 @@ public class LoteBean extends BaseBean implements Serializable{
 					loteVendido=false;
 				}
 				
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
-
+//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				addInfoMessage("Se guardo correctamente.");
 			} else { 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya existe."));
+//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya existe."));
+				addErrorMessage("El lote ya existe.");
 			}
 		} else {
 			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProjectException(loteSelected.getNumberLote(), loteSelected.getManzana().getId(), loteSelected.getProject().getId(), loteSelected.getId());
@@ -466,10 +468,13 @@ public class LoteBean extends BaseBean implements Serializable{
 					loteVendido=false;
 				}
 				
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				addInfoMessage("Se guardo correctamente.");
 				nombreLoteSelected="Manzana " + loteSelected.getManzana().getName()+"/ lote: "+loteSelected.getNumberLote();
 			} else { 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya existe."));
+//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya existe."));
+				addErrorMessage("El lote ya existe.");
+
 			}
 		}
 		
@@ -507,16 +512,19 @@ public class LoteBean extends BaseBean implements Serializable{
 							comisiones.setComisionAsesor(comision.getBonoCreditoOnline());
 						}
 					}
-					comisiones.setComisionSupervisor((lote.getMontoVenta()*comision.getComisionSupervisorOnline())/100);
+					BigDecimal multiplica = lote.getMontoVenta().multiply(comision.getComisionSupervisorOnline());
+					comisiones.setComisionSupervisor(multiplica.divide(new BigDecimal(100)));
 					comisiones.setTipoEmpleado("O");
 					
 				}else if (usuarioAsesor.getTeam().getName().equals("INTERNOS") || usuarioAsesor.getTeam().getName().equals("EXTERNOS")) {
 					if (lote.getTipoPago().equals("Contado")) {
-						comisiones.setComisionAsesor((lote.getMontoVenta()*comision.getComisionContado())/100);
+						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionContado()));
+						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100)));
 					}else {
-						comisiones.setComisionAsesor((lote.getMontoVenta()*comision.getComisionCredito())/100);
+						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionCredito()));
+						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100)));
 					}
-					comisiones.setComisionSupervisor(0);
+					comisiones.setComisionSupervisor(BigDecimal.ZERO);
 					comisiones.setTipoEmpleado(usuarioAsesor.getTeam().getName().equals("INTERNOS")?"I": "E");
 					
 				}else {
@@ -532,7 +540,8 @@ public class LoteBean extends BaseBean implements Serializable{
 							for (Lote lt:lstLotesVendidos) {
 								Comisiones comConsulta = comisionesService.findByLote(lt);
 								if(comConsulta != null) {
-									comConsulta.setComisionSupervisor((lt.getMontoVenta()*comision.getComisionMetaSupervisor())/100);
+									BigDecimal multiplica = lt.getMontoVenta().multiply(new BigDecimal(comision.getComisionMetaSupervisor()));
+									comConsulta.setComisionSupervisor(multiplica.divide(new BigDecimal(100)));
 									comisionesService.save(comConsulta);
 
 								}
@@ -541,20 +550,25 @@ public class LoteBean extends BaseBean implements Serializable{
 					}
 					
 					if (lote.getTipoPago().equals("Contado")) {
-						comisiones.setComisionAsesor((lote.getMontoVenta()*comision.getComisionContado())/100);
+						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionContado()));
+						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100)));
 					}else {
-						comisiones.setComisionAsesor((lote.getMontoVenta()*comision.getComisionCredito())/100);
+						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionCredito()));
+						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100)));
 					}
 					
 					if(!alcanzaMeta) {
-						comisiones.setComisionSupervisor((lote.getMontoVenta()*comision.getComisionSupervisor())/100);
+						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionSupervisor()));
+						comisiones.setComisionSupervisor(multiplica.divide(new BigDecimal(100)));
 
 					}else {
-						comisiones.setComisionSupervisor((lote.getMontoVenta()*comision.getComisionMetaSupervisor())/100);
+						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionMetaSupervisor()));
+						comisiones.setComisionSupervisor(multiplica.divide(new BigDecimal(100)));
 					}
 
 				}
-				comisiones.setComisionSubgerente((lote.getMontoVenta()*comision.getSubgerente())/100);
+				BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getSubgerente()));
+				comisiones.setComisionSubgerente(multiplica.divide(new BigDecimal(100)));
 				comisiones.setEstado(true);
 				comisionesService.save(comisiones);
 			}

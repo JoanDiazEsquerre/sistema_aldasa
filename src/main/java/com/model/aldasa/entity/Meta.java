@@ -1,10 +1,12 @@
 package com.model.aldasa.entity;
 
+import java.math.BigDecimal;
+
 public class Meta {
 
 	private String supervisor;
 	private int lotesVendidos, porcentajeMeta;
-	private Double montoContado, montoInicial, saldoPendiente;
+	private BigDecimal montoContado, montoInicial, saldoPendiente;
 	
 	
 	
@@ -27,24 +29,25 @@ public class Meta {
 	public void setPorcentajeMeta(int porcentajeMeta) {
 		this.porcentajeMeta = porcentajeMeta;
 	}
-	public Double getMontoContado() {
+	public BigDecimal getMontoContado() {
 		return montoContado;
 	}
-	public void setMontoContado(Double montoContado) {
+	public void setMontoContado(BigDecimal montoContado) {
 		this.montoContado = montoContado;
 	}
-	public Double getMontoInicial() {
+	public BigDecimal getMontoInicial() {
 		return montoInicial;
 	}
-	public void setMontoInicial(Double montoInicial) {
+	public void setMontoInicial(BigDecimal montoInicial) {
 		this.montoInicial = montoInicial;
 	}
-	public Double getSaldoPendiente() {
+	public BigDecimal getSaldoPendiente() {
 		return saldoPendiente;
 	}
-	public void setSaldoPendiente(Double saldoPendiente) {
+	public void setSaldoPendiente(BigDecimal saldoPendiente) {
 		this.saldoPendiente = saldoPendiente;
 	}
+
 	
 	
 	
