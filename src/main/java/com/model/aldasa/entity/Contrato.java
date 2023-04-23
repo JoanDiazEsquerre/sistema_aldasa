@@ -60,11 +60,13 @@ public class Contrato {
 	@JoinColumn(name="idpersonventa5")
 	private Person personVenta5;
 	
-	boolean estado;
+	private boolean estado;
 	
 	@Column(name="fechaprimeracuota")
 	Date fechaPrimeraCuota;
 
+	@Column(name="cancelaciontotal")
+	private boolean cancelacionTotal;
 	
 	
 	
@@ -160,4 +162,12 @@ public class Contrato {
 	public void setFechaPrimeraCuota(Date fechaPrimeraCuota) {
 		this.fechaPrimeraCuota = fechaPrimeraCuota;
 	}
+	public boolean isCancelacionTotal() {
+		return cancelacionTotal;
+	}
+	public void setCancelacionTotal(boolean cancelacionTotal) {
+		this.cancelacionTotal = cancelacionTotal;
+	}
+	
+	
 }

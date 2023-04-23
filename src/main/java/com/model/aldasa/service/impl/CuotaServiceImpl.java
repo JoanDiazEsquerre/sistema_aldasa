@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.Cuota;
+import com.model.aldasa.entity.Person;
 import com.model.aldasa.repository.CuotaRepository;
 import com.model.aldasa.service.CuotaService;
 
@@ -62,9 +63,27 @@ public class CuotaServiceImpl implements CuotaService{
 		return cuotaRepository.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLike(pagoTotal, estado, personSurnames, personDni, pageable);
 	}
 
+	@Override
+	public List<Cuota> findByContratoAndOriginal(Contrato contrato, boolean original) {
+		// TODO Auto-generated method stub
+		return cuotaRepository.findByContratoAndOriginal(contrato, original);
+	}
 
+	@Override
+	public Page<Cuota> findByPagoTotalAndEstadoAndContratoPersonVenta(String pagoTotal, boolean estado,
+			Person contratoPersonVenta, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return cuotaRepository.findByPagoTotalAndEstadoAndContratoPersonVenta(pagoTotal, estado, contratoPersonVenta, pageable);
+	}
 
+	@Override
+	public List<Cuota> findByPagoTotalAndEstadoAndContratoOrderById(String pagoTotal, boolean estado,
+			Contrato contrato) {
+		// TODO Auto-generated method stub
+		return cuotaRepository.findByPagoTotalAndEstadoAndContratoOrderById(pagoTotal, estado, contrato);
+	}
 
+	
 
 
 }

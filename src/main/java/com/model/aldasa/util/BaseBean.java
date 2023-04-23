@@ -1,5 +1,7 @@
 package com.model.aldasa.util;
 
+import java.io.InputStream;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
@@ -37,6 +39,11 @@ public class BaseBean {
     
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, summary, detail));
+    }
+    
+    public static InputStream getRutaGrafico(String rutaGrafico) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        return context.getExternalContext().getResourceAsStream(rutaGrafico);
     }
 
 }

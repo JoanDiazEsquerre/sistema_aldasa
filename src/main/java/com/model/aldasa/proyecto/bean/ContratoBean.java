@@ -246,6 +246,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 			cuotaCero.setPagoTotal("N");
 			cuotaCero.setContrato(contrato);
 			cuotaCero.setEstado(true);
+			cuotaCero.setOriginal(true);
 			cuotaService.save(cuotaCero);
 		}
 		
@@ -283,6 +284,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 					cuotaBD.setPagoTotal("N");
 					cuotaBD.setContrato(contrato);
 					cuotaBD.setEstado(true);
+					cuotaBD.setOriginal(true);
 					cuotaService.save(cuotaBD);
 					
 					
@@ -335,6 +337,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 					cuotaBD.setPagoTotal("N");
 					cuotaBD.setContrato(contrato);
 					cuotaBD.setEstado(true);
+					cuotaBD.setOriginal(true);
 					cuotaService.save(cuotaBD);
 					
 					
@@ -372,11 +375,10 @@ public class ContratoBean extends BaseBean implements Serializable{
 			List<Cuota> lstcuota = cuotaService.findByContratoAndEstado(contratoSelected, true);
 			for(Cuota c:lstcuota) {
 				c.setEstado(false);
+				c.setOriginal(false);
 				cuotaService.save(c);
 			}
-		}
-		
-		
+		}	
 	}
 	
 	public void listarPersonas() {
@@ -1489,6 +1491,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 				cuota.setPagoTotal("N");
 				cuota.setContrato(contrato);
 				cuota.setEstado(true);
+				cuota.setOriginal(true);
 				cuotaService.save(cuota);
 			}
 			
@@ -2280,21 +2283,21 @@ public class ContratoBean extends BaseBean implements Serializable{
 	public void simularCuotas (Contrato contrato) {
 		lstSimulador.clear();
 		
-		Simulador filaInicio = new Simulador();
-		filaInicio.setNroCuota("0");
-		filaInicio.setFechaPago(contrato.getFechaVenta());
-		filaInicio.setInicial(contrato.getMontoInicial());
-		filaInicio.setCuotaSI(BigDecimal.ZERO);
-		filaInicio.setInteres(BigDecimal.ZERO);
-		filaInicio.setCuotaTotal(BigDecimal.ZERO);
-		lstSimulador.add(filaInicio);
-		
-		// una pista
+//		Simulador filaInicio = new Simulador();
+//		filaInicio.setNroCuota("0");
+//		filaInicio.setFechaPago(contrato.getFechaVenta());
+//		filaInicio.setInicial(contrato.getMontoInicial());
+//		filaInicio.setCuotaSI(BigDecimal.ZERO);
+//		filaInicio.setInteres(BigDecimal.ZERO);
+//		filaInicio.setCuotaTotal(BigDecimal.ZERO);
+//		lstSimulador.add(filaInicio);
+//		
+//		// una pista
 		BigDecimal totalSI=BigDecimal.ZERO;
 		BigDecimal totalInteres=BigDecimal.ZERO;
 		BigDecimal totalCuotaTotal=BigDecimal.ZERO;
 		
-		List<Cuota> lstCuotaContrato = cuotaService.findByContratoAndEstado(contrato, true); 
+		List<Cuota> lstCuotaContrato = cuotaService.findByContratoAndOriginal(contrato, true); 
 		for(Cuota c:lstCuotaContrato) {
 			Simulador simulador = new Simulador();
 			simulador.setNroCuota(c.getNroCuota()+"");

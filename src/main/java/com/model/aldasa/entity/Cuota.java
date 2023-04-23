@@ -45,12 +45,28 @@ public class Cuota {
 	
 	private boolean estado;
 	
+	private boolean original;
 	
-
+	private boolean prepago;
 	
+	public Cuota() {
+		
+	}
 	
-	
-	
+	public Cuota(Cuota entity) {
+		super();
+		this.nroCuota =entity.getNroCuota();
+		this.fechaPago = entity.getFechaPago();
+		this.cuotaSI = entity.getCuotaSI();
+		this.interes = entity.getInteres();
+		this.cuotaTotal = entity.getCuotaTotal();
+		this.adelanto = entity.getAdelanto();
+		this.pagoTotal = entity.getPagoTotal();
+		this.contrato = entity.getContrato();
+		this.estado = entity.isEstado();
+		this.original = false;
+		this.prepago = false;
+	}
 	
 	public Integer getNroCuota() {
 		return nroCuota;
@@ -112,6 +128,18 @@ public class Cuota {
 	}
 	public void setEstado(boolean estado) {
 		this.estado = estado;
+	}
+	public boolean isOriginal() {
+		return original;
+	}
+	public void setOriginal(boolean original) {
+		this.original = original;
+	}
+	public boolean isPrepago() {
+		return prepago;
+	}
+	public void setPrepago(boolean prepago) {
+		this.prepago = prepago;
 	}
 	
 }

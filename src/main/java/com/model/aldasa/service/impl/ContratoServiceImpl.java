@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Contrato;
+import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.repository.ContratoRepository;
 import com.model.aldasa.service.ContratoService;
@@ -51,6 +52,15 @@ public class ContratoServiceImpl implements ContratoService{
 		// TODO Auto-generated method stub
 		return contratoRepository.findByEstadoAndLoteProjectSucursal(status, sucursal, pageable);
 	}
+
+	@Override
+	public Page<Contrato> findByPersonVentaSurnamesLikeAndPersonVentaDniLikeAndEstadoAndCancelacionTotal(
+			String personVenta, String dni, boolean estado, boolean cancelacionTotal, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return contratoRepository.findByPersonVentaSurnamesLikeAndPersonVentaDniLikeAndEstadoAndCancelacionTotal(personVenta, dni, estado, cancelacionTotal, pageable);
+	}
+
+
 
 	
 

@@ -1,5 +1,6 @@
 package com.model.aldasa.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,14 @@ public class ClienteServiceImpl implements ClienteService {
 		// TODO Auto-generated method stub
 		return clienteRepository.findByPersonAndEstadoAndPersonaNatural(person, estado, personaNatural);
 	}
+
+	@Override
+	public List<Cliente> findByEstado(boolean estado) {
+		// TODO Auto-generated method stub
+		return clienteRepository.findByEstado(estado);
+	}
+
+
 
 	
 }

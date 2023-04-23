@@ -5,9 +5,11 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +32,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Cliente;
+import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
@@ -37,11 +40,15 @@ import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Producto;
+import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.SerieDocumento;
+import com.model.aldasa.entity.Simulador;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Voucher;
 import com.model.aldasa.general.bean.NavegacionBean;
+import com.model.aldasa.reporteBo.ReportGenBo;
 import com.model.aldasa.service.ClienteService;
+import com.model.aldasa.service.ContratoService;
 import com.model.aldasa.service.CuotaService;
 import com.model.aldasa.service.DetalleDocumentoVentaService;
 import com.model.aldasa.service.DocumentoVentaService;
@@ -53,6 +60,7 @@ import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.EstadoLote;
 import com.model.aldasa.util.NumeroALetra;
 import com.model.aldasa.util.TipoProductoType;
+import com.model.aldasa.ventas.jrdatasource.DataSourceDocumentoVenta;
 
 @ManagedBean
 @ViewScoped
@@ -81,14 +89,21 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	@ManagedProperty(value = "#{clienteService}")
 	private ClienteService clienteService;
 	
+	@ManagedProperty(value = "#{reportGenBo}")
+	private ReportGenBo reportGenBo;
+	
 	@ManagedProperty(value = "#{detalleDocumentoVentaService}")
 	private DetalleDocumentoVentaService detalleDocumentoVentaService;
+	
+	@ManagedProperty(value = "#{contratoService}")
+	private ContratoService contratoService;
 	
 	private boolean estado = true;
 
 	private LazyDataModel<DocumentoVenta> lstDocumentoVentaLazy;
 	private LazyDataModel<Cuota> lstCuotaLazy;
 	private LazyDataModel<Voucher> lstVoucherLazy;
+	private LazyDataModel<Contrato> lstContratosPendientesLazy;
 
 	
 	private List<SerieDocumento> lstSerieDocumento;
@@ -97,13 +112,20 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	private List<DetalleDocumentoVenta> lstDetalleDocumentoVenta = new ArrayList<>();
 	private List<DetalleDocumentoVenta> lstDetalleDocumentoVentaSelected = new ArrayList<>(); 
 	private List<DocumentoVenta> lstDocumentoVenta = new ArrayList<>();
+	private List<Cuota> lstCuotaPagadas = new ArrayList<>();
+	private List<Cuota> lstCuotaVista = new ArrayList<>();
+	private List<Cuota> lstCuotaPendientes = new ArrayList<>();
+	private List<Cuota> lstCuotaPendientesTemporal = new ArrayList<>();
 
-
+	
 	private DocumentoVenta documentoVentaSelected ;
 	private SerieDocumento serieDocumentoSelected ;
 	private Cuota cuotaSelected ;
 	private Voucher voucherSelected ;
 	private Cliente clienteSelected;
+	private Contrato contratoPendienteSelected;
+	private Cuota cuotaPendienteContratoSelected;
+
 
 	private DocumentoVenta documentoVentaNew;
 	private DetalleDocumentoVenta detalleDocumentoVentaSelected;
@@ -118,6 +140,8 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	private String fechaTextoVista, montoLetra;
 	private String tipoComprobante, ruc, nombreRazonSocial, direccion, observacion, numero ; 
 	private String tipoPago = "Contado";
+	private String tipoPrepago = "Capital";
+
 	private String moneda = "S";
 	private BigDecimal anticipos = BigDecimal.ZERO;
 	private BigDecimal opGravada = BigDecimal.ZERO;
@@ -131,9 +155,17 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	private BigDecimal otrosTributos = BigDecimal.ZERO;
 	private BigDecimal importeTotal = BigDecimal.ZERO;
 	
+	private BigDecimal nuevoMontoDeuda = BigDecimal.ZERO;
+	
+	private BigDecimal montoPrepago = BigDecimal.ZERO;
+
+	
 	private String tituloDialog;
 	
 	private NumeroALetra numeroALetra = new  NumeroALetra();
+	
+	private Map<String, Object> parametros;
+    private DataSourceDocumentoVenta dt; 
 
 
 	SimpleDateFormat sdf = new SimpleDateFormat("dd 'de'  MMMMM 'del' yyyy");
@@ -146,69 +178,224 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 		listarSerie();
 		iniciarLazyCuota(); 
 		iniciarLazyVoucher();
-		
+		iniciarLazyContratosPendientes();
 		productoCuota = productoService.findByEstadoAndTipoProducto(true,TipoProductoType.CUOTA.getTipo());
 		productoInteres = productoService.findByEstadoAndTipoProducto(true,TipoProductoType.INTERES.getTipo());
 		productoVoucher = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.SEPARACION.getTipo());
 		
-		
 	} 
 	
-	public void aplicarPrePago() {
-		if(lstDetalleDocumentoVenta.isEmpty()) {		
-			addErrorMessage("Se han agregado detalles al documento.");
+	public void simularPrepago() {
+		
+		if(contratoPendienteSelected == null) {
+			addErrorMessage("Debes importar un contrato.");
 			return;
+		}
+		
+		if(montoPrepago==null) {
+			addErrorMessage("Ingresar monto.");
+			return;
+		}
+		if(montoPrepago.compareTo(BigDecimal.ZERO)<=0) {
+			addErrorMessage("Monto tiene que ser mayor a 0.");
+			return;
+		}
+		
+		lstCuotaVista.clear();
+		lstCuotaVista.addAll(lstCuotaPagadas);
+		
+		if(tipoPrepago.equals("Capital")) {
+			Cuota cuota = new Cuota();
+			cuota.setNroCuota(null);
+			cuota.setFechaPago(new Date());
+			cuota.setCuotaSI(montoPrepago);
+			cuota.setInteres(BigDecimal.ZERO);
+			cuota.setCuotaTotal(montoPrepago);
+			cuota.setAdelanto(BigDecimal.ZERO);
+			cuota.setPagoTotal("S");
+			cuota.setContrato(contratoPendienteSelected);
+			cuota.setEstado(true);
+			cuota.setOriginal(false);
+			cuota.setPrepago(true);
+			lstCuotaVista.add(cuota);
+			
+			BigDecimal sumaMontoPendiente = BigDecimal.ZERO;
+			for(Cuota c:lstCuotaPendientes) {
+				sumaMontoPendiente = sumaMontoPendiente.add(c.getCuotaSI());
+			}
+			sumaMontoPendiente = sumaMontoPendiente.subtract(montoPrepago);
+
+
+			BigDecimal nuevaCuotaSI = sumaMontoPendiente.divide(new BigDecimal(lstCuotaPendientes.size()), 2, RoundingMode.HALF_UP);
+			BigDecimal nuevoInteres = nuevaCuotaSI.multiply(contratoPendienteSelected.getInteres().divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+			
+			for (Cuota c:lstCuotaPendientes) {
+				Cuota nuevaCuota = new Cuota(c);
+				nuevaCuota.setCuotaSI(nuevaCuotaSI);
+				nuevaCuota.setInteres(nuevoInteres);
+				nuevaCuota.setCuotaTotal(nuevaCuotaSI.add(nuevoInteres));
+				lstCuotaVista.add(nuevaCuota);
+			} 
+			
 		}else {
-			if(lstDetalleDocumentoVenta.size()<=2) {
-				addErrorMessage("Debe importar más de dos cuotas para aplicar Pre-Pago"); 
-				return;
+			Cuota cuota = new Cuota();
+			cuota.setNroCuota(null);
+			cuota.setFechaPago(new Date());
+			cuota.setCuotaSI(montoPrepago);
+			cuota.setInteres(BigDecimal.ZERO);
+			cuota.setCuotaTotal(montoPrepago);
+			cuota.setAdelanto(BigDecimal.ZERO);
+			cuota.setPagoTotal("S");
+			cuota.setContrato(contratoPendienteSelected);
+			cuota.setEstado(true);
+			cuota.setOriginal(false);
+			cuota.setPrepago(true);
+			lstCuotaVista.add(cuota);
+			
+			BigDecimal sumaCuotaSI = BigDecimal.ZERO;
+			
+			BigDecimal ultimoValor = BigDecimal.ZERO;
+			int nroCuotaResta=0;
+			
+			for(Cuota c:lstCuotaPendientes) {
+				if(sumaCuotaSI.compareTo(montoPrepago)<=0) {
+					nroCuotaResta ++;
+					sumaCuotaSI = sumaCuotaSI.add(c.getCuotaSI());
+					ultimoValor = c.getCuotaSI();
+				}else {
+					nroCuotaResta --;
+					sumaCuotaSI = sumaCuotaSI.subtract(ultimoValor);
+//					double numeroCuota = sumaCuotaSI.doubleValue();
+//					nroCuotaResta = (int) numeroCuota;
+					break;
+				}
 			}
 			
-			// para validar que las cuotas sean consecutivas
-//			int primerNumCuota = lstDetalleDocumentoVenta.get(0).getCuota().getNroCuota();
-			int primerNumSgte = lstDetalleDocumentoVenta.get(0).getCuota().getNroCuota()+1;
+			BigDecimal sumaMontoPendiente = BigDecimal.ZERO;
+			for(Cuota c:lstCuotaPendientes) {
+				sumaMontoPendiente = sumaMontoPendiente.add(c.getCuotaSI());
+			}
+			
+			
+			sumaMontoPendiente = sumaMontoPendiente.subtract(montoPrepago);
+			int nuevasCuotasAlTiempo = lstCuotaPendientes.size() - nroCuotaResta ;
+			BigDecimal cuotaSINueva = sumaMontoPendiente.divide(new BigDecimal(nuevasCuotasAlTiempo), 2, RoundingMode.HALF_UP);
+			BigDecimal interesNuevo = cuotaSINueva.multiply(contratoPendienteSelected.getInteres().divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+			
 			int contador = 1;
-			for(DetalleDocumentoVenta detalle : lstDetalleDocumentoVenta) {
-				if(esImpar(contador)) {
-					//valida que todos los detalles sean importadas de cuotas, puedes?(valida si la cuota es null, mesnaje que todos los documentos importados deben ser cuotas )
-					if(detalle.getCuota() == null) {
-						addInfoMessage("Todos los documentos importados deben ser cuotas.");
-					}
-					
-					
-					if(contador!=1) {	
-						if(detalle.getCuota().getNroCuota()== primerNumSgte) {
-							primerNumSgte++;
-						}else {
-							addErrorMessage("No se puede aplicar Pre-Pago, debe importar cuotas consecutivas.");
-							return; 
-						}
-					}
+			
+			for(Cuota c: lstCuotaPendientes) {
+				if(contador <= nuevasCuotasAlTiempo) {
+					Cuota nuevaCuota = new Cuota(c);
+					nuevaCuota.setCuotaSI(cuotaSINueva);
+					nuevaCuota.setInteres(interesNuevo);
+					nuevaCuota.setCuotaTotal(cuotaSINueva.add(interesNuevo));
+					lstCuotaVista.add(nuevaCuota);
 				}
 				
-				contador++;
+				contador++;		
 			}
 			
-			
 		}
-		// toma nota, asi se obtiene el primer valor de una lista
-//		una pregunta, supongamos qe estemos en el caso que ueremos validar el segundo detalle, como o haces? ok
-//		DetalleDocumentoVenta primerDetalle = lstDetalleDocumentoVenta.get(0);
-//		valida que detalle no sea nulo
-		
-		Cuota primeraCuota = lstDetalleDocumentoVenta.get(0).getCuota();
-		
-		if(primeraCuota!=null) {
-			
-		}else {
-			addErrorMessage("");
-		}
-		
-		addInfoMessage("se puede hacer la sigte validacion..."); 
-		
-		
-			
+	
 	}
+	
+	public void importarContrato() {
+		lstCuotaPagadas=cuotaService.findByPagoTotalAndEstadoAndContratoOrderById("S", true, contratoPendienteSelected);
+		lstCuotaPendientes = cuotaService.findByPagoTotalAndEstadoAndContratoOrderById("N", true, contratoPendienteSelected);
+		lstCuotaVista.addAll(lstCuotaPagadas);
+		lstCuotaVista.addAll(lstCuotaPendientes);
+		
+		for(Cuota c:lstCuotaPendientes) {
+			if(c.getNroCuota()!=0) {
+				nuevoMontoDeuda = nuevoMontoDeuda.add(c.getCuotaSI());	
+			}
+		}
+	}
+	
+	
+	public void anularDocumento() {
+		documentoVentaSelected.setEstado(false);
+		documentoVentaService.save(documentoVentaSelected);
+		lstDetalleDocumentoVentaSelected = detalleDocumentoVentaService.findByDocumentoVentaAndEstado(documentoVentaSelected, true);
+	
+		for(DetalleDocumentoVenta d:lstDetalleDocumentoVentaSelected) {
+			d.setEstado(false); 
+			detalleDocumentoVentaService.save(d);
+			
+			if(d.getVoucher()!=null) {
+				d.getVoucher().setGeneraDocumento(false);
+				voucherService.save(d.getVoucher());
+			}
+			if(d.getCuota()!=null) {
+				d.getCuota().setPagoTotal("N");
+				cuotaService.save(d.getCuota());
+			}
+			
+		}
+		
+		
+		addInfoMessage("Documento de venta anulado.");
+			
+		
+		
+	}
+	
+//	public void aplicarPrePago() {
+//		if(lstDetalleDocumentoVenta.isEmpty()) {		
+//			addErrorMessage("Se han agregado detalles al documento.");
+//			return;
+//		}else {
+//			if(lstDetalleDocumentoVenta.size()<=2) {
+//				addErrorMessage("Debe importar más de dos cuotas para aplicar Pre-Pago"); 
+//				return;
+//			}
+//			
+//			// para validar que las cuotas sean consecutivas
+////			int primerNumCuota = lstDetalleDocumentoVenta.get(0).getCuota().getNroCuota();
+//			int primerNumSgte = lstDetalleDocumentoVenta.get(0).getCuota().getNroCuota()+1;
+//			int contador = 1;
+//			for(DetalleDocumentoVenta detalle : lstDetalleDocumentoVenta) {
+//				if(esImpar(contador)) {
+//					//valida que todos los detalles sean importadas de cuotas, puedes?(valida si la cuota es null, mesnaje que todos los documentos importados deben ser cuotas )
+//					if(detalle.getCuota() == null) {
+//						addInfoMessage("Todos los documentos importados deben ser cuotas.");
+//					}
+//					
+//					
+//					if(contador!=1) {	
+//						if(detalle.getCuota().getNroCuota()== primerNumSgte) {
+//							primerNumSgte++;
+//						}else {
+//							addErrorMessage("No se puede aplicar Pre-Pago, debe importar cuotas consecutivas.");
+//							return; 
+//						}
+//					}
+//				}
+//				
+//				contador++;
+//			}
+//			
+//			
+//		}
+//		// toma nota, asi se obtiene el primer valor de una lista
+////		una pregunta, supongamos qe estemos en el caso que ueremos validar el segundo detalle, como o haces? ok
+////		DetalleDocumentoVenta primerDetalle = lstDetalleDocumentoVenta.get(0);
+////		valida que detalle no sea nulo
+//		
+//		Cuota primeraCuota = lstDetalleDocumentoVenta.get(0).getCuota();
+//		
+//		if(primeraCuota!=null) {
+//			
+//		}else {
+//			addErrorMessage("");
+//		}
+//		
+//		addInfoMessage("se puede hacer la sigte validacion..."); 
+//		
+//		
+//			
+//	}
 	
 	public boolean esImpar(int iNumero) {// mandas el numero, y retorna falso si es impar, 
 		if (iNumero % 2 != 0)// esta linea devuelve el residuo de una division,ejemplo, cuanto es 1/2? 0.5
@@ -291,6 +478,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	
 	public void saveDocumentoVenta() {
 		
+		
 		if(lstDetalleDocumentoVenta.isEmpty()) { 
 			addErrorMessage("Debes importar al menos un documento.");
 			return;
@@ -342,6 +530,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 			
 		}else {
 //			aqui actualiza los datos del cliente y guarda run razon doreccion
+			clienteSelected.setPerson(persona);
 			clienteSelected.setRuc(ruc);
 			clienteSelected.setNombreComercial(nombreRazonSocial);
 			clienteSelected.setDireccion(direccion);
@@ -398,13 +587,22 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 				detalleDocumentoVentaService.save(d);
 				
 				if(d.getCuota()!=null) {
-					if(d.getCuota().getCuotaTotal() == d.getImporteVenta()) {
-						d.getCuota().setPagoTotal("S");
-					}else {
-						d.getCuota().setAdelanto(d.getImporteVenta());
+					if(!d.getProducto().getTipoProducto().equals("T")) {
+						BigDecimal cuota = d.getCuota().getCuotaTotal().subtract(d.getCuota().getAdelanto());
+						BigDecimal cuota2 = d.getImporteVenta().add(d.getCuota().getInteres());
+						if(cuota.compareTo(cuota2)==0 ) {
+							d.getCuota().setPagoTotal("S");
+						}else {
+							d.getCuota().setAdelanto(d.getImporteVenta());
+						}
+						
+						cuotaService.save(d.getCuota()); 
+					}
+					if(d.getCuota().getNroCuota()==0 && d.getCuota().getContrato().getTipoPago().equals("Contado") && d.getCuota().getPagoTotal().equals("S")) {
+						d.getCuota().getContrato().setCancelacionTotal(true);							
+						contratoService.save(d.getCuota().getContrato());
 					}
 					
-					cuotaService.save(d.getCuota()); 
 				}
 				
 				if(d.getVoucher()!=null) {
@@ -421,6 +619,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 			calcularTotales();
 			addInfoMessage("Se guardó el documento correctamente.");
 			
+			
 		}else {
 			addErrorMessage("No se puede guardar el documento."); 
 			return;
@@ -428,6 +627,24 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 		
 	}
 	     
+	public void cancelarDocumentoVenta() {
+		ruc="";
+		nombreRazonSocial="";
+		direccion="";
+		observacion="";
+		clienteSelected=null;
+		lstDetalleDocumentoVenta.clear();
+		calcularTotales();
+	}
+	
+	public void cancelarContrato() {
+		contratoPendienteSelected=null;
+		lstCuotaVista.clear();
+		lstCuotaPendientes.clear();
+		nuevoMontoDeuda = BigDecimal.ZERO;
+		montoPrepago = BigDecimal.ZERO;
+		tipoPrepago = "Capital";
+	}
 	
 	public void validacionFecha() {
 		if(fechaEmision==null) {
@@ -592,9 +809,9 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 		
 		calcularTotales();
 		persona = voucherSelected.getRequerimientoSeparacion().getProspection().getProspect().getPerson(); 
-		addInfoMessage("Voucher importada correctamente."); 
-		
+		addInfoMessage("Voucher importado correctamente."); 
 	}
+	
 	
 	public void calcularTotales() {
 		opInafecta=BigDecimal.ZERO;
@@ -760,6 +977,8 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 		};
 	}
 	
+	
+	
 	public void iniciarLazyVoucher() {
 
 		lstVoucherLazy = new LazyDataModel<Voucher>() {
@@ -818,6 +1037,66 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
             }
 		};
 	}
+	
+	public void iniciarLazyContratosPendientes() {
+
+		lstContratosPendientesLazy = new LazyDataModel<Contrato>() {
+			private List<Contrato> datasource;
+
+            @Override
+            public void setRowIndex(int rowIndex) {
+                if (rowIndex == -1 || getPageSize() == 0) {
+                    super.setRowIndex(-1);
+                } else {
+                    super.setRowIndex(rowIndex % getPageSize());
+                }
+            }
+
+            @Override
+            public Contrato getRowData(String rowKey) {
+                int intRowKey = Integer.parseInt(rowKey);
+                for (Contrato contrato : datasource) {
+                    if (contrato.getId() == intRowKey) {
+                        return contrato;
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public String getRowKey(Contrato contrato) {
+                return String.valueOf(contrato.getId());
+            }
+
+			@Override
+			public List<Contrato> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+               
+//				String names = "%" + (filterBy.get("person.surnames") != null ? filterBy.get("person.surnames").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+
+				String names = "%" + (filterBy.get("personVenta.surnames") != null ? filterBy.get("personVenta.surnames").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+				String dni = "%" + (filterBy.get("personVenta.dni") != null ? filterBy.get("personVenta.dni").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+				
+				
+                Sort sort=Sort.by("lote.manzana.name").ascending();
+                if(sortBy!=null) {
+                	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
+                	   if(entry.getValue().getOrder().isAscending()) {
+                		   sort = Sort.by(entry.getKey()).descending();
+                	   }else {
+                		   sort = Sort.by(entry.getKey()).ascending();
+                		   
+                	   }
+                	}
+                }        
+                Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
+               
+                Page<Contrato> pageContrato= contratoService.findByPersonVentaSurnamesLikeAndPersonVentaDniLikeAndEstadoAndCancelacionTotal(names, dni, true, false, pageable);
+                
+                setRowCount((int) pageContrato.getTotalElements());
+                return datasource = pageContrato.getContent();
+            }
+		};
+	}
 
 	public Converter getConversorSerie() {
         return new Converter() {
@@ -847,8 +1126,66 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
         };
     }
 	
-	
-	
+	public void pdfDocumentoElectronico() {
+
+        if (lstDetalleDocumentoVentaSelected == null || lstDetalleDocumentoVentaSelected.isEmpty()) {
+            addInfoMessage("No hay datos para mostrar");
+        } else {
+        	
+        	dt = new DataSourceDocumentoVenta();
+            for (int i = 0; i < lstDetalleDocumentoVentaSelected.size(); i++) {
+               
+            	lstDetalleDocumentoVentaSelected.get(i).setDocumentoVenta(documentoVentaSelected);
+                dt.addResumenDetalle(lstDetalleDocumentoVentaSelected.get(i));
+            }
+        	
+        	
+            parametros = new HashMap<String, Object>();
+            parametros.put("TOTALSTRING", montoLetra);
+            if (documentoVentaSelected.getTipoComprobante().equals("B")) {
+            	 parametros.put("TIPOCOMPROBANTE", "BOLETA DE VENTA");
+            }else {
+            	parametros.put("TIPOCOMPROBANTE", "FACTURA");
+            }   
+            
+            parametros.put("NOMBRECOMERCIAL", documentoVentaSelected.getRazonSocial());
+            parametros.put("RUC", documentoVentaSelected.getRuc());
+            parametros.put("DIRECCION", documentoVentaSelected.getDireccion());
+            parametros.put("NOMBRECOMERCIAL", documentoVentaSelected.getRazonSocial());
+            parametros.put("FECHAEMISION", documentoVentaSelected.getFechaEmision());
+            parametros.put("TIPOMONEDA", documentoVentaSelected.getTipoMoneda());
+            parametros.put("OBSERVACION", documentoVentaSelected.getObservacion());
+            parametros.put("CONDICIONPAGO", documentoVentaSelected.getTipoPago());
+            
+            parametros.put("ANTICIPOS", documentoVentaSelected.getAnticipos());
+            parametros.put("OPGRAVADA", documentoVentaSelected.getOpGravada());
+            parametros.put("OPEXONERADA", documentoVentaSelected.getOpExonerada());
+            parametros.put("OPINAFECTA", documentoVentaSelected.getOpInafecta());
+            parametros.put("OPGRATUITA", documentoVentaSelected.getOpGratuita());
+            parametros.put("DESCUENTOS", documentoVentaSelected.getDescuentos());
+            parametros.put("ISC", documentoVentaSelected.getIsc());
+            parametros.put("IGV", documentoVentaSelected.getIgv());
+            parametros.put("OTROSCARGOS", documentoVentaSelected.getOtrosCargos());
+            parametros.put("OTROSTRIBUTOS", documentoVentaSelected.getOtrosTributos());
+            parametros.put("IMPORTETOTAL", documentoVentaSelected.getTotal());
+
+
+
+            String bar = navegacionBean.getSucursalLogin().getRuc().trim() + "|" + documentoVentaSelected.getSerie()+"-"+documentoVentaSelected.getNumero() + "|" + documentoVentaSelected.getFechaEmision();
+            parametros.put("BARCODESTRING", bar);
+            parametros.put("RUCEMPRESA", navegacionBean.getSucursalLogin().getRuc());
+            
+            parametros.put("RUTAIMAGEN", getRutaGrafico("/recursos/images/LOGO.png"));
+            
+            String path = "secured/view/modulos/ventas/reportes/jasper/repDocumentoFacturaElectronica.jasper"; 
+            reportGenBo.exportByFormatNotConnectDb(dt, path, "pdf", parametros, "DOCUMENTO " , "hh");
+            dt = null;
+            parametros = null;
+       
+
+        }
+    }
+
 	
 	public boolean isEstado() {
 		return estado;
@@ -1181,6 +1518,98 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	public void setPersona(Person persona) {
 		this.persona = persona;
 	}
+	public ReportGenBo getReportGenBo() {
+		return reportGenBo;
+	}
+	public void setReportGenBo(ReportGenBo reportGenBo) {
+		this.reportGenBo = reportGenBo;
+	}
+	public Map<String, Object> getParametros() {
+		return parametros;
+	}
+	public void setParametros(Map<String, Object> parametros) {
+		this.parametros = parametros;
+	}
+	public DataSourceDocumentoVenta getDt() {
+		return dt;
+	}
+	public void setDt(DataSourceDocumentoVenta dt) {
+		this.dt = dt;
+	}
+	public LazyDataModel<Contrato> getLstContratosPendientesLazy() {
+		return lstContratosPendientesLazy;
+	}
+	public void setLstContratosPendientesLazy(LazyDataModel<Contrato> lstContratosPendientesLazy) {
+		this.lstContratosPendientesLazy = lstContratosPendientesLazy;
+	}
+	public ContratoService getContratoService() {
+		return contratoService;
+	}
+	public void setContratoService(ContratoService contratoService) {
+		this.contratoService = contratoService;
+	}
+	public Contrato getContratoPendienteSelected() {
+		return contratoPendienteSelected;
+	}
+	public void setContratoPendienteSelected(Contrato contratoPendienteSelected) {
+		this.contratoPendienteSelected = contratoPendienteSelected;
+	}
 	
+	public List<Cuota> getLstCuotaPagadas() {
+		return lstCuotaPagadas;
+	}
+
+	public void setLstCuotaPagadas(List<Cuota> lstCuotaPagadas) {
+		this.lstCuotaPagadas = lstCuotaPagadas;
+	}
+
+	public Cuota getCuotaPendienteContratoSelected() {
+		return cuotaPendienteContratoSelected;
+	}
+	public void setCuotaPendienteContratoSelected(Cuota cuotaPendienteContratoSelected) {
+		this.cuotaPendienteContratoSelected = cuotaPendienteContratoSelected;
+	}
 	
+	public BigDecimal getMontoPrepago() {
+		return montoPrepago;
+	}
+
+	public void setMontoPrepago(BigDecimal montoPrepago) {
+		this.montoPrepago = montoPrepago;
+	}
+
+	public String getTipoPrepago() {
+		return tipoPrepago;
+	}
+	public void setTipoPrepago(String tipoPrepago) {
+		this.tipoPrepago = tipoPrepago;
+	}
+	public List<Cuota> getLstCuotaVista() {
+		return lstCuotaVista;
+	}
+	public void setLstCuotaVista(List<Cuota> lstCuotaVista) {
+		this.lstCuotaVista = lstCuotaVista;
+	}
+	public List<Cuota> getLstCuotaPendientes() {
+		return lstCuotaPendientes;
+	}
+	public void setLstCuotaPendientes(List<Cuota> lstCuotaPendientes) {
+		this.lstCuotaPendientes = lstCuotaPendientes;
+	}
+	public List<Cuota> getLstCuotaPendientesTemporal() {
+		return lstCuotaPendientesTemporal;
+	}
+	public void setLstCuotaPendientesTemporal(List<Cuota> lstCuotaPendientesTemporal) {
+		this.lstCuotaPendientesTemporal = lstCuotaPendientesTemporal;
+	}
+
+	public BigDecimal getNuevoMontoDeuda() {
+		return nuevoMontoDeuda;
+	}
+
+	public void setNuevoMontoDeuda(BigDecimal nuevoMontoDeuda) {
+		this.nuevoMontoDeuda = nuevoMontoDeuda;
+	}
+	
+
 }

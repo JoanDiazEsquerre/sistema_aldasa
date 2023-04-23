@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.Cuota;
+import com.model.aldasa.entity.Person;
 
 public interface CuotaRepository  extends JpaRepository<Cuota, Integer> {
 	
@@ -15,7 +16,10 @@ public interface CuotaRepository  extends JpaRepository<Cuota, Integer> {
 	List<Cuota> findByContratoAndEstado(Contrato contrato, boolean estado);
 	
 	Page<Cuota> findByPagoTotalAndEstado(String pagoTotal, boolean estado, Pageable pageable);
+	Page<Cuota> findByPagoTotalAndEstadoAndContratoPersonVenta(String pagoTotal, boolean estado,Person contratoPersonVenta, Pageable pageable);
 	Page<Cuota> findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLike(String pagoTotal, boolean estado, String personSurnames, String personDni, Pageable pageable);
+	List<Cuota> findByContratoAndOriginal(Contrato contrato, boolean original);
+	List<Cuota> findByPagoTotalAndEstadoAndContratoOrderById(String pagoTotal, boolean estado, Contrato contrato);
 
 
 

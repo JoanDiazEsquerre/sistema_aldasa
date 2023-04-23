@@ -592,6 +592,8 @@ public class ProspeccionBean extends BaseBean{
 	}
 	
 	public void modifyProspection() {
+		manzanaSelected=null;
+		loteSelected=null;
 		titleDialog ="PROSPECTO: "+ prospectionSelected.getProspect().getPerson().getSurnames()+" "+ prospectionSelected.getProspect().getPerson().getNames();
 
 		lstProspectionDetail = prospectionDetailService.findByProspectionAndScheduled(prospectionSelected,false);

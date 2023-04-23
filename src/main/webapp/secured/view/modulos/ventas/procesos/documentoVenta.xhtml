@@ -25,7 +25,7 @@
 
 					<f:facet name="header">
 						<div class="p-d-flex p-ai-center p-jc-between">
-							<span>Lista de Empleados</span>
+							<span>Lista de Documentos de ventas</span>
 						</div>
 					</f:facet>
 					
@@ -107,7 +107,9 @@
 
 				</p:dataTable>
 				
-				
+				<p:contextMenu id="menuTableDoc" for="idTableListDoc" >
+		            <p:menuitem value="Anular" icon="pi pi-trash" oncomplete="PF('anulaDocumento').show()"  />		        
+		        </p:contextMenu>
 		
 				
 			</p:tab>
@@ -296,7 +298,8 @@
 								</p:column>
 								
 								<p:commandButton value="Guardar" oncomplete="PF('saveDocumento').show()"   style="margin-left:50px" icon="pi pi-save"  />
-
+								<p:commandButton value="Cancelar" oncomplete="PF('cancelarDocumento').show()"   style="margin-left:50px" icon="pi pi-times"  />
+								
 							</p:row>
 
 						</h:panelGrid>
@@ -357,12 +360,6 @@
 						</h:panelGrid>
 					</p:panel>
 	
-				</h:panelGrid>
-				
-				<h:panelGrid >
-				
-					<p:commandButton value="Aplicar Pre-Pago" action="#{documentoVentaBean.aplicarPrePago()}"  icon="pi pi-save"  />
-				
 				</h:panelGrid>
 				
 				<h:panelGrid  style="width:80%;float:left">
@@ -453,6 +450,164 @@
 				
 
 			</p:tab>
+			
+			<p:tab title="Aplicar Pre-Pago">
+			
+				<h:panelGrid columns="4">
+	                
+	                <p:commandButton id="idLotesPendientePago" style="margin-left:10px" icon="pi pi-search"  value="Importar Contrato" update=":form:tabView:tableContrato :form:tabView:pnlContrato"/>
+					<p:overlayPanel for="idLotesPendientePago" dynamic="true" style="width:600px" widgetVar="moviePickerLotePendientePago">
+						<p:dataTable var="contrato" value="#{documentoVentaBean.lstContratosPendientesLazy}" rows="5" paginator="true" selectionMode="single" rowIndexVar="row"
+							paginatorPosition="bottom" selection="#{documentoVentaBean.contratoPendienteSelected}" rowKey="#{contrato.id}" id="tableContrato"
+							emptyMessage="No se encontraron resultados" size="small">
+							
+							<p:ajax event="rowSelect" listener="#{documentoVentaBean.importarContrato()}" oncomplete="PF('moviePickerLotePendientePago').hide()" update=":form:tabView:tableContrato :form:tabView:pnlContrato :form:tabView:tableCuotaContrato" />
+
+							<p:column headerText="DNI" style="text-align:center; width:60px" filterBy="#{contrato.personVenta.dni}">
+								<h:outputText value="#{contrato.personVenta.dni}" style="font-size: 14px;" />
+							</p:column>
+
+							<p:column headerText="Apellidos y Nombres" style="text-align:center; width:60px" filterBy="#{contrato.personVenta.surnames}">
+								<h:outputText value="#{contrato.personVenta.surnames} #{contrato.personVenta.names}" style="font-size: 14px;" />
+							</p:column>
+
+							<p:column headerText="Mz-Lote" style="text-align:center; width:60px">
+								<h:outputText value="#{contrato.lote.manzana.name}-#{contrato.lote.numberLote}" style="font-size: 14px;" />
+							</p:column>
+
+						</p:dataTable>
+					</p:overlayPanel>
+					
+					<p:commandButton value="Cancelar" oncomplete="PF('cancelarContrato').show()"   style="margin-left:50px" icon="pi pi-times"  />
+	                
+				</h:panelGrid>
+				
+
+				<p:panel id="pnlContrato" header="Datos del Contrato" toggleable="true" toggleSpeed="500" widgetVar="panelContrato" style="width:60%">
+					<h:panelGrid columns="4" styleClass="companyHeaderGrid">
+						<p:row>
+							<h:panelGrid columns="6">
+																	
+								<h:outputText value="Fecha de venta:" />
+				        		
+							
+				        		<h:outputText value="#{documentoVentaBean.contratoPendienteSelected.fechaVenta}" style="font-weight: bolder"> 
+				        			<f:convertDateTime pattern="dd/MM/yyyy" />
+				        		</h:outputText>
+						
+								<h:outputText value="Monto de venta:" style="margin-left:50px"/>
+						
+								<h:outputText value="#{documentoVentaBean.contratoPendienteSelected.montoVenta}" style="font-weight: bolder"> 
+									<f:convertNumber type="currency" currencySymbol=""/>
+								</h:outputText>
+		
+								<h:outputText value="Tipo de pago:" />
+							
+								<h:outputText value="#{documentoVentaBean.contratoPendienteSelected.tipoPago}" style="font-weight: bolder"/>
+							
+								<h:outputText value="Monto de inicial:" />
+							
+								<h:outputText value="#{documentoVentaBean.contratoPendienteSelected.montoInicial}" style="font-weight: bolder"> 
+									<f:convertNumber type="currency" currencySymbol=""/>
+								</h:outputText>
+							
+								<h:outputText value="Nro de cuotas:" style="margin-left:50px"/>
+						
+								<h:outputText value="#{documentoVentaBean.contratoPendienteSelected.numeroCuota}" style="font-weight: bolder"/>
+							
+								<h:outputText value="Interés:" />
+							
+								<h:outputText value="#{documentoVentaBean.contratoPendienteSelected.interes}" style="font-weight: bolder">  
+									<f:convertNumber type="currency" currencySymbol="%"/>
+								</h:outputText>
+							
+								<h:outputText value="Fecha de 1ra cuota:" />
+				        		
+														
+				        		<h:outputText value="#{documentoVentaBean.contratoPendienteSelected.fechaPrimeraCuota}" style="font-weight: bolder"> 
+				        			<f:convertDateTime pattern="dd/MM/yyyy" />
+				        		</h:outputText>
+							
+								<h:outputText value="Persona de venta:" style="margin-left:50px"/>
+							
+								<h:outputText value="#{documentoVentaBean.contratoPendienteSelected.personVenta.names} #{documentoVentaBean.contratoPendienteSelected.personVenta.surnames}" style="font-weight: bolder"/>
+							
+								<h:outputText value="Deuda actual:" />
+						
+								<h:outputText value="#{documentoVentaBean.nuevoMontoDeuda}" style="font-weight: bolder"/>
+								
+							
+							</h:panelGrid>
+						</p:row>
+					</h:panelGrid>
+				</p:panel>
+
+				<h:panelGrid columns="6" styleClass="companyHeaderGrid">
+			
+					<h:outputText value="Monto:" />
+					<p:inputNumber  value="#{documentoVentaBean.montoPrepago}"  />
+					
+		
+					<p:outputLabel for="prepagoFilter" value="Tipo: "/>
+			
+					<p:selectOneMenu id="prepagoFilter" value="#{documentoVentaBean.tipoPrepago}">
+						<f:selectItem itemLabel="Capital" itemValue="Capital"/>
+						<f:selectItem itemLabel="Tiempo" itemValue="Tiempo" />
+					</p:selectOneMenu>
+					
+					<p:commandButton value="Simular Pre-Pago" action="#{documentoVentaBean.simularPrepago()}"  style="margin-left:50px" update=":form:tabView:tableCuotaContrato"/>			
+					<p:commandButton value="Guardar" action="#{documentoVentaBean.simularPrepago()}"  style="margin-left:50px" />			
+		
+				</h:panelGrid>
+			
+				<p:dataTable var="cuotaContrato" value="#{documentoVentaBean.lstCuotaVista}" rows="24" paginator="true" selectionMode="single" rowIndexVar="row"  
+					paginatorPosition="bottom" selection="#{documentoVentaBean.cuotaPendienteContratoSelected}" rowKey="#{cuotaContrato.id}" id="tableCuotaContrato"
+					emptyMessage="No se encontraron cronograma de deudas." size="small">
+
+					<f:facet name="header">
+						<div class="p-d-flex p-ai-center p-jc-between">
+							<span>CRONOGRAMA DE LA DEUDA</span>
+						</div>
+					</f:facet>   
+	
+					<p:column headerText="Nro Cuota" filterMatchMode="contains" >
+						<h:outputText  value="#{cuotaContrato.prepago eq true ? 'Prepago' : cuotaContrato.nroCuota}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"/>
+					</p:column>
+					
+					<p:column headerText="Periodo" filterMatchMode="contains" >
+						<h:outputText value="#{cuotaContrato.fechaPago}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
+		        			<f:convertDateTime pattern="dd/MM/yyyy" />
+		        		</h:outputText>
+					</p:column>
+				
+					<p:column headerText="Cuota SI" filterMatchMode="contains" >
+						<h:outputText  value="#{cuotaContrato.cuotaSI}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Interés" filterMatchMode="contains" >
+						<h:outputText  value="#{cuotaContrato.interes}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Cuota Total" filterMatchMode="contains" >
+						<h:outputText value="#{cuotaContrato.cuotaTotal}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Estado de Pago" filterMatchMode="contains" >
+						<h:outputText value="#{cuotaContrato.prepago eq true ? 'PREPAGO' : cuotaContrato.pagoTotal eq 'S'?'PAGADO':'PENDIENTE'}"  style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':cuotaContrato.pagoTotal eq 'S'?'blue':cuotaContrato.pagoTotal eq 'N'?'red':'black'}"/>
+						
+					</p:column>
+	
+				</p:dataTable>
+
+			</p:tab>
+			
+			
 		</p:tabView>
 	</h:form>
 	
@@ -543,7 +698,7 @@
 	
 			</h:panelGrid>
 			
-			<h:panelGrid style="width:40%;float:left;" columns="1" >	
+			<h:panelGrid style="width:50%;float:left;" columns="1" >	
 				<h:panelGrid  columns="2" styleClass="companyHeaderGrid">
 				
 					<h:outputText value="Son:" />
@@ -553,8 +708,8 @@
 	
 			</h:panelGrid>
 				
-			<h:panelGrid style="width:40%;float:right;" columns="1" >	
-				<h:panelGrid  columns="3" styleClass="companyHeaderGrid">
+			<h:panelGrid style="width:50%;float:right;" columns="1" >	
+				<h:panelGrid style="float:right"  columns="3" styleClass="companyHeaderGrid">
 				
 					<h:outputText value="Sub-Total:" />
 					<h:outputText value="S/" />	         		
@@ -575,13 +730,10 @@
 					</h:outputText>
 	
 				</h:panelGrid>
-	
 			</h:panelGrid>
 			
 			<h:panelGrid style="width:100%" columns="1" >
-			
-			<p:commandButton value="Descargar PDF"   style="margin-left:50px" icon="pi pi-file-pdf" />
-			
+				<p:commandButton value="descrgar"   icon="pi pi-file-pdf" action="#{documentoVentaBean.pdfDocumentoElectronico()}" ajax="false" /> 
 			</h:panelGrid>
 			
 		</h:form>
@@ -592,6 +744,30 @@
         <h:form >
             <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('saveDocumento').hide()" value="SI" action="#{documentoVentaBean.saveDocumentoVenta()}" update=":form:tabView:idTableListDoc :form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante"/>
             <p:commandButton value="NO" oncomplete="PF('saveDocumento').hide()"/>
+        </h:form>
+    </p:confirmDialog>
+    
+    <p:confirmDialog id="cancelarDocumento" message="¿Está seguro de cancelar el documento de venta?" header="Confirmación"
+                      severity="alert" widgetVar="cancelarDocumento" appendTo="@(body)">
+        <h:form >
+            <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('cancelarDocumento').hide()" value="SI" action="#{documentoVentaBean.cancelarDocumentoVenta()}" update="form:tabView:pnl :form:tabView:gridMontos :form:tabView:pnlCond :form:tabView:idTableDetalleDocVenta"/>
+            <p:commandButton value="NO" oncomplete="PF('cancelarDocumento').hide()"/>
+        </h:form>
+    </p:confirmDialog>
+    
+    <p:confirmDialog id="cancelarContrato" message="¿Está seguro de cancelar el contrato?" header="Confirmación"
+                      severity="alert" widgetVar="cancelarContrato" appendTo="@(body)">
+        <h:form >
+            <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('cancelarContrato').hide()" value="SI" action="#{documentoVentaBean.cancelarContrato()}" update=":form:tabView:tableContrato :form:tabView:pnlContrato"/>
+            <p:commandButton value="NO" oncomplete="PF('cancelarContrato').hide()"/>
+        </h:form>
+    </p:confirmDialog>
+    
+    <p:confirmDialog id="anulaDocumento" message="¿Está seguro de anular el documento de venta?" header="Confirmación"
+                      severity="alert" widgetVar="anulaDocumento" appendTo="@(body)">
+        <h:form >
+            <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('anulaDocumento').hide()" value="SI" action="#{documentoVentaBean.anularDocumento()}" update=":form:tabView:idTableListDoc"/>
+            <p:commandButton value="NO" oncomplete="PF('anulaDocumento').hide()"/>
         </h:form>
     </p:confirmDialog>
 	
