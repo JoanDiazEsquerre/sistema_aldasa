@@ -675,6 +675,10 @@
 			<property-name>detalleDocumentoVentaService</property-name>
 			<value>#{detalleDocumentoVentaService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>reportGenBo</property-name>
+			<value>#{reportGenBo}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>
@@ -720,6 +724,10 @@
 		<managed-property>
 			<property-name>contratoService</property-name>
 			<value>#{contratoService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>prepagoService</property-name>
+			<value>#{prepagoService}</value>
 		</managed-property>
 	</managed-bean>
 		

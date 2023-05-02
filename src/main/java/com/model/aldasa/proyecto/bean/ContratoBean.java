@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,6 +70,8 @@ import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.Simulador;
 import com.model.aldasa.entity.Voucher;
 import com.model.aldasa.general.bean.NavegacionBean;
+import com.model.aldasa.proyecto.jrdatasource.DataSourceCronogramaPago;
+import com.model.aldasa.reporteBo.ReportGenBo;
 import com.model.aldasa.service.ContratoService;
 import com.model.aldasa.service.CuentaBancariaService;
 import com.model.aldasa.service.CuotaService;
@@ -80,6 +83,7 @@ import com.model.aldasa.service.VoucherService;
 import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.EstadoLote;
 import com.model.aldasa.util.NumeroALetra;
+import com.model.aldasa.ventas.jrdatasource.DataSourceDocumentoVenta;
 
 @ManagedBean
 @ViewScoped
@@ -114,6 +118,9 @@ public class ContratoBean extends BaseBean implements Serializable{
 	@ManagedProperty(value = "#{detalleDocumentoVentaService}")
 	private DetalleDocumentoVentaService detalleDocumentoVentaService;
 	
+	@ManagedProperty(value = "#{reportGenBo}")
+	private ReportGenBo reportGenBo;
+	
 	private String meses[]= {"ENERO","FEBRERO","MARZO","ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE","DICIEMBRE"};
 	
 	private LazyDataModel<Contrato> lstContratoLazy;
@@ -123,6 +130,8 @@ public class ContratoBean extends BaseBean implements Serializable{
 	private List<CuentaBancaria> lstCuentaBancaria = new ArrayList<>();
 	private List<Simulador> lstSimulador = new ArrayList<>();
 	private List<Simulador> lstSimuladorPrevio = new ArrayList<>();
+	
+	private List<Cuota> lstCuotaVista = new ArrayList<>();
 
 	private Lote loteSelected;
 	private Contrato contratoSelected;
@@ -140,6 +149,11 @@ public class ContratoBean extends BaseBean implements Serializable{
 	
 	private NumeroALetra numeroAletra = new NumeroALetra();
 	
+	private Map<String, Object> parametros;
+
+    private DataSourceCronogramaPago dt; 
+
+	
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");  
 	SimpleDateFormat sdfM = new SimpleDateFormat("MM");  
 	SimpleDateFormat sdfY = new SimpleDateFormat("yyyy");  
@@ -152,7 +166,42 @@ public class ContratoBean extends BaseBean implements Serializable{
 		iniciarLazy();
 		listarPersonas();
 		lstCuentaBancaria = cuentaBancariaService.findByEstadoAndMonedaLike(true, "%S%");
-		
+		verCronogramaPago();
+	}
+	
+	public void generarPdfCronograma() {
+		 if (lstCuotaVista == null || lstCuotaVista.isEmpty()) {
+	            addInfoMessage("No hay datos para mostrar");
+	        } else {
+	        	
+	        	dt = new DataSourceCronogramaPago();
+	            for (int i = 0; i < lstCuotaVista.size(); i++) {
+	               
+	            	lstCuotaVista.get(i).setContrato(contratoSelected);;
+	                dt.addResumenDetalle(lstCuotaVista.get(i));
+	            }
+	        	
+	        	
+	            parametros = new HashMap<String, Object>();
+	            parametros.put("MZ-LT", contratoSelected.getLote().getManzana().getName()+"-"+contratoSelected.getLote().getNumberLote());
+	            parametros.put("PROYECTO", contratoSelected.getLote().getProject().getName());	            
+	            parametros.put("RUTAIMAGEN", getRutaGrafico("/recursos/images/LOGO.png"));
+	            
+	            String path = "secured/view/modulos/proyecto/reportes/jasper/repCronogramaPago.jasper"; 
+	            reportGenBo.exportByFormatNotConnectDb(dt, path, "pdf", parametros, "CRONOGRAMA DE PAGO " , contratoSelected.getLote().getManzana().getName()+"-"+contratoSelected.getLote().getNumberLote());
+	            dt = null;
+	            parametros = null;
+	       
+
+	        }
+	}
+	
+	public void verCronogramaPago() {
+		lstCuotaVista = new ArrayList<>();
+		List<Cuota>lstCuotaPagadas=cuotaService.findByPagoTotalAndEstadoAndContratoOrderById("S", true, contratoSelected);
+		List<Cuota>lstCuotaPendientes = cuotaService.findByPagoTotalAndEstadoAndContratoOrderById("N", true, contratoSelected);
+		lstCuotaVista.addAll(lstCuotaPagadas);
+		lstCuotaVista.addAll(lstCuotaPendientes);
 	}
 	
 	public void cambiarTipoPago() {
@@ -2608,6 +2657,33 @@ public class ContratoBean extends BaseBean implements Serializable{
 	public void setDetalleDocumentoVentaService(DetalleDocumentoVentaService detalleDocumentoVentaService) {
 		this.detalleDocumentoVentaService = detalleDocumentoVentaService;
 	}
+	public List<Cuota> getLstCuotaVista() {
+		return lstCuotaVista;
+	}
+	public void setLstCuotaVista(List<Cuota> lstCuotaVista) {
+		this.lstCuotaVista = lstCuotaVista;
+	}
+	public DataSourceCronogramaPago getDt() {
+		return dt;
+	}
+	public void setDt(DataSourceCronogramaPago dt) {
+		this.dt = dt;
+	}
+	public Map<String, Object> getParametros() {
+		return parametros;
+	}
+	public void setParametros(Map<String, Object> parametros) {
+		this.parametros = parametros;
+	}
+
+	public ReportGenBo getReportGenBo() {
+		return reportGenBo;
+	}
+
+	public void setReportGenBo(ReportGenBo reportGenBo) {
+		this.reportGenBo = reportGenBo;
+	}
+	
 	
 	
 	

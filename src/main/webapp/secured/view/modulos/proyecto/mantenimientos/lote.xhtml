@@ -261,9 +261,11 @@
 							<f:selectItem itemLabel="Crédito" itemValue="Crédito"/>
 							<p:ajax update="gridDatosVenta messages" />
 						</p:selectOneMenu>
+						
+
 											
 						<h:outputLabel value="Monto Inicial: " id="lblMontoInicial" for="montoIni" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}" />
-						<p:inputNumber id="montoIni" value="#{loteBean.loteSelected.montoInicial}" style="margin:5px; width:220px" modifyValueOnWheel="false" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"> <p:ajax update="messages" /> </p:inputNumber>
+						<p:inputNumber id="montoIni" value="#{loteBean.loteSelected.montoInicial}" style="margin:5px; width:220px" modifyValueOnWheel="false" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}" > <p:ajax update="messages" /> </p:inputNumber>
 											
 						<h:outputLabel value="Nro. de Cuotas: " id="lblNroCuota" for="nroCuota" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"/>
 						<p:inputNumber id="nroCuota" value="#{loteBean.loteSelected.numeroCuota}" style="margin:5px; width:220px" minValue="1" decimalPlaces="0" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"> <p:ajax update="messages" /> </p:inputNumber>

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="repDocumentoFacturaElectronica" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="511" leftMargin="42" rightMargin="42" topMargin="42" bottomMargin="42" uuid="f7cc8725-31db-46d6-9e69-d3629a2409fe">
 	<property name="ireport.zoom" value="1.9965000000000666"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="76"/>
+	<property name="ireport.y" value="0"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#999999"/>
@@ -320,8 +320,8 @@
 				</textElement>
 				<text><![CDATA[1]]></text>
 			</staticText>
-			<textField>
-				<reportElement uuid="e41becca-ea65-4374-bbfc-50903fbbda91" x="61" y="0" width="230" height="20"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="e41becca-ea65-4374-bbfc-50903fbbda91" positionType="Float" stretchType="RelativeToTallestObject" x="61" y="0" width="230" height="20"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>

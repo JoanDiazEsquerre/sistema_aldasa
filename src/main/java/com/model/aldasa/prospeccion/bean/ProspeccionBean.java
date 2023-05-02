@@ -804,13 +804,11 @@ public class ProspeccionBean extends BaseBean{
 			requerimientoSeparacionService.save(guardarReq);
 			
             subirArchivo(rename);
-//			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente el requerimiento" ));
-			addInfoMessage("Se guardo correctamente el requerimiento");
+			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente el requerimiento" ));
 			cargarRequerimiento();
 			
 		}else {
-//			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo guardar el requerimiento"));	
-			addErrorMessage("No se pudo guardar el requerimiento");
+			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo guardar el requerimiento"));	
 		}
 		
 	}

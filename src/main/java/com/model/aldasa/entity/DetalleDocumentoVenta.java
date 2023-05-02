@@ -45,6 +45,10 @@ public class DetalleDocumentoVenta{
 	@JoinColumn(name="idvoucher")
 	private Voucher voucher;
 	
+	@ManyToOne
+	@JoinColumn(name="idprepago")
+	private Prepago prepago;
+	
 	
 	private boolean estado;
 		
@@ -116,6 +120,12 @@ public class DetalleDocumentoVenta{
 	}
 	public void setAdelanto(BigDecimal adelanto) {
 		this.adelanto = adelanto;
+	}
+	public Prepago getPrepago() {
+		return prepago;
+	}
+	public void setPrepago(Prepago prepago) {
+		this.prepago = prepago;
 	}
 
 	

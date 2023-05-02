@@ -144,11 +144,11 @@
 
 				</h:panelGrid>
 
-				<h:panelGrid columns="2">
+				<h:panelGrid columns="3">
 					<h:panelGrid id="gridImpCuota">
 						<p:commandButton id="movieBtn" style="font-size: 14px;" value="Importar Cuota" icon="pi pi-search" update=":form:tabView:tableCuota" />
 						<p:overlayPanel for="movieBtn" dynamic="true" style="width:1000px" widgetVar="moviePickerCuota">
-							<p:dataTable var="cuota" value="#{documentoVentaBean.lstCuotaLazy}" rows="5" paginator="true" selectionMode="single" rowIndexVar="row" 
+							<p:dataTable var="cuota" value="#{documentoVentaBean.lstCuotaLazy}" rows="6" paginator="true" selectionMode="single" rowIndexVar="row" 
 								paginatorPosition="bottom" selection="#{documentoVentaBean.cuotaSelected}" rowKey="#{cuota.id}" id="tableCuota"
 								emptyMessage="No se encontraron resultados" size="small">
 								<p:ajax event="rowSelect" listener="#{documentoVentaBean.importarCuota}" oncomplete="PF('moviePickerCuota').hide()" 
@@ -232,6 +232,39 @@
 									</h:outputText>
 								</p:column>
 
+							</p:dataTable>
+						</p:overlayPanel>
+					</h:panelGrid>
+					
+					<h:panelGrid id="gridImpPrepago">
+						<p:commandButton id="movieBtnPrepago" style="font-size: 14px;" value="Importar Prepago" icon="pi pi-search" update=":form:tabView:tablePrepago" />
+						<p:overlayPanel for="movieBtnPrepago" dynamic="true" style="width:600px" widgetVar="moviePickerPrepago">
+							<p:dataTable var="prepago" value="#{documentoVentaBean.lstPrepagoLazy}" rows="5" paginator="true" selectionMode="single" rowIndexVar="row"
+								paginatorPosition="bottom" selection="#{documentoVentaBean.prepagoSelected}" rowKey="#{prepago.id}" id="tablePrepago"
+								emptyMessage="No se encontraron resultados" size="small">
+								
+								<p:ajax event="rowSelect" listener="#{documentoVentaBean.importarPrepago()}" oncomplete="PF('moviePickerPrepago').hide()" 
+								update=":form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante"/>
+								
+								<p:column headerText="Cliente"  style="text-align:center; width:120px">
+									<h:outputText value="#{prepago.cliente.person.surnames} #{prepago.cliente.person.names}" style="font-size: 14px;" />
+								</p:column>
+								
+								<p:column headerText="Monto" style="text-align:center; width:60px">
+									<h:outputText value="#{prepago.monto}" style="font-size: 14px;" > 
+										<f:convertNumber type="currency" currencySymbol=""/>
+									</h:outputText>
+								</p:column>
+								
+								<p:column headerText="Proyecto" style="text-align:center; width:60px">
+									<h:outputText value="#{prepago.contrato.lote.project.name}" style="font-size: 14px;" />
+								</p:column>
+								
+								<p:column headerText="Mz-Lote" style="text-align:center; width:60px">
+									<h:outputText value="#{prepago.contrato.lote.manzana.name}-#{prepago.contrato.lote.numberLote}" style="font-size: 14px;" />
+								</p:column>
+								
+								
 							</p:dataTable>
 						</p:overlayPanel>
 					</h:panelGrid>
@@ -483,7 +516,7 @@
 				</h:panelGrid>
 				
 
-				<p:panel id="pnlContrato" header="Datos del Contrato" toggleable="true" toggleSpeed="500" widgetVar="panelContrato" style="width:60%">
+				<p:panel id="pnlContrato" header="Datos del Contrato" toggleable="true" toggleSpeed="500" widgetVar="panelContrato" style="width:70%">
 					<h:panelGrid columns="4" styleClass="companyHeaderGrid">
 						<p:row>
 							<h:panelGrid columns="6">
@@ -501,7 +534,7 @@
 									<f:convertNumber type="currency" currencySymbol=""/>
 								</h:outputText>
 		
-								<h:outputText value="Tipo de pago:" />
+								<h:outputText value="Tipo de pago:" style="margin-left:50px"/>
 							
 								<h:outputText value="#{documentoVentaBean.contratoPendienteSelected.tipoPago}" style="font-weight: bolder"/>
 							
@@ -515,7 +548,7 @@
 						
 								<h:outputText value="#{documentoVentaBean.contratoPendienteSelected.numeroCuota}" style="font-weight: bolder"/>
 							
-								<h:outputText value="Interés:" />
+								<h:outputText value="Interés:" style="margin-left:50px"/>
 							
 								<h:outputText value="#{documentoVentaBean.contratoPendienteSelected.interes}" style="font-weight: bolder">  
 									<f:convertNumber type="currency" currencySymbol="%"/>
@@ -528,13 +561,21 @@
 				        			<f:convertDateTime pattern="dd/MM/yyyy" />
 				        		</h:outputText>
 							
-								<h:outputText value="Persona de venta:" style="margin-left:50px"/>
+								<h:outputText value="Cliente:" style="margin-left:50px"/>
 							
 								<h:outputText value="#{documentoVentaBean.contratoPendienteSelected.personVenta.names} #{documentoVentaBean.contratoPendienteSelected.personVenta.surnames}" style="font-weight: bolder"/>
 							
-								<h:outputText value="Deuda actual:" />
+								<h:outputText value="Deuda actual sin interés:" style="margin-left:50px"/>
 						
-								<h:outputText value="#{documentoVentaBean.nuevoMontoDeuda}" style="font-weight: bolder"/>
+								<h:outputText value="#{documentoVentaBean.deudaActualSinInteres}" style="font-weight: bolder"> 
+									<f:convertNumber type="currency" currencySymbol=""/>
+								</h:outputText>
+								
+								<h:outputText value="Deuda actual con interés:" />
+						
+								<h:outputText value="#{documentoVentaBean.deudaActualConInteres}" style="font-weight: bolder"> 
+									<f:convertNumber type="currency" currencySymbol=""/>
+								</h:outputText>
 								
 							
 							</h:panelGrid>
@@ -545,18 +586,17 @@
 				<h:panelGrid columns="6" styleClass="companyHeaderGrid">
 			
 					<h:outputText value="Monto:" />
-					<p:inputNumber  value="#{documentoVentaBean.montoPrepago}"  />
-					
-		
+					<p:inputNumber id="mntPrepago" value="#{documentoVentaBean.montoPrepago}" disabled="#{documentoVentaBean.habilitarMontoPrepago}" />
+
 					<p:outputLabel for="prepagoFilter" value="Tipo: "/>
 			
 					<p:selectOneMenu id="prepagoFilter" value="#{documentoVentaBean.tipoPrepago}">
-						<f:selectItem itemLabel="Capital" itemValue="Capital"/>
-						<f:selectItem itemLabel="Tiempo" itemValue="Tiempo" />
+						<f:selectItem itemLabel="Capital" itemValue="C"/>
+						<f:selectItem itemLabel="Tiempo" itemValue="T" />
 					</p:selectOneMenu>
 					
-					<p:commandButton value="Simular Pre-Pago" action="#{documentoVentaBean.simularPrepago()}"  style="margin-left:50px" update=":form:tabView:tableCuotaContrato"/>			
-					<p:commandButton value="Guardar" action="#{documentoVentaBean.simularPrepago()}"  style="margin-left:50px" />			
+					<p:commandButton value="Simular Pre-Pago" action="#{documentoVentaBean.simularPrepago()}"  style="margin-left:50px" update=":form:tabView:tableCuotaContrato :form:tabView:mntPrepago :form:tabView:btnGuardar"/>			
+					<p:commandButton value="Guardar" id="btnGuardar" action="#{documentoVentaBean.savePrepago()}" disabled="#{documentoVentaBean.habilitarBoton}" style="margin-left:50px" />			
 		
 				</h:panelGrid>
 			
@@ -733,7 +773,7 @@
 			</h:panelGrid>
 			
 			<h:panelGrid style="width:100%" columns="1" >
-				<p:commandButton value="descrgar"   icon="pi pi-file-pdf" action="#{documentoVentaBean.pdfDocumentoElectronico()}" ajax="false" /> 
+				<p:commandButton value="Descargar"   icon="pi pi-file-pdf" action="#{documentoVentaBean.pdfDocumentoElectronico()}" ajax="false" /> 
 			</h:panelGrid>
 			
 		</h:form>
