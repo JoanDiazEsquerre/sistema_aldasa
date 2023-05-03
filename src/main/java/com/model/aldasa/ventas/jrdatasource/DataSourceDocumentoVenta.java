@@ -44,7 +44,7 @@ public class DataSourceDocumentoVenta implements JRDataSource{
             }else if ("IMPORTEVENTA".equals(jrf.getName())){
                 valor = listaDDV.get(indice).getImporteVenta(); 
             }else if ("NOMBREDOCUMENTO".equals(jrf.getName())){
-                valor = listaDDV.get(indice).getDocumentoVenta().getTipoComprobante();
+                valor = listaDDV.get(indice).getDocumentoVenta().getTipoDocumento().getAbreviatura();
             }     
             return valor; 
     }

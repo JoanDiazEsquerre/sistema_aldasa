@@ -729,6 +729,10 @@
 			<property-name>prepagoService</property-name>
 			<value>#{prepagoService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>tipoDocumentoService</property-name>
+			<value>#{tipoDocumentoService}</value>
+		</managed-property>
 	</managed-bean>
 		
 </faces-config>

@@ -32,8 +32,9 @@ public class DocumentoVenta {
 	@JoinColumn(name="idsucursal")
 	private Sucursal sucursal;
 	
-	@Column(name="tipocomprobante")
-	private String tipoComprobante;
+	@ManyToOne
+	@JoinColumn(name="idtipodocumento")
+	private TipoDocumento tipoDocumento;
 	
 	private String serie;
 	
@@ -132,11 +133,11 @@ public class DocumentoVenta {
 	public void setSucursal(Sucursal sucursal) {
 		this.sucursal = sucursal;
 	}
-	public String getTipoComprobante() {
-		return tipoComprobante;
+	public TipoDocumento getTipoDocumento() {
+		return tipoDocumento;
 	}
-	public void setTipoComprobante(String tipoComprobante) {
-		this.tipoComprobante = tipoComprobante;
+	public void setTipoDocumento(TipoDocumento tipoDocumento) {
+		this.tipoDocumento = tipoDocumento;
 	}
 	public String getSerie() {
 		return serie;

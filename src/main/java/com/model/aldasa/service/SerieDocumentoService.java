@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.model.aldasa.entity.SerieDocumento;
 import com.model.aldasa.entity.Sucursal;
+import com.model.aldasa.entity.TipoDocumento;
 
 public interface SerieDocumentoService {
 
@@ -12,6 +13,6 @@ public interface SerieDocumentoService {
 	SerieDocumento save(SerieDocumento entity);
 	void delete(SerieDocumento entity);
 	
-	List<SerieDocumento> findByTipoComprobanteAndSucursal(String tipoComprobante, Sucursal sucural);
+	List<SerieDocumento> findByTipoDocumentoAndSucursal(TipoDocumento tipoDocumento, Sucursal sucural);
 
 }

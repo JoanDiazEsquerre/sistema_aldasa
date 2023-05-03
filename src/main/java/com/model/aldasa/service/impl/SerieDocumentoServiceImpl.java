@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.SerieDocumento;
 import com.model.aldasa.entity.Sucursal;
+import com.model.aldasa.entity.TipoDocumento;
 import com.model.aldasa.repository.SerieDocumentoRepository;
 import com.model.aldasa.service.SerieDocumentoService;
 
@@ -36,10 +37,11 @@ public class SerieDocumentoServiceImpl  implements SerieDocumentoService {
 	}
 
 	@Override
-	public List<SerieDocumento> findByTipoComprobanteAndSucursal(String tipoComprobante, Sucursal sucural) {
+	public List<SerieDocumento> findByTipoDocumentoAndSucursal(TipoDocumento tipoDocumento, Sucursal sucural) {
 		// TODO Auto-generated method stub
-		return serieDocumentoRepository.findByTipoComprobanteAndSucursal(tipoComprobante, sucural);
+		return serieDocumentoRepository.findByTipoDocumentoAndSucursal(tipoDocumento, sucural);
 	}
+
 
 	
 

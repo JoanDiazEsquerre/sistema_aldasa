@@ -1,5 +1,6 @@
 package com.model.aldasa.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,12 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoService {
 	public void delete(TipoDocumento entity) {
 		// TODO Auto-generated method stub
 		tipoDocumentoRepository.delete(entity);
+	}
+
+	@Override
+	public List<TipoDocumento> findByEstado(boolean estado) {
+		// TODO Auto-generated method stub
+		return tipoDocumentoRepository.findByEstado(estado);
 	}
 
 }

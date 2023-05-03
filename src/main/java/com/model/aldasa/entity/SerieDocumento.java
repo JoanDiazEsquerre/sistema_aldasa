@@ -17,8 +17,9 @@ public class SerieDocumento {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(name="tipocomprobante")
-	private String tipoComprobante;
+	@ManyToOne
+	@JoinColumn(name="idtipodocumento")
+	private TipoDocumento tipoDocumento;
 	
 	private String serie;
 	
@@ -36,7 +37,6 @@ public class SerieDocumento {
 	@Column(name="tamanionumero")
 	private Integer tamanioNumero;
 	
-	private String descripcion;
 
 	
 	
@@ -46,12 +46,6 @@ public class SerieDocumento {
 	}
 	public void setId(Integer id) {
 		this.id = id;
-	}
-	public String getTipoComprobante() {
-		return tipoComprobante;
-	}
-	public void setTipoComprobante(String tipoComprobante) {
-		this.tipoComprobante = tipoComprobante;
 	}
 	public String getSerie() {
 		return serie;
@@ -71,12 +65,6 @@ public class SerieDocumento {
 	public void setTamanioNumero(Integer tamanioNumero) {
 		this.tamanioNumero = tamanioNumero;
 	}
-	public String getDescripcion() {
-		return descripcion;
-	}
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
 	public String getNumero() {
 		return numero;
 	}
@@ -94,6 +82,12 @@ public class SerieDocumento {
 	}
 	public void setAnio(String anio) {
 		this.anio = anio;
+	}
+	public TipoDocumento getTipoDocumento() {
+		return tipoDocumento;
+	}
+	public void setTipoDocumento(TipoDocumento tipoDocumento) {
+		this.tipoDocumento = tipoDocumento;
 	}
 
 

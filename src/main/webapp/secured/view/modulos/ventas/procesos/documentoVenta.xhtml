@@ -44,7 +44,7 @@
 					</p:column>
 
 					<p:column headerText="Tipo Comprobante" filterMatchMode="contains">
-						<h:outputText value="#{documento.tipoComprobante eq 'B'?'Boleta':'Factura'}" />
+						<h:outputText value="#{documento.tipoDocumento.abreviatura eq 'B'?'Boleta':'Factura'}" />
 					</p:column>
 
 					<p:column headerText="Número" filterMatchMode="contains">
@@ -127,12 +127,13 @@
 					</h:outputText>
 
 					<h:outputLabel value="Documento:" />
-					<p:selectOneMenu id="idTipoComprobante" value="#{documentoVentaBean.tipoComprobante}" style="margin:5px; width:100px" disabled="#{documentoVentaBean.cuotaSelected eq null ? false : true }">
-						<f:selectItem itemLabel="Boleta" itemValue="B" />
-						<f:selectItem itemLabel="Factura" itemValue="F" />
+					<p:selectOneMenu id="idTipoComprobante" value="#{documentoVentaBean.tipoDocumentoSelected}" converter="#{documentoVentaBean.conversorTipoDocumento}" style="margin:5px; width:100px" disabled="#{documentoVentaBean.cuotaSelected eq null ? false : true }">
+						<f:selectItem itemLabel="[--Seleccionar--]" itemValue="#{null}"/>						
+						<f:selectItems value="#{documentoVentaBean.lstTipoDocumento}" var="tipoDocumento" itemLabel="#{tipoDocumento.descripcion}" itemValue="#{tipoDocumento}"/>
 						<p:ajax listener="#{documentoVentaBean.listarSerie}" update="optionSerie, num, pnl"/>
 					</p:selectOneMenu>
-
+					
+					
 					<h:outputLabel value="Serie-Número:" />
 
 					<p:selectOneMenu id="optionSerie" value="#{documentoVentaBean.serieDocumentoSelected}" converter="#{documentoVentaBean.conversorSerie}" style="margin:10px">
@@ -275,16 +276,16 @@
 						<h:panelGrid styleClass="companyHeaderGrid">
 							<p:row>
 								<p:column>
-									<h:outputText value="RUC: " rendered="#{documentoVentaBean.tipoComprobante eq 'F'}" />
-									<h:outputText value="DNI: " rendered="#{documentoVentaBean.tipoComprobante eq 'B'}" />
+									<h:outputText value="RUC: " rendered="#{documentoVentaBean.tipoDocumentoSelected.abreviatura eq 'F'}" />
+									<h:outputText value="DNI: " rendered="#{documentoVentaBean.tipoDocumentoSelected.abreviatura eq 'B'}" />
 								</p:column>
 								<p:column>
 									<p:inputText id="txt_ruc" style="width:120px;" label="" value="#{documentoVentaBean.ruc}" maxlength="11" />
 								</p:column>
 								
 								<p:column>
-									<h:outputText style="margin-left:20px" value="Nombre: " rendered="#{documentoVentaBean.tipoComprobante eq 'B'}" />
-									<h:outputText style="margin-left:20px" value="Razón Social: " rendered="#{documentoVentaBean.tipoComprobante eq 'F'}" />
+									<h:outputText style="margin-left:20px" value="Nombre: " rendered="#{documentoVentaBean.tipoDocumentoSelected.abreviatura eq 'B'}" />
+									<h:outputText style="margin-left:20px" value="Razón Social: " rendered="#{documentoVentaBean.tipoDocumentoSelected.abreviatura eq 'F'}" />
 								</p:column>
 								<p:column>
 									<p:inputText id="txt_nombre" style="width:420px;" label="" value="#{documentoVentaBean.nombreRazonSocial}" maxlength="100" > 
@@ -661,7 +662,7 @@
 
 	        	<h:panelGrid columns="1" style="float:right" >	
 	        		<h:panelGrid columns="1" >	
-	        			<h:outputText value="#{documentoVentaBean.documentoVentaSelected.tipoComprobante eq 'B'?'BOLETA':'FACTURA'} DE VENTA N° #{documentoVentaBean.documentoVentaSelected.serie}-#{documentoVentaBean.documentoVentaSelected.numero}" style="width : 100px;color:#337CFF;font-size: 20px;"/>				
+	        			<h:outputText value="#{documentoVentaBean.documentoVentaSelected.tipoDocumento.abreviatura eq 'B'?'BOLETA':'FACTURA'} DE VENTA N° #{documentoVentaBean.documentoVentaSelected.serie}-#{documentoVentaBean.documentoVentaSelected.numero}" style="width : 100px;color:#337CFF;font-size: 20px;"/>				
 					</h:panelGrid>
 					<h:panelGrid columns="2" >	
 						<h:outputText value="Fecha Emisión:" style="float:right"/>

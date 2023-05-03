@@ -41,10 +41,12 @@ import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Prepago;
 import com.model.aldasa.entity.Producto;
+import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.SerieDocumento;
 import com.model.aldasa.entity.Simulador;
 import com.model.aldasa.entity.Team;
+import com.model.aldasa.entity.TipoDocumento;
 import com.model.aldasa.entity.Voucher;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.reporteBo.ReportGenBo;
@@ -57,6 +59,7 @@ import com.model.aldasa.service.ManzanaService;
 import com.model.aldasa.service.PrepagoService;
 import com.model.aldasa.service.ProductoService;
 import com.model.aldasa.service.SerieDocumentoService;
+import com.model.aldasa.service.TipoDocumentoService;
 import com.model.aldasa.service.VoucherService;
 import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.EstadoLote;
@@ -103,6 +106,9 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	@ManagedProperty(value = "#{prepagoService}")
 	private PrepagoService prepagoService;
 	
+	@ManagedProperty(value = "#{tipoDocumentoService}")
+	private TipoDocumentoService tipoDocumentoService;
+	
 	private boolean estado = true;
 
 	private LazyDataModel<DocumentoVenta> lstDocumentoVentaLazy;
@@ -122,6 +128,8 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	private List<Cuota> lstCuotaVista = new ArrayList<>();
 	private List<Cuota> lstCuotaPendientes = new ArrayList<>();
 	private List<Cuota> lstCuotaPendientesTemporal = new ArrayList<>();
+	private List<TipoDocumento> lstTipoDocumento = new ArrayList<>();
+
 
 	
 	private DocumentoVenta documentoVentaSelected ;
@@ -132,6 +140,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	private Cliente clienteSelected;
 	private Contrato contratoPendienteSelected;
 	private Cuota cuotaPendienteContratoSelected;
+	private TipoDocumento tipoDocumentoSelected;
 
 
 	private DocumentoVenta documentoVentaNew;
@@ -147,7 +156,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	
 	private Date fechaEmision = new Date() ;
 	private String fechaTextoVista, montoLetra;
-	private String tipoComprobante, ruc, nombreRazonSocial, direccion, observacion, numero ; 
+	private String  ruc, nombreRazonSocial, direccion, observacion, numero ; 
 	private String tipoPago = "Contado";
 	private String tipoPrepago = "C";
 	private boolean pagoTotalPrepago = false;
@@ -183,12 +192,16 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 
 
 	SimpleDateFormat sdf = new SimpleDateFormat("dd 'de'  MMMMM 'del' yyyy");
+	SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
+
 	
 	@PostConstruct
 	public void init() {
+		lstTipoDocumento = tipoDocumentoService.findByEstado(true);
+		tipoDocumentoSelected = lstTipoDocumento.get(0);
+		
 		iniciarLazy();
 		iniciarDatosDocVenta();	
-		tipoComprobante="B";
 		listarSerie();
 		iniciarLazyCuota(); 
 		iniciarLazyVoucher();
@@ -199,9 +212,11 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 		productoVoucher = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.SEPARACION.getTipo());
 		productoPrepagoCapital = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.PREPAGO_CAPITAL.getTipo());
 		productoPrepagoTiempo = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.PREPAGO_TIEMPO.getTipo());
-
 		
 	} 
+	
+	
+	
 	
 	public void simularPrepago() {
 		
@@ -623,7 +638,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 		}
 		
 		if(ruc.equals("")) {
-			if(tipoComprobante.equals("B")) {
+			if(tipoDocumentoSelected.getAbreviatura().equals("B")) {
 				addErrorMessage("Ingresar DNI.");
 			}else {
 				addErrorMessage("Ingresar RUC.");
@@ -633,7 +648,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 		
 		if(nombreRazonSocial.equals("")) {
 			if(ruc.equals("")) {
-				if(tipoComprobante.equals("B")) {
+				if(tipoDocumentoSelected.getAbreviatura().equals("B")) {
 					addErrorMessage("Ingresar nombre.");
 				}else {
 					addErrorMessage("Ingresar razón social.");
@@ -655,7 +670,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 			cliente.setNombreComercial("");   
 			cliente.setRuc(ruc);
 			cliente.setDireccion(direccion);
-			cliente.setPersonaNatural(tipoComprobante.equals("B")?true:false);
+			cliente.setPersonaNatural(tipoDocumentoSelected.getAbreviatura().equals("B")?true:false);
 			cliente.setEstado(true);
 			cliente.setFechaRegistro(new Date());
 			cliente.setIdUsuarioRegistro(navegacionBean.getUsuarioLogin());
@@ -679,7 +694,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 		documentoVenta.setCliente(clienteSelected);
 		documentoVenta.setDocumentoVentaRef(null);
 		documentoVenta.setSucursal(navegacionBean.getSucursalLogin());
-		documentoVenta.setTipoComprobante(tipoComprobante);
+		documentoVenta.setTipoDocumento(tipoDocumentoSelected);
 		documentoVenta.setSerie(serieDocumentoSelected.getSerie());
 		documentoVenta.setNumero(""); // vamos a setear el numero despues de haber guardado el documento
 		documentoVenta.setRuc(ruc);
@@ -829,7 +844,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 		}
 		
 		clienteSelected=null;
-		if(tipoComprobante.equals("B")) {
+		if(tipoDocumentoSelected.getAbreviatura().equals("B")) {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(cuotaSelected.getContrato().getPersonVenta(), true, true);
 		}else {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(cuotaSelected.getContrato().getPersonVenta(), true, false);
@@ -924,7 +939,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 		}
 		
 		clienteSelected=null;
-		if(tipoComprobante.equals("B")) {
+		if(tipoDocumentoSelected.getAbreviatura().equals("B")) {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(voucherSelected.getRequerimientoSeparacion().getProspection().getProspect().getPerson(), true, true);
 		}else {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(voucherSelected.getRequerimientoSeparacion().getProspection().getProspect().getPerson(), true, false);
@@ -981,7 +996,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 		}
 		
 		clienteSelected=prepagoSelected.getCliente();
-		if(tipoComprobante.equals("B")) {
+		if(tipoDocumentoSelected.getAbreviatura().equals("B")) {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(prepagoSelected.getContrato().getPersonVenta(), true, true);
 		}else {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(prepagoSelected.getContrato().getPersonVenta(), true, false);
@@ -1061,7 +1076,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	}
 	
 	public void listarSerie() {
-		lstSerieDocumento = serieDocumentoService.findByTipoComprobanteAndSucursal(tipoComprobante, navegacionBean.getSucursalLogin());
+		lstSerieDocumento = serieDocumentoService.findByTipoDocumentoAndSucursal(tipoDocumentoSelected, navegacionBean.getSucursalLogin());
 		serieDocumentoSelected=lstSerieDocumento.get(0);
 
 		numero =  String.format("%0" + serieDocumentoSelected.getTamanioNumero()  + "d", Integer.valueOf(serieDocumentoSelected.getNumero()) ); 
@@ -1412,7 +1427,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
         	
             parametros = new HashMap<String, Object>();
             parametros.put("TOTALSTRING", montoLetra);
-            if (documentoVentaSelected.getTipoComprobante().equals("B")) {
+            if (documentoVentaSelected.getTipoDocumento().getAbreviatura().equals("B")) {
             	 parametros.put("TIPOCOMPROBANTE", "BOLETA DE VENTA");
             }else {
             	parametros.put("TIPOCOMPROBANTE", "FACTURA");
@@ -1422,17 +1437,18 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
             parametros.put("RUC", documentoVentaSelected.getRuc());
             parametros.put("DIRECCION", documentoVentaSelected.getDireccion());
             parametros.put("NOMBRECOMERCIAL", documentoVentaSelected.getRazonSocial());
-            parametros.put("FECHAEMISION", documentoVentaSelected.getFechaEmision());
-            parametros.put("TIPOMONEDA", documentoVentaSelected.getTipoMoneda());
+            parametros.put("FECHAEMISION", sdf2.format(documentoVentaSelected.getFechaEmision()));
+            parametros.put("TIPOMONEDA", documentoVentaSelected.getTipoMoneda().equals("S")?"Soles":"Dólares");
             parametros.put("OBSERVACION", documentoVentaSelected.getObservacion());
             parametros.put("CONDICIONPAGO", documentoVentaSelected.getTipoPago());
             
-            if(lstDetalleDocumentoVentaSelected.get(0).getProducto()==productoVoucher) {
+            if(lstDetalleDocumentoVentaSelected.get(0).getProducto().getId()==productoVoucher.getId()) {
             	parametros.put("ANTICIPOS", documentoVentaSelected.getOpInafecta());
             }else {
                 parametros.put("ANTICIPOS", documentoVentaSelected.getAnticipos());
 
             }
+            String fecha = sdf2.format(documentoVentaSelected.getFechaEmision());
             parametros.put("OPGRAVADA", documentoVentaSelected.getOpGravada());
             parametros.put("OPEXONERADA", documentoVentaSelected.getOpExonerada());
             parametros.put("OPINAFECTA", documentoVentaSelected.getOpInafecta());
@@ -1443,6 +1459,9 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
             parametros.put("OTROSCARGOS", documentoVentaSelected.getOtrosCargos());
             parametros.put("OTROSTRIBUTOS", documentoVentaSelected.getOtrosTributos());
             parametros.put("IMPORTETOTAL", documentoVentaSelected.getTotal());
+            parametros.put("QR", navegacionBean.getSucursalLogin().getRuc() + "|" + documentoVentaSelected.getTipoDocumento().getCodigo() + "|" + 
+	    		documentoVentaSelected.getSerie() + "|" + documentoVentaSelected.getNumero() + "|" + "0" + "|" + documentoVentaSelected.getTotal() + "|" + 
+	    		fecha + "|" + (documentoVentaSelected.getTipoDocumento().getAbreviatura().equals("B")?"1":"6") + "|" + documentoVentaSelected.getRuc() + "|");
 
 
 
@@ -1461,6 +1480,33 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
         }
     }
 
+	public Converter getConversorTipoDocumento() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	TipoDocumento c = null;
+                    for (TipoDocumento si : lstTipoDocumento) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((TipoDocumento) value).getId() + "";
+                }
+            }
+        };
+    }
 	
 	public boolean isEstado() {
 		return estado;
@@ -1504,13 +1550,6 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	public void setSdf(SimpleDateFormat sdf) {
 		this.sdf = sdf;
 	}
-	public String getTipoComprobante() {
-		return tipoComprobante;
-	}
-	public void setTipoComprobante(String tipoComprobante) {
-		this.tipoComprobante = tipoComprobante;
-	}
-
 	public DocumentoVenta getDocumentoVentaNew() {
 		return documentoVentaNew;
 	}
@@ -1936,6 +1975,30 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	}
 	public void setHabilitarMontoPrepago(boolean habilitarMontoPrepago) {
 		this.habilitarMontoPrepago = habilitarMontoPrepago;
+	}
+	public List<TipoDocumento> getLstTipoDocumento() {
+		return lstTipoDocumento;
+	}
+	public void setLstTipoDocumento(List<TipoDocumento> lstTipoDocumento) {
+		this.lstTipoDocumento = lstTipoDocumento;
+	}
+	public TipoDocumento getTipoDocumentoSelected() {
+		return tipoDocumentoSelected;
+	}
+	public void setTipoDocumentoSelected(TipoDocumento tipoDocumentoSelected) {
+		this.tipoDocumentoSelected = tipoDocumentoSelected;
+	}
+	public TipoDocumentoService getTipoDocumentoService() {
+		return tipoDocumentoService;
+	}
+	public void setTipoDocumentoService(TipoDocumentoService tipoDocumentoService) {
+		this.tipoDocumentoService = tipoDocumentoService;
+	}
+	public SimpleDateFormat getSdf2() {
+		return sdf2;
+	}
+	public void setSdf2(SimpleDateFormat sdf2) {
+		this.sdf2 = sdf2;
 	}
 
 	

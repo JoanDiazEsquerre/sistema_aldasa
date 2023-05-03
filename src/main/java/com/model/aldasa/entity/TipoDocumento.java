@@ -14,6 +14,8 @@ public class TipoDocumento {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
+	private String abreviatura;
+
 	private String descripcion;
 	private String codigo;
 	private boolean estado;
@@ -45,6 +47,12 @@ public class TipoDocumento {
 	}
 	public void setEstado(boolean estado) {
 		this.estado = estado;
+	}
+	public String getAbreviatura() {
+		return abreviatura;
+	}
+	public void setAbreviatura(String abreviatura) {
+		this.abreviatura = abreviatura;
 	}
 	
 	
