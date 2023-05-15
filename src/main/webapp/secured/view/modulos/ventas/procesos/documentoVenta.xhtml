@@ -32,15 +32,11 @@
 					<p:ajax event="rowSelect" listener="#{documentoVentaBean.BoletaDocumentoVenta()}" update=":formDocumentoVentaDialog :dialogDocumentoVenta" oncomplete="PF('docVentDialog').show();" />
 
 					<p:column width="25px">
-				                      #{row +1}
-				        </p:column>
+			                      #{row +1}
+			        </p:column>
 
-					<p:column headerText="Cliente"
-						sortBy="#{documento.cliente.person.surnames}"
-						filterBy="#{documento.cliente.person.surnames}"
-						filterMatchMode="contains">
-						<h:outputText
-							value="#{documento.cliente.person.surnames} #{documento.cliente.person.names}" />
+					<p:column headerText="Cliente" sortBy="#{documento.cliente.person.surnames}" filterBy="#{documento.cliente.person.surnames}" filterMatchMode="contains">
+						<h:outputText value="#{documento.cliente.person.surnames} #{documento.cliente.person.names}" />
 					</p:column>
 
 					<p:column headerText="Tipo Comprobante" filterMatchMode="contains">
@@ -462,7 +458,7 @@
 			                        </h:outputText>
 			                    </f:facet>
 			                    <f:facet name="input">
-			                        <p:inputNumber value="#{detalle.adelanto}" style="width:90%" label="Price" symbol="" minValue="0"> 
+			                        <p:inputNumber value="#{detalle.adelanto}" style="width:90%" label="Price" symbol="" minValue="0" rendered="false"> 
 			                        	<p:ajax listener="#{documentoVentaBean.updateAdelanto(detalle)}" update=":form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos" />
 			                    	</p:inputNumber> 
 			                    </f:facet>	
@@ -474,7 +470,7 @@
 						</p:column>
 						
 						<p:column width="10%" filterMatchMode="contains">
-							<p:commandButton rendered="#{detalle.producto.tipoProducto eq 'C'}"  icon="pi pi-trash" styleClass="rounded-button ui-button-danger" action="#{documentoVentaBean.eliminarDetalleVenta(row)}" 
+							<p:commandButton   icon="pi pi-trash" styleClass="rounded-button ui-button-danger" action="#{documentoVentaBean.eliminarDetalleVenta(row)}" 
 							update=":form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante"/>
 						</p:column>
 				
@@ -622,7 +618,7 @@
 					</p:column>
 				
 					<p:column headerText="Cuota SI" filterMatchMode="contains" >
-						<h:outputText  value="#{cuotaContrato.cuotaSI}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
+						<h:outputText  value="#{cuotaContrato.cuotaSI-cuotaContrato.adelanto}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
 							<f:convertNumber type="currency" currencySymbol=""/>
 						</h:outputText>
 					</p:column>
@@ -634,7 +630,7 @@
 					</p:column>
 					
 					<p:column headerText="Cuota Total" filterMatchMode="contains" >
-						<h:outputText value="#{cuotaContrato.cuotaTotal}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
+						<h:outputText value="#{cuotaContrato.cuotaTotal-cuotaContrato.adelanto}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
 							<f:convertNumber type="currency" currencySymbol=""/>
 						</h:outputText>
 					</p:column>
@@ -652,7 +648,7 @@
 		</p:tabView>
 	</h:form>
 	
-	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogDocumentoVenta" header="#{documentoVentaBean.tituloDialog}" widgetVar="docVentDialog" resizable="false" closable="true"
+	<p:dialog height="670px" modal="true" dynamic="true" closeOnEscape="true" id="dialogDocumentoVenta" header="#{documentoVentaBean.tituloDialog}" widgetVar="docVentDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="background-color:green;" width="80%" >
 		<h:form id="formDocumentoVentaDialog">
 

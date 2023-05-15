@@ -42,9 +42,10 @@ public class NavegacionBean implements Serializable  {
 	private int idAsistenteVenta = Perfiles.ASISTENTE_VENTA.getId();
 
 	
-	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas;
+	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas, menuAlmacen;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
-					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato, subMenuDocumentoVenta;
+					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato, subMenuDocumentoVentas, 
+					subMenuDocumentoVenta, subMenuInventario;
 	
 	private int[] permisoProspectos= {idAdministrador,idSupervisor,idAsesor};
 	private int[] permisoProspeccion= {idAdministrador,idSupervisor,idAsesor};
@@ -69,6 +70,8 @@ public class NavegacionBean implements Serializable  {
 	private int[] permisoRankingVentas= {idAdministrador};
 	private int[] permisoContrato= {idAdministrador, idAsistentenAdmin, idAsistenteVenta};
 	private int[] permisoDocumentoVentas= {idAdministrador};
+	private int[] permisoDocumentoVenta= {idAdministrador};
+	private int[] permisoInventario= {idAdministrador};
 
 	@PostConstruct
 	public void init() {
@@ -112,9 +115,9 @@ public class NavegacionBean implements Serializable  {
 		
 		//******************************************************************************
 		subMenuRankingVentas= validaPermiso(permisoRankingVentas);
-		subMenuDocumentoVenta=validaPermiso(permisoDocumentoVentas);
+		subMenuDocumentoVentas=validaPermiso(permisoDocumentoVentas);
 				
-		if(subMenuRankingVentas || subMenuDocumentoVenta){
+		if(subMenuRankingVentas || subMenuDocumentoVentas){
 			menuVentas=true;
 		}
 		
@@ -135,8 +138,10 @@ public class NavegacionBean implements Serializable  {
 		subMenuReporteAcciones = validaPermiso(permisoReporteAcciones);
 		subMenuReporteLotes = validaPermiso(permisoReporteLotes);
 		subMenuReporteAsistencia = validaPermiso(permisoReporteAsistencia);
+		subMenuDocumentoVenta=validaPermiso(permisoDocumentoVenta);
+
 		
-		if(subMenuReporteAcciones || subMenuReporteLotes || subMenuReporteAsistencia) {
+		if(subMenuReporteAcciones || subMenuReporteLotes || subMenuReporteAsistencia || subMenuDocumentoVenta) {
 			menuReporte=true;
 		}
 		//*******************************************************************************
@@ -147,8 +152,16 @@ public class NavegacionBean implements Serializable  {
 			menuAsistencia=true;
 		}
 		//*******************************************************************************
-				
-	}
+		
+		subMenuInventario = validaPermiso(permisoInventario);
+
+		if(subMenuInventario) {
+			menuAlmacen=true;
+		}
+		//*******************************************************************************
+		
+	}			
+	
 	
 	public boolean validaPermiso(int[] permiso) {
 		boolean valida = false;
@@ -246,8 +259,15 @@ public class NavegacionBean implements Serializable  {
 		ruta = "modulos/ventas/mantenimientos/rankingVentas.xhtml";
 	}
 	
-	public void getVentasDocumentoVentaPage() {
+	public void getVentasDocumentoVentasPage() {
 		ruta = "modulos/ventas/procesos/documentoVenta.xhtml";
+	}
+	
+	public void getVentasReporteDocumentoVentaPage() {
+		ruta = "modulos/ventas/reportes/reporteDocumentoVenta.xhtml";
+	}
+	public void getAlmacenInventarioPage() {
+		ruta = "modulos/almacen/mantenimientos/inventario.xhtml";
 	}
 
 	public void getContratosPage() {
@@ -638,17 +658,48 @@ public class NavegacionBean implements Serializable  {
 	public void setPermisoContrato(int[] permisoContrato) {
 		this.permisoContrato = permisoContrato;
 	}
-	public boolean isSubMenuDocumentoVenta() {
-		return subMenuDocumentoVenta;
+	
+	public boolean isSubMenuDocumentoVentas() {
+		return subMenuDocumentoVentas;
 	}
-	public void setSubMenuDocumentoVenta(boolean subMenuDocumentoVenta) {
-		this.subMenuDocumentoVenta = subMenuDocumentoVenta;
+	public void setSubMenuDocumentoVentas(boolean subMenuDocumentoVentas) {
+		this.subMenuDocumentoVentas = subMenuDocumentoVentas;
 	}
 	public int[] getPermisoDocumentoVentas() {
 		return permisoDocumentoVentas;
 	}
 	public void setPermisoDocumentoVentas(int[] permisoDocumentoVentas) {
 		this.permisoDocumentoVentas = permisoDocumentoVentas;
+	}
+	public boolean isSubMenuDocumentoVenta() {
+		return subMenuDocumentoVenta;
+	}
+	public void setSubMenuDocumentoVenta(boolean subMenuDocumentoVenta) {
+		this.subMenuDocumentoVenta = subMenuDocumentoVenta;
+	}
+	public int[] getPermisoDocumentoVenta() {
+		return permisoDocumentoVenta;
+	}
+	public void setPermisoDocumentoVenta(int[] permisoDocumentoVenta) {
+		this.permisoDocumentoVenta = permisoDocumentoVenta;
+	}
+	public boolean isMenuAlmacen() {
+		return menuAlmacen;
+	}
+	public void setMenuAlmacen(boolean menuAlmacen) {
+		this.menuAlmacen = menuAlmacen;
+	}
+	public boolean isSubMenuInventario() {
+		return subMenuInventario;
+	}
+	public void setSubMenuInventario(boolean subMenuInventario) {
+		this.subMenuInventario = subMenuInventario;
+	}
+	public int[] getPermisoInventario() {
+		return permisoInventario;
+	}
+	public void setPermisoInventario(int[] permisoInventario) {
+		this.permisoInventario = permisoInventario;
 	}
 	
 	

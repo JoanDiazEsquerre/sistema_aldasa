@@ -734,5 +734,37 @@
 			<value>#{tipoDocumentoService}</value>
 		</managed-property>
 	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>reporteDocumentoVentaBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.ventas.bean.ReporteDocumentoVentaBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>sucursalService</property-name>
+			<value>#{sucursalService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>documentoVentaService</property-name>
+			<value>#{documentoVentaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>inventarioBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.almacen.bean.InventarioBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>inventarioService</property-name>
+			<value>#{inventarioService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
+	</managed-bean>
 		
 </faces-config>

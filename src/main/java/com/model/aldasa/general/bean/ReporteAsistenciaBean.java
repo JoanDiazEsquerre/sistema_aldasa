@@ -496,30 +496,14 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 //	        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 11)); //combinar Celdas para titulo
 
 		Row rowSubTitulo = sheet.createRow(0);
-		Cell cellSubFecha = rowSubTitulo.createCell(0);
-		cellSubFecha.setCellValue("FECHA");
-		cellSubFecha.setCellStyle(styleTitulo);
-		Cell cellSubEmpleado = rowSubTitulo.createCell(1);
-		cellSubEmpleado.setCellValue("EMPLEADO");
-		cellSubEmpleado.setCellStyle(styleTitulo);
-		Cell cellSubEntrada1 = rowSubTitulo.createCell(2);
-		cellSubEntrada1.setCellValue("ENTRADA");
-		cellSubEntrada1.setCellStyle(styleTitulo);
-		Cell cellSubSalida1 = rowSubTitulo.createCell(3);
-		cellSubSalida1.setCellValue("SALIDA");
-		cellSubSalida1.setCellStyle(styleTitulo);
-		Cell cellSubEntrada2 = rowSubTitulo.createCell(4);
-		cellSubEntrada2.setCellValue("ENTRADA");
-		cellSubEntrada2.setCellStyle(styleTitulo);
-		Cell cellSubSalida2 = rowSubTitulo.createCell(5);
-		cellSubSalida2.setCellValue("SALIDA");
-		cellSubSalida2.setCellStyle(styleTitulo);
-		Cell cellSubArea = rowSubTitulo.createCell(6);
-		cellSubArea.setCellValue("ÁREA");
-		cellSubArea.setCellStyle(styleTitulo);
-		Cell cellSubMinTard = rowSubTitulo.createCell(7);
-		cellSubMinTard.setCellValue("MINUTOS DE TARDANZA");
-		cellSubMinTard.setCellStyle(styleTitulo);
+		Cell cellSubFecha = rowSubTitulo.createCell(0);cellSubFecha.setCellValue("FECHA");cellSubFecha.setCellStyle(styleTitulo);
+		Cell cellSubEmpleado = rowSubTitulo.createCell(1);cellSubEmpleado.setCellValue("EMPLEADO");cellSubEmpleado.setCellStyle(styleTitulo);
+		Cell cellSubEntrada1 = rowSubTitulo.createCell(2);cellSubEntrada1.setCellValue("ENTRADA");cellSubEntrada1.setCellStyle(styleTitulo);
+		Cell cellSubSalida1 = rowSubTitulo.createCell(3);cellSubSalida1.setCellValue("SALIDA");cellSubSalida1.setCellStyle(styleTitulo);
+		Cell cellSubEntrada2 = rowSubTitulo.createCell(4);cellSubEntrada2.setCellValue("ENTRADA");cellSubEntrada2.setCellStyle(styleTitulo);
+		Cell cellSubSalida2 = rowSubTitulo.createCell(5);cellSubSalida2.setCellValue("SALIDA");cellSubSalida2.setCellStyle(styleTitulo);
+		Cell cellSubArea = rowSubTitulo.createCell(6);cellSubArea.setCellValue("ÁREA");cellSubArea.setCellStyle(styleTitulo);
+		Cell cellSubMinTard = rowSubTitulo.createCell(7);cellSubMinTard.setCellValue("MINUTOS DE TARDANZA");cellSubMinTard.setCellStyle(styleTitulo);
 
 		if (fechaFin.before(fechaIni)) {
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
@@ -544,26 +528,14 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 				if (!lstempleados.isEmpty()) {
 					for (Empleado empleado : lstempleados) {
 						Row rowDetail = sheet.createRow(index);
-						Cell cellfecha = rowDetail.createCell(0);
-						cellfecha.setCellValue(sdf.format(fecha1));
-						cellfecha.setCellStyle(styleBorder);
-						Cell cellEmpleado = rowDetail.createCell(1);
-						cellEmpleado.setCellValue(
-								empleado.getPerson().getSurnames() + " " + empleado.getPerson().getNames());
-						cellEmpleado.setCellStyle(styleBorder);
-						Cell cellE1 = rowDetail.createCell(2);
-						cellE1.setCellStyle(styleBorder);
-						Cell cellS1 = rowDetail.createCell(3);
-						cellS1.setCellStyle(styleBorder);
-						Cell cellE2 = rowDetail.createCell(4);
-						cellE2.setCellStyle(styleBorder);
-						Cell cellS2 = rowDetail.createCell(5);
-						cellS2.setCellStyle(styleBorder);
-						Cell cellArea = rowDetail.createCell(6);
-						cellArea.setCellValue(empleado.getArea().getNombre());
-						cellArea.setCellStyle(styleBorder);
-						Cell cellMinTard = rowDetail.createCell(7);
-						cellMinTard.setCellStyle(styleBorder);
+						Cell cellfecha = rowDetail.createCell(0);cellfecha.setCellValue(sdf.format(fecha1));cellfecha.setCellStyle(styleBorder);
+						Cell cellEmpleado = rowDetail.createCell(1);cellEmpleado.setCellValue(empleado.getPerson().getSurnames() + " " + empleado.getPerson().getNames());cellEmpleado.setCellStyle(styleBorder);
+						Cell cellE1 = rowDetail.createCell(2);cellE1.setCellStyle(styleBorder);
+						Cell cellS1 = rowDetail.createCell(3);cellS1.setCellStyle(styleBorder);
+						Cell cellE2 = rowDetail.createCell(4);cellE2.setCellStyle(styleBorder);
+						Cell cellS2 = rowDetail.createCell(5);cellS2.setCellStyle(styleBorder);
+						Cell cellArea = rowDetail.createCell(6);cellArea.setCellValue(empleado.getArea().getNombre());cellArea.setCellStyle(styleBorder);
+						Cell cellMinTard = rowDetail.createCell(7);cellMinTard.setCellStyle(styleBorder);
 
 						Date dia1 = fecha1;
 						String day = sdf.format(dia1);

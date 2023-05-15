@@ -1,0 +1,128 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	locale="#{localeBean.usedLocale}"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+	<h:form id="form">
+		<p:growl id="msgs" showDetail="true"/>
+		<h2 style="color: #007d4c;">REPORTES > REPORTE DOCUMENTO DE VENTA</h2>
+		
+		<h:panelGrid columns="9"> 
+		
+		<p:selectOneButton value="#{reporteDocumentoVentaBean.estado}"
+			unselectable="false">
+			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
+			<f:selectItem itemLabel="Anulados" itemValue="#{false}" />
+			<p:ajax update="idTableListDoc"/>
+		</p:selectOneButton>
+		
+		<h:outputLabel value="Sucursal:" for="sucursal"/>  
+        <p:selectOneMenu id="sucursal" value="#{reporteDocumentoVentaBean.sucursal}" style="margin:5px;width:250px" converter="#{reporteDocumentoVentaBean.conversorSucursal}">
+			<f:selectItem itemLabel="[--Todos--]" itemValue="#{null}"/>
+			<f:selectItems value="#{reporteDocumentoVentaBean.lstSucursal}" var="suc" itemLabel="#{suc.razonSocial}" itemValue="#{suc}"/>
+			<p:ajax update="idTableListDoc"/> 
+		</p:selectOneMenu>
+		
+		 <h:outputLabel value="Fecha inicio:" style="text-align:right"/>
+		<p:datePicker value="#{reporteDocumentoVentaBean.fechaIni}" readonlyInput="true">
+			<p:ajax update="idTableListDoc" />
+		</p:datePicker>
+		
+		<h:outputLabel value="Fecha fin:" style="text-align:right"/>
+		<p:datePicker value="#{reporteDocumentoVentaBean.fechaFin}" readonlyInput="true" >
+			<p:ajax update="idTableListDoc" />
+		</p:datePicker>
+		
+		<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{reporteDocumentoVentaBean.procesarExcel}" icon="pi pi-file-excel" styleClass="mr-2">
+           <p:fileDownload value="#{reporteDocumentoVentaBean.fileDes}"/> 
+      	</p:commandButton>
+		
+		</h:panelGrid>
+		
+		<p:dataTable var="documento" id="idTableListDoc" value="#{reporteDocumentoVentaBean.lstDocumentoVentaLazy}" rowIndexVar="row" paginator="true" rows="15" size="small" style="width:120%"
+			emptyMessage="No se encontraron documentos de venta." paginatorPosition="bottom" rowKey="#{documento.id}" selectionMode="single">
+
+			<f:facet name="header">
+				<div class="p-d-flex p-ai-center p-jc-between">
+					<span>FORMATO REGISTRO DE VENTAS  - GESTIÓN CONTABLE FINANCIERO PREMIUM 22.01 - NewContaSis	</span>
+				</div>
+			</f:facet>
+
+			<p:columnGroup type="header">
+                <p:row>
+                    <p:column rowspan="3" headerText="FECHA DE EMISION DEL COMPROBANTE DE PAGO O DOCUMENTO"/>
+                    <p:column rowspan="3" headerText="FECHA DE VENCIMIENTO O FECHA DE PAGO"/>
+						
+                    <p:column rowspan="2" colspan="3"  headerText="COMPROBANTE DE PAGO O DOCUMENTO" style="text-align:center"/>
+                    <p:column colspan="3" headerText="INFORMACION DEL CLIENTE" style="text-align:center"/>
+                    <p:column rowspan="3" headerText="VALOR FACTURADO DE LA EXPORTACION" style=" width:150px"/>
+                </p:row>
+                <p:row>
+                	<p:column colspan="2" headerText="DOCUMENTO IDENTIDAD"/>
+                	<p:column rowspan="2" headerText="APELLIDOS Y NOMBRES, DENOMINACION O RAZON SOCIAL" style=" width:300px"/>
+                </p:row>
+                <p:row> 
+                	<p:column headerText="TIPO"/>
+                	<p:column headerText="N° SERIE/N° SERIE MAQ REGIS"/>
+                	<p:column headerText="NUMERO"/>
+                	<p:column headerText="TIPO"/>
+                	<p:column headerText="NUMERO"/>
+                </p:row>
+            </p:columnGroup>
+ 
+            <p:column  filterMatchMode="contains">
+				<h:outputText value="#{documento.fechaEmision}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column  filterMatchMode="contains">
+				<h:outputText value="#{documento.fechaEmision}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column  filterMatchMode="contains">
+				<h:outputText value="#{documento.tipoDocumento.codigo}"/>
+			</p:column>
+			
+			<p:column  filterMatchMode="contains">
+				<h:outputText value="#{documento.serie}"/>
+			</p:column>
+			
+			<p:column  filterMatchMode="contains">
+				<h:outputText value="#{documento.numero}"/>
+			</p:column>
+			
+			<p:column  filterMatchMode="contains">
+				<h:outputText value="#{documento.tipoDocumento.abreviatura eq 'B' ? '1':'6'}"/>
+			</p:column>
+			
+			<p:column  filterMatchMode="contains">
+				<h:outputText value="#{documento.ruc}"/>
+			</p:column>
+			
+			<p:column  filterMatchMode="contains">
+				<h:outputText value="#{documento.razonSocial}"/>
+			</p:column>
+			
+			<p:column filterMatchMode="contains">
+				<h:outputText value="#{documento.total}" > 
+					<f:convertNumber type="currency" currencySymbol=""/>
+				</h:outputText>
+			</p:column>
+			
+
+			
+	       
+			
+
+		</p:dataTable>
+
+	</h:form>
+
+</ui:composition>

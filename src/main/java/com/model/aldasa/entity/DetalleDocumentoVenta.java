@@ -32,6 +32,7 @@ public class DetalleDocumentoVenta{
 	private BigDecimal amortizacion;
 	
 	private BigDecimal interes;
+	
 	private BigDecimal adelanto;
 	
 	@Column(name="importeventa")
@@ -49,8 +50,9 @@ public class DetalleDocumentoVenta{
 	@JoinColumn(name="idprepago")
 	private Prepago prepago;
 	
-	
 	private boolean estado;
+	
+	private transient BigDecimal totalTemp;
 		
 	
 	
@@ -126,6 +128,12 @@ public class DetalleDocumentoVenta{
 	}
 	public void setPrepago(Prepago prepago) {
 		this.prepago = prepago;
+	}
+	public BigDecimal getTotalTemp() {
+		return totalTemp;
+	}
+	public void setTotalTemp(BigDecimal totalTemp) {
+		this.totalTemp = totalTemp;
 	}
 
 	

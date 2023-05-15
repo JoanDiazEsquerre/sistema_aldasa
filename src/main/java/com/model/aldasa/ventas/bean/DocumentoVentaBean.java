@@ -151,6 +151,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	private Producto productoVoucher;
 	private Producto productoPrepagoCapital;
 	private Producto productoPrepagoTiempo;
+	private Producto productoAdelanto;
 	private Person persona;
 
 	
@@ -212,7 +213,8 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 		productoVoucher = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.SEPARACION.getTipo());
 		productoPrepagoCapital = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.PREPAGO_CAPITAL.getTipo());
 		productoPrepagoTiempo = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.PREPAGO_TIEMPO.getTipo());
-		
+		productoAdelanto = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.ADELANTO.getTipo());
+
 	} 
 	
 	
@@ -452,8 +454,10 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 
 		for(Cuota c:lstCuotaPendientes) {
 			if(c.getNroCuota()!=0) {
-				deudaActualSinInteres = deudaActualSinInteres.add(c.getCuotaSI());	
-				deudaActualConInteres = deudaActualConInteres.add(c.getCuotaTotal());	
+				BigDecimal a = c.getCuotaSI().subtract(c.getAdelanto());
+				BigDecimal b = c.getCuotaTotal().subtract(c.getAdelanto());
+				deudaActualSinInteres = deudaActualSinInteres.add(a);	
+				deudaActualConInteres = deudaActualConInteres.add(b);	
 			}
 		}
 		
@@ -587,6 +591,9 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	}
 	
 	public void updateAmortizacion(DetalleDocumentoVenta detalle) {
+		if(detalle.getTotalTemp()==null) {
+			detalle.setTotalTemp(detalle.getImporteVenta());
+		}
 		if(detalle.getAmortizacion()==null) {
 			detalle.setAmortizacion(BigDecimal.ZERO);
 			detalle.setImporteVenta(detalle.getInteres().add(detalle.getAmortizacion()));
@@ -595,6 +602,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 			detalle.setImporteVenta(detalle.getInteres().add(detalle.getAmortizacion()));
 		}else {
 			detalle.setImporteVenta(detalle.getInteres().add(detalle.getAmortizacion()));
+			detalle.setProducto(productoAdelanto);
 		}
 		
 		calcularTotales();
@@ -740,7 +748,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 				detalleDocumentoVentaService.save(d);
 				
 				if(d.getCuota()!=null) {
-					if(!d.getProducto().getTipoProducto().equals("T")) {
+					if(!d.getProducto().getTipoProducto().equals(TipoProductoType.INTERES.getTipo())) {
 						BigDecimal cuota = d.getCuota().getCuotaTotal().subtract(d.getCuota().getAdelanto());
 						BigDecimal cuota2 = d.getImporteVenta().add(d.getCuota().getInteres());
 						if(cuota.compareTo(cuota2)==0 ) {
@@ -1038,23 +1046,22 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 		
 	}
 	
-	
-	
-	
-	
 	public void calcularTotales() {
+		anticipos = BigDecimal.ZERO;
 		opInafecta=BigDecimal.ZERO;
 		importeTotal=BigDecimal.ZERO;
 		if(!lstDetalleDocumentoVenta.isEmpty()) {
 			for(DetalleDocumentoVenta d:lstDetalleDocumentoVenta) {
 				opInafecta= opInafecta.add(d.getImporteVenta());
 				importeTotal= importeTotal.add(d.getImporteVenta());
+				if(d.getTotalTemp()!=null) {
+					anticipos = anticipos.add(d.getAmortizacion());
+				}
 			}
 		}
 	} 
 	
 	public void eliminarDetalleVenta(int index) {
-		lstDetalleDocumentoVenta.remove(index);
 		lstDetalleDocumentoVenta.remove(index);
 		calcularTotales();
 		if(lstDetalleDocumentoVenta.isEmpty()) {
@@ -1065,6 +1072,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 			cuotaSelected = null;
 			
 		}
+		addInfoMessage("Detalle eliminado");
 		
 	}
 	
@@ -1138,7 +1146,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
                 Page<DocumentoVenta> pageDocumentoVenta=null;
                
                 
-                pageDocumentoVenta= documentoVentaService.findByEstado(estado, pageable);
+                pageDocumentoVenta= documentoVentaService.findByEstadoAndSucursal(estado, navegacionBean.getSucursalLogin(), pageable);
                 
                 setRowCount((int) pageDocumentoVenta.getTotalElements());
                 return datasource = pageDocumentoVenta.getContent();
@@ -1999,6 +2007,12 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	}
 	public void setSdf2(SimpleDateFormat sdf2) {
 		this.sdf2 = sdf2;
+	}
+	public Producto getProductoAdelanto() {
+		return productoAdelanto;
+	}
+	public void setProductoAdelanto(Producto productoAdelanto) {
+		this.productoAdelanto = productoAdelanto;
 	}
 
 	
