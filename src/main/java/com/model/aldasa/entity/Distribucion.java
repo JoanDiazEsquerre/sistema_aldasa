@@ -26,15 +26,10 @@ public class Distribucion {
 	@JoinColumn(name="idarea")
 	private Area area;
 	
-	private BigDecimal cantidad;
+	private int cantidad;
 	
 	private boolean estado;
 
-	
-	
-	
-	
-	
 	
 	
 	
@@ -59,10 +54,10 @@ public class Distribucion {
 	public void setArea(Area area) {
 		this.area = area;
 	}
-	public BigDecimal getCantidad() {
+	public int getCantidad() {
 		return cantidad;
 	}
-	public void setCantidad(BigDecimal cantidad) {
+	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
 	}
 	public boolean isEstado() {

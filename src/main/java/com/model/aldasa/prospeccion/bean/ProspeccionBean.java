@@ -785,7 +785,7 @@ public class ProspeccionBean extends BaseBean{
 		
 		
 		if(file == null) {
-			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccione una imagen (voucher)"));	
+			addErrorMessage("Seleccione una imagen (voucher)");
 			return;
 		}
 		

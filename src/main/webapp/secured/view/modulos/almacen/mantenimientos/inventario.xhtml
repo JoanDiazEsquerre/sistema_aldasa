@@ -59,7 +59,7 @@
 		</p:dataTable>
 		
 		<p:contextMenu id="menuTableDistribucion" for="idTableInventario" >
-        	<p:menuitem value="Distribución" icon="pi pi-search-plus"  oncomplete="PF('distribucionDialog').show();" update="dialogDistribucion"/>		        
+        	<p:menuitem value="Distribución" icon="pi pi-search-plus" action="#{inventarioBean.verDetallesDistribucion()}" oncomplete="PF('distribucionDialog').show();" update="dialogDistribucion"/>		        
         </p:contextMenu>
 		        
 		        
@@ -100,41 +100,65 @@
 			
 					
 				<h:outputLabel for="optionArea" value="Área:" />
-                <p:selectOneMenu id="optionArea" value="#{empleadoBean.empleadoSelected.area}" converter="#{empleadoBean.conversorArea}" style="margin:10px" >
-                    <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
-                    <f:selectItems value="#{empleadoBean.lstArea}" var="area" itemLabel="#{area.nombre}" itemValue="#{area}"/>
-                </p:selectOneMenu>
-                
-                <h:outputLabel value="Cantidad: " for="cantidad" />
-				<p:inputText value="#{empleadoBean.empleadoSelected.cargo}" id="cantidad" style="margin:10px" />
+	               <p:selectOneMenu id="optionArea" value="#{inventarioBean.distribucionSelected.area}" converter="#{inventarioBean.conversorArea}" style="margin:10px" >
+	                   <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
+	                   <f:selectItems value="#{inventarioBean.lstArea}" var="area" itemLabel="#{area.nombre}" itemValue="#{area}"/>
+	               </p:selectOneMenu>
+	               
+	              <h:outputLabel value="Cantidad: " for="cantidad" />	               	
+					<p:inputNumber id="cantidad" value="#{inventarioBean.distribucionSelected.cantidad}" style="margin:10px" modifyValueOnWheel="false"/>
 				
 			</h:panelGrid>
-			<p:commandButton value="Guardar" action="#{empleadoBean.saveEmpleado()}" />
+			<p:commandButton value="Guardar" action="#{inventarioBean.saveDistribucion()}" update=":formDistribucionDialog:tableDistribucion"/>
 			
 			<p:dataTable id="tableDistribucion" var="distribucion" value="#{inventarioBean.lstDistribucion}" rows="24" paginator="true" selectionMode="single" rowIndexVar="row"  
-					paginatorPosition="bottom"  rowKey="#{distribucion.id}" 
-					emptyMessage="No se encontraron detalles de distribución." size="small">
+				paginatorPosition="bottom"  rowKey="#{distribucion.id}" emptyMessage="No se encontraron detalles de distribución." size="small" editable="true">
 
-					<f:facet name="header">
-						<div class="p-d-flex p-ai-center p-jc-between">
-							<span>DETALLE DE LA DISTRIBUCION</span>
-						</div>
-					</f:facet>   
-	
-					<p:column headerText="Nro" filterMatchMode="contains" >
-						<h:outputText  value=""/>
-					</p:column>
-					
-					<p:column headerText="Área" filterMatchMode="contains" >
-						<h:outputText value="#{distribucio.area.nombre}" /> 
-					</p:column>
+				<f:facet name="header">
+					<div class="p-d-flex p-ai-center p-jc-between">
+						<span>DETALLE DE LA DISTRIBUCION</span>
+					</div>
+				</f:facet>   
 				
-					<p:column headerText="Cantidad" filterMatchMode="contains" >
-						<h:outputText  value="#{distribucion.cantidad}" /> 
-					</p:column>
-					
-	
-				</p:dataTable>
+				<p:ajax event="rowEdit" listener="#{inventarioBean.editarDistribucion(distribucion)}" update="formDistribucionDialog:tableDistribucion"/>
+           		<p:ajax event="rowEditCancel" />
+				
+				
+				<p:column headerText="Nro" filterMatchMode="contains" width="50px">
+                      #{row +1}
+      			</p:column>
+      			
+      			<p:column headerText="Área" filterMatchMode="contains">
+	                <p:cellEditor>
+	                    <f:facet name="output">
+	                    	<h:outputText value="#{distribucion.area.nombre}" />
+	                    </f:facet>
+	                    <f:facet name="input">
+	                        <p:selectOneMenu value="#{distribucion.area}" converter="#{inventarioBean.conversorArea}" style="margin:10px" >
+			                   <f:selectItems value="#{inventarioBean.lstArea}" var="area" itemLabel="#{area.nombre}" itemValue="#{area}"/>
+			               </p:selectOneMenu>
+	                    </f:facet>
+	                </p:cellEditor>
+            	</p:column>
+				
+				<p:column headerText="Cantidad" filterMatchMode="contains">
+	                <p:cellEditor>
+	                    <f:facet name="output">
+	                        <h:outputText value="#{distribucion.cantidad}">
+	                            <f:convertNumber type="currency" currencySymbol=""/>
+	                        </h:outputText>
+	                    </f:facet>
+	                    <f:facet name="input">
+	                        <p:inputNumber value="#{distribucion.cantidad}" style="width:100%" label="Price" symbol=""/>
+	                    </f:facet>
+	                </p:cellEditor>
+	            </p:column>
+				
+				<p:column style="width:6rem">
+	                <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+	            </p:column>
+				
+			</p:dataTable>
 			
 		</h:form>
 	</p:dialog>

@@ -1,6 +1,7 @@
 package com.model.aldasa.almacen.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +11,11 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
@@ -20,11 +24,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.model.aldasa.entity.Area;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.Distribucion;
 import com.model.aldasa.entity.Inventario;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.general.bean.NavegacionBean;
+import com.model.aldasa.service.AreaService;
+import com.model.aldasa.service.DistribucionService;
 import com.model.aldasa.service.InventarioService;
 import com.model.aldasa.util.BaseBean;
 
@@ -40,17 +47,95 @@ public class InventarioBean extends BaseBean implements Serializable{
 	@ManagedProperty(value = "#{navegacionBean}")
 	private NavegacionBean navegacionBean;
 	
+	@ManagedProperty(value = "#{areaService}")
+	private AreaService areaService; 
+	
+	@ManagedProperty(value = "#{distribucionService}")
+	private DistribucionService distribucionService; 
+	
 	private LazyDataModel<Inventario> lstInventarioLazy;
 	private List<Distribucion> lstDistribucion = new ArrayList<>();
+	private List<Area> lstArea;
+
 	
 	private Boolean estado = true;
 	private String tituloDialog;
 	
 	private Inventario inventarioSelected;
+	private Distribucion distribucionSelected;
 	
 	@PostConstruct
 	public void init() {
 		iniciarLazy();
+		lstArea=areaService.findByEstado(true);
+	}
+	
+	public void editarDistribucion(Distribucion distribucion) {
+		if(distribucion.getArea()==null) {
+			addErrorMessage("Seleccionar área.");
+			return;
+		}
+		if(distribucion.getCantidad()<=0) {
+			addErrorMessage("Cantidad tiene que ser mayor que 0.");
+			return;
+		}
+		
+		int suma = 0;
+		for(Distribucion d: lstDistribucion) {
+			suma = suma + d.getCantidad();
+		}
+		if(suma > inventarioSelected.getCantidad()) {
+			addErrorMessage("La cantidad máxima es " + inventarioSelected.getCantidad());
+			verDetallesDistribucion();
+			return;
+		}
+		
+		Distribucion dist = distribucionService.save(distribucion);
+		if(dist == null) {
+			addErrorMessage("No se pudo modificó.");
+		}else {
+			addInfoMessage("Se modificó correctamente.");
+			
+		}
+		verDetallesDistribucion();
+    }
+	
+	public void verDetallesDistribucion() {
+		distribucionSelected = new Distribucion();
+		distribucionSelected.setEstado(true);
+		distribucionSelected.setInventario(inventarioSelected);
+		lstDistribucion = distribucionService.findByInventarioAndEstado(inventarioSelected, true);
+	}
+	
+	public void saveDistribucion() {
+		if(distribucionSelected.getArea()==null) {
+			addErrorMessage("Seleccionar área.");
+			return;
+		}
+		if(distribucionSelected.getCantidad()<=0) {
+			addErrorMessage("Cantidad tiene que ser mayor que 0.");
+			return;
+		}
+		
+		int suma = 0;
+		for(Distribucion d: lstDistribucion) {
+			suma = suma + d.getCantidad();
+		}
+		suma = suma + distribucionSelected.getCantidad();
+		if(suma > inventarioSelected.getCantidad()) {
+			addErrorMessage("La cantidad máxima es " + inventarioSelected.getCantidad());
+			return;
+		}
+		
+		Distribucion distribucion = distribucionService.save(distribucionSelected);
+		if(distribucion == null) {
+			addErrorMessage("No se pudo guardar.");
+		}else {
+			addInfoMessage("Se guardo correctamente.");
+			verDetallesDistribucion();
+		}
+		
+		
 	}
 
 	public void newInventario() {
@@ -155,6 +240,33 @@ public class InventarioBean extends BaseBean implements Serializable{
 			}
 		};
 	}
+	public Converter getConversorArea() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Area c = null;
+                    for (Area si : lstArea) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Area) value).getId() + "";
+                }
+            }
+        };
+    }
 	
 	
 	
@@ -199,6 +311,30 @@ public class InventarioBean extends BaseBean implements Serializable{
 	}
 	public void setLstDistribucion(List<Distribucion> lstDistribucion) {
 		this.lstDistribucion = lstDistribucion;
+	}
+	public Distribucion getDistribucionSelected() {
+		return distribucionSelected;
+	}
+	public void setDistribucionSelected(Distribucion distribucionSelected) {
+		this.distribucionSelected = distribucionSelected;
+	}
+	public List<Area> getLstArea() {
+		return lstArea;
+	}
+	public void setLstArea(List<Area> lstArea) {
+		this.lstArea = lstArea;
+	}
+	public AreaService getAreaService() {
+		return areaService;
+	}
+	public void setAreaService(AreaService areaService) {
+		this.areaService = areaService;
+	}
+	public DistribucionService getDistribucionService() {
+		return distribucionService;
+	}
+	public void setDistribucionService(DistribucionService distribucionService) {
+		this.distribucionService = distribucionService;
 	}
 	
 }

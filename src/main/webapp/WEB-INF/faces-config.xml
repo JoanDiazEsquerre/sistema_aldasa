@@ -733,6 +733,10 @@
 			<property-name>tipoDocumentoService</property-name>
 			<value>#{tipoDocumentoService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>imagenService</property-name>
+			<value>#{imagenService}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>
@@ -764,6 +768,14 @@
 		<managed-property>
 			<property-name>navegacionBean</property-name>
 			<value>#{navegacionBean}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>areaService</property-name>
+			<value>#{areaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>distribucionService</property-name>
+			<value>#{distribucionService}</value>
 		</managed-property>
 	</managed-bean>
 		

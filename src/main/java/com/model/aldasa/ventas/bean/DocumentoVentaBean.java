@@ -3,6 +3,10 @@ package com.model.aldasa.ventas.bean;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -26,6 +30,7 @@ import org.primefaces.event.CellEditEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
+import org.primefaces.model.file.UploadedFile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +42,7 @@ import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
 import com.model.aldasa.entity.Empleado;
+import com.model.aldasa.entity.Imagen;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Prepago;
@@ -55,6 +61,7 @@ import com.model.aldasa.service.ContratoService;
 import com.model.aldasa.service.CuotaService;
 import com.model.aldasa.service.DetalleDocumentoVentaService;
 import com.model.aldasa.service.DocumentoVentaService;
+import com.model.aldasa.service.ImagenService;
 import com.model.aldasa.service.ManzanaService;
 import com.model.aldasa.service.PrepagoService;
 import com.model.aldasa.service.ProductoService;
@@ -108,6 +115,9 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	
 	@ManagedProperty(value = "#{tipoDocumentoService}")
 	private TipoDocumentoService tipoDocumentoService;
+	
+	@ManagedProperty(value = "#{imagenService}")
+	private ImagenService imagenService;
 	
 	private boolean estado = true;
 
@@ -180,9 +190,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	
 	private BigDecimal deudaActualSinInteres = BigDecimal.ZERO;
 	private BigDecimal deudaActualConInteres = BigDecimal.ZERO;
-	
 	private BigDecimal montoPrepago = BigDecimal.ZERO;
-
 	
 	private String tituloDialog;
 	
@@ -190,7 +198,12 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	
 	private Map<String, Object> parametros;
     private DataSourceDocumentoVenta dt; 
-
+    
+    private UploadedFile file1;
+    private UploadedFile file2;
+    private UploadedFile file3;
+    private UploadedFile file4;
+    private UploadedFile file5;
 
 	SimpleDateFormat sdf = new SimpleDateFormat("dd 'de'  MMMMM 'del' yyyy");
 	SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
@@ -461,6 +474,12 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 			}
 		}
 		
+		deudaActualSinInteres= BigDecimal.ZERO;
+		for(Cuota c:lstCuotaPagadas) {
+			deudaActualSinInteres = deudaActualSinInteres.add(c.getCuotaTotal());
+		}
+		deudaActualSinInteres = contratoPendienteSelected.getMontoVenta().subtract(deudaActualSinInteres);
+		
 	}
 	
 	
@@ -670,6 +689,11 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 			return;
 		}
 		
+		if(file1 == null) {
+			addErrorMessage("Seleccione una imagen (voucher)");
+			return;
+		}
+		
 		if(clienteSelected==null) {
 			Cliente cliente = new Cliente();
 			
@@ -784,6 +808,8 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 			calcularTotales();
 			addInfoMessage("Se guardó el documento correctamente.");
 			
+			subirImagenes(documento.getId() + "");
+			
 			
 		}else {
 			addErrorMessage("No se puede guardar el documento."); 
@@ -791,6 +817,98 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 		}
 		
 	}
+	
+	public void subirImagenes(String idDocumento) {
+		
+		if(file1 != null) {
+			String rename = idDocumento +"_1" + "." + getExtension(file1.getFileName());
+			Imagen registroImagen = new Imagen();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-DOCUMENTO-VENTA");
+			imagenService.save(registroImagen);
+			
+            subirArchivo(rename, file1);
+		}
+		if(file2 != null) {
+			String rename = idDocumento +"_2" + "." + getExtension(file2.getFileName());
+			Imagen registroImagen = new Imagen();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-DOCUMENTO-VENTA");
+			imagenService.save(registroImagen);
+			
+            subirArchivo(rename, file2);
+		}
+		if(file3 != null) {
+			String rename = idDocumento +"_3" + "." + getExtension(file3.getFileName());
+			Imagen registroImagen = new Imagen();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-DOCUMENTO-VENTA");
+			imagenService.save(registroImagen);
+			
+            subirArchivo(rename, file3);
+		}
+		if(file4 != null) {
+			String rename = idDocumento +"_4" + "." + getExtension(file4.getFileName());
+			Imagen registroImagen = new Imagen();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-DOCUMENTO-VENTA");
+			imagenService.save(registroImagen);
+			
+            subirArchivo(rename, file4);
+		}
+		if(file5 != null) {
+			String rename = idDocumento +"_5" + "." + getExtension(file5.getFileName());
+			Imagen registroImagen = new Imagen();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-DOCUMENTO-VENTA");
+			imagenService.save(registroImagen);
+			
+            subirArchivo(rename, file5);
+		}
+	}
+	
+	public void subirArchivo(String nombre, UploadedFile file) {
+//      File result = new File("/home/imagen/IMG-DOCUMENTO-VENTA/" + nombre);
+      File result = new File("C:\\IMG-DOCUMENTO-VENTA\\" + nombre);
+
+      try {
+
+          FileOutputStream fileOutputStream = new FileOutputStream(result);
+
+          byte[] buffer = new byte[1024];
+
+          int bulk;
+
+          // Here you get uploaded picture bytes, while debugging you can see that 34818
+          InputStream inputStream = file.getInputStream();
+
+          while (true) {
+
+              bulk = inputStream.read(buffer);
+
+              if (bulk < 0) {
+
+                  break;
+
+              } //end of if
+
+              fileOutputStream.write(buffer, 0, bulk);
+              fileOutputStream.flush();
+
+          } //end fo while(true)
+
+          fileOutputStream.close();
+          inputStream.close();
+
+          FacesMessage msg = new FacesMessage("El archivo subió correctamente.");
+          FacesContext.getCurrentInstance().addMessage(null, msg);
+
+      } catch (IOException e) {
+          e.printStackTrace();
+          FacesMessage error = new FacesMessage("The files were not uploaded!");
+          FacesContext.getCurrentInstance().addMessage(null, error);
+      }
+  }
 	     
 	public void cancelarDocumentoVenta() {
 		ruc="";
@@ -1516,6 +1634,17 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
         };
     }
 	
+	public static String getExtension(String filename) {
+        int index = filename.lastIndexOf('.');
+        if (index == -1) {
+            return "";
+        } else {
+            return filename.substring(index + 1);
+        }
+    }
+	
+	
+	
 	public boolean isEstado() {
 		return estado;
 	}
@@ -2013,6 +2142,42 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	}
 	public void setProductoAdelanto(Producto productoAdelanto) {
 		this.productoAdelanto = productoAdelanto;
+	}
+	public UploadedFile getFile1() {
+		return file1;
+	}
+	public void setFile1(UploadedFile file1) {
+		this.file1 = file1;
+	}
+	public UploadedFile getFile2() {
+		return file2;
+	}
+	public void setFile2(UploadedFile file2) {
+		this.file2 = file2;
+	}
+	public UploadedFile getFile3() {
+		return file3;
+	}
+	public void setFile3(UploadedFile file3) {
+		this.file3 = file3;
+	}
+	public UploadedFile getFile4() {
+		return file4;
+	}
+	public void setFile4(UploadedFile file4) {
+		this.file4 = file4;
+	}
+	public UploadedFile getFile5() {
+		return file5;
+	}
+	public void setFile5(UploadedFile file5) {
+		this.file5 = file5;
+	}
+	public ImagenService getImagenService() {
+		return imagenService;
+	}
+	public void setImagenService(ImagenService imagenService) {
+		this.imagenService = imagenService;
 	}
 
 	

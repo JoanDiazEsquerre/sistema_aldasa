@@ -330,6 +330,15 @@
 								<p:commandButton value="Guardar" oncomplete="PF('saveDocumento').show()"   style="margin-left:50px" icon="pi pi-save"  />
 								<p:commandButton value="Cancelar" oncomplete="PF('cancelarDocumento').show()"   style="margin-left:50px" icon="pi pi-times"  />
 								
+								<h:panelGrid columns="1" width="100%">	
+						
+									<p:fileUpload value="#{prospeccionBean.file1}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
+									<p:fileUpload value="#{prospeccionBean.file2}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
+									<p:fileUpload value="#{prospeccionBean.file3}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
+									<p:fileUpload value="#{prospeccionBean.file4}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
+									<p:fileUpload value="#{prospeccionBean.file5}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>			  
+									
+								</h:panelGrid>
 							</p:row>
 
 						</h:panelGrid>
@@ -618,7 +627,7 @@
 					</p:column>
 				
 					<p:column headerText="Cuota SI" filterMatchMode="contains" >
-						<h:outputText  value="#{cuotaContrato.cuotaSI-cuotaContrato.adelanto}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
+						<h:outputText  value="#{cuotaContrato.nroCuota eq 0 ? cuotaContrato.cuotaSI : cuotaContrato.cuotaSI-cuotaContrato.adelanto}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
 							<f:convertNumber type="currency" currencySymbol=""/>
 						</h:outputText>
 					</p:column>
@@ -630,7 +639,7 @@
 					</p:column>
 					
 					<p:column headerText="Cuota Total" filterMatchMode="contains" >
-						<h:outputText value="#{cuotaContrato.cuotaTotal-cuotaContrato.adelanto}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
+						<h:outputText value="#{cuotaContrato.nroCuota eq 0 ? cuotaContrato.cuotaSI : cuotaContrato.cuotaTotal-cuotaContrato.adelanto}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
 							<f:convertNumber type="currency" currencySymbol=""/>
 						</h:outputText>
 					</p:column>
