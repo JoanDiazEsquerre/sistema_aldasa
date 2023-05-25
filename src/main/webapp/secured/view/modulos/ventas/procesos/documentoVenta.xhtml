@@ -7,7 +7,7 @@
 	xmlns:f="http://java.sun.com/jsf/core">
 
 
-	<h:form id="form">
+	<h:form id="form" enctype="multipart/form-data">
 		<p:growl id="msgs" showDetail="true"/>
 		<h2 style="color: #007d4c;">VENTAS > DOCUMENTO DE VENTA</h2>
 		<p:tabView id="tabView">
@@ -104,7 +104,8 @@
 				</p:dataTable>
 				
 				<p:contextMenu id="menuTableDoc" for="idTableListDoc" >
-		            <p:menuitem value="Anular" icon="pi pi-trash" oncomplete="PF('anulaDocumento').show()"  />		        
+		            <p:menuitem value="Anular" icon="pi pi-trash" oncomplete="PF('anulaDocumento').show()"  />
+		            <p:menuitem value="Ver Voucher" icon="pi pi-image" action="#{documentoVentaBean.verVoucher()}"  update=":dialogVoucherDocumento" />	
 		        </p:contextMenu>
 		
 				
@@ -327,18 +328,19 @@
 									<p:inputText id="txt_observacion" style="width:450px;" label="" value="#{documentoVentaBean.observacion}" maxlength="200" />
 								</p:column>
 								
-								<p:commandButton value="Guardar" oncomplete="PF('saveDocumento').show()"   style="margin-left:50px" icon="pi pi-save"  />
+								<p:commandButton value="Guardar" oncomplete="PF('saveDocumento').show()" styleClass="mt-3 ui-button-outlined block"  style="margin-left:50px" icon="pi pi-save"  />
 								<p:commandButton value="Cancelar" oncomplete="PF('cancelarDocumento').show()"   style="margin-left:50px" icon="pi pi-times"  />
 								
 								<h:panelGrid columns="1" width="100%">	
-						
-									<p:fileUpload value="#{prospeccionBean.file1}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
-									<p:fileUpload value="#{prospeccionBean.file2}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
-									<p:fileUpload value="#{prospeccionBean.file3}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
-									<p:fileUpload value="#{prospeccionBean.file4}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
-									<p:fileUpload value="#{prospeccionBean.file5}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>			  
+									
+									<p:fileUpload value="#{documentoVentaBean.file1}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									<p:fileUpload value="#{documentoVentaBean.file2}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>			  
+									<p:fileUpload value="#{documentoVentaBean.file3}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>			  
+									<p:fileUpload value="#{documentoVentaBean.file4}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>			  
+									<p:fileUpload value="#{documentoVentaBean.file5}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>			  
 									
 								</h:panelGrid>
+								
 							</p:row>
 
 						</h:panelGrid>
@@ -785,6 +787,40 @@
 		</h:form>
 	</p:dialog>
 	
+	<p:dialog modal="true" height="600px" dynamic="true" closeOnEscape="true" id="dialogVoucherDocumento" header="VOUCHER DE DOCUMENTOS" widgetVar="voucherDocumentoDialog" resizable="false" closable="true"
+		appendTo="@(body)"  width="50%">
+		<h:form id="formVoucherDocumentoDialog">
+		
+			<h:panelGrid style="width:100%" columns="5" > 
+			
+				<p:commandButton value="VOUCHER 1" update=":formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen1 eq ''}" >
+					<f:setPropertyActionListener value="#{documentoVentaBean.imagen1}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
+				</p:commandButton>
+			
+				<p:commandButton value="VOUCHER 2" update=":formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen2 eq ''}">
+					<f:setPropertyActionListener value="#{documentoVentaBean.imagen2}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
+				</p:commandButton>
+			
+				<p:commandButton value="VOUCHER 3" update=":formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen3 eq ''}">
+					<f:setPropertyActionListener value="#{documentoVentaBean.imagen3}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
+				</p:commandButton>
+			
+				<p:commandButton value="VOUCHER 4" update=":formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen4 eq ''}">
+					<f:setPropertyActionListener value="#{documentoVentaBean.imagen4}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 5" update=":formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen5 eq ''}">
+					<f:setPropertyActionListener value="#{documentoVentaBean.imagen5}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
+				</p:commandButton>
+	
+			</h:panelGrid>
+			
+			<p:graphicImage width="400"  value="#{loadImageDocumentoBean.image}" id="imagenLoad" cache="false"/>
+			
+			
+		</h:form>
+	</p:dialog>
+	
 	<p:confirmDialog id="saveDocumento" message="¿Está seguro de guardar el documento de venta?" header="Confirmación"
                       severity="alert" widgetVar="saveDocumento" appendTo="@(body)">
         <h:form >
@@ -816,6 +852,7 @@
             <p:commandButton value="NO" oncomplete="PF('anulaDocumento').hide()"/>
         </h:form>
     </p:confirmDialog>
+    
 	
 
 </ui:composition>

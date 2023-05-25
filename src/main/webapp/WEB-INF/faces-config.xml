@@ -737,6 +737,10 @@
 			<property-name>imagenService</property-name>
 			<value>#{imagenService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>loadImageDocumentoBean</property-name>
+			<value>#{loadImageDocumentoBean}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>
@@ -777,6 +781,12 @@
 			<property-name>distribucionService</property-name>
 			<value>#{distribucionService}</value>
 		</managed-property>
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>loadImageDocumentoBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.ventas.bean.LoadImageDocumentoBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope> 
 	</managed-bean>
 		
 </faces-config>

@@ -9,7 +9,7 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">REPORTE > REPORTE DE ASISTENCIA</h2>
-		<h:panelGrid id="grid" columns="9" width="30%">
+		<h:panelGrid id="grid" columns="8" width="30%">
 			
 			<h:outputLabel value="Empleado: " style="text-align:right"/>
 			<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{reporteAsistenciaBean.empleadoSelected}" converter="#{reporteAsistenciaBean.conversorEmpleado}" id="assessor" completeMethod="#{reporteAsistenciaBean.completeEmpleado}"  
@@ -35,7 +35,7 @@
 				<p:ajax update="idTableDet, grid" />
 			</p:datePicker>
 			
-			<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{reporteAsistenciaBean.procesarExcel}"
+			<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{reporteAsistenciaBean.procesarExcel()}"
                          icon="pi pi-file-excel" styleClass="mr-2">
             <p:fileDownload value="#{reporteAsistenciaBean.fileDes}"/> 
       		</p:commandButton>

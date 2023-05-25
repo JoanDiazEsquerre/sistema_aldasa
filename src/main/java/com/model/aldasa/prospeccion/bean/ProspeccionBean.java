@@ -136,7 +136,6 @@ public class ProspeccionBean extends BaseBean{
 	private boolean mostrarBotonCambioEstado;
 	
     private UploadedFile file;
-    private StreamedContent fileImg;
     
 	
 	private List<Prospect> lstProspect;
@@ -1483,12 +1482,6 @@ public class ProspeccionBean extends BaseBean{
 	}
 	public void setRutaImagen(String rutaImagen) {
 		this.rutaImagen = rutaImagen;
-	}
-	public StreamedContent getFileImg() {
-		return fileImg;
-	}
-	public void setFileImg(StreamedContent fileImg) {
-		this.fileImg = fileImg;
 	}
 
 }

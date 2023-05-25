@@ -1,8 +1,5 @@
 package com.model.aldasa.ventas.bean;
 
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,6 +23,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -41,17 +39,11 @@ import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
-import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Imagen;
-import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Prepago;
 import com.model.aldasa.entity.Producto;
-import com.model.aldasa.entity.Project;
-import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.SerieDocumento;
-import com.model.aldasa.entity.Simulador;
-import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.TipoDocumento;
 import com.model.aldasa.entity.Voucher;
 import com.model.aldasa.general.bean.NavegacionBean;
@@ -62,21 +54,19 @@ import com.model.aldasa.service.CuotaService;
 import com.model.aldasa.service.DetalleDocumentoVentaService;
 import com.model.aldasa.service.DocumentoVentaService;
 import com.model.aldasa.service.ImagenService;
-import com.model.aldasa.service.ManzanaService;
 import com.model.aldasa.service.PrepagoService;
 import com.model.aldasa.service.ProductoService;
 import com.model.aldasa.service.SerieDocumentoService;
 import com.model.aldasa.service.TipoDocumentoService;
 import com.model.aldasa.service.VoucherService;
 import com.model.aldasa.util.BaseBean;
-import com.model.aldasa.util.EstadoLote;
 import com.model.aldasa.util.NumeroALetra;
 import com.model.aldasa.util.TipoProductoType;
 import com.model.aldasa.ventas.jrdatasource.DataSourceDocumentoVenta;
 
 @ManagedBean
 @ViewScoped
-public class DocumentoVentaBean extends BaseBean implements Serializable{
+public class DocumentoVentaBean extends BaseBean {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -118,6 +108,9 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	
 	@ManagedProperty(value = "#{imagenService}")
 	private ImagenService imagenService;
+	
+	@ManagedProperty(value = "#{loadImageDocumentoBean}")
+	private LoadImageDocumentoBean loadImageDocumentoBean;
 	
 	private boolean estado = true;
 
@@ -193,6 +186,9 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	private BigDecimal montoPrepago = BigDecimal.ZERO;
 	
 	private String tituloDialog;
+	private String imagen1, imagen2, imagen3, imagen4, imagen5;
+
+
 	
 	private NumeroALetra numeroALetra = new  NumeroALetra();
 	
@@ -230,7 +226,39 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 
 	} 
 	
-	
+	public void verVoucher() {
+		
+		loadImageDocumentoBean.setNombreArchivo("0.jpg");
+		imagen1 = "";
+		imagen2 = "";
+		imagen3 = "";
+		imagen4 = "";
+		imagen5 = "";
+		
+		String nombreBusqueda = "%"+documentoVentaSelected.getId() +"_%";
+		
+		List<Imagen> lstImagen = imagenService.findByNombreLikeAndEstado(nombreBusqueda, true);
+		int contador = 1;
+		for(Imagen i:lstImagen) {
+			if(contador==1) {
+				imagen1 = i.getNombre();
+			}
+			if(contador==2) {
+				imagen2 = i.getNombre();
+			}
+			if(contador==3) {
+				imagen3 = i.getNombre();
+			}
+			if(contador==4) {
+				imagen4 = i.getNombre();
+			}
+			if(contador==5) {
+				imagen5 = i.getNombre();
+			}
+			contador ++;
+		}
+		PrimeFaces.current().executeScript("PF('voucherDocumentoDialog').show();");
+	}
 	
 	
 	public void simularPrepago() {
@@ -656,6 +684,17 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 		documento.getRazonSocial();
 	}
 	
+	public String extension(String filename) {
+		String valor = "" ;
+		int index = filename.lastIndexOf('.');
+		if (index == -1) {
+			return valor;
+		} else {
+			valor = filename.substring(index + 1);
+		}
+		return valor;
+	}
+	
 	public void saveDocumentoVenta() {
 		
 		
@@ -825,6 +864,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 			Imagen registroImagen = new Imagen();
 			registroImagen.setNombre(rename);
 			registroImagen.setCarpeta("IMG-DOCUMENTO-VENTA");
+			registroImagen.setEstado(true);
 			imagenService.save(registroImagen);
 			
             subirArchivo(rename, file1);
@@ -834,6 +874,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 			Imagen registroImagen = new Imagen();
 			registroImagen.setNombre(rename);
 			registroImagen.setCarpeta("IMG-DOCUMENTO-VENTA");
+			registroImagen.setEstado(true);
 			imagenService.save(registroImagen);
 			
             subirArchivo(rename, file2);
@@ -843,6 +884,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 			Imagen registroImagen = new Imagen();
 			registroImagen.setNombre(rename);
 			registroImagen.setCarpeta("IMG-DOCUMENTO-VENTA");
+			registroImagen.setEstado(true);
 			imagenService.save(registroImagen);
 			
             subirArchivo(rename, file3);
@@ -852,6 +894,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 			Imagen registroImagen = new Imagen();
 			registroImagen.setNombre(rename);
 			registroImagen.setCarpeta("IMG-DOCUMENTO-VENTA");
+			registroImagen.setEstado(true);
 			imagenService.save(registroImagen);
 			
             subirArchivo(rename, file4);
@@ -861,6 +904,7 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 			Imagen registroImagen = new Imagen();
 			registroImagen.setNombre(rename);
 			registroImagen.setCarpeta("IMG-DOCUMENTO-VENTA");
+			registroImagen.setEstado(true);
 			imagenService.save(registroImagen);
 			
             subirArchivo(rename, file5);
@@ -2179,7 +2223,42 @@ public class DocumentoVentaBean extends BaseBean implements Serializable{
 	public void setImagenService(ImagenService imagenService) {
 		this.imagenService = imagenService;
 	}
-
+	public String getImagen1() {
+		return imagen1;
+	}
+	public void setImagen1(String imagen1) {
+		this.imagen1 = imagen1;
+	}
+	public String getImagen2() {
+		return imagen2;
+	}
+	public void setImagen2(String imagen2) {
+		this.imagen2 = imagen2;
+	}
+	public String getImagen3() {
+		return imagen3;
+	}
+	public void setImagen3(String imagen3) {
+		this.imagen3 = imagen3;
+	}
+	public String getImagen4() {
+		return imagen4;
+	}
+	public void setImagen4(String imagen4) {
+		this.imagen4 = imagen4;
+	}
+	public String getImagen5() {
+		return imagen5;
+	}
+	public void setImagen5(String imagen5) {
+		this.imagen5 = imagen5;
+	}
+	public LoadImageDocumentoBean getLoadImageDocumentoBean() {
+		return loadImageDocumentoBean;
+	}
+	public void setLoadImageDocumentoBean(LoadImageDocumentoBean loadImageDocumentoBean) {
+		this.loadImageDocumentoBean = loadImageDocumentoBean;
+	}
 	
 	
 
