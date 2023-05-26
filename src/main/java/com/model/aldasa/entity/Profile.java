@@ -14,6 +14,7 @@ public class Profile {
 	
 	private String name;
 	private boolean status;
+	private String permiso;
 	
 	
 	
@@ -35,10 +36,12 @@ public class Profile {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-	
-	
-	
-	
+	public String getPermiso() {
+		return permiso;
+	}
+	public void setPermiso(String permiso) {
+		this.permiso = permiso;
+	}
 	@Override
     public boolean equals(Object other) {
         return (other instanceof Profile) && (id != null)

@@ -144,6 +144,10 @@
 			<property-name>profileService</property-name>
 			<value>#{profileService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>moduloSistemaService</property-name>
+			<value>#{moduloSistemaService}</value>
+		</managed-property>
 	</managed-bean>
 
 	<managed-bean>

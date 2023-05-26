@@ -1,6 +1,7 @@
 package com.model.aldasa.general.bean;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -11,6 +12,7 @@ import javax.faces.context.FacesContext;
 import org.apache.commons.fileupload.RequestContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.model.aldasa.entity.ModuloSistema;
 import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.service.UsuarioService;
@@ -47,31 +49,31 @@ public class NavegacionBean implements Serializable  {
 					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato, subMenuDocumentoVentas, 
 					subMenuDocumentoVenta, subMenuInventario;
 	
-	private int[] permisoProspectos= {idAdministrador,idSupervisor,idAsesor};
-	private int[] permisoProspeccion= {idAdministrador,idSupervisor,idAsesor};
-	private int[] permisoAgenda= {idAdministrador,idSupervisor,idAsesor};
-	private int[] permisoSimulador= {idAdministrador,idSupervisor,idAsesor};
-	private int[] permisoPersonas= {idAdministrador,idAsistentenAdmin, idAsistenteVenta};
-	private int[] permisoUsuarios= {idAdministrador, idAsistentenAdmin, idAsistenteVenta};
-	private int[] permisoPerfiles= {idAdministrador};
-	private int[] permisoProyectos= {idAdministrador,idAsistentenAdmin,idAsistenteVenta};
-	private int[] permisoEquipos= {idAdministrador};
-	private int[] permisoCambiarConstrasenia= {idAdministrador,idSupervisor,idAsesor, idAsistentenAdmin,idAsistenteVenta,idRecursosHumanos, idContabilidad};
-	private int[] permisoReporteAcciones= {idAdministrador,idSupervisor,idAsesor,idAsistentenAdmin, idAsistenteVenta};
-	private int[] permisoManzanas= {idAdministrador,idAsistentenAdmin,idAsistenteVenta};
-	private int[] permisoLotes= {idAdministrador,idSupervisor,idAsesor,idAsistentenAdmin,idAsistenteVenta};
-	private int[] permisoComisiones= {idAdministrador};
-	private int[] permisoComision= {idAdministrador};
-	private int[] permisoEmpleado= {idAdministrador, idRecursosHumanos};
-	private int[] permisoReporteLotes= {idAdministrador};
-	private int[] permisoAsistencia= {idAdministrador, idAsistencia, idRecursosHumanos};
-	private int[] permisoReporteAsistencia= {idAdministrador, idRecursosHumanos};
-	private int[] permisoRequerimientoSeparacion= {idAdministrador,idAsistentenAdmin,idAsistenteVenta,idContabilidad};
-	private int[] permisoRankingVentas= {idAdministrador};
-	private int[] permisoContrato= {idAdministrador, idAsistentenAdmin, idAsistenteVenta};
-	private int[] permisoDocumentoVentas= {idAdministrador};
-	private int[] permisoDocumentoVenta= {idAdministrador};
-	private int[] permisoInventario= {idAdministrador};
+	private int[] permisoProspectos;
+	private int[] permisoProspeccion;
+	private int[] permisoAgenda;
+	private int[] permisoSimulador;
+	private int[] permisoPersonas;
+	private int[] permisoUsuarios;
+	private int[] permisoPerfiles;
+	private int[] permisoProyectos;
+	private int[] permisoEquipos;
+	private int[] permisoCambiarConstrasenia;
+	private int[] permisoReporteAcciones;
+	private int[] permisoManzanas;
+	private int[] permisoLotes;
+	private int[] permisoComisiones;
+	private int[] permisoComision;
+	private int[] permisoEmpleado;
+	private int[] permisoReporteLotes;
+	private int[] permisoAsistencia;
+	private int[] permisoReporteAsistencia;
+	private int[] permisoRequerimientoSeparacion;
+	private int[] permisoRankingVentas;
+	private int[] permisoContrato;
+	private int[] permisoReporteDocumentoVentas;
+	private int[] permisoDocumentoVenta;
+	private int[] permisoInventario;
 
 	@PostConstruct
 	public void init() {
@@ -81,10 +83,68 @@ public class NavegacionBean implements Serializable  {
 			return;
 			
 		}
+		
 		ruta = "modulos/general/mantenimientos/inicio.xhtml";
 		username = SecurityContextHolder.getContext().getAuthentication().getName();
 		usuarioLogin = usuarioService.findByUsername(username);
+		
+		permisoProspectos= obtenerPermisosPorPerfil(1);
+		permisoProspeccion= obtenerPermisosPorPerfil(2);
+		permisoAgenda= obtenerPermisosPorPerfil(3);
+		permisoSimulador= obtenerPermisosPorPerfil(4);
+		permisoRequerimientoSeparacion= obtenerPermisosPorPerfil(5);
+		permisoProyectos= obtenerPermisosPorPerfil(6);
+		permisoManzanas= obtenerPermisosPorPerfil(7);
+		permisoLotes= obtenerPermisosPorPerfil(8);
+		permisoComisiones= obtenerPermisosPorPerfil(9);
+		permisoContrato= obtenerPermisosPorPerfil(10);
+		permisoRankingVentas= obtenerPermisosPorPerfil(11);
+		permisoDocumentoVenta= obtenerPermisosPorPerfil(12);
+		permisoPersonas= obtenerPermisosPorPerfil(13);
+		permisoUsuarios= obtenerPermisosPorPerfil(14);
+		permisoPerfiles= obtenerPermisosPorPerfil(15);
+		permisoEquipos= obtenerPermisosPorPerfil(16);
+		permisoEmpleado= obtenerPermisosPorPerfil(17);
+		permisoComision= obtenerPermisosPorPerfil(18);
+		permisoCambiarConstrasenia= obtenerPermisosPorPerfil(19);
+		permisoReporteAcciones= obtenerPermisosPorPerfil(20);
+		permisoReporteLotes= obtenerPermisosPorPerfil(21);
+		permisoReporteAsistencia= obtenerPermisosPorPerfil(22);
+		permisoReporteDocumentoVentas= obtenerPermisosPorPerfil(23);
+		permisoAsistencia= obtenerPermisosPorPerfil(24);
+		permisoInventario= obtenerPermisosPorPerfil(25);
+		
 		permisoPantallas();
+	}
+	
+	public int[] obtenerPermisosPorPerfil(int idModuloSistema) {
+		int[] ids= {};
+		
+		if(!usuarioLogin.getProfile().getPermiso().equals("")) {
+			String[] idPermisos = usuarioLogin.getProfile().getPermiso().split(",");
+			int recorre=0;
+			for(String s : idPermisos) {
+				String modulo = idModuloSistema+"";
+				if(modulo.equals(s)) {
+					recorre++;
+				}
+			}
+			
+			if(recorre>0) {
+				ids = new int[recorre];
+				recorre = 0;
+				for(String s : idPermisos) {
+					String modulo = idModuloSistema+"";
+					if(modulo.equals(s)) {
+						ids[recorre]= usuarioLogin.getProfile().getId();
+						recorre++;
+					}
+				}
+			}
+			
+		}
+		
+		return ids;
 	}
 	
 
@@ -115,7 +175,7 @@ public class NavegacionBean implements Serializable  {
 		
 		//******************************************************************************
 		subMenuRankingVentas= validaPermiso(permisoRankingVentas);
-		subMenuDocumentoVentas=validaPermiso(permisoDocumentoVentas);
+		subMenuDocumentoVentas=validaPermiso(permisoReporteDocumentoVentas);
 				
 		if(subMenuRankingVentas || subMenuDocumentoVentas){
 			menuVentas=true;
@@ -665,12 +725,15 @@ public class NavegacionBean implements Serializable  {
 	public void setSubMenuDocumentoVentas(boolean subMenuDocumentoVentas) {
 		this.subMenuDocumentoVentas = subMenuDocumentoVentas;
 	}
-	public int[] getPermisoDocumentoVentas() {
-		return permisoDocumentoVentas;
+	
+	public int[] getPermisoReporteDocumentoVentas() {
+		return permisoReporteDocumentoVentas;
 	}
-	public void setPermisoDocumentoVentas(int[] permisoDocumentoVentas) {
-		this.permisoDocumentoVentas = permisoDocumentoVentas;
+
+	public void setPermisoReporteDocumentoVentas(int[] permisoReporteDocumentoVentas) {
+		this.permisoReporteDocumentoVentas = permisoReporteDocumentoVentas;
 	}
+
 	public boolean isSubMenuDocumentoVenta() {
 		return subMenuDocumentoVenta;
 	}

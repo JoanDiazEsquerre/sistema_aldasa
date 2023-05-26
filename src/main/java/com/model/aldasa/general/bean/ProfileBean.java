@@ -1,15 +1,22 @@
 package com.model.aldasa.general.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -19,28 +26,80 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.model.aldasa.entity.ModuloSistema;
 import com.model.aldasa.entity.Profile;
+import com.model.aldasa.service.ModuloSistemaService;
 import com.model.aldasa.service.ProfileService;
+import com.model.aldasa.util.BaseBean;
 
 @ManagedBean
 @ViewScoped
-public class ProfileBean  implements Serializable {
+public class ProfileBean extends BaseBean implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
 	@ManagedProperty(value = "#{profileService}")
 	private ProfileService profileService;
 	
+	@ManagedProperty(value = "#{moduloSistemaService}")
+	private ModuloSistemaService moduloSistemaService;
+	
 	private LazyDataModel<Profile> lstProfileLazy;
 	
+	private List<ModuloSistema> lstModulos;
+	private List<ModuloSistema> lstModulosSelected;
+	
 	private Profile profileSelected;
+	private ModuloSistema moduloSelected;
 	private boolean estado = true;
 	
 	private String tituloDialog;
+	private String nuevoPermiso="";
 	
 	@PostConstruct
 	public void init() {
 		iniciarLazy();
+		lstModulos = moduloSistemaService.findByEstadoOrderByNombreAsc(true);
+	}
+	
+	public void agregarPermiso() {
+		if(moduloSelected == null) {
+			addErrorMessage("Debe seleccionar un modulo.");
+			return;
+		}
+		
+		if(!lstModulosSelected.isEmpty()) {
+			for(ModuloSistema ms: lstModulosSelected) {
+				if(ms.getId().equals(moduloSelected.getId())) {
+					addErrorMessage("Ya tiene asignado el modulo: "+moduloSelected.getNombre()); 
+					return;
+				}
+			}	
+		}
+		
+		lstModulosSelected.add(moduloSelected);	
+		nuevoPermiso="";
+		lstModulosSelected.stream().sorted(Comparator.comparing(ModuloSistema::getNombre)).collect(Collectors.toList()).forEach(obj->{
+			nuevoPermiso = nuevoPermiso+obj.getId()+",";
+		});
+		
+		nuevoPermiso = nuevoPermiso.substring(0, nuevoPermiso.length() - 1);
+		profileSelected.setPermiso(nuevoPermiso);
+		profileService.save(profileSelected);
+		addInfoMessage("Se agregó el permiso correctamente.");
+		
+	}
+
+	public void verPermisos() {
+		moduloSelected=null;
+		lstModulosSelected = new ArrayList<>();
+		if(!profileSelected.getPermiso().equals("")) {
+			String[] idPermisos = profileSelected.getPermiso().split(",");
+			for(String s : idPermisos) {
+				Optional<ModuloSistema> m = moduloSistemaService.findById(Integer.parseInt(s));
+				lstModulosSelected.add(m.get());
+			}
+		}
 	}
 	
 	public void newProfile() {
@@ -143,6 +202,33 @@ public class ProfileBean  implements Serializable {
 		};
 	}
 
+	public Converter getConversorModuloSistema() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	ModuloSistema c = null;
+                    for (ModuloSistema si : lstModulos) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((ModuloSistema) value).getId() + "";
+                }
+            }
+        };
+    }
 	
 	public ProfileService getProfileService() {
 		return profileService;
@@ -175,7 +261,34 @@ public class ProfileBean  implements Serializable {
 	public void setLstProfileLazy(LazyDataModel<Profile> lstProfileLazy) {
 		this.lstProfileLazy = lstProfileLazy;
 	}
-	
-	
-	
+	public List<ModuloSistema> getLstModulos() {
+		return lstModulos;
+	}
+	public void setLstModulos(List<ModuloSistema> lstModulos) {
+		this.lstModulos = lstModulos;
+	}
+	public ModuloSistema getModuloSelected() {
+		return moduloSelected;
+	}
+	public void setModuloSelected(ModuloSistema moduloSelected) {
+		this.moduloSelected = moduloSelected;
+	}
+	public ModuloSistemaService getModuloSistemaService() {
+		return moduloSistemaService;
+	}
+	public void setModuloSistemaService(ModuloSistemaService moduloSistemaService) {
+		this.moduloSistemaService = moduloSistemaService;
+	}
+	public List<ModuloSistema> getLstModulosSelected() {
+		return lstModulosSelected;
+	}
+	public void setLstModulosSelected(List<ModuloSistema> lstModulosSelected) {
+		this.lstModulosSelected = lstModulosSelected;
+	}
+	public String getNuevoPermiso() {
+		return nuevoPermiso;
+	}
+	public void setNuevoPermiso(String nuevoPermiso) {
+		this.nuevoPermiso = nuevoPermiso;
+	}
 }
