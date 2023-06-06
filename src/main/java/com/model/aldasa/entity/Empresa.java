@@ -1,5 +1,6 @@
 package com.model.aldasa.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,6 +18,12 @@ public class Empresa {
 	private String nombre;
 	
 	private boolean estado;
+	
+	@Column(name="rutavoucher")
+	private String rutaVoucher;
+
+	@Column(name="rutadocumentoventa")
+	private String rutaDocumentoVenta;
 
 	
 	
@@ -38,6 +45,18 @@ public class Empresa {
 	}
 	public void setEstado(boolean estado) {
 		this.estado = estado;
+	}
+	public String getRutaVoucher() {
+		return rutaVoucher;
+	}
+	public void setRutaVoucher(String rutaVoucher) {
+		this.rutaVoucher = rutaVoucher;
+	}
+	public String getRutaDocumentoVenta() {
+		return rutaDocumentoVenta;
+	}
+	public void setRutaDocumentoVenta(String rutaDocumentoVenta) {
+		this.rutaDocumentoVenta = rutaDocumentoVenta;
 	}
 	
 

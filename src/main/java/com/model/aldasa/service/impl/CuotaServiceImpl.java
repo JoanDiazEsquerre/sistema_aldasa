@@ -1,5 +1,6 @@
 package com.model.aldasa.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,6 +83,23 @@ public class CuotaServiceImpl implements CuotaService{
 		// TODO Auto-generated method stub
 		return cuotaRepository.findByPagoTotalAndEstadoAndContratoOrderById(pagoTotal, estado, contrato);
 	}
+
+	@Override
+	public Page<Cuota> findByPagoTotalAndEstadoAndFechaPagoBetween(String pagoTotal, boolean estado, Date fechaIni,
+			Date fechaFin, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return cuotaRepository.findByPagoTotalAndEstadoAndFechaPagoBetween(pagoTotal, estado, fechaIni, fechaFin, pageable);
+	}
+
+	@Override
+	public Page<Cuota> findByPagoTotalAndEstadoAndFechaPagoLessThan(String pagoTotal, boolean estado, Date fechaIni,
+			Pageable pageable) {
+		// TODO Auto-generated method stub
+		return cuotaRepository.findByPagoTotalAndEstadoAndFechaPagoLessThan(pagoTotal, estado, fechaIni, pageable);
+	}
+
+	
+
 
 	
 

@@ -78,4 +78,76 @@
 			
 		</h:form>
 	</p:dialog>	
+	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogCobranzaInicio" header="LISTA DE CUOTAS" widgetVar="inicioDialogCobranza" resizable="false" closable="true"
+		appendTo="@(body)"  width="80%">
+		<h:form id="formInicioDialogCobranza">
+			<p:selectOneButton value="#{inicioBean.busquedaCuota}"> 
+				<f:selectItem itemLabel="Por vencer" itemValue="#{true}" />
+				<f:selectItem itemLabel="Vencidos" itemValue="#{false}" />
+				<p:ajax update=":formInicioDialogCobranza:idTableCuota" />
+			</p:selectOneButton>
+			<p:dataTable var="cuota" id="idTableCuota" value="#{inicioBean.lstCuotaLazy}"  widgetVar="cuotaTable" rowIndexVar="row" paginator="true" rows="7" 
+			size="small" emptyMessage="No se encontraron cuotas." paginatorPosition="bottom" rowKey="#{cuota.id}"  selectionMode="single">
+	
+			<p:column headerText="Nro Cuota" style="text-align:center; width:60px">
+				<h:outputText value="#{cuota.nroCuota}" style="font-size: 14px;" />
+			</p:column>
+			
+			<p:column headerText="Proyecto" style="text-align:center; width:100px" >
+				<h:outputText value="#{cuota.contrato.lote.project.name}" />
+			</p:column>
+
+			<p:column headerText="Mz-Lt" style="text-align:center; width:60px">
+				<h:outputText value="#{cuota.contrato.lote.manzana.name} - #{cuota.contrato.lote.numberLote}" style="font-size: 14px;" />
+			</p:column>
+			
+			<p:column headerText="Cliente" sortBy="#{cuota.contrato.personVenta.surnames}" filterBy="#{cuota.contrato.personVenta.surnames}, #{cuota.contrato.personVenta.names}, #{cuota.contrato.personVenta.dni}" style="text-align:center; width:120px">
+				<h:outputText value="#{cuota.contrato.personVenta.surnames} #{cuota.contrato.personVenta.names}" style="font-size: 14px;" />
+			</p:column>
+			
+			<p:column headerText="DNI" sortBy="#{cuota.contrato.personVenta.dni}" filterBy="#{cuota.contrato.personVenta.dni}" style="text-align:center; width:120px">
+				<h:outputText value="#{cuota.contrato.personVenta.dni}" style="font-size: 14px;" />
+			</p:column>
+			
+			<p:column headerText="Fecha Pago" style="text-align:center; width:60px" sortBy="#{cuota.fechaPago}">
+				<h:outputText value="#{cuota.fechaPago}" style="font-size: 14px;">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column headerText="Cuota SI" style="text-align:center; width:60px">
+				<h:outputText value="#{cuota.cuotaSI}" style="font-size: 14px;" > 
+					<f:convertNumber type="currency" currencySymbol=""/>
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Interés" style="text-align:center; width:60px">
+				<h:outputText value="#{cuota.interes}" style="font-size: 14px;" > 
+					<f:convertNumber type="currency" currencySymbol=""/>
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Cuota Total" style="text-align:center; width:60px">
+				<h:outputText value="#{cuota.cuotaTotal}" style="font-size: 14px;" > 
+					<f:convertNumber type="currency" currencySymbol=""/>
+				</h:outputText>
+			</p:column>
+			
+			<p:column headerText="Adelanto" style="text-align:center; width:60px">
+				<h:outputText value="#{cuota.adelanto}" style="font-size: 14px;" > 
+					<f:convertNumber type="currency" currencySymbol=""/>
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Saldo" style="text-align:center; width:60px">
+				<h:outputText value="#{cuota.cuotaTotal - cuota.adelanto}" style="font-size: 14px;" > 
+					<f:convertNumber type="currency" currencySymbol=""/>
+				</h:outputText>
+			</p:column>
+			
+		</p:dataTable>
+						
+		</h:form>
+	</p:dialog>	
 </ui:composition>

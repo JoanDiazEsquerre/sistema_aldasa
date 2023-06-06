@@ -77,19 +77,19 @@
 							<p:menuitem value="Cambiar Contraseña" ajax="false" icon="pi pi-lock" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPasswordchangePage()}" rendered="#{navegacionBean.subMenuCambiarContrasenia}" />
 						</p:submenu>
 						
-						<p:submenu label="Reportes" rendered="#{navegacionBean.menuReporte}">
-							<p:menuitem value="Reporte Acciones"  icon="pi pi-upload" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoReporteProspeccionPage()}" rendered="#{navegacionBean.subMenuReporteAcciones}"/>
-							<p:menuitem value="Reporte Lotes"  icon="pi pi-upload" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoReporteLotesPage()}" rendered="#{navegacionBean.subMenuReporteLotes}"/>
-							<p:menuitem value="Reporte Asistencia"  icon="pi pi-upload" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getAsistenciaReporteAsistenciaPage()}" rendered="#{navegacionBean.subMenuReporteAsistencia}"/>
-			            	<p:menuitem value="Reporte Documento de Venta" ajax="false" icon="pi pi-upload" update=":contenedor" actionListener="#{navegacionBean.getVentasReporteDocumentoVentaPage()}" rendered="#{navegacionBean.subMenuDocumentoVenta}"/>
-						</p:submenu>
-						
 						<p:submenu label="Asistencia" rendered="#{navegacionBean.menuAsistencia}">
 							<p:menuitem value="Asistencia"  icon="pi pi-check-circle" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getAsistenciaAsistenciaPage()}" rendered="#{navegacionBean.subMenuAsistencia}"/>
 						</p:submenu>
 						
 						<p:submenu label="Almacén" rendered="#{navegacionBean.menuAlmacen}">
 							<p:menuitem value="Inventario"  icon="pi pi-wallet" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getAlmacenInventarioPage()}" rendered="#{navegacionBean.subMenuInventario}"/>
+						</p:submenu>
+						
+						<p:submenu label="Reportes" rendered="#{navegacionBean.menuReporte}">
+							<p:menuitem value="Reporte Acciones"  icon="pi pi-upload" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoReporteProspeccionPage()}" rendered="#{navegacionBean.subMenuReporteAcciones}"/>
+							<p:menuitem value="Reporte Lotes"  icon="pi pi-upload" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProcesoReporteLotesPage()}" rendered="#{navegacionBean.subMenuReporteLotes}"/>
+							<p:menuitem value="Reporte Asistencia"  icon="pi pi-upload" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getAsistenciaReporteAsistenciaPage()}" rendered="#{navegacionBean.subMenuReporteAsistencia}"/>
+			            	<p:menuitem value="Reporte Documento de Venta" ajax="false" icon="pi pi-upload" update=":contenedor" actionListener="#{navegacionBean.getVentasReporteDocumentoVentaPage()}" rendered="#{navegacionBean.subMenuDocumentoVenta}"/>
 						</p:submenu>
 						
 					</p:menu>

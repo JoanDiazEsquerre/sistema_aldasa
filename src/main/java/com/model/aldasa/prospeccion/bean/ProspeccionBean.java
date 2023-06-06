@@ -814,7 +814,8 @@ public class ProspeccionBean extends BaseBean{
 
 	public void subirArchivo(String nombre) {
 //        File result = new File("/home/imagen/voucher_separaciones/" + nombre);
-        File result = new File("C:\\IMG-ALDASA\\" + nombre);
+//        File result = new File("C:\\IMG-ALDASA\\" + nombre);
+        File result = new File(navegacionBean.getSucursalLogin().getEmpresa().getRutaVoucher() + nombre);
 
         try {
 

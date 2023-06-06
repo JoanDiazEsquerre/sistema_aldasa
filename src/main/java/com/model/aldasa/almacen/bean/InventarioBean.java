@@ -28,10 +28,12 @@ import com.model.aldasa.entity.Area;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.Distribucion;
 import com.model.aldasa.entity.Inventario;
+import com.model.aldasa.entity.InventarioBienes;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.AreaService;
 import com.model.aldasa.service.DistribucionService;
+import com.model.aldasa.service.InventarioBienesService;
 import com.model.aldasa.service.InventarioService;
 import com.model.aldasa.util.BaseBean;
 
@@ -53,21 +55,30 @@ public class InventarioBean extends BaseBean implements Serializable{
 	@ManagedProperty(value = "#{distribucionService}")
 	private DistribucionService distribucionService; 
 	
+	@ManagedProperty(value = "#{inventarioBienesService}")
+	private InventarioBienesService inventarioBienesService;
+	
 	private LazyDataModel<Inventario> lstInventarioLazy;
+	private LazyDataModel<InventarioBienes> lstInventarioBienesLazy;
+
 	private List<Distribucion> lstDistribucion = new ArrayList<>();
 	private List<Area> lstArea;
 
 	
 	private Boolean estado = true;
-	private String tituloDialog;
+	private String tituloDialog, tituloDialogInventario;
+	private String estadoInventarioBienes = "";
 	
 	private Inventario inventarioSelected;
+	private InventarioBienes inventarioBienesSelected;
+
 	private Distribucion distribucionSelected;
 	
 	@PostConstruct
 	public void init() {
 		iniciarLazy();
 		lstArea=areaService.findByEstado(true);
+		iniciarLazyInventarioBienes();
 	}
 	
 	public void editarDistribucion(Distribucion distribucion) {
@@ -145,8 +156,18 @@ public class InventarioBean extends BaseBean implements Serializable{
 		inventarioSelected.setSucursal(navegacionBean.getSucursalLogin());
 	}
 	
+	public void newInventarioBienes() {
+		tituloDialogInventario = "NUEVO ITEM INVENTARIO";
+		inventarioBienesSelected = new InventarioBienes();
+		
+	}
+	
 	public void updateInventario() {
 		tituloDialog = "MODIFICAR INVENTARIO";
+	}
+	
+	public void updateInventarioBienes() {
+		tituloDialogInventario = "MODIFICAR ITEM INVENTARIO";
 	}
 	
 	public void saveInventario() {
@@ -240,6 +261,71 @@ public class InventarioBean extends BaseBean implements Serializable{
 			}
 		};
 	}
+	
+	public void iniciarLazyInventarioBienes() {
+		lstInventarioBienesLazy = new LazyDataModel<InventarioBienes>() {
+			private List<InventarioBienes> datasource;
+
+			@Override
+			public void setRowIndex(int rowIndex) {
+				if (rowIndex == -1 || getPageSize() == 0) {
+					super.setRowIndex(-1);
+				} else {
+					super.setRowIndex(rowIndex % getPageSize());
+				}
+			}
+
+			@Override
+			public InventarioBienes getRowData(String rowKey) {
+				int intRowKey = Integer.parseInt(rowKey);
+				for (InventarioBienes inventarioBienes : datasource) {
+					if (inventarioBienes.getId() == intRowKey) {
+						return inventarioBienes;
+					}
+				}
+				return null;
+			}
+
+			@Override
+			public String getRowKey(InventarioBienes inventarioBienes) {
+				return String.valueOf(inventarioBienes.getId());
+			}
+
+			@Override
+			public List<InventarioBienes> load(int first, int pageSize, Map<String, SortMeta> sortBy,
+					Map<String, FilterMeta> filterBy) {
+
+				Sort sort = Sort.by("id").descending();
+				if (sortBy != null) {
+					for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
+						System.out.println(entry.getKey() + "/" + entry.getValue());
+						if (entry.getValue().getOrder().isAscending()) {
+							sort = Sort.by(entry.getKey()).descending();
+						} else {
+							sort = Sort.by(entry.getKey()).ascending();
+
+						}
+
+					}
+				}
+
+				Pageable pageable = PageRequest.of(first / pageSize, pageSize, sort);
+				Page<InventarioBienes> pageInventarioBienes = null;
+				
+				if(!estadoInventarioBienes.equals("")) {
+					pageInventarioBienes = inventarioBienesService.findByEstadoAndEmpresa(estadoInventarioBienes, navegacionBean.getSucursalLogin().getEmpresa(), pageable);
+				}else {
+					pageInventarioBienes = inventarioBienesService.findByEmpresa(navegacionBean.getSucursalLogin().getEmpresa(), pageable);
+				}
+				
+						
+				setRowCount((int) pageInventarioBienes.getTotalElements());
+				return datasource = pageInventarioBienes.getContent();
+			}
+		};
+	}
+	
+	
 	public Converter getConversorArea() {
         return new Converter() {
             @Override
@@ -336,5 +422,36 @@ public class InventarioBean extends BaseBean implements Serializable{
 	public void setDistribucionService(DistribucionService distribucionService) {
 		this.distribucionService = distribucionService;
 	}
+	public LazyDataModel<InventarioBienes> getLstInventarioBienesLazy() {
+		return lstInventarioBienesLazy;
+	}
+	public void setLstInventarioBienesLazy(LazyDataModel<InventarioBienes> lstInventarioBienesLazy) {
+		this.lstInventarioBienesLazy = lstInventarioBienesLazy;
+	}
+	public InventarioBienesService getInventarioBienesService() {
+		return inventarioBienesService;
+	}
+	public void setInventarioBienesService(InventarioBienesService inventarioBienesService) {
+		this.inventarioBienesService = inventarioBienesService;
+	}
+	public String getEstadoInventarioBienes() {
+		return estadoInventarioBienes;
+	}
+	public void setEstadoInventarioBienes(String estadoInventarioBienes) {
+		this.estadoInventarioBienes = estadoInventarioBienes;
+	}
+	public InventarioBienes getInventarioBienesSelected() {
+		return inventarioBienesSelected;
+	}
+	public void setInventarioBienesSelected(InventarioBienes inventarioBienesSelected) {
+		this.inventarioBienesSelected = inventarioBienesSelected;
+	}
+	public String getTituloDialogInventario() {
+		return tituloDialogInventario;
+	}
+	public void setTituloDialogInventario(String tituloDialogInventario) {
+		this.tituloDialogInventario = tituloDialogInventario;
+	}
+	
 	
 }

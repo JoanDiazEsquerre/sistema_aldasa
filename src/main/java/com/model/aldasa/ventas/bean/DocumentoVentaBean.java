@@ -913,7 +913,8 @@ public class DocumentoVentaBean extends BaseBean {
 	
 	public void subirArchivo(String nombre, UploadedFile file) {
 //      File result = new File("/home/imagen/IMG-DOCUMENTO-VENTA/" + nombre);
-      File result = new File("C:\\IMG-DOCUMENTO-VENTA\\" + nombre);
+//      File result = new File("C:\\IMG-DOCUMENTO-VENTA\\" + nombre);
+      File result = new File(navegacionBean.getSucursalLogin().getEmpresa().getRutaDocumentoVenta() + nombre);
 
       try {
 

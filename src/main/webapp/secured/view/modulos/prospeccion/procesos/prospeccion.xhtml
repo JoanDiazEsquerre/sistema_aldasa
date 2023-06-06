@@ -384,7 +384,7 @@
 						</p:column>
 						
 						<p:column width="10%" headerText="Voucher" filterMatchMode="contains">
-							<p:commandButton value="VER" oncomplete="PF('dlg').show()" update=":idFormImagen:imagenLoad"  process="@this :idFormImagen:imagenLoad">
+							<p:commandButton value="VER" oncomplete="PF('dlg').show()" update=":idImg"  process="@this :idImg">
 								<f:setPropertyActionListener value="#{req.nombreImagen}" target="#{loadImageBean.nombreArchivo}"  />
 							</p:commandButton>
 						</p:column>

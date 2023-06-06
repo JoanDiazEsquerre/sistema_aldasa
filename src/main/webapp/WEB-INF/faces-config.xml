@@ -567,6 +567,10 @@
 			<property-name>loteService</property-name>
 			<value>#{loteService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>cuotaService</property-name>
+			<value>#{cuotaService}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>
@@ -784,6 +788,10 @@
 		<managed-property>
 			<property-name>distribucionService</property-name>
 			<value>#{distribucionService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>inventarioBienesService</property-name>
+			<value>#{inventarioBienesService}</value>
 		</managed-property>
 	</managed-bean>
 	
