@@ -494,6 +494,10 @@
 			<property-name>areaService</property-name>
 			<value>#{areaService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>reporteLotesBean</managed-bean-name>
@@ -553,8 +557,20 @@
 			<property-name>asistenciaService</property-name>
 			<value>#{asistenciaService}</value>
 		</managed-property>
-		
+		<managed-property>
+			<property-name>areaService</property-name>
+			<value>#{areaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>semanaService</property-name>
+			<value>#{semanaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
 	</managed-bean>
+	
 	<managed-bean>
 		<managed-bean-name>inicioBean</managed-bean-name>
 		<managed-bean-class>com.model.aldasa.general.bean.InicioBean</managed-bean-class>

@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -40,15 +41,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.model.aldasa.entity.Area;
 import com.model.aldasa.entity.Asistencia;
 import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.MetaSupervisor;
 import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.ProspectionDetail;
+import com.model.aldasa.entity.Semana;
 import com.model.aldasa.entity.Usuario;
+import com.model.aldasa.service.AreaService;
 import com.model.aldasa.service.AsistenciaService;
 import com.model.aldasa.service.EmpleadoService;
+import com.model.aldasa.service.SemanaService;
 import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.EstadoProspeccion;
 import com.model.aldasa.util.UtilXls;
@@ -64,12 +69,30 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 
 	@ManagedProperty(value = "#{asistenciaService}")
 	private AsistenciaService asistenciaService;
+	
+	@ManagedProperty(value = "#{areaService}")
+	private AreaService areaService;
+	
+	@ManagedProperty(value = "#{semanaService}")
+	private SemanaService semanaService;
+	
+	@ManagedProperty(value = "#{navegacionBean}")
+	private NavegacionBean navegacionBean;
+
 
 	private LazyDataModel<Asistencia> lstAsistenciaLazy;
+	private LazyDataModel<Empleado> lstEmpeladoLazy;
+
 
 	private List<Empleado> lstEmpleado;
+	private List<Area> lstArea;
+
 	private Empleado empleadoSelected;
+	private Empleado empleadoBusqueda;
+	private Area areaSelected;
 	private Asistencia asistenciaSelected;
+	private Semana semanaSelected;
+
 
 	private Empleado empleadoDialog;
 	private String tipoDialog;
@@ -90,11 +113,94 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 
 	@PostConstruct
 	public void init() {
+		obtenerSemanaActual();
 		lstEmpleado = empleadoService.findByEstadoOrderByPersonSurnamesAsc(true);
 		fechaIni = new Date();
 		fechaFin = new Date();
 		tipo = "";
 		iniciarLazy();
+		lstArea=areaService.findByEstado(true);
+		iniciarEmpleadoLazy();
+	}
+	
+	public String fechaTexto(Empleado empleado,String tipo, int sumaDia) {
+		String fecha = "-";
+		if(sumaDia==0) {
+			Date fechaIni = sumarDiasAFecha(semanaSelected.getFechaIni(), -1);
+			fechaIni = sumarDiasAFecha(fechaIni, 1);
+			fechaIni.setHours(0);
+			fechaIni.setMinutes(0);
+			fechaIni.setSeconds(0);
+			
+			Date fechaFin = sumarDiasAFecha(semanaSelected.getFechaIni(), -1);
+			fechaFin = sumarDiasAFecha(fechaIni, 1);
+			fechaFin.setHours(23);
+			fechaFin.setMinutes(59);
+			fechaFin.setSeconds(59);
+			
+			List<Asistencia> lstAsist = new ArrayList<>();
+			if(tipo.equals("E")) {
+				lstAsist = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraAsc("%"+empleado.getPerson().getDni()+"%", "%E%", fechaIni, fechaFin);
+				if(!lstAsist.isEmpty()) {
+					fecha=sdfTime.format(lstAsist.get(0).getHora());
+				}
+			}else {
+				lstAsist = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraDesc("%"+empleado.getPerson().getDni()+"%", "%S%", fechaIni, fechaFin);
+				if(!lstAsist.isEmpty()) {
+					fecha=sdfTime.format(lstAsist.get(0).getHora());
+				}
+			}
+
+		}else {
+			Date fechaIni = sumarDiasAFecha(semanaSelected.getFechaIni(), sumaDia);
+			fechaIni.setHours(0);
+			fechaIni.setMinutes(0);
+			fechaIni.setSeconds(0);
+			
+			Date fechaFin =sumarDiasAFecha(semanaSelected.getFechaIni(), sumaDia);
+			fechaFin.setHours(23);
+			fechaFin.setMinutes(59);
+			fechaFin.setSeconds(59);
+			
+			List<Asistencia> lstAsist = new ArrayList<>();
+			if(tipo.equals("E")) {
+				lstAsist = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraAsc("%"+empleado.getPerson().getDni()+"%", "%E%", fechaIni, fechaFin);
+				if(!lstAsist.isEmpty()) {
+					fecha=sdfTime.format(lstAsist.get(0).getHora());
+				}
+			}else {
+				lstAsist = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraDesc("%"+empleado.getPerson().getDni()+"%", "%S%", fechaIni, fechaFin);
+				if(!lstAsist.isEmpty()) {
+					fecha=sdfTime.format(lstAsist.get(0).getHora());
+				}
+			}
+		}
+	
+		return fecha;
+	}
+	
+	public void semanaAnterior() {
+		Integer idSemana = semanaSelected.getId();
+		
+		if(idSemana>=2) {
+			Optional<Semana> sem = semanaService.findById(idSemana-1);
+			semanaSelected=sem.get();
+		}
+	}
+	
+	public void semanaSiguiente() {
+		Integer idSemana = semanaSelected.getId();
+		
+		Optional<Semana> sem = semanaService.findById(idSemana+1);
+		semanaSelected=sem.get();
+	}
+	
+	public void obtenerSemanaActual() {
+		
+		List<Semana> lstSemana = semanaService.findByFechaIniLessThanEqualOrderByFechaIniDesc(new Date());
+		if(!lstSemana.isEmpty()) {
+			semanaSelected = lstSemana.get(0);
+		}
 	}
 
 	public int minutosTardanza(Asistencia asist) {
@@ -614,6 +720,89 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 		}
 
 	}
+	
+	public void procesarExcelReporteSemanal() {
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet sheet = workbook.createSheet("Reporte Semanal Asistencia");
+
+		CellStyle styleBorder = UtilXls.styleCell(workbook, 'B');
+		CellStyle styleTitulo = UtilXls.styleCell(workbook, 'A');
+
+
+		Row rowSubTitulo = sheet.createRow(0);
+		Cell cellSubEmpleado = rowSubTitulo.createCell(0);cellSubEmpleado.setCellValue("EMPLEADO");cellSubEmpleado.setCellStyle(styleTitulo);
+		Cell cellSubArea = rowSubTitulo.createCell(1);cellSubArea.setCellValue("AREA");cellSubArea.setCellStyle(styleTitulo);
+		Cell cellSubLunes = rowSubTitulo.createCell(2);cellSubLunes.setCellValue("LUNES");cellSubLunes.setCellStyle(styleTitulo);
+		Cell cellSubMartes = rowSubTitulo.createCell(3);cellSubMartes.setCellValue("MARTES");cellSubMartes.setCellStyle(styleTitulo);
+		Cell cellSubMiercoles = rowSubTitulo.createCell(4);cellSubMiercoles.setCellValue("MIERCOLES");cellSubMiercoles.setCellStyle(styleTitulo);
+		Cell cellSubJueves = rowSubTitulo.createCell(5);cellSubJueves.setCellValue("JUEVES");cellSubJueves.setCellStyle(styleTitulo);
+		Cell cellSubViernes = rowSubTitulo.createCell(6);cellSubViernes.setCellValue("VIERNES");cellSubViernes.setCellStyle(styleTitulo);
+		Cell cellSubSabado = rowSubTitulo.createCell(7);cellSubSabado.setCellValue("SABADO");cellSubSabado.setCellStyle(styleTitulo);
+		Cell cellSubDomigo = rowSubTitulo.createCell(8);cellSubDomigo.setCellValue("DOMINGO");cellSubDomigo.setCellStyle(styleTitulo);
+
+	
+	
+		
+		List<Empleado> lstempleados = new ArrayList<>();
+		
+		if(empleadoBusqueda==null && areaSelected==null) {
+			lstempleados = empleadoService.findByEstado(true);
+		}else if(empleadoBusqueda!=null && areaSelected==null) {
+			lstempleados = empleadoService.findByPersonAndEstado(empleadoBusqueda.getPerson(), true);
+		}else if(empleadoBusqueda==null && areaSelected!= null) {
+			lstempleados = empleadoService.findByEstadoAndArea(true, areaSelected);
+		}else if(empleadoBusqueda!=null && areaSelected!= null) {
+			lstempleados = empleadoService.findByPersonAndEstadoAndArea(empleadoBusqueda.getPerson(), true, areaSelected);
+		}
+		
+		int index = 1;
+		
+
+		if (!lstempleados.isEmpty()) {
+			for (Empleado empleado : lstempleados) {
+				Row rowDetail = sheet.createRow(index);
+				Cell cellEmpleado = rowDetail.createCell(0);cellEmpleado.setCellValue(empleado.getPerson().getSurnames() + " " + empleado.getPerson().getNames());cellEmpleado.setCellStyle(styleBorder);
+				Cell cellArea = rowDetail.createCell(1);cellArea.setCellValue(empleado.getArea().getNombre());cellArea.setCellStyle(styleBorder);
+				
+				Cell cellLunes = rowDetail.createCell(2);cellLunes.setCellValue("E:" +fechaTexto(empleado, "E", 0) + " / S:" + fechaTexto(empleado, "S", 0));cellLunes.setCellStyle(styleBorder); 
+
+				Cell cellMartes = rowDetail.createCell(3);cellMartes.setCellValue("E:" +fechaTexto(empleado, "E", 1) + " / S:" + fechaTexto(empleado, "S", 1));cellMartes.setCellStyle(styleBorder);
+				Cell cellMiercoles = rowDetail.createCell(4);cellMiercoles.setCellValue("E:" +fechaTexto(empleado, "E", 2) + " / S:" + fechaTexto(empleado, "S", 2));cellMiercoles.setCellStyle(styleBorder);
+				Cell cellJueves = rowDetail.createCell(5);cellJueves.setCellValue("E:" +fechaTexto(empleado, "E", 3) + " / S:" + fechaTexto(empleado, "S", 3));cellJueves.setCellStyle(styleBorder);
+				Cell cellViernes = rowDetail.createCell(6);cellViernes.setCellValue("E:" +fechaTexto(empleado, "E", 4) + " / S:" + fechaTexto(empleado, "S", 4));cellViernes.setCellStyle(styleBorder);
+				Cell cellSabado = rowDetail.createCell(7);cellSabado.setCellValue("E:" +fechaTexto(empleado, "E", 5) + " / S:" + fechaTexto(empleado, "S", 5));cellSabado.setCellStyle(styleBorder);
+				Cell cellDomingo = rowDetail.createCell(8);cellDomingo.setCellValue("E:" +fechaTexto(empleado, "E", 6) + " / S:" + fechaTexto(empleado, "S", 6));cellDomingo.setCellStyle(styleBorder);
+
+
+				index++;
+
+			}
+		}
+	
+
+		for (int j = 0; j <= 8; j++) {
+			sheet.autoSizeColumn(j);
+		}
+		try {
+			ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()
+					.getContext();
+			String filePath = scontext.getRealPath("/WEB-INF/fileAttachments/" + nombreArchivo);
+			File file = new File(filePath);
+			FileOutputStream out = new FileOutputStream(file);
+			workbook.write(out);
+			out.close();
+			fileDes = DefaultStreamedContent.builder().name(nombreArchivo).contentType("aplication/xls")
+					.stream(() -> FacesContext.getCurrentInstance().getExternalContext()
+							.getResourceAsStream("/WEB-INF/fileAttachments/" + nombreArchivo))
+					.build();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 
 	public Date sumarDiasAFecha(Date fecha, int dias) {
 		if (dias == 0)
@@ -628,6 +817,72 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 		return date;
 	}
 
+	public void iniciarEmpleadoLazy() {
+
+		lstEmpeladoLazy = new LazyDataModel<Empleado>() {
+			private List<Empleado> datasource;
+
+			@Override
+			public void setRowIndex(int rowIndex) {
+				if (rowIndex == -1 || getPageSize() == 0) {
+					super.setRowIndex(-1);
+				} else {
+					super.setRowIndex(rowIndex % getPageSize());
+				}
+			}
+
+			@Override
+			public Empleado getRowData(String rowKey) {
+				int intRowKey = Integer.parseInt(rowKey);
+				for (Empleado empleado : datasource) {
+					if (empleado.getId() == intRowKey) {
+						return empleado;
+					}
+				}
+				return null;
+			}
+
+			@Override
+			public String getRowKey(Empleado empleado) {
+				return String.valueOf(empleado.getId());
+			}
+
+			@Override
+			public List<Empleado> load(int first, int pageSize, Map<String, SortMeta> sortBy,
+					Map<String, FilterMeta> filterBy) {
+
+				Sort sort = Sort.by("person.surnames").ascending();
+				if (sortBy != null) {
+					for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
+						System.out.println(entry.getKey() + "/" + entry.getValue());
+						if (entry.getValue().getOrder().isAscending()) {
+							sort = Sort.by(entry.getKey()).descending();
+						} else {
+							sort = Sort.by(entry.getKey()).ascending();
+						}
+					}
+				}
+
+				Pageable pageable = PageRequest.of(first / pageSize, pageSize, sort);
+
+				Page<Empleado> pageEmpleado = null;
+
+				if(empleadoBusqueda==null && areaSelected==null) {
+					pageEmpleado = empleadoService.findByEstadoAndSucursal(true, navegacionBean.getSucursalLogin(), pageable);
+				}else if(empleadoBusqueda!=null && areaSelected==null) {
+					pageEmpleado = empleadoService.findByPersonAndEstadoAndSucursal(empleadoBusqueda.getPerson(), true, navegacionBean.getSucursalLogin(), pageable);
+				}else if(empleadoBusqueda==null && areaSelected!= null) {
+					pageEmpleado = empleadoService.findByEstadoAndAreaAndSucursal(true, areaSelected, navegacionBean.getSucursalLogin(), pageable);
+				}else if(empleadoBusqueda!=null && areaSelected!= null) {
+					pageEmpleado = empleadoService.findByPersonAndEstadoAndAreaAndSucursal(empleadoBusqueda.getPerson(), true, areaSelected, navegacionBean.getSucursalLogin(), pageable);
+				}
+
+				setRowCount((int) pageEmpleado.getTotalElements());
+				return datasource = pageEmpleado.getContent();
+			}
+		};
+	}
+	
 	public void iniciarLazy() {
 
 		lstAsistenciaLazy = new LazyDataModel<Asistencia>() {
@@ -691,14 +946,14 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 				fechaFin.setMinutes(59);
 				fechaFin.setSeconds(59);
 
-				pageAsistencia = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetween(dni,
-						"%" + tipo + "%", fechaIni, fechaFin, pageable);
+				pageAsistencia = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndEmpleadoSucursalAndHoraBetween(dni, "%" + tipo + "%", navegacionBean.getSucursalLogin(), fechaIni, fechaFin, pageable);
 
 				setRowCount((int) pageAsistencia.getTotalElements());
 				return datasource = pageAsistencia.getContent();
 			}
 		};
 	}
+
 
 	public String convertirHora(Date hora) {
 		String a = sdfFull.format(hora);
@@ -754,6 +1009,34 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 		}
 		return lista;
 	}
+	
+	public Converter getConversorArea() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Area c = null;
+                    for (Area si : lstArea) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Area) value).getId() + "";
+                }
+            }
+        };
+    }
 
 	public List<Empleado> getLstEmpleado() {
 		return lstEmpleado;
@@ -889,6 +1172,70 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 
 	public void setHoraDialog(Date horaDialog) {
 		this.horaDialog = horaDialog;
+	}
+
+	public Empleado getEmpleadoBusqueda() {
+		return empleadoBusqueda;
+	}
+
+	public void setEmpleadoBusqueda(Empleado empleadoBusqueda) {
+		this.empleadoBusqueda = empleadoBusqueda;
+	}
+
+	public List<Area> getLstArea() {
+		return lstArea;
+	}
+
+	public void setLstArea(List<Area> lstArea) {
+		this.lstArea = lstArea;
+	}
+
+	public AreaService getAreaService() {
+		return areaService;
+	}
+
+	public void setAreaService(AreaService areaService) {
+		this.areaService = areaService;
+	}
+
+	public Area getAreaSelected() {
+		return areaSelected;
+	}
+
+	public void setAreaSelected(Area areaSelected) {
+		this.areaSelected = areaSelected;
+	}
+
+	public LazyDataModel<Empleado> getLstEmpeladoLazy() {
+		return lstEmpeladoLazy;
+	}
+
+	public void setLstEmpeladoLazy(LazyDataModel<Empleado> lstEmpeladoLazy) {
+		this.lstEmpeladoLazy = lstEmpeladoLazy;
+	}
+
+	public SemanaService getSemanaService() {
+		return semanaService;
+	}
+
+	public void setSemanaService(SemanaService semanaService) {
+		this.semanaService = semanaService;
+	}
+
+	public Semana getSemanaSelected() {
+		return semanaSelected;
+	}
+
+	public void setSemanaSelected(Semana semanaSelected) {
+		this.semanaSelected = semanaSelected;
+	}
+
+	public NavegacionBean getNavegacionBean() {
+		return navegacionBean;
+	}
+
+	public void setNavegacionBean(NavegacionBean navegacionBean) {
+		this.navegacionBean = navegacionBean;
 	}
 
 }

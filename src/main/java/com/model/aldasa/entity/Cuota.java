@@ -49,6 +49,10 @@ public class Cuota {
 	
 	private boolean prepago;
 	
+	@ManyToOne
+	@JoinColumn(name="idcuotaref")
+	private Cuota cuotaRef;
+	
 	public Cuota() {
 		
 	}
@@ -67,6 +71,11 @@ public class Cuota {
 		this.original = false;
 		this.prepago = false;
 	}
+	
+	
+	
+	
+	
 	
 	public Integer getNroCuota() {
 		return nroCuota;
@@ -141,5 +150,11 @@ public class Cuota {
 	public void setPrepago(boolean prepago) {
 		this.prepago = prepago;
 	}
-	
+	public Cuota getCuotaRef() {
+		return cuotaRef;
+	}
+	public void setCuotaRef(Cuota cuotaRef) {
+		this.cuotaRef = cuotaRef;
+	}
+
 }

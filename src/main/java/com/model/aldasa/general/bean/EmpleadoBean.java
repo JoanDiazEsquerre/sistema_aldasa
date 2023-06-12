@@ -44,6 +44,9 @@ public class EmpleadoBean implements Serializable {
 	
 	@ManagedProperty(value = "#{areaService}")
 	private AreaService areaService; 
+	
+	@ManagedProperty(value = "#{navegacionBean}")
+	private NavegacionBean navegacionBean;
 		
 	private LazyDataModel<Empleado> lstEmpleadoLazy;
 	
@@ -66,7 +69,7 @@ public class EmpleadoBean implements Serializable {
 		tituloDialog="NUEVO EMPLEADO";
 		empleadoSelected = new Empleado();
 		empleadoSelected.setEstado(true);
-		
+		empleadoSelected.setSucursal(navegacionBean.getSucursalLogin());
 
 	}
 
@@ -299,6 +302,12 @@ public class EmpleadoBean implements Serializable {
 	}
 	public void setAreaService(AreaService areaService) {
 		this.areaService = areaService;
+	}
+	public NavegacionBean getNavegacionBean() {
+		return navegacionBean;
+	}
+	public void setNavegacionBean(NavegacionBean navegacionBean) {
+		this.navegacionBean = navegacionBean;
 	}
 	
 	

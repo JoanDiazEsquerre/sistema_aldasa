@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.model.aldasa.entity.Asistencia;
 import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Person;
+import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.repository.AsistenciaRepository;
 import com.model.aldasa.service.AsistenciaService;
 
@@ -47,13 +48,6 @@ public class AsistenciaServiceImpl  implements AsistenciaService  {
 	}
 
 	@Override
-	public Page<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetween(String dni, String tipo, Date fechaIni,
-			Date fechaFin, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return asistenciaRepository.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetween(dni, tipo, fechaIni, fechaFin, pageable);
-	}
-
-	@Override
 	public List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetween(String dni, String tipo, Date fechaIni,
 			Date fechaFin) {
 		// TODO Auto-generated method stub
@@ -71,6 +65,27 @@ public class AsistenciaServiceImpl  implements AsistenciaService  {
 	public Asistencia findByEmpleadoPerson(Person empleado) {
 		// TODO Auto-generated method stub
 		return asistenciaRepository.findByEmpleadoPerson(empleado);
+	}
+
+	@Override
+	public List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraDesc(String dni, String tipo,
+			Date fechaIni, Date fechaFin) {
+		// TODO Auto-generated method stub
+		return asistenciaRepository.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraDesc(dni, tipo, fechaIni, fechaFin);
+	}
+
+	@Override
+	public List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraAsc(String dni, String tipo,
+			Date fechaIni, Date fechaFin) {
+		// TODO Auto-generated method stub
+		return asistenciaRepository.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraAsc(dni, tipo, fechaIni, fechaFin);
+	}
+
+	@Override
+	public Page<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndEmpleadoSucursalAndHoraBetween(String dni,
+			String tipo, Sucursal sucursal, Date fechaIni, Date fechaFin, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return asistenciaRepository.findByEmpleadoPersonDniLikeAndTipoLikeAndEmpleadoSucursalAndHoraBetween(dni, tipo, sucursal, fechaIni, fechaFin, pageable);
 	}
 
 }

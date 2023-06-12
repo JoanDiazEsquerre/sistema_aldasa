@@ -591,7 +591,7 @@
 					</h:panelGrid>
 				</p:panel>
 
-				<h:panelGrid columns="6" styleClass="companyHeaderGrid">
+				<h:panelGrid columns="8" styleClass="companyHeaderGrid">
 			
 					<h:outputText value="Monto:" />
 					<p:inputNumber id="mntPrepago" value="#{documentoVentaBean.montoPrepago}" disabled="#{documentoVentaBean.habilitarMontoPrepago}" />
@@ -601,6 +601,13 @@
 					<p:selectOneMenu id="prepagoFilter" value="#{documentoVentaBean.tipoPrepago}">
 						<f:selectItem itemLabel="Capital" itemValue="C"/>
 						<f:selectItem itemLabel="Tiempo" itemValue="T" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel for="incluir" value="Incluir última cuota: "/>
+			
+					<p:selectOneMenu id="incluir" value="#{documentoVentaBean.incluirUltimaCuota}">
+						<f:selectItem itemLabel="No" itemValue="No"/>
+						<f:selectItem itemLabel="Si" itemValue="Si" />
 					</p:selectOneMenu>
 					
 					<p:commandButton value="Simular Pre-Pago" action="#{documentoVentaBean.simularPrepago()}"  style="margin-left:50px" update=":form:tabView:tableCuotaContrato :form:tabView:mntPrepago :form:tabView:btnGuardar"/>			

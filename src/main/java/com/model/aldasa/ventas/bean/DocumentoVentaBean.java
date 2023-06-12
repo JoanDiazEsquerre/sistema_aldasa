@@ -163,6 +163,8 @@ public class DocumentoVentaBean extends BaseBean {
 	private String  ruc, nombreRazonSocial, direccion, observacion, numero ; 
 	private String tipoPago = "Contado";
 	private String tipoPrepago = "C";
+	private String incluirUltimaCuota = "No";
+
 	private boolean pagoTotalPrepago = false;
 	private boolean habilitarBoton = true;
 	private boolean habilitarMontoPrepago = false;
@@ -301,17 +303,37 @@ public class DocumentoVentaBean extends BaseBean {
 		lstCuotaPendientesTemporal = new ArrayList<>();
 		
 		lstCuotaVista.clear();
-		lstCuotaVista.addAll(lstCuotaPagadas);
+		
 		
 		
 		
 		if(tipoPrepago.equals("C")) {
+			
+			BigDecimal saldo = contratoPendienteSelected.getMontoVenta();
+			for(Cuota c:lstCuotaPagadas) {
+				saldo = saldo.subtract(c.getCuotaSI());
+			}
+			saldo = saldo.subtract(montoPrepago);			
+			
 			Cuota cuota = new Cuota();
+			cuota.setCuotaSI(montoPrepago);
+			cuota.setCuotaTotal(montoPrepago);
+
+			if(incluirUltimaCuota.equals("Si")) {
+				cuota.setCuotaRef(lstCuotaPendientes.get(0));
+				lstCuotaPendientes.get(0).setPagoTotal("S");
+				lstCuotaPagadas.add(lstCuotaPendientes.get(0));
+				cuota.setCuotaSI(montoPrepago.subtract(lstCuotaPendientes.get(0).getCuotaTotal()));
+				cuota.setCuotaTotal(montoPrepago.subtract(lstCuotaPendientes.get(0).getCuotaTotal()));
+				saldo = saldo.add(lstCuotaPendientes.get(0).getInteres());
+				lstCuotaPendientes.remove(0);
+			}
+			
+			lstCuotaVista.addAll(lstCuotaPagadas);
+		
 			cuota.setNroCuota(0);
 			cuota.setFechaPago(new Date());
-			cuota.setCuotaSI(montoPrepago);
 			cuota.setInteres(BigDecimal.ZERO);
-			cuota.setCuotaTotal(montoPrepago);
 			cuota.setAdelanto(BigDecimal.ZERO);
 			cuota.setPagoTotal("S");
 			cuota.setContrato(contratoPendienteSelected);
@@ -321,24 +343,13 @@ public class DocumentoVentaBean extends BaseBean {
 			lstCuotaVista.add(cuota);
 			lstCuotaPendientesTemporal.add(cuota);
 			
+		
 			
-			
-			BigDecimal sumaMontoPendiente = BigDecimal.ZERO;
-			for(Cuota c:lstCuotaPendientes) {
-				
-				if(primeraCuotaPendiente<=6 && montoPrepago.compareTo(deudaActualSinInteres)==0) {
-					sumaMontoPendiente = sumaMontoPendiente.add(c.getCuotaSI());
-				}else {
-					sumaMontoPendiente = sumaMontoPendiente.add(c.getCuotaTotal());
-				}
-			}
-			sumaMontoPendiente = sumaMontoPendiente.subtract(montoPrepago);
-
-
-			BigDecimal nuevaCuotaSI = sumaMontoPendiente.divide(new BigDecimal(lstCuotaPendientes.size()), 2, RoundingMode.HALF_UP);
+			BigDecimal nuevaCuotaSI = saldo.divide(new BigDecimal(lstCuotaPendientes.size()), 2, RoundingMode.HALF_UP);
 			BigDecimal nuevoInteres = nuevaCuotaSI.multiply(contratoPendienteSelected.getInteres().divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
-			
+
 			for (Cuota c:lstCuotaPendientes) {
+
 				Cuota nuevaCuota = new Cuota(c);
 				nuevaCuota.setCuotaSI(nuevaCuotaSI);
 				nuevaCuota.setInteres(nuevoInteres);
@@ -2259,6 +2270,12 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setLoadImageDocumentoBean(LoadImageDocumentoBean loadImageDocumentoBean) {
 		this.loadImageDocumentoBean = loadImageDocumentoBean;
+	}
+	public String getIncluirUltimaCuota() {
+		return incluirUltimaCuota;
+	}
+	public void setIncluirUltimaCuota(String incluirUltimaCuota) {
+		this.incluirUltimaCuota = incluirUltimaCuota;
 	}
 	
 	

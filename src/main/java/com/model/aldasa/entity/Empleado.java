@@ -43,6 +43,10 @@ public class Empleado {
 	
 	private String cargo;
 	
+	@ManyToOne
+	@JoinColumn(name="idsucursal")
+	private Sucursal sucursal;
+	
 	
 	public Integer getId() {
 		return id;
@@ -93,5 +97,12 @@ public class Empleado {
 	public void setCargo(String cargo) {
 		this.cargo = cargo;
 	}
+	public Sucursal getSucursal() {
+		return sucursal;
+	}
+	public void setSucursal(Sucursal sucursal) {
+		this.sucursal = sucursal;
+	}
+	
 	
 }
