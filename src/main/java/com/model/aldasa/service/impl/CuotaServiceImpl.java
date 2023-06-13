@@ -98,6 +98,12 @@ public class CuotaServiceImpl implements CuotaService{
 		return cuotaRepository.findByPagoTotalAndEstadoAndFechaPagoLessThan(pagoTotal, estado, fechaIni, pageable);
 	}
 
+	@Override
+	public Page<Cuota> findByPagoTotalAndEstadoAndPrepago(String pagoTotal, boolean estado, boolean prepago, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return cuotaRepository.findByPagoTotalAndEstadoAndPrepago(pagoTotal, estado, prepago, pageable);
+	}
+
 	
 
 

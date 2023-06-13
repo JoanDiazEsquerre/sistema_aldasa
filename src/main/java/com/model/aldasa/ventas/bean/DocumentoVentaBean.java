@@ -41,7 +41,6 @@ import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
 import com.model.aldasa.entity.Imagen;
 import com.model.aldasa.entity.Person;
-import com.model.aldasa.entity.Prepago;
 import com.model.aldasa.entity.Producto;
 import com.model.aldasa.entity.SerieDocumento;
 import com.model.aldasa.entity.TipoDocumento;
@@ -54,7 +53,6 @@ import com.model.aldasa.service.CuotaService;
 import com.model.aldasa.service.DetalleDocumentoVentaService;
 import com.model.aldasa.service.DocumentoVentaService;
 import com.model.aldasa.service.ImagenService;
-import com.model.aldasa.service.PrepagoService;
 import com.model.aldasa.service.ProductoService;
 import com.model.aldasa.service.SerieDocumentoService;
 import com.model.aldasa.service.TipoDocumentoService;
@@ -100,9 +98,6 @@ public class DocumentoVentaBean extends BaseBean {
 	@ManagedProperty(value = "#{contratoService}")
 	private ContratoService contratoService;
 	
-	@ManagedProperty(value = "#{prepagoService}")
-	private PrepagoService prepagoService;
-	
 	@ManagedProperty(value = "#{tipoDocumentoService}")
 	private TipoDocumentoService tipoDocumentoService;
 	
@@ -117,7 +112,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private LazyDataModel<DocumentoVenta> lstDocumentoVentaLazy;
 	private LazyDataModel<Cuota> lstCuotaLazy;
 	private LazyDataModel<Voucher> lstVoucherLazy;
-	private LazyDataModel<Prepago> lstPrepagoLazy;
+	private LazyDataModel<Cuota> lstPrepagoLazy;
 	private LazyDataModel<Contrato> lstContratosPendientesLazy;
 
 	
@@ -139,7 +134,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private SerieDocumento serieDocumentoSelected ;
 	private Cuota cuotaSelected ;
 	private Voucher voucherSelected ;
-	private Prepago prepagoSelected ;
+	private Cuota prepagoSelected ;
 	private Cliente clienteSelected;
 	private Contrato contratoPendienteSelected;
 	private Cuota cuotaPendienteContratoSelected;
@@ -152,8 +147,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private Producto productoCuota;
 	private Producto productoInteres;
 	private Producto productoVoucher;
-	private Producto productoPrepagoCapital;
-	private Producto productoPrepagoTiempo;
+	private Producto productoAmortizacion;
 	private Producto productoAdelanto;
 	private Person persona;
 
@@ -222,8 +216,7 @@ public class DocumentoVentaBean extends BaseBean {
 		productoCuota = productoService.findByEstadoAndTipoProducto(true,TipoProductoType.CUOTA.getTipo());
 		productoInteres = productoService.findByEstadoAndTipoProducto(true,TipoProductoType.INTERES.getTipo());
 		productoVoucher = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.SEPARACION.getTipo());
-		productoPrepagoCapital = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.PREPAGO_CAPITAL.getTipo());
-		productoPrepagoTiempo = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.PREPAGO_TIEMPO.getTipo());
+		productoAmortizacion = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.AMORTIZACION.getTipo());
 		productoAdelanto = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.ADELANTO.getTipo());
 
 	} 
@@ -335,7 +328,7 @@ public class DocumentoVentaBean extends BaseBean {
 			cuota.setFechaPago(new Date());
 			cuota.setInteres(BigDecimal.ZERO);
 			cuota.setAdelanto(BigDecimal.ZERO);
-			cuota.setPagoTotal("S");
+			cuota.setPagoTotal("N");
 			cuota.setContrato(contratoPendienteSelected);
 			cuota.setEstado(true);
 			cuota.setOriginal(false);
@@ -482,14 +475,14 @@ public class DocumentoVentaBean extends BaseBean {
 			 
 		}		
 
-		Prepago prepago  = new Prepago();
-		prepago.setCliente(cliente);
-		prepago.setMonto(montoPrepago);
-		prepago.setContrato(contratoPendienteSelected);
-		prepago.setGeneraDocumento(false);
-		prepago.setTipo(tipoPrepago);
-		
-		prepagoService.save(prepago);
+//		Prepago prepago  = new Prepago();
+//		prepago.setCliente(cliente);
+//		prepago.setMonto(montoPrepago);
+//		prepago.setContrato(contratoPendienteSelected);
+//		prepago.setGeneraDocumento(false);
+//		prepago.setTipo(tipoPrepago);
+//		
+//		prepagoService.save(prepago);
 		
 		addInfoMessage("Se guardo el prepago correctamente.");
 		lstCuotaPendientes.clear();
@@ -539,10 +532,10 @@ public class DocumentoVentaBean extends BaseBean {
 				d.getCuota().setPagoTotal("N");
 				cuotaService.save(d.getCuota());
 			}
-			if(d.getPrepago()!=null) {
-				d.getPrepago().setGeneraDocumento(false);
-				prepagoService.save(d.getPrepago());
-			}
+//			if(d.getCuotaPrepago()()!=null) {
+//				d.getCuotaPrepago().setGeneraDocumento(false);
+//				prepagoService.save(d.getPrepago());
+//			}
 			
 		}
 		
@@ -844,10 +837,10 @@ public class DocumentoVentaBean extends BaseBean {
 					d.getVoucher().setGeneraDocumento(true); 
 					voucherService.save(d.getVoucher());
 				}
-				if(d.getPrepago()!=null) {
-					d.getPrepago().setGeneraDocumento(false);
-					prepagoService.save(d.getPrepago());
-				}
+//				if(d.getPrepago()!=null) {
+//					d.getPrepago().setGeneraDocumento(false);
+//					prepagoService.save(d.getPrepago());
+//				}
 					
 			}  
 			
@@ -1055,7 +1048,7 @@ public class DocumentoVentaBean extends BaseBean {
 			detalle.setImporteVenta(cuotaSelected.getCuotaSI().subtract(cuotaSelected.getAdelanto()));
 			detalle.setCuota(cuotaSelected);
 			detalle.setVoucher(null);
-			detalle.setPrepago(null);
+			detalle.setCuotaPrepago(null);
 			lstDetalleDocumentoVenta.add(detalle);
 		}else {
 			DetalleDocumentoVenta detalle = new DetalleDocumentoVenta();
@@ -1069,7 +1062,7 @@ public class DocumentoVentaBean extends BaseBean {
 			detalle.setImporteVenta(cuotaSelected.getCuotaSI().subtract(cuotaSelected.getAdelanto()));
 			detalle.setCuota(cuotaSelected);
 			detalle.setVoucher(null);
-			detalle.setPrepago(null);
+			detalle.setCuotaPrepago(null);
 			lstDetalleDocumentoVenta.add(detalle);
 			
 			
@@ -1084,7 +1077,7 @@ public class DocumentoVentaBean extends BaseBean {
 			detalleInteres.setImporteVenta(cuotaSelected.getInteres());
 			detalleInteres.setCuota(cuotaSelected);
 			detalleInteres.setVoucher(null);
-			detalleInteres.setPrepago(null);
+			detalleInteres.setCuotaPrepago(null);
 			lstDetalleDocumentoVenta.add(detalleInteres);
 		}
 		
@@ -1150,7 +1143,7 @@ public class DocumentoVentaBean extends BaseBean {
 		detalle.setImporteVenta(voucherSelected.getMonto());
 		detalle.setCuota(null);
 		detalle.setVoucher(voucherSelected);
-		detalle.setPrepago(null);
+		detalle.setCuotaPrepago(null);
 		detalle.setEstado(true);
 		lstDetalleDocumentoVenta.add(detalle);
 		
@@ -1162,13 +1155,13 @@ public class DocumentoVentaBean extends BaseBean {
 	public void importarPrepago() {
 		if(!lstDetalleDocumentoVenta.isEmpty()) {
 			for(DetalleDocumentoVenta d:lstDetalleDocumentoVenta) {
-				if(d.getPrepago() != null) {
-					if(prepagoSelected.getId()==d.getPrepago().getId()) {
+				if(d.getCuotaPrepago() != null) {
+					if(prepagoSelected.getId()==d.getCuotaPrepago().getId()) {
 						addErrorMessage("Ya seleccionó el prepago");			
 						return;
 					}
 					
-					if(prepagoSelected.getContrato().getPersonVenta().getId() != d.getPrepago().getContrato().getPersonVenta().getId()) {
+					if(prepagoSelected.getContrato().getPersonVenta().getId() != d.getCuotaPrepago().getContrato().getPersonVenta().getId()) {
 						addErrorMessage("El prepago debe ser de la misma persona.");
 						return;
 					}
@@ -1177,7 +1170,7 @@ public class DocumentoVentaBean extends BaseBean {
 
 		}
 		
-		clienteSelected=prepagoSelected.getCliente();
+		clienteSelected=null;
 		if(tipoDocumentoSelected.getAbreviatura().equals("B")) {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(prepagoSelected.getContrato().getPersonVenta(), true, true);
 		}else {
@@ -1194,21 +1187,23 @@ public class DocumentoVentaBean extends BaseBean {
 			direccion = prepagoSelected.getContrato().getPersonVenta().getAddress(); 
 		}
 		
-		
+//		if() {
+//			
+//		}
 		
 		DetalleDocumentoVenta detalle = new DetalleDocumentoVenta();
 		//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
 		detalle.setDocumentoVenta(null);
-		detalle.setProducto(prepagoSelected.getTipo().equals("C")?productoPrepagoCapital:productoPrepagoTiempo);
+		detalle.setProducto(productoAmortizacion);
 		detalle.setDescripcion(detalle.getProducto().getDescripcion().toUpperCase() + " POR LA VENTA DE UN LOTE DE TERRENO CON N° "+ prepagoSelected.getContrato().getLote().getNumberLote() +" MZ - "+ prepagoSelected.getContrato().getLote().getManzana().getName() +" , UBICADO EN " + prepagoSelected.getContrato().getLote().getProject().getName());
 																												
-		detalle.setAmortizacion(prepagoSelected.getMonto());
+		detalle.setAmortizacion(prepagoSelected.getCuotaTotal());
 		detalle.setInteres(BigDecimal.ZERO);
 		detalle.setAdelanto(BigDecimal.ZERO);
-		detalle.setImporteVenta(prepagoSelected.getMonto());
+		detalle.setImporteVenta(prepagoSelected.getCuotaTotal());
 		detalle.setCuota(null);
 		detalle.setVoucher(null);
-		detalle.setPrepago(prepagoSelected);
+		detalle.setCuotaPrepago(prepagoSelected);
 		detalle.setEstado(true);
 		lstDetalleDocumentoVenta.add(detalle);
 		
@@ -1451,8 +1446,8 @@ public class DocumentoVentaBean extends BaseBean {
 	
 	public void iniciarLazyPrepago() {
 
-		lstPrepagoLazy = new LazyDataModel<Prepago>() {
-			private List<Prepago> datasource;
+		lstPrepagoLazy = new LazyDataModel<Cuota>() {
+			private List<Cuota> datasource;
 
             @Override
             public void setRowIndex(int rowIndex) {
@@ -1464,27 +1459,26 @@ public class DocumentoVentaBean extends BaseBean {
             }
 
             @Override
-            public Prepago getRowData(String rowKey) {
+            public Cuota getRowData(String rowKey) {
                 int intRowKey = Integer.parseInt(rowKey);
-                for (Prepago prepago : datasource) {
-                    if (prepago.getId() == intRowKey) {
-                        return prepago;
+                for (Cuota cuota : datasource) {
+                    if (cuota.getId() == intRowKey) {
+                        return cuota;
                     }
                 }
                 return null;
             }
 
             @Override
-            public String getRowKey(Prepago prepago) {
-                return String.valueOf(prepago.getId());
+            public String getRowKey(Cuota cuota) {
+                return String.valueOf(cuota.getId());
             }
 
 			@Override
-			public List<Prepago> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+			public List<Cuota> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                
-//				String names = "%" + (filterBy.get("person.surnames") != null ? filterBy.get("person.surnames").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
 
-                Sort sort=Sort.by("generaDocumento").ascending();
+                Sort sort=Sort.by("fechaPago").ascending();
                 if(sortBy!=null) {
                 	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
                 	   if(entry.getValue().getOrder().isAscending()) {
@@ -1497,10 +1491,10 @@ public class DocumentoVentaBean extends BaseBean {
                 }        
                 Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
                
-                Page<Prepago>pagePrepago= prepagoService.findByGeneraDocumento(false, pageable);
+                Page<Cuota>pageCuota= cuotaService.findByPagoTotalAndEstadoAndPrepago("N", true, true, pageable);
                 
-                setRowCount((int) pagePrepago.getTotalElements());
-                return datasource = pagePrepago.getContent();
+                setRowCount((int) pageCuota.getTotalElements());
+                return datasource = pageCuota.getContent();
             }
 		};
 	}
@@ -2133,35 +2127,20 @@ public class DocumentoVentaBean extends BaseBean {
 	public void setHabilitarBoton(boolean habilitarBoton) {
 		this.habilitarBoton = habilitarBoton;
 	}
-	public Prepago getPrepagoSelected() {
-		return prepagoSelected;
-	}
-	public void setPrepagoSelected(Prepago prepagoSelected) {
-		this.prepagoSelected = prepagoSelected;
-	}
-	public PrepagoService getPrepagoService() {
-		return prepagoService;
-	}
-	public void setPrepagoService(PrepagoService prepagoService) {
-		this.prepagoService = prepagoService;
-	}
-	public LazyDataModel<Prepago> getLstPrepagoLazy() {
+	public LazyDataModel<Cuota> getLstPrepagoLazy() {
 		return lstPrepagoLazy;
 	}
-	public void setLstPrepagoLazy(LazyDataModel<Prepago> lstPrepagoLazy) {
+	public void setLstPrepagoLazy(LazyDataModel<Cuota> lstPrepagoLazy) {
 		this.lstPrepagoLazy = lstPrepagoLazy;
 	}
-	public Producto getProductoPrepagoCapital() {
-		return productoPrepagoCapital;
+	public Producto getProductoAmortizacion() {
+		return productoAmortizacion;
 	}
-	public void setProductoPrepagoCapital(Producto productoPrepagoCapital) {
-		this.productoPrepagoCapital = productoPrepagoCapital;
+	public void setProductoAmortizacion(Producto productoAmortizacion) {
+		this.productoAmortizacion = productoAmortizacion;
 	}
-	public Producto getProductoPrepagoTiempo() {
-		return productoPrepagoTiempo;
-	}
-	public void setProductoPrepagoTiempo(Producto productoPrepagoTiempo) {
-		this.productoPrepagoTiempo = productoPrepagoTiempo;
+	public void setPrepagoSelected(Cuota prepagoSelected) {
+		this.prepagoSelected = prepagoSelected;
 	}
 	public boolean isHabilitarMontoPrepago() {
 		return habilitarMontoPrepago;
@@ -2276,6 +2255,9 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setIncluirUltimaCuota(String incluirUltimaCuota) {
 		this.incluirUltimaCuota = incluirUltimaCuota;
+	}
+	public Cuota getPrepagoSelected() {
+		return prepagoSelected;
 	}
 	
 	

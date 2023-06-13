@@ -237,29 +237,29 @@
 					<h:panelGrid id="gridImpPrepago">
 						<p:commandButton id="movieBtnPrepago" style="font-size: 14px;" value="Importar Prepago" icon="pi pi-search" update=":form:tabView:tablePrepago" />
 						<p:overlayPanel for="movieBtnPrepago" dynamic="true" style="width:600px" widgetVar="moviePickerPrepago">
-							<p:dataTable var="prepago" value="#{documentoVentaBean.lstPrepagoLazy}" rows="5" paginator="true" selectionMode="single" rowIndexVar="row"
-								paginatorPosition="bottom" selection="#{documentoVentaBean.prepagoSelected}" rowKey="#{prepago.id}" id="tablePrepago"
+							<p:dataTable var="cuota" value="#{documentoVentaBean.lstPrepagoLazy}" rows="5" paginator="true" selectionMode="single" rowIndexVar="row"
+								paginatorPosition="bottom" selection="#{documentoVentaBean.prepagoSelected}" rowKey="#{cuota.id}" id="tablePrepago"
 								emptyMessage="No se encontraron resultados" size="small">
 								
 								<p:ajax event="rowSelect" listener="#{documentoVentaBean.importarPrepago()}" oncomplete="PF('moviePickerPrepago').hide()" 
 								update=":form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante"/>
 								
 								<p:column headerText="Cliente"  style="text-align:center; width:120px">
-									<h:outputText value="#{prepago.cliente.person.surnames} #{prepago.cliente.person.names}" style="font-size: 14px;" />
+									<h:outputText value="#{cuota.contrato.personVenta.surnames} #{cuota.contrato.personVenta.names}" style="font-size: 14px;" />
 								</p:column>
 								
 								<p:column headerText="Monto" style="text-align:center; width:60px">
-									<h:outputText value="#{prepago.monto}" style="font-size: 14px;" > 
+									<h:outputText value="#{cuota.contrato.montoVenta}" style="font-size: 14px;" > 
 										<f:convertNumber type="currency" currencySymbol=""/>
 									</h:outputText>
 								</p:column>
 								
 								<p:column headerText="Proyecto" style="text-align:center; width:60px">
-									<h:outputText value="#{prepago.contrato.lote.project.name}" style="font-size: 14px;" />
+									<h:outputText value="#{cuota.contrato.lote.project.name}" style="font-size: 14px;" />
 								</p:column>
 								
 								<p:column headerText="Mz-Lote" style="text-align:center; width:60px">
-									<h:outputText value="#{prepago.contrato.lote.manzana.name}-#{prepago.contrato.lote.numberLote}" style="font-size: 14px;" />
+									<h:outputText value="#{cuota.contrato.lote.manzana.name}-#{cuota.contrato.lote.numberLote}" style="font-size: 14px;" />
 								</p:column>
 								
 								

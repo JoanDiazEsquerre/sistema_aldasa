@@ -2,7 +2,7 @@ package com.model.aldasa.util;
 
 public enum TipoProductoType {
 	
-	CUOTA("C"),INTERES("T"), INICIAL("I"), SEPARACION("S"), PREPAGO_CAPITAL("P"), PREPAGO_TIEMPO("M"), ADELANTO("A");
+	CUOTA("C"),INTERES("T"), INICIAL("I"), SEPARACION("S"), AMORTIZACION("P"), ADELANTO("A");
 	
 	private String tipo;
 	
