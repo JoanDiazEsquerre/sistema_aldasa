@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="repDocumentoFacturaElectronica" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="511" leftMargin="42" rightMargin="42" topMargin="42" bottomMargin="42" uuid="f7cc8725-31db-46d6-9e69-d3629a2409fe">
 	<property name="ireport.zoom" value="1.9965000000000666"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="192"/>
+	<property name="ireport.y" value="345"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#999999"/>
@@ -147,21 +147,21 @@
 			</staticText>
 			<staticText>
 				<reportElement uuid="a5a8f8d0-5696-4983-b6d9-78ff7f7739c9" x="3" y="143" width="58" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[DNI:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="e5bc3441-b6eb-4cc9-ab96-1dacc15bf72a" x="3" y="158" width="58" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[DIRECCIÓN :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="2ad255cb-4925-49a6-8257-1feb604c29ae" x="3" y="173" width="58" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[FECHA EMISIÓN:]]></text>
@@ -175,7 +175,7 @@
 			</staticText>
 			<staticText>
 				<reportElement uuid="93e06e52-bb97-4b50-8b03-7c37246e2043" x="3" y="128" width="58" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[SR.(ES) :]]></text>
@@ -185,32 +185,32 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[(074)601831 / 980 988 565]]></text>
+				<text><![CDATA[TLF.: (074)601831 / 980 988 565]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="4a5aba38-608a-4eb8-b04c-308924c10d49" x="0" y="103" width="118" height="19"/>
+				<reportElement uuid="4a5aba38-608a-4eb8-b04c-308924c10d49" x="0" y="103" width="133" height="19"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[aldasa.contabilidad@gmail.com]]></text>
+				<text><![CDATA[E-mail: aldasa.contabilidad@gmail.com]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="66c0237c-56da-4848-93f5-cd9a0f6939fd" x="3" y="188" width="59" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[TIPO MONEDA:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="60ddb155-8525-4422-b417-6cd641167868" x="3" y="203" width="58" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[OBSERVACIÓN:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="bf9e3448-e2f8-4681-9a4f-cdfa483b7910" x="3" y="218" width="58" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[COND. PAGO:]]></text>

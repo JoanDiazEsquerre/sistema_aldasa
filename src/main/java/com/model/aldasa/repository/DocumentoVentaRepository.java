@@ -18,6 +18,6 @@ public interface DocumentoVentaRepository  extends JpaRepository<DocumentoVenta,
 	
 	Page<DocumentoVenta> findByEstadoAndSucursalEmpresaAndFechaEmisionBetween(boolean estado, Empresa empresa, Date fechaIni, Date fechaFin, Pageable pageable);
 	Page<DocumentoVenta> findByEstadoAndSucursalAndFechaEmisionBetween(boolean estado, Sucursal sucursal, Date fechaIni, Date fechaFin, Pageable pageable);
-	Page<DocumentoVenta> findByEstadoAndSucursal(boolean estado, Sucursal sucursal, Pageable pageable);
+	Page<DocumentoVenta> findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLike(boolean estado, Sucursal sucursal, String razonSocial, String numero, String ruc, Pageable pageable);
 
 }

@@ -66,10 +66,16 @@ public class DocumentoVentaServiceImpl implements DocumentoVentaService{
 	}
 
 	@Override
-	public Page<DocumentoVenta> findByEstadoAndSucursal(boolean estado, Sucursal sucursal, Pageable pageable) {
+	public Page<DocumentoVenta> findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLike(boolean estado,
+			Sucursal sucursal, String razonSocial, String numero, String ruc, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return documentoVentaRepository.findByEstadoAndSucursal(estado, sucursal, pageable);
+		return documentoVentaRepository.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLike(estado, sucursal, razonSocial, numero, ruc, pageable);
 	}
+
+	
+
+
+	
 
 	
 }

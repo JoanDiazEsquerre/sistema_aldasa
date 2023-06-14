@@ -35,31 +35,27 @@
 			                      #{row +1}
 			        </p:column>
 
-					<p:column headerText="Cliente" sortBy="#{documento.cliente.person.surnames}" filterBy="#{documento.cliente.person.surnames}" filterMatchMode="contains">
-						<h:outputText value="#{documento.cliente.person.surnames} #{documento.cliente.person.names}" />
+					<p:column headerText="Cliente(Razón social)" sortBy="#{documento.razonSocial}" filterBy="#{documento.razonSocial}" filterMatchMode="contains">
+						<h:outputText value="#{documento.razonSocial}" />
 					</p:column>
 
 					<p:column headerText="Tipo Comprobante" filterMatchMode="contains">
 						<h:outputText value="#{documento.tipoDocumento.abreviatura eq 'B'?'Boleta':'Factura'}" />
 					</p:column>
 
-					<p:column headerText="Número" filterMatchMode="contains">
+					<p:column headerText="Número" sortBy="#{documento.numero}" filterBy="#{documento.numero}" filterMatchMode="contains">
 						<h:outputText value="#{documento.serie}-#{documento.numero}" />
 					</p:column>
 
-					<p:column headerText="RUC/DNI" filterMatchMode="contains">
+					<p:column headerText="RUC/DNI" sortBy="#{documento.ruc}" filterBy="#{documento.ruc}" filterMatchMode="contains">
 						<h:outputText value="#{documento.ruc}" />
-					</p:column>
-
-					<p:column headerText="Razón Social" filterMatchMode="contains">
-						<h:outputText value="#{documento.razonSocial}" />
 					</p:column>
 
 					<p:column headerText="Dirección" filterMatchMode="contains">
 						<h:outputText value="#{documento.direccion}" />
 					</p:column>
 
-					<p:column headerText="Fecha Emision" filterMatchMode="contains">
+					<p:column headerText="Fecha Emision" sortBy="#{documento.fechaEmision}" filterMatchMode="contains">
 						<h:outputText value="#{documento.fechaEmision}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
@@ -249,7 +245,7 @@
 								</p:column>
 								
 								<p:column headerText="Monto" style="text-align:center; width:60px">
-									<h:outputText value="#{cuota.contrato.montoVenta}" style="font-size: 14px;" > 
+									<h:outputText value="#{cuota.cuotaTotal}" style="font-size: 14px;" > 
 										<f:convertNumber type="currency" currencySymbol=""/>
 									</h:outputText>
 								</p:column>
@@ -611,7 +607,7 @@
 					</p:selectOneMenu>
 					
 					<p:commandButton value="Simular Pre-Pago" action="#{documentoVentaBean.simularPrepago()}"  style="margin-left:50px" update=":form:tabView:tableCuotaContrato :form:tabView:mntPrepago :form:tabView:btnGuardar"/>			
-					<p:commandButton value="Guardar" id="btnGuardar" action="#{documentoVentaBean.savePrepago()}" disabled="#{documentoVentaBean.habilitarBoton}" style="margin-left:50px" />			
+					<p:commandButton value="Guardar" id="btnGuardar" action="#{documentoVentaBean.savePrepago()}" disabled="#{documentoVentaBean.habilitarBoton}" style="margin-left:50px" update=":form:tabView:tableContrato :form:tabView:pnlContrato"/>			
 		
 				</h:panelGrid>
 			
@@ -844,7 +840,7 @@
         </h:form>
     </p:confirmDialog>
     
-    <p:confirmDialog id="cancelarContrato" message="¿Está seguro de cancelar el contrato?" header="Confirmación"
+    <p:confirmDialog id="cancelarContrato" message="¿Está seguro de cancelar la simulación del prepago?" header="Confirmación"
                       severity="alert" widgetVar="cancelarContrato" appendTo="@(body)">
         <h:form >
             <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('cancelarContrato').hide()" value="SI" action="#{documentoVentaBean.cancelarContrato()}" update=":form:tabView:tableContrato :form:tabView:pnlContrato"/>
@@ -859,6 +855,8 @@
             <p:commandButton value="NO" oncomplete="PF('anulaDocumento').hide()"/>
         </h:form>
     </p:confirmDialog>
+    
+    
     
 	
 

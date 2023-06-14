@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="repDocumentoFacturaElectronica" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="511" leftMargin="42" rightMargin="42" topMargin="42" bottomMargin="42" uuid="f7cc8725-31db-46d6-9e69-d3629a2409fe">
 	<property name="ireport.zoom" value="1.9965000000000666"/>
 	<property name="ireport.x" value="5"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="48"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#999999"/>
@@ -52,14 +52,14 @@
 			</staticText>
 			<staticText>
 				<reportElement uuid="a5a8f8d0-5696-4983-b6d9-78ff7f7739c9" x="1" y="95" width="58" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[MZ-LT :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="e5bc3441-b6eb-4cc9-ab96-1dacc15bf72a" x="1" y="110" width="58" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[PROYECTO :]]></text>
@@ -76,14 +76,14 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[(074)601831 / 980 988 565]]></text>
+				<text><![CDATA[TLF.: (074)601831 / 980 988 565]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="4a5aba38-608a-4eb8-b04c-308924c10d49" x="0" y="55" width="118" height="19"/>
+				<reportElement uuid="4a5aba38-608a-4eb8-b04c-308924c10d49" x="0" y="55" width="143" height="19"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[aldasa.contabilidad@gmail.com]]></text>
+				<text><![CDATA[E-mail: aldasa.contabilidad@gmail.com]]></text>
 			</staticText>
 			<textField>
 				<reportElement uuid="b146f0ae-c139-4816-84a0-d64f3f2c0a4f" x="61" y="95" width="100" height="15"/>

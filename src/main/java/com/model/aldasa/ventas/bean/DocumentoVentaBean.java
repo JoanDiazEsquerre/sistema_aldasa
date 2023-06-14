@@ -486,6 +486,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		addInfoMessage("Se guardo el prepago correctamente.");
 		lstCuotaPendientes.clear();
+		cancelarContrato();
 	}	
 	
 	public void importarContrato() {
@@ -837,10 +838,10 @@ public class DocumentoVentaBean extends BaseBean {
 					d.getVoucher().setGeneraDocumento(true); 
 					voucherService.save(d.getVoucher());
 				}
-//				if(d.getPrepago()!=null) {
-//					d.getPrepago().setGeneraDocumento(false);
-//					prepagoService.save(d.getPrepago());
-//				}
+				if(d.getCuotaPrepago()!=null) {
+					d.getCuotaPrepago().setPagoTotal("S");
+					cuotaService.save(d.getCuotaPrepago());
+				}
 					
 			}  
 			
@@ -980,6 +981,7 @@ public class DocumentoVentaBean extends BaseBean {
 		tipoPrepago = "C";
 		habilitarBoton=true;
 		habilitarMontoPrepago=false;
+		
 	}
 	
 	public void validacionFecha() {
@@ -1187,9 +1189,10 @@ public class DocumentoVentaBean extends BaseBean {
 			direccion = prepagoSelected.getContrato().getPersonVenta().getAddress(); 
 		}
 		
-//		if() {
-//			
-//		}
+		if(prepagoSelected.getCuotaRef()!=null) {
+			cuotaSelected=prepagoSelected.getCuotaRef();
+			importarCuota();
+		}
 		
 		DetalleDocumentoVenta detalle = new DetalleDocumentoVenta();
 		//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
@@ -1297,9 +1300,11 @@ public class DocumentoVentaBean extends BaseBean {
 			@Override
 			public List<DocumentoVenta> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                
-//				String names = "%" + (filterBy.get("person.surnames") != null ? filterBy.get("person.surnames").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+				String razonSocial = "%" + (filterBy.get("razonSocial") != null ? filterBy.get("razonSocial").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+				String numero = "%" + (filterBy.get("numero") != null ? filterBy.get("numero").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+				String ruc = "%" + (filterBy.get("ruc") != null ? filterBy.get("ruc").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
 
-                Sort sort=Sort.by("estado").ascending();
+                Sort sort=Sort.by("fechaEmision").descending();
                 if(sortBy!=null) {
                 	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
                 	   if(entry.getValue().getOrder().isAscending()) {
@@ -1315,7 +1320,7 @@ public class DocumentoVentaBean extends BaseBean {
                 Page<DocumentoVenta> pageDocumentoVenta=null;
                
                 
-                pageDocumentoVenta= documentoVentaService.findByEstadoAndSucursal(estado, navegacionBean.getSucursalLogin(), pageable);
+                pageDocumentoVenta= documentoVentaService.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLike(estado, navegacionBean.getSucursalLogin(), razonSocial, numero, ruc, pageable);
                 
                 setRowCount((int) pageDocumentoVenta.getTotalElements());
                 return datasource = pageDocumentoVenta.getContent();
