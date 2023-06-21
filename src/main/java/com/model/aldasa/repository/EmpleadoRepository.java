@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.model.aldasa.entity.Area;
 import com.model.aldasa.entity.Empleado;
+import com.model.aldasa.entity.Empresa;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Profile;
 import com.model.aldasa.entity.Sucursal;
@@ -24,10 +25,10 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, Integer> {
 	@Query(nativeQuery = true,value = "SELECT * FROM empleado WHERE idPerson=:idPerson AND id<>:idEmpleado ")
 	Empleado findByPersonIdException(int idPerson, int idEmpleado);
 	
-	Page<Empleado> findByEstadoAndSucursal(boolean status, Sucursal sucursal, Pageable pageable);
-	Page<Empleado> findByPersonAndEstadoAndSucursal(Person person, boolean status, Sucursal sucursal, Pageable pageable);
-	Page<Empleado> findByEstadoAndAreaAndSucursal(boolean estado, Area area, Sucursal sucursal, Pageable pageable);
-	Page<Empleado> findByPersonAndEstadoAndAreaAndSucursal(Person person, boolean status, Area area, Sucursal sucursal, Pageable pageable);
+	Page<Empleado> findByEstadoAndSucursalEmpresa(boolean status, Empresa empresa, Pageable pageable);
+	Page<Empleado> findByPersonAndEstadoAndSucursalEmpresa(Person person, boolean status, Empresa empresa, Pageable pageable);
+	Page<Empleado> findByEstadoAndAreaAndSucursalEmpresa(boolean estado, Area area, Empresa empresa, Pageable pageable);
+	Page<Empleado> findByPersonAndEstadoAndAreaAndSucursalEmpresa(Person person, boolean status, Area area, Empresa empresa, Pageable pageable);
 	
 	List<Empleado> findByEstado(boolean status);
 	List<Empleado> findByPersonAndEstado(Person person, boolean status);

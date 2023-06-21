@@ -156,8 +156,9 @@ public class DocumentoVentaBean extends BaseBean {
 	private String fechaTextoVista, montoLetra;
 	private String  ruc, nombreRazonSocial, direccion, observacion, numero ; 
 	private String tipoPago = "Contado";
-	private String tipoPrepago = "C";
+	private String tipoPrepago ="PC";
 	private String incluirUltimaCuota = "No";
+	private Integer nuevoNroCuotas;
 
 	private boolean pagoTotalPrepago = false;
 	private boolean habilitarBoton = true;
@@ -180,6 +181,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private BigDecimal deudaActualSinInteres = BigDecimal.ZERO;
 	private BigDecimal deudaActualConInteres = BigDecimal.ZERO;
 	private BigDecimal montoPrepago = BigDecimal.ZERO;
+	private BigDecimal nuevoInteres;
 	
 	private String tituloDialog;
 	private String imagen1, imagen2, imagen3, imagen4, imagen5;
@@ -266,41 +268,44 @@ public class DocumentoVentaBean extends BaseBean {
 			return;
 		}
 		
-		if(montoPrepago==null) {
-			addErrorMessage("Ingresar monto.");
-			return;
-		}
-		if(montoPrepago.compareTo(BigDecimal.ZERO)<=0) {
-			addErrorMessage("Monto tiene que ser mayor a 0.");
-			return;
-		}
-		
-		if(montoPrepago.compareTo(deudaActualConInteres)==0) {
-			pagoTotalPrepago = true;
-		}else if(montoPrepago.compareTo(deudaActualConInteres)==1) {
-			pagoTotalPrepago = false;
-			addErrorMessage("El monto prepago no debe ser mayor a la deuda actual.");
-			return;
-		}else {
-			pagoTotalPrepago = false;
-		}
-		
-		int primeraCuotaPendiente = lstCuotaPendientes.get(0).getNroCuota();
-		
-		if(primeraCuotaPendiente<=6 && montoPrepago.compareTo(deudaActualSinInteres)>0) {
-			addErrorMessage("Por estar dentro de los 6 primeros meses, el monto a prepagar debe ser " + deudaActualSinInteres);
-			return;
-		}
 		
 		
 		lstCuotaPendientesTemporal = new ArrayList<>();
 		
-		lstCuotaVista.clear();
 		
 		
 		
 		
-		if(tipoPrepago.equals("C")) {
+		
+		if(tipoPrepago.equals("PC")) {
+			
+			if(montoPrepago==null) {
+				addErrorMessage("Ingresar monto.");
+				return;
+			}
+			if(montoPrepago.compareTo(BigDecimal.ZERO)<=0) {
+				addErrorMessage("Monto tiene que ser mayor a 0.");
+				return;
+			}
+			
+			if(montoPrepago.compareTo(deudaActualConInteres)==0) {
+				pagoTotalPrepago = true;
+			}else if(montoPrepago.compareTo(deudaActualConInteres)==1) {
+				pagoTotalPrepago = false;
+				addErrorMessage("El monto prepago no debe ser mayor a la deuda actual.");
+				return;
+			}else {
+				pagoTotalPrepago = false;
+			}
+			
+			int primeraCuotaPendiente = lstCuotaPendientes.get(0).getNroCuota();
+			
+			if(primeraCuotaPendiente<=6 && montoPrepago.compareTo(deudaActualSinInteres)>0) {
+				addErrorMessage("Por estar dentro de los 6 primeros meses, el monto a prepagar debe ser " + deudaActualSinInteres);
+				return;
+			}
+			
+//			---------------------------------------------------------------------------------
 			
 			BigDecimal saldo = contratoPendienteSelected.getMontoVenta();
 			for(Cuota c:lstCuotaPagadas) {
@@ -311,6 +316,8 @@ public class DocumentoVentaBean extends BaseBean {
 			Cuota cuota = new Cuota();
 			cuota.setCuotaSI(montoPrepago);
 			cuota.setCuotaTotal(montoPrepago);
+			
+			lstCuotaVista.clear();
 
 			if(incluirUltimaCuota.equals("Si")) {
 				cuota.setCuotaRef(lstCuotaPendientes.get(0));
@@ -336,8 +343,6 @@ public class DocumentoVentaBean extends BaseBean {
 			lstCuotaVista.add(cuota);
 			lstCuotaPendientesTemporal.add(cuota);
 			
-		
-			
 			BigDecimal nuevaCuotaSI = saldo.divide(new BigDecimal(lstCuotaPendientes.size()), 2, RoundingMode.HALF_UP);
 			BigDecimal nuevoInteres = nuevaCuotaSI.multiply(contratoPendienteSelected.getInteres().divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
 
@@ -351,74 +356,156 @@ public class DocumentoVentaBean extends BaseBean {
 				lstCuotaPendientesTemporal.add(nuevaCuota);
 			} 
 			
+		}else if(tipoPrepago.equals("AR")) {
+			if(nuevoNroCuotas == null) {
+				addErrorMessage("Ingresar el nuevo número de cuotas.");
+				return;
+			}
+			
+			if(nuevoInteres == null) {
+				addErrorMessage("Ingresar el nuevo interés.");
+				return;
+			}
+			
+//			---------------------------------------------------------------------------------
+
+			BigDecimal saldo = contratoPendienteSelected.getMontoVenta();
+			for(Cuota c:lstCuotaPagadas) {
+				saldo = saldo.subtract(c.getCuotaSI());
+				if(nuevoInteres.compareTo(BigDecimal.ZERO)==0) {
+					saldo=saldo.subtract(c.getInteres());
+				}
+			}
+			
+			Integer nuevoNroCuotas = lstCuotaPagadas.size()-1;
+			BigDecimal nuevaCuotaSI = saldo.divide(new BigDecimal(lstCuotaPendientes.size()), 2, RoundingMode.HALF_UP);
+			BigDecimal nuevoInteres = nuevaCuotaSI.multiply(contratoPendienteSelected.getInteres().divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+
+			for(int i=0; i<=nuevoNroCuotas;i++) {
+				
+			}
+			
+			
+			
+			for (Cuota c:lstCuotaPendientes) {
+
+				Cuota nuevaCuota = new Cuota(c);
+				nuevaCuota.setCuotaSI(nuevaCuotaSI);
+				nuevaCuota.setInteres(nuevoInteres);
+				nuevaCuota.setCuotaTotal(nuevaCuotaSI.add(nuevoInteres));
+				lstCuotaVista.add(nuevaCuota);
+				lstCuotaPendientesTemporal.add(nuevaCuota);
+			}
+			
 		}else {
-			Cuota cuota = new Cuota();
-			cuota.setNroCuota(0);
-			cuota.setFechaPago(new Date());
-			cuota.setCuotaSI(montoPrepago);
-			cuota.setInteres(BigDecimal.ZERO);
-			cuota.setCuotaTotal(montoPrepago);
-			cuota.setAdelanto(BigDecimal.ZERO);
-			cuota.setPagoTotal("S");
-			cuota.setContrato(contratoPendienteSelected);
-			cuota.setEstado(true);
-			cuota.setOriginal(false);
-			cuota.setPrepago(true);
-			lstCuotaVista.add(cuota);
-			lstCuotaPendientesTemporal.add(cuota);
-			
-			BigDecimal sumaCuotaSI = BigDecimal.ZERO;
-			
-			BigDecimal ultimoValor = BigDecimal.ZERO;
-			int nroCuotaResta=0;
-			
-			for(Cuota c:lstCuotaPendientes) {
-				if(sumaCuotaSI.compareTo(montoPrepago)<=0) {
-					nroCuotaResta ++;
-					sumaCuotaSI = sumaCuotaSI.add(c.getCuotaSI());
-					ultimoValor = c.getCuotaSI();
-				}else {
-					nroCuotaResta --;
-					sumaCuotaSI = sumaCuotaSI.subtract(ultimoValor);
-//						double numeroCuota = sumaCuotaSI.doubleValue();
-//						nroCuotaResta = (int) numeroCuota;
-					break;
-				}
+			if(montoPrepago==null) {
+				addErrorMessage("Ingresar monto.");
+				return;
+			}
+			if(montoPrepago.compareTo(BigDecimal.ZERO)<=0) {
+				addErrorMessage("Monto tiene que ser mayor a 0.");
+				return;
 			}
 			
-			BigDecimal sumaMontoPendiente = BigDecimal.ZERO;
-			for(Cuota c:lstCuotaPendientes) {
-				
-				if(primeraCuotaPendiente<=6 && montoPrepago.compareTo(deudaActualSinInteres)==0) {
-					sumaMontoPendiente = sumaMontoPendiente.add(c.getCuotaSI());
-				}else {
-					sumaMontoPendiente = sumaMontoPendiente.add(c.getCuotaTotal());
-				}
-				
+			if(montoPrepago.compareTo(deudaActualConInteres)==0) {
+				pagoTotalPrepago = true;
+			}else if(montoPrepago.compareTo(deudaActualConInteres)==1) {
+				pagoTotalPrepago = false;
+				addErrorMessage("El monto prepago no debe ser mayor a la deuda actual.");
+				return;
+			}else {
+				pagoTotalPrepago = false;
 			}
 			
+			int primeraCuotaPendiente = lstCuotaPendientes.get(0).getNroCuota();
 			
-			sumaMontoPendiente = sumaMontoPendiente.subtract(montoPrepago);
-			int nuevasCuotasAlTiempo = lstCuotaPendientes.size() - nroCuotaResta ;
-			BigDecimal cuotaSINueva = sumaMontoPendiente.divide(new BigDecimal(nuevasCuotasAlTiempo), 2, RoundingMode.HALF_UP);
-			BigDecimal interesNuevo = cuotaSINueva.multiply(contratoPendienteSelected.getInteres().divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
-			
-			int contador = 1;
-			
-			for(Cuota c: lstCuotaPendientes) {
-				if(contador <= nuevasCuotasAlTiempo) {
-					Cuota nuevaCuota = new Cuota(c);
-					nuevaCuota.setCuotaSI(cuotaSINueva);
-					nuevaCuota.setInteres(interesNuevo);
-					nuevaCuota.setCuotaTotal(cuotaSINueva.add(interesNuevo));
-					lstCuotaVista.add(nuevaCuota);
-					lstCuotaPendientesTemporal.add(nuevaCuota);
-				}
-				
-				contador++;		
+			if(primeraCuotaPendiente<=6 && montoPrepago.compareTo(deudaActualSinInteres)>0) {
+				addErrorMessage("Por estar dentro de los 6 primeros meses, el monto a prepagar debe ser " + deudaActualSinInteres);
+				return;
 			}
+			if(nuevoNroCuotas == null) {
+				addErrorMessage("Ingresar el nuevo número de cuotas.");
+				return;
+			}
+			
+			if(nuevoInteres == null) {
+				addErrorMessage("Ingresar el nuevo interés.");
+				return;
+			}
+			
+//			---------------------------------------------------------------------------------
+
 			
 		}
+		
+//		else {
+//			Cuota cuota = new Cuota();
+//			cuota.setNroCuota(0);
+//			cuota.setFechaPago(new Date());
+//			cuota.setCuotaSI(montoPrepago);
+//			cuota.setInteres(BigDecimal.ZERO);
+//			cuota.setCuotaTotal(montoPrepago);
+//			cuota.setAdelanto(BigDecimal.ZERO);
+//			cuota.setPagoTotal("S");
+//			cuota.setContrato(contratoPendienteSelected);
+//			cuota.setEstado(true);
+//			cuota.setOriginal(false);
+//			cuota.setPrepago(true);
+//			lstCuotaVista.add(cuota);
+//			lstCuotaPendientesTemporal.add(cuota);
+//			
+//			BigDecimal sumaCuotaSI = BigDecimal.ZERO;
+//			
+//			BigDecimal ultimoValor = BigDecimal.ZERO;
+//			int nroCuotaResta=0;
+//			
+//			for(Cuota c:lstCuotaPendientes) {
+//				if(sumaCuotaSI.compareTo(montoPrepago)<=0) {
+//					nroCuotaResta ++;
+//					sumaCuotaSI = sumaCuotaSI.add(c.getCuotaSI());
+//					ultimoValor = c.getCuotaSI();
+//				}else {
+//					nroCuotaResta --;
+//					sumaCuotaSI = sumaCuotaSI.subtract(ultimoValor);
+////						double numeroCuota = sumaCuotaSI.doubleValue();
+////						nroCuotaResta = (int) numeroCuota;
+//					break;
+//				}
+//			}
+//			
+//			BigDecimal sumaMontoPendiente = BigDecimal.ZERO;
+//			for(Cuota c:lstCuotaPendientes) {
+//				
+//				if(primeraCuotaPendiente<=6 && montoPrepago.compareTo(deudaActualSinInteres)==0) {
+//					sumaMontoPendiente = sumaMontoPendiente.add(c.getCuotaSI());
+//				}else {
+//					sumaMontoPendiente = sumaMontoPendiente.add(c.getCuotaTotal());
+//				}
+//				
+//			}
+//			
+//			
+//			sumaMontoPendiente = sumaMontoPendiente.subtract(montoPrepago);
+//			int nuevasCuotasAlTiempo = lstCuotaPendientes.size() - nroCuotaResta ;
+//			BigDecimal cuotaSINueva = sumaMontoPendiente.divide(new BigDecimal(nuevasCuotasAlTiempo), 2, RoundingMode.HALF_UP);
+//			BigDecimal interesNuevo = cuotaSINueva.multiply(contratoPendienteSelected.getInteres().divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+//			
+//			int contador = 1;
+//			
+//			for(Cuota c: lstCuotaPendientes) {
+//				if(contador <= nuevasCuotasAlTiempo) {
+//					Cuota nuevaCuota = new Cuota(c);
+//					nuevaCuota.setCuotaSI(cuotaSINueva);
+//					nuevaCuota.setInteres(interesNuevo);
+//					nuevaCuota.setCuotaTotal(cuotaSINueva.add(interesNuevo));
+//					lstCuotaVista.add(nuevaCuota);
+//					lstCuotaPendientesTemporal.add(nuevaCuota);
+//				}
+//				
+//				contador++;		
+//			}
+//			
+//		}
 		
 		habilitarBoton=false;
 		habilitarMontoPrepago=true;
@@ -2263,6 +2350,18 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public Cuota getPrepagoSelected() {
 		return prepagoSelected;
+	}
+	public Integer getNuevoNroCuotas() {
+		return nuevoNroCuotas;
+	}
+	public void setNuevoNroCuotas(Integer nuevoNroCuotas) {
+		this.nuevoNroCuotas = nuevoNroCuotas;
+	}
+	public BigDecimal getNuevoInteres() {
+		return nuevoInteres;
+	}
+	public void setNuevoInteres(BigDecimal nuevoInteres) {
+		this.nuevoInteres = nuevoInteres;
 	}
 	
 	

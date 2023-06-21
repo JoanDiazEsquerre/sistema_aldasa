@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Area;
 import com.model.aldasa.entity.Empleado;
+import com.model.aldasa.entity.Empresa;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.repository.EmpleadoRepository;
@@ -101,35 +102,34 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 
 
 	@Override
-	public Page<Empleado> findByEstadoAndSucursal(boolean status, Sucursal sucursal, Pageable pageable) {
+	public Page<Empleado> findByEstadoAndSucursalEmpresa(boolean status, Empresa empresa, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return empleadoRepository.findByEstadoAndSucursal(status, sucursal, pageable);
+		return empleadoRepository.findByEstadoAndSucursalEmpresa(status, empresa, pageable);
 	}
 
 
 	@Override
-	public Page<Empleado> findByPersonAndEstadoAndSucursal(Person person, boolean status, Sucursal sucursal,
+	public Page<Empleado> findByPersonAndEstadoAndSucursalEmpresa(Person person, boolean status, Empresa empresa,
 			Pageable pageable) {
 		// TODO Auto-generated method stub
-		return empleadoRepository.findByPersonAndEstadoAndSucursal(person, status, sucursal, pageable);
+		return empleadoRepository.findByPersonAndEstadoAndSucursalEmpresa(person, status, empresa, pageable);
 	}
 
 
 	@Override
-	public Page<Empleado> findByEstadoAndAreaAndSucursal(boolean estado, Area area, Sucursal sucursal,
+	public Page<Empleado> findByEstadoAndAreaAndSucursalEmpresa(boolean estado, Area area, Empresa empresa,
 			Pageable pageable) {
 		// TODO Auto-generated method stub
-		return empleadoRepository.findByEstadoAndAreaAndSucursal(estado, area, sucursal, pageable);
+		return empleadoRepository.findByEstadoAndAreaAndSucursalEmpresa(estado, area, empresa, pageable);
 	}
 
 
 	@Override
-	public Page<Empleado> findByPersonAndEstadoAndAreaAndSucursal(Person person, boolean status, Area area,
-			Sucursal sucursal, Pageable pageable) {
+	public Page<Empleado> findByPersonAndEstadoAndAreaAndSucursalEmpresa(Person person, boolean status, Area area,
+			Empresa empresa, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return empleadoRepository.findByPersonAndEstadoAndAreaAndSucursal(person, status, area, sucursal, pageable);
+		return empleadoRepository.findByPersonAndEstadoAndAreaAndSucursalEmpresa(person, status, area, empresa, pageable);
 	}
-
 
 
 

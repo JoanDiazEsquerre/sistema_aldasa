@@ -868,13 +868,13 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 				Page<Empleado> pageEmpleado = null;
 
 				if(empleadoBusqueda==null && areaSelected==null) {
-					pageEmpleado = empleadoService.findByEstadoAndSucursal(true, navegacionBean.getSucursalLogin(), pageable);
+					pageEmpleado = empleadoService.findByEstadoAndSucursalEmpresa(true, navegacionBean.getSucursalLogin().getEmpresa(), pageable);
 				}else if(empleadoBusqueda!=null && areaSelected==null) {
-					pageEmpleado = empleadoService.findByPersonAndEstadoAndSucursal(empleadoBusqueda.getPerson(), true, navegacionBean.getSucursalLogin(), pageable);
+					pageEmpleado = empleadoService.findByPersonAndEstadoAndSucursalEmpresa(empleadoBusqueda.getPerson(), true, navegacionBean.getSucursalLogin().getEmpresa(), pageable);
 				}else if(empleadoBusqueda==null && areaSelected!= null) {
-					pageEmpleado = empleadoService.findByEstadoAndAreaAndSucursal(true, areaSelected, navegacionBean.getSucursalLogin(), pageable);
+					pageEmpleado = empleadoService.findByEstadoAndAreaAndSucursalEmpresa(true, areaSelected, navegacionBean.getSucursalLogin().getEmpresa(), pageable);
 				}else if(empleadoBusqueda!=null && areaSelected!= null) {
-					pageEmpleado = empleadoService.findByPersonAndEstadoAndAreaAndSucursal(empleadoBusqueda.getPerson(), true, areaSelected, navegacionBean.getSucursalLogin(), pageable);
+					pageEmpleado = empleadoService.findByPersonAndEstadoAndAreaAndSucursalEmpresa(empleadoBusqueda.getPerson(), true, areaSelected, navegacionBean.getSucursalLogin().getEmpresa(), pageable);
 				}
 
 				setRowCount((int) pageEmpleado.getTotalElements());
