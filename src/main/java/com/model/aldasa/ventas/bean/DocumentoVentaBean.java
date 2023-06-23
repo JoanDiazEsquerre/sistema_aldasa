@@ -444,6 +444,77 @@ public class DocumentoVentaBean extends BaseBean {
 			
 //			---------------------------------------------------------------------------------
 
+			BigDecimal saldo = contratoPendienteSelected.getMontoVenta();
+			for(Cuota c:lstCuotaPagadas) {
+				saldo = saldo.subtract(c.getCuotaSI());
+				if(nuevoInteres.compareTo(BigDecimal.ZERO)==0) {
+					saldo=saldo.subtract(c.getInteres());
+				}
+			}
+			
+			saldo = saldo.subtract(montoPrepago);	
+			
+			Cuota cuota = new Cuota();
+			cuota.setCuotaSI(montoPrepago);
+			cuota.setCuotaTotal(montoPrepago);
+			
+			lstCuotaVista.clear();
+
+			if(incluirUltimaCuota.equals("Si")) {
+				cuota.setCuotaRef(lstCuotaPendientes.get(0));
+				lstCuotaPendientes.get(0).setPagoTotal("S");
+				lstCuotaPagadas.add(lstCuotaPendientes.get(0));
+				cuota.setCuotaSI(montoPrepago.subtract(lstCuotaPendientes.get(0).getCuotaTotal()));
+				cuota.setCuotaTotal(montoPrepago.subtract(lstCuotaPendientes.get(0).getCuotaTotal()));
+				saldo = saldo.add(lstCuotaPendientes.get(0).getInteres());
+				lstCuotaPendientes.remove(0);
+			}
+			
+			lstCuotaVista.addAll(lstCuotaPagadas);
+		
+			cuota.setNroCuota(0);
+			cuota.setFechaPago(new Date());
+			cuota.setInteres(BigDecimal.ZERO);
+			cuota.setAdelanto(BigDecimal.ZERO);
+			cuota.setPagoTotal("N");
+			cuota.setContrato(contratoPendienteSelected);
+			cuota.setEstado(true);
+			cuota.setOriginal(false);
+			cuota.setPrepago(true);
+			lstCuotaVista.add(cuota);
+			lstCuotaPendientesTemporal.add(cuota);
+			
+			
+			
+			Integer nuevoNroCuotasPendientes = nuevoNroCuotas - lstCuotaPagadas.size()+1;
+			BigDecimal nuevaCuotaSI = saldo.divide(new BigDecimal(nuevoNroCuotasPendientes), 2, RoundingMode.HALF_UP);
+			BigDecimal nuevoInteresRedAmpl = nuevaCuotaSI.multiply(nuevoInteres.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+			Integer nroCuota = lstCuotaPagadas.size();
+			Date fecha = lstCuotaPagadas.get(1).getFechaPago();
+
+			
+			for(int i=0; i<nuevoNroCuotasPendientes;i++) {
+				
+				Cuota nuevaCuota = new Cuota();
+				nuevaCuota.setNroCuota(nroCuota);
+				nuevaCuota.setFechaPago(sumarRestarMeses(fecha, lstCuotaPagadas.size()-1+i));
+				nuevaCuota.setCuotaSI(nuevaCuotaSI);
+				nuevaCuota.setInteres(nuevoInteresRedAmpl);
+				nuevaCuota.setCuotaTotal(nuevaCuotaSI.add(nuevoInteresRedAmpl));
+				nuevaCuota.setAdelanto(BigDecimal.ZERO);
+				nuevaCuota.setPagoTotal("N");
+				nuevaCuota.setContrato(contratoPendienteSelected);
+				nuevaCuota.setEstado(true);
+				nuevaCuota.setOriginal(false);
+				nuevaCuota.setPrepago(false);
+				nuevaCuota.setCuotaRef(null);
+				
+				lstCuotaVista.add(nuevaCuota);
+				lstCuotaPendientesTemporal.add(nuevaCuota);
+				nroCuota++;
+				
+			}
+			
 			
 		}
 	
