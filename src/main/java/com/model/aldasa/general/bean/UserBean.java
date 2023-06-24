@@ -265,19 +265,19 @@ public class UserBean extends BaseBean implements Serializable {
 	public void saveUpdateUser() {
 		
 		if(userSelected.getPerson()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta asignar una persona."));
+			addErrorMessage("Falta asignar una persona.");
 			return ;
 		}else {
 			if(tituloDialog.equals("NUEVO USUARIO")) {
 				Usuario buscarPorPersona =usuarioService.findByPerson(userSelected.getPerson());
 				if(buscarPorPersona!=null) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La persona esta asignada en otro Usuario."));
+					addErrorMessage("La persona esta asignada en otro Usuario.");
 					return;
 				}
 			}else {
 				Usuario buscaUsername = usuarioService.findByPersonException(userSelected.getPerson().getId(), userSelected.getId());
 				if(buscaUsername!=null ) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La persona esta asignada en otro Usuario.."));
+					addErrorMessage("La persona esta asignada en otro Usuario..");
 					return;
 				}
 			}
@@ -286,19 +286,19 @@ public class UserBean extends BaseBean implements Serializable {
 		}
 		
 		if(userSelected.getUsername() == null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Nombre de usuario."));
+			addErrorMessage("Falta ingresar Nombre de usuario.");
 			return ;
 		}else {
 			if(tituloDialog.equals("NUEVO USUARIO")) {
 				Usuario buscaUsername = usuarioService.findByUsername(userSelected.getUsername());
 				if(buscaUsername!=null ) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya existe el nombre de usuario."));
+					addErrorMessage("Ya existe el nombre de usuario.");
 					return;
 				}
 			}else {
 				Usuario buscaUsername = usuarioService.findByUsernameException(userSelected.getUsername(), userSelected.getId());
 				if(buscaUsername!=null ) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya existe el nombre de usuario."));
+					addErrorMessage("Ya existe el nombre de usuario.");
 					return ;
 				}
 			}
@@ -306,16 +306,16 @@ public class UserBean extends BaseBean implements Serializable {
 		}
 		
 		if(userSelected.getPassword().equals("") || userSelected.getPassword()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar contraseña."));
+			addErrorMessage("Falta ingresar contraseña.");
 			return ;
 		}
 		
 		if(userSelected.getProfile()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar perfil."));
+			addErrorMessage("Seleccionar perfil.");
 			return ;
 		}
 		if(userSelected.getTeam()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar equipo."));
+			addErrorMessage("Seleccionar equipo.");
 			return ;
 		}
 			
@@ -325,13 +325,13 @@ public class UserBean extends BaseBean implements Serializable {
 			
 			Usuario usu = usuarioService.save(userSelected);
 			if(usu==null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se puede guardar."));
+				addErrorMessage("No se puede guardar.");
 				return ;
 			}
 		}else {
 			Usuario usu = usuarioService.save(userSelected); 
 			if(usu==null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se puede guardar."));
+				addErrorMessage("No se puede guardar.");
 				return ;
 			}
 		}
@@ -353,8 +353,7 @@ public class UserBean extends BaseBean implements Serializable {
 
 			}
 		}
-
-		FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente."));
+		addInfoMessage("Se guardó correctamente.");
 		Empleado empleado = empleadoService.findByPerson(userSelected.getPerson());
 		if(empleado != null) {
 			empleado.setEstado(false);

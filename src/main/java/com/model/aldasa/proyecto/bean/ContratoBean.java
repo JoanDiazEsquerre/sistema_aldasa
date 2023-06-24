@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
@@ -50,6 +52,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STVerticalJc;
 import org.primefaces.context.PrimeRequestContext;
+import org.primefaces.event.CellEditEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -168,6 +171,25 @@ public class ContratoBean extends BaseBean implements Serializable{
 		lstCuentaBancaria = cuentaBancariaService.findByEstadoAndMonedaLike(true, "%S%");
 		verCronogramaPago();
 	}
+	
+	public void onCellEdit(CellEditEvent event) throws ParseException {
+		Cuota cuota = lstCuotaVista.get(event.getRowIndex());
+        Object oldValue = event.getOldValue();
+        Object newValue = event.getNewValue();
+      
+
+        if (newValue != null && !newValue.equals(oldValue)) {
+//        	Date fecha = sdf.parse(event.getNewValue().toString()+"");
+//        	cuota.setFechaPago(fecha);
+        	cuotaService.save(cuota);
+            addInfoMessage("Se cambió la fecha correctamente.");
+        }
+    }
+	
+//	public void editarCronograma(Cuota cuota) {
+//		cuotaService.save(cuota);
+//		addInfoMessage("Se cambió la fecha correctamente.");
+//	}
 	
 	public void generarPdfCronograma() {
 		 if (lstCuotaVista == null || lstCuotaVista.isEmpty()) {

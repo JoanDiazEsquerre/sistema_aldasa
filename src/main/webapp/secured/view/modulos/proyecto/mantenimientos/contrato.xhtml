@@ -257,8 +257,10 @@
 			<p:commandButton value="Descargar" icon="pi pi-file-pdf" action="#{contratoBean.generarPdfCronograma()}" ajax="false" /> 
 	
 			<p:dataTable var="cuotaContrato" value="#{contratoBean.lstCuotaVista}" rows="24" paginator="true" selectionMode="single" rowIndexVar="row"  
-					paginatorPosition="bottom"  rowKey="#{cuotaContrato.id}" id="tableCuotaContrato"
+					paginatorPosition="bottom"  rowKey="#{cuotaContrato.id}" id="tableCuotaContrato" editable="true" editMode="cell"
 					emptyMessage="No se encontraron cronograma de deudas." size="small">
+					
+					<p:ajax event="cellEdit" listener="#{contratoBean.onCellEdit}" />
 
 					<f:facet name="header">
 						<div class="p-d-flex p-ai-center p-jc-between">
@@ -270,11 +272,18 @@
 						<h:outputText  value="#{cuotaContrato.prepago eq true ? 'Prepago' : cuotaContrato.nroCuota}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"/>
 					</p:column>
 					
-					<p:column headerText="Periodo" filterMatchMode="contains" >
-						<h:outputText value="#{cuotaContrato.fechaPago}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
+					<p:column  headerText="Periodo" filterMatchMode="contains">
+		                <p:cellEditor>
+		                    <f:facet name="output">
+		                       	<h:outputText value="#{cuotaContrato.fechaPago}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
 		        			<f:convertDateTime pattern="dd/MM/yyyy" />
 		        		</h:outputText>
-					</p:column>
+		                    </f:facet>
+		                    <f:facet name="input">
+		                        <p:datePicker value="#{cuotaContrato.fechaPago}" />
+		                    </f:facet>
+		                </p:cellEditor>
+	                </p:column>
 				
 					<p:column headerText="Cuota SI" filterMatchMode="contains" >
 						<h:outputText  value="#{cuotaContrato.cuotaSI}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 

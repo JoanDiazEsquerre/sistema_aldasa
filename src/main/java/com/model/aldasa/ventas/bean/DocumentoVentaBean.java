@@ -272,6 +272,8 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		lstCuotaPendientesTemporal = new ArrayList<>();
 		
+//		---------------------------------------------------------------------------------
+		
 		if(tipoPrepago.equals("PC")) {
 			
 			if(montoPrepago==null) {
@@ -299,9 +301,7 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Por estar dentro de los 6 primeros meses, el monto a prepagar debe ser " + deudaActualSinInteres);
 				return;
 			}
-			
-//			---------------------------------------------------------------------------------
-			
+						
 			BigDecimal saldo = contratoPendienteSelected.getMontoVenta();
 			for(Cuota c:lstCuotaPagadas) {
 				saldo = saldo.subtract(c.getCuotaSI());
@@ -351,6 +351,8 @@ public class DocumentoVentaBean extends BaseBean {
 				lstCuotaPendientesTemporal.add(nuevaCuota);
 			} 
 			
+//			---------------------------------------------------------------------------------
+			
 		}else if(tipoPrepago.equals("AR")) {
 			if(nuevoNroCuotas == null) {
 				addErrorMessage("Ingresar el nuevo número de cuotas.");
@@ -362,7 +364,6 @@ public class DocumentoVentaBean extends BaseBean {
 				return;
 			}
 			
-//			---------------------------------------------------------------------------------
 
 			BigDecimal saldo = contratoPendienteSelected.getMontoVenta();
 			for(Cuota c:lstCuotaPagadas) {
@@ -405,6 +406,7 @@ public class DocumentoVentaBean extends BaseBean {
 				
 			}
 			
+//			---------------------------------------------------------------------------------
 			
 		}else {
 			if(montoPrepago==null) {
@@ -442,7 +444,6 @@ public class DocumentoVentaBean extends BaseBean {
 				return;
 			}
 			
-//			---------------------------------------------------------------------------------
 
 			BigDecimal saldo = contratoPendienteSelected.getMontoVenta();
 			for(Cuota c:lstCuotaPagadas) {

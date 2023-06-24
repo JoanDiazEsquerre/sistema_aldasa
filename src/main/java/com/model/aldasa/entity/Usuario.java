@@ -33,6 +33,11 @@ public class Usuario {
 	@JoinColumn(name="idteam")
 	private Team team;
 	
+	@Column(name="modificarcronograma")
+	private boolean modificarCronograma;
+	
+	
+	
 	
 	public Integer getId() {
 		return id;
@@ -75,6 +80,12 @@ public class Usuario {
 	}
 	public void setTeam(Team team) {
 		this.team = team;
+	}
+	public boolean isModificarCronograma() {
+		return modificarCronograma;
+	}
+	public void setModificarCronograma(boolean modificarCronograma) {
+		this.modificarCronograma = modificarCronograma;
 	}	
 	
 }
