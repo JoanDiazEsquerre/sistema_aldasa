@@ -2,8 +2,10 @@ package com.model.aldasa.prospeccion.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -117,11 +119,14 @@ public class SimuladorBean extends BaseBean  implements Serializable {
 		if(porcentaje==0) {
 			montoInteres=BigDecimal.ZERO;
 			
-			BigDecimal cuota = montoDeuda.divide(new BigDecimal(numeroCuotas));
+			BigDecimal cuota = montoDeuda.divide(new BigDecimal(numeroCuotas), 2, RoundingMode.HALF_UP);
 			
 			
 			BigDecimal sumaTotal=BigDecimal.ZERO;
 			List<Simulador> listaPrevia = new ArrayList<>();
+			BigDecimal sumaDecimales = BigDecimal.ZERO;
+			BigDecimal sumaCuotaSI = BigDecimal.ZERO;
+			
 			for(int i=0; i<numeroCuotas-1;i++) {
 				Simulador filaCouta = new Simulador();
 				filaCouta.setNroCuota((i+2)+"");
@@ -129,17 +134,39 @@ public class SimuladorBean extends BaseBean  implements Serializable {
 				filaCouta.setCuotaSI(cuota);
 				filaCouta.setInteres(BigDecimal.ZERO);
 				filaCouta.setCuotaTotal(cuota);
-				listaPrevia.add(filaCouta);
+								
 				
 				sumaTotal = sumaTotal.add(filaCouta.getCuotaSI());
+				
+				String decimalCuotaTotal = filaCouta.getCuotaTotal().toString();
+				String separador = Pattern.quote(".");
+				String[] partes = decimalCuotaTotal.split(separador);
+				if(partes.length>1) {
+					String enteroTexto = partes[0];
+					BigDecimal entero = new  BigDecimal(enteroTexto);
+					BigDecimal decimal = cuota.subtract(entero);
+					sumaDecimales = sumaDecimales.add(decimal);
+					
+					filaCouta.setCuotaSI(filaCouta.getCuotaSI().subtract(decimal));
+					filaCouta.setCuotaTotal(filaCouta.getCuotaSI());
+				}
+				sumaCuotaSI = sumaCuotaSI.add(filaCouta.getCuotaSI());
+				listaPrevia.add(filaCouta);
 			}
 			
 			Simulador filaPrimeraCuota = new Simulador();
 			filaPrimeraCuota.setNroCuota("1");
 			filaPrimeraCuota.setInicial(BigDecimal.ZERO);
-			filaPrimeraCuota.setCuotaSI(montoDeuda.subtract(sumaTotal));
+			filaPrimeraCuota.setCuotaSI(cuota.add(sumaDecimales));
 			filaPrimeraCuota.setInteres(BigDecimal.ZERO);
-			filaPrimeraCuota.setCuotaTotal(montoDeuda.subtract(sumaTotal));
+			filaPrimeraCuota.setCuotaTotal(cuota.add(sumaDecimales));
+			
+			sumaCuotaSI=sumaCuotaSI.add(filaPrimeraCuota.getCuotaSI());
+			
+			BigDecimal decimales = sumaCuotaSI.subtract(montoDeuda);
+			filaPrimeraCuota.setCuotaSI(filaPrimeraCuota.getCuotaSI().subtract(decimales));
+			filaPrimeraCuota.setCuotaTotal(filaPrimeraCuota.getCuotaSI());
+			
 			lstSimulador.add(filaPrimeraCuota);
 			
 			
@@ -156,49 +183,77 @@ public class SimuladorBean extends BaseBean  implements Serializable {
 			lstSimulador.add(filaTotal);
 			
 		}else {
-			BigDecimal sumaTotal=BigDecimal.ZERO;
+//			BigDecimal sumaTotal=BigDecimal.ZERO;
 			
 			BigDecimal porc= new BigDecimal(porcentaje);
-			BigDecimal porcMin= porc.divide(new BigDecimal(100));
-			montoInteres = montoDeuda.multiply(porcMin);
+			BigDecimal porcMin= porc.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+//			montoInteres = montoDeuda.multiply(porcMin);
 			
-			BigDecimal cuota = montoDeuda.divide(new BigDecimal(numeroCuotas));
-			BigDecimal sumaItems=BigDecimal.ZERO;
-			BigDecimal sumaInteresItem=BigDecimal.ZERO;
+			BigDecimal cuota = montoDeuda.divide(new BigDecimal(numeroCuotas), 2, RoundingMode.HALF_UP);
+			BigDecimal interesCuota = cuota.multiply(porcMin);
+//			BigDecimal sumaItems=BigDecimal.ZERO;
+//			BigDecimal sumaInteresItem=BigDecimal.ZERO;
 			List<Simulador> listaPrevia = new ArrayList<>();
+			BigDecimal sumaDecimales = BigDecimal.ZERO;
+			BigDecimal sumaCuotaSI = BigDecimal.ZERO;
+			
 			for(int i=0; i<numeroCuotas-1;i++) {
 				Simulador filaCouta = new Simulador();
 				filaCouta.setNroCuota((i+2)+"");
 				filaCouta.setInicial(BigDecimal.ZERO);
 				filaCouta.setCuotaSI(cuota);
-				filaCouta.setInteres(montoInteres.divide( new BigDecimal(numeroCuotas)));
+				filaCouta.setInteres(interesCuota);
 				filaCouta.setCuotaTotal(filaCouta.getCuotaSI().add(filaCouta.getInteres()));
-				listaPrevia.add(filaCouta);
 				
-				sumaItems = sumaItems.add(filaCouta.getCuotaSI());
-				sumaInteresItem = sumaInteresItem.add(filaCouta.getInteres());
-				sumaTotal=sumaTotal.add(filaCouta.getCuotaTotal());
+//				sumaItems = sumaItems.add(filaCouta.getCuotaSI());
+//				sumaInteresItem = sumaInteresItem.add(filaCouta.getInteres());
+//				sumaTotal=sumaTotal.add(filaCouta.getCuotaTotal());
+				
+				String decimalCuotaTotal = filaCouta.getCuotaTotal().toString();
+				String separador = Pattern.quote(".");
+				String[] partes = decimalCuotaTotal.split(separador);
+				if(partes.length>1) {
+					String enteroTexto = partes[0];
+					BigDecimal entero = new  BigDecimal(enteroTexto);
+					BigDecimal decimal = cuota.add(interesCuota).subtract(entero);
+					sumaDecimales = sumaDecimales.add(decimal);
+					
+					filaCouta.setCuotaSI(filaCouta.getCuotaSI().subtract(decimal));
+					filaCouta.setCuotaTotal(filaCouta.getCuotaSI().add(filaCouta.getInteres()));
+				}
+				sumaCuotaSI = sumaCuotaSI.add(filaCouta.getCuotaSI());
+				listaPrevia.add(filaCouta);
 			}
 			
 			Simulador filaPrimeraCuota = new Simulador();
 			filaPrimeraCuota.setNroCuota("1");
 			filaPrimeraCuota.setInicial(BigDecimal.ZERO);
-			filaPrimeraCuota.setCuotaSI(montoDeuda.subtract(sumaItems));
-			filaPrimeraCuota.setInteres(montoInteres.subtract(sumaInteresItem));
+			filaPrimeraCuota.setCuotaSI(montoDeuda.subtract(sumaCuotaSI));
+			filaPrimeraCuota.setInteres(interesCuota);
 			filaPrimeraCuota.setCuotaTotal(filaPrimeraCuota.getCuotaSI().add(filaPrimeraCuota.getInteres()));
-			sumaTotal=sumaTotal.add(filaPrimeraCuota.getCuotaTotal());
+//			sumaTotal=sumaTotal.add(filaPrimeraCuota.getCuotaTotal());
 			lstSimulador.add(filaPrimeraCuota);
 			
-			BigDecimal sumaCuotaSI=BigDecimal.ZERO;
 			for(Simulador sim:listaPrevia) {
 				lstSimulador.add(sim);
 			}
 			
+			BigDecimal sumaInicial = BigDecimal.ZERO;
+			BigDecimal sumaSI = BigDecimal.ZERO;
+			BigDecimal sumaInteres = BigDecimal.ZERO;
+			BigDecimal sumaTotal = BigDecimal.ZERO;
+			for(Simulador sim:lstSimulador) {
+				sumaInicial=sumaInicial.add(sim.getInicial());
+				sumaSI=sumaSI.add(sim.getCuotaSI());
+				sumaInteres=sumaInteres.add(sim.getInteres());
+				sumaTotal=sumaTotal.add(sim.getCuotaTotal());
+			}
+			
 			Simulador filaTotal = new Simulador();
 			filaTotal.setNroCuota("TOTAL");
-			filaTotal.setInicial(montoInicial);
-			filaTotal.setCuotaSI(sumaItems.add(filaPrimeraCuota.getCuotaSI()));
-			filaTotal.setInteres(montoInteres);
+			filaTotal.setInicial(sumaInicial);
+			filaTotal.setCuotaSI(sumaSI);
+			filaTotal.setInteres(sumaInteres);
 			filaTotal.setCuotaTotal(sumaTotal);
 			lstSimulador.add(filaTotal);
 			
@@ -206,10 +261,6 @@ public class SimuladorBean extends BaseBean  implements Serializable {
 	}
 	
 	
-	
-	
-	
-
 	public BigDecimal getMontoTotal() {
 		return montoTotal;
 	}
