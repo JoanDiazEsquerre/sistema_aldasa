@@ -147,6 +147,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 	private Date fechaVenta, fechaPrimeraCuota; 
 	private Person persona1, persona2, persona3, persona4, persona5;
 	private BigDecimal montoVenta, montoInicial, interes; 
+	private BigDecimal sumaCuotaSI, sumaInteres, sumaCuotaTotal;
 	private String tipoPago ="";
 	private int nroCuotas;
 	private boolean estado;
@@ -225,6 +226,20 @@ public class ContratoBean extends BaseBean implements Serializable{
 		List<Cuota>lstCuotaPendientes = cuotaService.findByPagoTotalAndEstadoAndContratoOrderById("N", true, contratoSelected);
 		lstCuotaVista.addAll(lstCuotaPagadas);
 		lstCuotaVista.addAll(lstCuotaPendientes);
+		
+		sumaCuotaSI = BigDecimal.ZERO;
+		sumaInteres = BigDecimal.ZERO;
+		sumaCuotaTotal = BigDecimal.ZERO;
+		
+		for(Cuota c:lstCuotaVista) {
+			if(c.getNroCuota()!=0 && c.isPrepago()==false) {
+				sumaCuotaSI = sumaCuotaSI.add(c.getCuotaSI());
+				sumaInteres = sumaInteres.add(c.getInteres());
+				sumaCuotaTotal = sumaCuotaTotal.add(c.getCuotaTotal());
+			}
+			
+		}
+		
 	}
 	
 	public void cambiarTipoPago() {
@@ -325,15 +340,13 @@ public class ContratoBean extends BaseBean implements Serializable{
 		
 		BigDecimal montoInteres=BigDecimal.ZERO;
 		BigDecimal montoDeuda = montoVenta.subtract(montoInicial);
-		if(interes.compareTo(BigDecimal.ZERO)==0) {
-			montoInteres=BigDecimal.ZERO;
+		BigDecimal sumaDecimales = BigDecimal.ZERO;
+		BigDecimal sumaCuotaSI = BigDecimal.ZERO;
+		BigDecimal cuota = montoDeuda.divide(new BigDecimal(nroCuotas), 2, RoundingMode.HALF_UP);
+		
+		if(interes.compareTo(BigDecimal.ZERO)==0) {	
 			
-			BigDecimal cuota = montoDeuda.divide(new BigDecimal(nroCuotas), 2, RoundingMode.HALF_UP);
-			BigDecimal sumaDecimales = BigDecimal.ZERO;
-			BigDecimal sumaCuotaSI = BigDecimal.ZERO;
-			BigDecimal sumaTotal=BigDecimal.ZERO;
-			
-			for(int i=0; i<nroCuotas;i++) {                
+			for(int i=0; i<nroCuotas;i++) {
 				Simulador filaCouta = new Simulador();
 				if(i==0) {
 					filaCouta.setFechaPago(fechaPrimeraCuota);
@@ -346,8 +359,6 @@ public class ContratoBean extends BaseBean implements Serializable{
 				filaCouta.setInteres(BigDecimal.ZERO);
 				filaCouta.setCuotaTotal(cuota);
 				
-				sumaTotal = sumaTotal.add(filaCouta.getCuotaSI());
-				
 				String decimalCuotaTotal = filaCouta.getCuotaTotal().toString();
 				String separador = Pattern.quote(".");
 				String[] partes = decimalCuotaTotal.split(separador);
@@ -356,35 +367,37 @@ public class ContratoBean extends BaseBean implements Serializable{
 					BigDecimal entero = new  BigDecimal(enteroTexto);
 					BigDecimal decimal = cuota.subtract(entero);
 					sumaDecimales = sumaDecimales.add(decimal);
-					
 					filaCouta.setCuotaSI(filaCouta.getCuotaSI().subtract(decimal));
 					filaCouta.setCuotaTotal(filaCouta.getCuotaSI());
 				}
 				sumaCuotaSI = sumaCuotaSI.add(filaCouta.getCuotaSI());
 				lstSimuladorPrevio.add(filaCouta);
-				
-				
-				
-				if(agregaBD) {
-					Cuota cuotaBD = new Cuota();
-					cuotaBD.setNroCuota(Integer.parseInt(filaCouta.getNroCuota()) );
-					cuotaBD.setFechaPago(filaCouta.getFechaPago());
-					cuotaBD.setCuotaSI(cuota.add(sumaDecimales));
-					cuotaBD.setInteres(filaCouta.getInteres());
-					cuotaBD.setCuotaTotal(cuota.add(sumaDecimales));
-					cuotaBD.setAdelanto(filaCouta.getInicial());
-					cuotaBD.setPagoTotal("N");
-					cuotaBD.setContrato(contrato);
-					cuotaBD.setEstado(true);
-					cuotaBD.setOriginal(true);
-					
-					sumaCuotaSI=sumaCuotaSI.add(cuotaBD.getCuotaSI());
+			}
+			for(Simulador s:lstSimuladorPrevio) {
+				if(s.getNroCuota().equals("1")) {
 					BigDecimal decimales = sumaCuotaSI.subtract(montoDeuda);
-					cuotaBD.setCuotaSI(cuotaBD.getCuotaSI().subtract(decimales));
-					cuotaBD.setCuotaTotal(cuotaBD.getCuotaSI());
-					cuotaService.save(cuotaBD);
+					s.setCuotaSI(s.getCuotaSI().subtract(decimales));
+					s.setCuotaTotal(s.getCuotaSI());
 					
-					
+				}
+			}
+			
+			for(Simulador filaCuota:lstSimuladorPrevio) {
+				if(agregaBD) {
+					if(!filaCuota.getNroCuota().equals("0")) {
+						Cuota cuotaBD = new Cuota();
+						cuotaBD.setNroCuota(Integer.parseInt(filaCuota.getNroCuota()) );
+						cuotaBD.setFechaPago(filaCuota.getFechaPago());
+						cuotaBD.setCuotaSI(filaCuota.getCuotaSI());
+						cuotaBD.setInteres(filaCuota.getInteres());
+						cuotaBD.setCuotaTotal(filaCuota.getCuotaTotal());
+						cuotaBD.setAdelanto(filaCuota.getInicial());
+						cuotaBD.setPagoTotal("N");
+						cuotaBD.setContrato(contrato);
+						cuotaBD.setEstado(true);
+						cuotaBD.setOriginal(true);
+						cuotaService.save(cuotaBD);
+					}
 				}
 			}
 			
@@ -397,20 +410,13 @@ public class ContratoBean extends BaseBean implements Serializable{
 			lstSimuladorPrevio.add(filaTotal);
 			
 		}else {
-//			BigDecimal sumaTotal=BigDecimal.ZERO;
 			
 			BigDecimal porc=interes;
 			BigDecimal porcMin= (porc.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
 			montoInteres = montoDeuda.multiply(porcMin);       
-			
-			BigDecimal cuota = montoDeuda.divide(new BigDecimal(nroCuotas), 2, RoundingMode.HALF_UP);
 			BigDecimal interesCuota = cuota.multiply(porcMin);
-
-//			BigDecimal sumaItems=BigDecimal.ZERO;
-//			BigDecimal sumaInteresItem=BigDecimal.ZERO;
-			BigDecimal sumaDecimales = BigDecimal.ZERO;
-			BigDecimal sumaCuotaSI = BigDecimal.ZERO;
 			
+
 			for(int i=0; i<nroCuotas;i++) {
 				Simulador filaCouta = new Simulador();
 				if(i==0) {
@@ -439,34 +445,41 @@ public class ContratoBean extends BaseBean implements Serializable{
 				sumaCuotaSI = sumaCuotaSI.add(filaCouta.getCuotaSI());
 				lstSimuladorPrevio.add(filaCouta);
 				
-				if(agregaBD) {
-					Cuota cuotaBD = new Cuota();
-					cuotaBD.setNroCuota(Integer.parseInt(filaCouta.getNroCuota()) );
-					cuotaBD.setFechaPago(filaCouta.getFechaPago());
-					cuotaBD.setCuotaSI(montoDeuda.subtract(sumaCuotaSI));
-					cuotaBD.setInteres(interesCuota);
-					cuotaBD.setCuotaTotal(cuotaBD.getCuotaSI().add(cuotaBD.getInteres()));
-					cuotaBD.setAdelanto(filaCouta.getInicial());
-					cuotaBD.setPagoTotal("N");
-					cuotaBD.setContrato(contrato);
-					cuotaBD.setEstado(true);
-					cuotaBD.setOriginal(true);
-					cuotaService.save(cuotaBD);
-					
-					
-				}
-				
-//				sumaItems = sumaItems.add(filaCouta.getCuotaSI());
-//				sumaInteresItem = sumaInteresItem.add(filaCouta.getInteres());
-//				sumaTotal=sumaTotal.add(filaCouta.getCuotaTotal());
 			}
 			
-//			BigDecimal sumaCuotaSI=BigDecimal.ZERO;
+			for(Simulador s:lstSimuladorPrevio) {
+				if(s.getNroCuota().equals("1")) {
+					BigDecimal decimales = sumaCuotaSI.subtract(montoDeuda);
+					s.setCuotaSI(s.getCuotaSI().subtract(decimales));
+					s.setCuotaTotal(s.getCuotaSI().add(s.getInteres()));
+					
+				}
+			}
+			
+			for(Simulador filaCouta:lstSimuladorPrevio) {
+				if(agregaBD) {
+					if(!filaCouta.getNroCuota().equals("0")) {
+						Cuota cuotaBD = new Cuota();
+						cuotaBD.setNroCuota(Integer.parseInt(filaCouta.getNroCuota()));
+						cuotaBD.setFechaPago(filaCouta.getFechaPago());
+						cuotaBD.setCuotaSI(filaCouta.getCuotaSI());
+						cuotaBD.setInteres(filaCouta.getInteres());
+						cuotaBD.setCuotaTotal(filaCouta.getCuotaTotal());
+						cuotaBD.setAdelanto(filaCouta.getInicial());
+						cuotaBD.setPagoTotal("N");
+						cuotaBD.setContrato(contrato);
+						cuotaBD.setEstado(true);
+						cuotaBD.setOriginal(true);
+						cuotaService.save(cuotaBD);
+					}
+				}
+			}
 			
 			BigDecimal sumaInicial = BigDecimal.ZERO;
 			BigDecimal sumaSI = BigDecimal.ZERO;
 			BigDecimal sumaInteres = BigDecimal.ZERO;
 			BigDecimal sumaTotal = BigDecimal.ZERO;
+			
 			for(Simulador sim:lstSimuladorPrevio) {
 				sumaInicial=sumaInicial.add(sim.getInicial());
 				sumaSI=sumaSI.add(sim.getCuotaSI());
@@ -2757,6 +2770,30 @@ public class ContratoBean extends BaseBean implements Serializable{
 
 	public void setReportGenBo(ReportGenBo reportGenBo) {
 		this.reportGenBo = reportGenBo;
+	}
+
+	public BigDecimal getSumaCuotaSI() {
+		return sumaCuotaSI;
+	}
+
+	public void setSumaCuotaSI(BigDecimal sumaCuotaSI) {
+		this.sumaCuotaSI = sumaCuotaSI;
+	}
+
+	public BigDecimal getSumaInteres() {
+		return sumaInteres;
+	}
+
+	public void setSumaInteres(BigDecimal sumaInteres) {
+		this.sumaInteres = sumaInteres;
+	}
+
+	public BigDecimal getSumaCuotaTotal() {
+		return sumaCuotaTotal;
+	}
+
+	public void setSumaCuotaTotal(BigDecimal sumaCuotaTotal) {
+		this.sumaCuotaTotal = sumaCuotaTotal;
 	}
 	
 	

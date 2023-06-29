@@ -253,6 +253,24 @@
 	<p:dialog modal="true" height="600px" dynamic="true" closeOnEscape="true" id="dialogCronogramaPago" header="Cronograma de pagos" widgetVar="cronogramaPagoDialog" resizable="false" closable="true"
 		appendTo="@(body)"  width="50%">
 		<h:form id="formCronogramaPagoDialog">
+			
+			<h:panelGrid columns="2"> 
+				<h:outputText value="Total Cuota S.I.:" style="font-weight: bold;"/> 
+				<h:outputText value="#{contratoBean.sumaCuotaSI}"> 
+					<f:convertNumber type="currency" currencySymbol=""/>
+				</h:outputText> 
+				
+				<h:outputText value="Total Interés:" style="font-weight: bold;"/> 
+				<h:outputText value="#{contratoBean.sumaInteres}"> 
+					<f:convertNumber type="currency" currencySymbol=""/>
+				</h:outputText>
+				
+				<h:outputText value="Total Cuota Total:" style="font-weight: bold;"/> 
+				<h:outputText value="#{contratoBean.sumaCuotaTotal}"> 
+					<f:convertNumber type="currency" currencySymbol=""/>
+				</h:outputText> 
+			</h:panelGrid>
+							
 					 
 			<p:commandButton value="Descargar" icon="pi pi-file-pdf" action="#{contratoBean.generarPdfCronograma()}" ajax="false" /> 
 	

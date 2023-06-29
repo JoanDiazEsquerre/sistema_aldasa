@@ -16,7 +16,7 @@ public class LoadImageDocumentoBean {
 	 public String nombreArchivo = "";
 
 	 public byte[] getImage() throws IOException {
-		 String ruta = "C:\\IMG-DOCUMENTO-VENTA\\0.jpg";
+		 String ruta = "C:\\IMG-DOCUMENTO-VENTA\\0.png";
 //		 String ruta = "/home/imagen/voucher_separaciones/0.png"; 
 		 if(!nombreArchivo.equals("")) {
 			 ruta = "C:\\IMG-DOCUMENTO-VENTA\\"+nombreArchivo;

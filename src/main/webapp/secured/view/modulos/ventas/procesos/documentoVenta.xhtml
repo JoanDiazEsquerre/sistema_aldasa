@@ -327,13 +327,121 @@
 								<p:commandButton value="Guardar" oncomplete="PF('saveDocumento').show()" styleClass="mt-3 ui-button-outlined block"  style="margin-left:50px" icon="pi pi-save"  />
 								<p:commandButton value="Cancelar" oncomplete="PF('cancelarDocumento').show()"   style="margin-left:50px" icon="pi pi-times"  />
 								
-								<h:panelGrid columns="1" width="100%">	
+								<h:panelGrid columns="7" width="100%">	
 									
-									<p:fileUpload value="#{documentoVentaBean.file1}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
-									<p:fileUpload value="#{documentoVentaBean.file2}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>			  
-									<p:fileUpload value="#{documentoVentaBean.file3}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>			  
-									<p:fileUpload value="#{documentoVentaBean.file4}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>			  
-									<p:fileUpload value="#{documentoVentaBean.file5}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>			  
+									<p:fileUpload value="#{documentoVentaBean.file1}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
+									
+									<h:outputLabel value="Fecha:"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag1}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>								
+								
+									<h:outputLabel  value="Monto: " />
+									<p:inputNumber  value="#{documentoVentaBean.montoImag1}" style="margin:5px; width:220px" />
+								
+									<h:outputLabel value="Nro. de Operación:" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag1}" style="margin:5px; width:220px"   /> 
+									
+							
+									<p:fileUpload value="#{documentoVentaBean.file2}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
+									
+									<h:outputLabel value="Fecha:"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag2}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+								
+									<h:outputLabel  value="Monto: " />
+									<p:inputNumber  value="#{documentoVentaBean.montoImag2}" style="margin:5px; width:220px" />
+								
+									<h:outputLabel value="Nro. de Operación:" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag2}" style="margin:5px; width:220px"  decimalPlaces="0" /> 
+									
+										  
+									<p:fileUpload value="#{documentoVentaBean.file3}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
+									
+									<h:outputLabel value="Fecha:"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag3}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+								
+									<h:outputLabel  value="Monto: " />
+									<p:inputNumber  value="#{documentoVentaBean.montoImag3}" style="margin:5px; width:220px" />
+								
+									<h:outputLabel value="Nro. de Operación:" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag3}" style="margin:5px; width:220px"  decimalPlaces="0" />
+									
+						
+									<p:fileUpload value="#{documentoVentaBean.file4}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									
+									<h:outputLabel value="Fecha:"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag4}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+								
+									<h:outputLabel  value="Monto: " />
+									<p:inputNumber  value="#{documentoVentaBean.montoImag4}" style="margin:5px; width:220px" />
+								
+									<h:outputLabel value="Nro. de Operación:" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag4}" style="margin:5px; width:220px"  decimalPlaces="0" />		
+									
+							  
+									<p:fileUpload value="#{documentoVentaBean.file5}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									
+									<h:outputLabel value="Fecha:"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag5}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+								
+									<h:outputLabel  value="Monto: " />
+									<p:inputNumber  value="#{documentoVentaBean.montoImag5}" style="margin:5px; width:220px" />
+								
+									<h:outputLabel value="Nro. de Operación:" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag5}" style="margin:5px; width:220px"  decimalPlaces="0" />	
+									
+									<p:fileUpload value="#{documentoVentaBean.file6}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									
+									<h:outputLabel value="Fecha:"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag6}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+								
+									<h:outputLabel  value="Monto: " />
+									<p:inputNumber  value="#{documentoVentaBean.montoImag6}" style="margin:5px; width:220px" />
+								
+									<h:outputLabel value="Nro. de Operación:" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag6}" style="margin:5px; width:220px"  decimalPlaces="0" />			
+									
+									<p:fileUpload value="#{documentoVentaBean.file7}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									
+									<h:outputLabel value="Fecha:"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag7}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+								
+									<h:outputLabel  value="Monto: " />
+									<p:inputNumber  value="#{documentoVentaBean.montoImag7}" style="margin:5px; width:220px" />
+								
+									<h:outputLabel value="Nro. de Operación:" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag7}" style="margin:5px; width:220px"  decimalPlaces="0" />	  
+									
+									<p:fileUpload value="#{documentoVentaBean.file8}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									
+									<h:outputLabel value="Fecha:"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag8}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+								
+									<h:outputLabel  value="Monto: " />
+									<p:inputNumber  value="#{documentoVentaBean.montoImag8}" style="margin:5px; width:220px" />
+								
+									<h:outputLabel value="Nro. de Operación:" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag8}" style="margin:5px; width:220px"  decimalPlaces="0" />	
+									
+									<p:fileUpload value="#{documentoVentaBean.file9}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									
+									<h:outputLabel value="Fecha:"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag9}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+								
+									<h:outputLabel  value="Monto: " />
+									<p:inputNumber  value="#{documentoVentaBean.montoImag9}" style="margin:5px; width:220px" />
+								
+									<h:outputLabel value="Nro. de Operación:" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag9}" style="margin:5px; width:220px"  decimalPlaces="0" />	
+									
+									<p:fileUpload value="#{documentoVentaBean.file10}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									
+									<h:outputLabel value="Fecha:"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag10}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+								
+									<h:outputLabel  value="Monto: " />
+									<p:inputNumber  value="#{documentoVentaBean.montoImag10}" style="margin:5px; width:220px" />
+								
+									<h:outputLabel value="Nro. de Operación:" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag10}" style="margin:5px; width:220px"  decimalPlaces="0" />	
 									
 								</h:panelGrid>
 								
@@ -345,7 +453,7 @@
 				
 				</h:panelGrid>
 
-				<h:panelGrid id="gridMontos" style="width:40%;float:right;" columns="1" >	
+				<h:panelGrid id="gridMontos" style="width:25%;float:right;" columns="1" >	
 					<p:panel  header="Montos" toggleable="true" toggleSpeed="500" widgetVar="panelMontos" >
 						<h:panelGrid id="pnlMontos" columns="3" styleClass="companyHeaderGrid">
 						
@@ -527,7 +635,6 @@
 																	
 								<h:outputText value="Fecha de venta:" />
 				        		
-							
 				        		<h:outputText value="#{documentoVentaBean.contratoPendienteSelected.fechaVenta}" style="font-weight: bolder"> 
 				        			<f:convertDateTime pattern="dd/MM/yyyy" />
 				        		</h:outputText>
@@ -807,7 +914,7 @@
 		appendTo="@(body)"  width="50%">
 		<h:form id="formVoucherDocumentoDialog">
 		
-			<h:panelGrid style="width:100%" columns="5" > 
+			<h:panelGrid columns="5" > 
 			
 				<p:commandButton value="VOUCHER 1" update=":formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen1 eq ''}" >
 					<f:setPropertyActionListener value="#{documentoVentaBean.imagen1}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
@@ -832,7 +939,6 @@
 			</h:panelGrid>
 			
 			<p:graphicImage width="400"  value="#{loadImageDocumentoBean.image}" id="imagenLoad" cache="false"/>
-			
 			
 		</h:form>
 	</p:dialog>
