@@ -916,27 +916,65 @@
 		
 			<h:panelGrid columns="5" > 
 			
-				<p:commandButton value="VOUCHER 1" update=":formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen1 eq ''}" >
+				<p:commandButton value="VOUCHER 1" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen1)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen1 eq ''}" >
 					<f:setPropertyActionListener value="#{documentoVentaBean.imagen1}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
 				</p:commandButton>
 			
-				<p:commandButton value="VOUCHER 2" update=":formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen2 eq ''}">
+				<p:commandButton value="VOUCHER 2" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen2)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen2 eq ''}">
 					<f:setPropertyActionListener value="#{documentoVentaBean.imagen2}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
 				</p:commandButton>
 			
-				<p:commandButton value="VOUCHER 3" update=":formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen3 eq ''}">
+				<p:commandButton value="VOUCHER 3" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen3)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen3 eq ''}">
 					<f:setPropertyActionListener value="#{documentoVentaBean.imagen3}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
 				</p:commandButton>
 			
-				<p:commandButton value="VOUCHER 4" update=":formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen4 eq ''}">
+				<p:commandButton value="VOUCHER 4" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen4)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen4 eq ''}">
 					<f:setPropertyActionListener value="#{documentoVentaBean.imagen4}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
 				</p:commandButton>
 				
-				<p:commandButton value="VOUCHER 5" update=":formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen5 eq ''}">
+				<p:commandButton value="VOUCHER 5" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen5)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen5 eq ''}">
 					<f:setPropertyActionListener value="#{documentoVentaBean.imagen5}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 6" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen6)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen5 eq ''}">
+					<f:setPropertyActionListener value="#{documentoVentaBean.imagen6}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 7" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen7)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen5 eq ''}">
+					<f:setPropertyActionListener value="#{documentoVentaBean.imagen7}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 8" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen8)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen5 eq ''}">
+					<f:setPropertyActionListener value="#{documentoVentaBean.imagen8}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 9" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen9)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen5 eq ''}">
+					<f:setPropertyActionListener value="#{documentoVentaBean.imagen9}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 10" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen10)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen5 eq ''}">
+					<f:setPropertyActionListener value="#{documentoVentaBean.imagen10}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
 				</p:commandButton>
 	
 			</h:panelGrid>
+			
+			<h:panelGrid id="idDatosVoucher" columns="2" >  
+			
+				<h:outputLabel value="Fecha:"/> 
+				<h:outputLabel value="#{documentoVentaBean.fechaVoucherDialog}" > 
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputLabel>
+				
+				<h:outputLabel value="Monto:"/>
+				<h:outputLabel value="#{documentoVentaBean.montoVoucherDialog}"> 
+					<f:convertNumber type="currency" currencySymbol=""/>
+				</h:outputLabel>
+				
+				<h:outputLabel value="Nro Operación:"/>
+				<h:outputLabel value="#{documentoVentaBean.nroOperacionVoucherDialog}"/> 
+			
+			</h:panelGrid>
+			
 			
 			<p:graphicImage width="400"  value="#{loadImageDocumentoBean.image}" id="imagenLoad" cache="false"/>
 			

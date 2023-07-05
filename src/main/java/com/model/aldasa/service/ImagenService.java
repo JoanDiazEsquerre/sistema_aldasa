@@ -13,6 +13,7 @@ public interface ImagenService {
 	void delete(Imagen entity);
 	
 	List<Imagen> findByNombreLikeAndEstado(String nombre, boolean estado);
-	
+	Imagen findByNombre(String nombre);
+
 
 }

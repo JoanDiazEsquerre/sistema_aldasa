@@ -9,6 +9,8 @@ import com.model.aldasa.entity.Imagen;
 public interface ImagenRepository extends PagingAndSortingRepository<Imagen, Integer>{
 	
 	List<Imagen> findByNombreLikeAndEstado(String nombre, boolean estado);
+	Imagen findByNombre(String nombre);
+
 
 
 }

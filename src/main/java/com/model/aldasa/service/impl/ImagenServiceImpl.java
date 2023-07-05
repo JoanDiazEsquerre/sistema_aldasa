@@ -40,4 +40,10 @@ public class ImagenServiceImpl implements ImagenService{
 		return imagenRepository.findByNombreLikeAndEstado(nombre, estado);
 	}
 
+	@Override
+	public Imagen findByNombre(String nombre) {
+		// TODO Auto-generated method stub
+		return imagenRepository.findByNombre(nombre);
+	}
+
 }

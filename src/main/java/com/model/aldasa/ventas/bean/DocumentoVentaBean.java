@@ -35,6 +35,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.lowagie.text.Image;
 import com.model.aldasa.entity.Cliente;
 import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.Cuota;
@@ -163,6 +164,9 @@ public class DocumentoVentaBean extends BaseBean {
 	private String tipoPrepago ="PC";
 	private String incluirUltimaCuota = "No";
 	private Integer nuevoNroCuotas;
+	private Date fechaVoucherDialog;
+	private BigDecimal montoVoucherDialog;
+	private String nroOperacionVoucherDialog;
 
 	private boolean pagoTotalPrepago = false;
 	private boolean habilitarBoton = true;
@@ -188,7 +192,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private BigDecimal nuevoInteres;
 	
 	private String tituloDialog;
-	private String imagen1, imagen2, imagen3, imagen4, imagen5;
+	private String imagen1, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8, imagen9, imagen10;
 
 
 	
@@ -233,7 +237,20 @@ public class DocumentoVentaBean extends BaseBean {
 
 	} 
 	
+	public void obtenerDatosVoucher(String nombre) {
+		Imagen imagen = imagenService.findByNombre(nombre); 
+		if(imagen!=null) {
+			fechaVoucherDialog=imagen.getFecha();
+			montoVoucherDialog = imagen.getMonto();
+			nroOperacionVoucherDialog = imagen.getNumeroOperacion();
+		}
+	}
+	
 	public void verVoucher() {
+		
+		fechaVoucherDialog = null;
+		montoVoucherDialog=null;
+		nroOperacionVoucherDialog="";
 		
 		loadImageDocumentoBean.setNombreArchivo("0.png");
 		imagen1 = "";
@@ -241,6 +258,11 @@ public class DocumentoVentaBean extends BaseBean {
 		imagen3 = "";
 		imagen4 = "";
 		imagen5 = "";
+		imagen6 = "";
+		imagen7 = "";
+		imagen8 = "";
+		imagen9 = "";
+		imagen10 = "";
 		
 		String nombreBusqueda = "%"+documentoVentaSelected.getId() +"_%";
 		
@@ -261,6 +283,21 @@ public class DocumentoVentaBean extends BaseBean {
 			}
 			if(contador==5) {
 				imagen5 = i.getNombre();
+			}
+			if(contador==6) {
+				imagen6 = i.getNombre();
+			}
+			if(contador==7) {
+				imagen7 = i.getNombre();
+			}
+			if(contador==8) {
+				imagen8 = i.getNombre();
+			}
+			if(contador==9) {
+				imagen9 = i.getNombre();
+			}
+			if(contador==10) {
+				imagen10 = i.getNombre();
 			}
 			contador ++;
 		}
@@ -2768,6 +2805,60 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setFile10(UploadedFile file10) {
 		this.file10 = file10;
+	}
+	public String getImagen6() {
+		return imagen6;
+	}
+	public void setImagen6(String imagen6) {
+		this.imagen6 = imagen6;
+	}
+	public String getImagen7() {
+		return imagen7;
+	}
+	public void setImagen7(String imagen7) {
+		this.imagen7 = imagen7;
+	}
+	public String getImagen8() {
+		return imagen8;
+	}
+	public void setImagen8(String imagen8) {
+		this.imagen8 = imagen8;
+	}
+	public String getImagen9() {
+		return imagen9;
+	}
+	public void setImagen9(String imagen9) {
+		this.imagen9 = imagen9;
+	}
+	public String getImagen10() {
+		return imagen10;
+	}
+	public void setImagen10(String imagen10) {
+		this.imagen10 = imagen10;
+	}
+
+	public Date getFechaVoucherDialog() {
+		return fechaVoucherDialog;
+	}
+
+	public void setFechaVoucherDialog(Date fechaVoucherDialog) {
+		this.fechaVoucherDialog = fechaVoucherDialog;
+	}
+
+	public BigDecimal getMontoVoucherDialog() {
+		return montoVoucherDialog;
+	}
+
+	public void setMontoVoucherDialog(BigDecimal montoVoucherDialog) {
+		this.montoVoucherDialog = montoVoucherDialog;
+	}
+
+	public String getNroOperacionVoucherDialog() {
+		return nroOperacionVoucherDialog;
+	}
+
+	public void setNroOperacionVoucherDialog(String nroOperacionVoucherDialog) {
+		this.nroOperacionVoucherDialog = nroOperacionVoucherDialog;
 	}
 	
 	
