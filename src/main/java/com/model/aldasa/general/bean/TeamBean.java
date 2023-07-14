@@ -14,14 +14,18 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import org.eclipse.jdt.internal.compiler.env.IUpdatableModule.AddExports;
+import org.primefaces.PrimeFaces;
+
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.TeamService;
+import com.model.aldasa.util.BaseBean;
 
 @ManagedBean
 @ViewScoped
-public class TeamBean  implements Serializable {
+public class TeamBean extends BaseBean implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -66,7 +70,7 @@ public class TeamBean  implements Serializable {
 	
 	public void saveTeam() {
 		if(teamSelected.getName().equals("") || teamSelected.getName()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar Nombre del equipo."));
+			addErrorMessage("Ingresar Nombre del equipo.");
 			listarTeam();
 			return ;
 		} 
@@ -75,20 +79,22 @@ public class TeamBean  implements Serializable {
 			if (validarExistencia == null) {
 				teamService.save(teamSelected);
 				newTeam();
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				PrimeFaces.current().executeScript("PF('teamDialog').hide();");
+				addInfoMessage("Se guardo correctamente.");
 				listarTeam();
 			} else { 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El equipo ya existe."));
+				addErrorMessage("El equipo ya existe.");
 				listarTeam();
 			}
 		} else {
 			Team validarExistencia = teamService.findByNameException(teamSelected.getName(), teamSelected.getId());
 			if (validarExistencia == null) {
 				teamService.save(teamSelected);
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				PrimeFaces.current().executeScript("PF('teamDialog').hide();");
+				addInfoMessage("Se guardo correctamente.");
 				listarTeam();
 			} else { 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El equipo ya existe."));
+				addErrorMessage("El equipo ya existe.");
 				listarTeam();
 			}
 		}

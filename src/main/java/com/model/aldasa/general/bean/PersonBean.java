@@ -14,6 +14,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
@@ -32,10 +33,11 @@ import com.model.aldasa.service.DepartmentService;
 import com.model.aldasa.service.DistrictService;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProvinceService;
+import com.model.aldasa.util.BaseBean;
 
 @ManagedBean
 @ViewScoped
-public class PersonBean implements Serializable {
+public class PersonBean extends BaseBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -288,8 +290,8 @@ public class PersonBean implements Serializable {
 	public void completar() {
 		if(!personConyuge.getDni().equals("") && !personNew.getDni().equals("")) {
 			if(personConyuge.getDni().equals(personNew.getDni())) {
-				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El DNI no puede ser igual al de la persona."));
+				addErrorMessage("El DNI no puede ser igual al de la persona.");
+				
 				return ;
 			}
 		}
@@ -324,44 +326,44 @@ public class PersonBean implements Serializable {
 			if (tituloDialog.equals("NUEVA PERSONA")) {
 				Person buscarPorDni = personService.findByDni(person.getDni());
 				if (buscarPorDni != null) {
-					FacesContext.getCurrentInstance().addMessage(null,
-							new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El DNI ya existe."));
+					addErrorMessage("El DNI ya existe.");
+					
 					return false;
 				}
 			} else {
 				Person buscarPorDni = personService.findByDniException(person.getDni(), person.getId());
 				if (buscarPorDni != null) {
-					FacesContext.getCurrentInstance().addMessage(null,
-							new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El DNI ya existe."));
+					addErrorMessage("El DNI ya existe.");
+					
 					return false;
 				}
 			}
 
 		}
 		if (person.getSurnames().equals("") || person.getSurnames() == null) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar Apellidos."));
+			addErrorMessage("Ingresar Apellidos.");
+			
 			return false;
 		}
 		if (person.getNames().equals("") || person.getNames() == null) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar Nombres."));
+			addErrorMessage("Ingresar Nombres.");
+			
 			return false;
 		}
 		if (person.getAddress().equals("") || person.getAddress() == null) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar dirección."));
+			addErrorMessage("Ingresar dirección.");
+			
 			return false;
 		}
 		if (person.getPhone().equals("") || person.getPhone() == null) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar Teléfono."));
+			addErrorMessage("Ingresar Teléfono.");
+			
 			return false;
 		}
 
 		if (districtSelected == null) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar distrito de la persona."));
+			addErrorMessage("Seleccionar distrito de la persona.");
+			
 			return false;
 		} else {
 			personNew.setDistrict(districtSelected);
@@ -382,23 +384,23 @@ public class PersonBean implements Serializable {
 			if (tituloDialog.equals("NUEVA PERSONA")) {
 				Person buscarPorDni = personService.findByDni(person.getDni());
 				if (buscarPorDni != null) {
-					FacesContext.getCurrentInstance().addMessage(null,
-							new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El DNI ya existe."));
+					addErrorMessage("El DNI ya existe.");
+					
 					return false;
 				}
 			} else {
 				if (person.getId() != null) {
 					Person buscarPorDni = personService.findByDniException(person.getDni(), person.getId());
 					if (buscarPorDni != null) {
-						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-								"Error", "El DNI del conyuge ya existe."));
+						addErrorMessage("El DNI del conyuge ya existe.");
+						
 						return false;
 					}
 				} else {
 					Person buscarPorDni = personService.findByDni(person.getDni());
 					if (buscarPorDni != null) {
-						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-								"Error", "El DNI del conyuge ya existe."));
+						addErrorMessage("El DNI del conyuge ya existe.");
+						
 						return false;
 					}
 				}
@@ -406,29 +408,29 @@ public class PersonBean implements Serializable {
 
 		}
 		if (person.getSurnames().equals("") || person.getSurnames() == null) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar Apellidos del conyuge."));
+			addErrorMessage("Ingresar Apellidos del conyuge.");
+			
 			return false;
 		}
 		if (person.getNames().equals("") || person.getNames() == null) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar Nombres del conyuge."));
+			addErrorMessage("Ingresar Nombres del conyuge.");
+			
 			return false;
 		}
 		if (person.getAddress().equals("") || person.getAddress() == null) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar dirección del conyuge."));
+			addErrorMessage("Ingresar dirección del conyuge.");
+			
 			return false;
 		}
 		if (person.getPhone().equals("") || person.getPhone() == null) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar Teléfono del conyuge."));
+			addErrorMessage("Ingresar Teléfono del conyuge.");
+		
 			return false;
 		}
 
 		if (districtSelectedCyg == null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
-					"Seleccionar distrito del conyuge."));
+			addErrorMessage("Seleccionar distrito del conyuge.");
+			
 			return false;
 		} else {
 			personConyuge.setDistrict(districtSelectedCyg);
@@ -452,8 +454,8 @@ public class PersonBean implements Serializable {
 		if (valida) {
 			Person per = personService.save(personNew);
 			if (per == null) {
-				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se puede guardar."));
+				addErrorMessage("No se puede guardar.");
+				
 			} else {
 
 				if (!personConyuge.getDni().equals("")) {
@@ -465,8 +467,10 @@ public class PersonBean implements Serializable {
 					personService.save(perCyg);
 
 				}
-				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente."));
+				PrimeFaces.current().executeScript("PF('personNewDialog').hide();");
+				addInfoMessage("Se guardó correctamente.");
+				
+				
 				if (tituloDialog.equals("NUEVA PERSONA")) {
 					newPerson();
 					countrySelected = null;

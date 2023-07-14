@@ -29,13 +29,13 @@
 		            </p:selectOneMenu>
 		                
 		            <h:outputLabel value="Fecha inicio:" style="text-align:right"/>
-					<p:datePicker value="#{reporteAsistenciaBean.fechaIni}" readonlyInput="true">
-						<p:ajax update=":form:tabView:idTableDet :form:tabView:grid" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
+					<p:datePicker id="idFechaIni" value="#{reporteAsistenciaBean.fechaIni}" >
+						<p:ajax update=":form:tabView:idTableDet :form:tabView:grid idFechaIni" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
 					</p:datePicker>
 					
 					<h:outputLabel value="Fecha fin:" style="text-align:right"/>
-					<p:datePicker value="#{reporteAsistenciaBean.fechaFin}" readonlyInput="true" >
-						<p:ajax update=":form:tabView:idTableDet :form:tabView:grid" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
+					<p:datePicker id="idFechaFin" value="#{reporteAsistenciaBean.fechaFin}" readonlyInput="true" >
+						<p:ajax update=":form:tabView:idTableDet :form:tabView:grid idFechaFin" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
 					</p:datePicker>
 					
 					<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{reporteAsistenciaBean.procesarExcel()}"
@@ -102,11 +102,11 @@
 			<p:tab title="Reporte Semanal" >
 			
 				<h:panelGrid columns="9"> 
-					<p:commandButton action="#{reporteAsistenciaBean.semanaAnterior}" icon="pi pi-backward" update="semText, idTableEmpleado"/>
+					<p:commandButton action="#{reporteAsistenciaBean.semanaAnterior}" icon="pi pi-backward" update="semText, idTableEmpleado" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
 					<h:outputText id="semText" value="#{reporteAsistenciaBean.semanaSelected.fechaIni}"  >
 						<f:convertDateTime pattern="dd/MM/yyyy" />
 					</h:outputText>
-					<p:commandButton action="#{reporteAsistenciaBean.semanaSiguiente}" icon="pi pi-forward" update="semText, idTableEmpleado"/>
+					<p:commandButton action="#{reporteAsistenciaBean.semanaSiguiente}"  icon="pi pi-forward" update="semText, idTableEmpleado" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
 					
 					<h:outputLabel value="Empleado: " style="text-align:right; margin-left:20px"/>
 					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{reporteAsistenciaBean.empleadoBusqueda}" converter="#{reporteAsistenciaBean.conversorEmpleado}" completeMethod="#{reporteAsistenciaBean.completeEmpleado}"  
@@ -122,7 +122,7 @@
 	                </p:selectOneMenu>
 	                
 	                <p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{reporteAsistenciaBean.procesarExcelReporteSemanal()}"
-		                         icon="pi pi-file-excel" styleClass="mr-2">
+		                         icon="pi pi-file-excel" styleClass="mr-2" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();">
 		            <p:fileDownload value="#{reporteAsistenciaBean.fileDes}"/> 
 		      		</p:commandButton>
 				</h:panelGrid>

@@ -342,7 +342,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 		BigDecimal montoDeuda = montoVenta.subtract(montoInicial);
 		BigDecimal sumaDecimales = BigDecimal.ZERO;
 		BigDecimal sumaCuotaSI = BigDecimal.ZERO;
-		BigDecimal cuota = montoDeuda.divide(new BigDecimal(nroCuotas), 2, RoundingMode.HALF_UP);
+		BigDecimal cuota = montoDeuda.divide(new BigDecimal(nroCuotas), 0, RoundingMode.HALF_UP);
 		
 		if(interes.compareTo(BigDecimal.ZERO)==0) {	
 			
@@ -411,23 +411,28 @@ public class ContratoBean extends BaseBean implements Serializable{
 			
 		}else {
 			
-			BigDecimal porc=interes;
-			BigDecimal porcMin= (porc.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
-			montoInteres = montoDeuda.multiply(porcMin);       
-			BigDecimal interesCuota = cuota.multiply(porcMin);
+			BigDecimal porc = interes;
+			BigDecimal porcMin = (porc.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+			BigDecimal totalInteres = montoDeuda.multiply(porcMin);
+//			montoInteres = montoDeuda.multiply(porcMin);     
+			montoInteres = totalInteres.divide(new BigDecimal(nroCuotas), 0, RoundingMode.HALF_UP); 
+			
 			
 
 			for(int i=0; i<nroCuotas;i++) {
 				Simulador filaCouta = new Simulador();
 				if(i==0) {
 					filaCouta.setFechaPago(fechaPrimeraCuota);
+					filaCouta.setCuotaSI(montoDeuda.subtract(cuota.multiply(new BigDecimal(nroCuotas-1))));
+					filaCouta.setInteres(totalInteres.subtract(montoInteres.multiply(new BigDecimal(nroCuotas-1))));
 				}else {
 					filaCouta.setFechaPago(sumarRestarMeses(fechaPrimeraCuota, i));
+					filaCouta.setCuotaSI(cuota);
+					filaCouta.setInteres(montoInteres);
 				}
 				filaCouta.setNroCuota((i+1)+"");
 				filaCouta.setInicial(BigDecimal.ZERO);
-				filaCouta.setCuotaSI(cuota);
-				filaCouta.setInteres(interesCuota);
+				
 				filaCouta.setCuotaTotal(filaCouta.getCuotaSI().add(filaCouta.getInteres()));
 				
 				String decimalCuotaTotal = filaCouta.getCuotaTotal().toString();
@@ -436,7 +441,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 				if(partes.length>1) {
 					String enteroTexto = partes[0];
 					BigDecimal entero = new  BigDecimal(enteroTexto);
-					BigDecimal decimal = cuota.add(interesCuota).subtract(entero);
+					BigDecimal decimal = cuota.add(montoInteres).subtract(entero);
 					sumaDecimales = sumaDecimales.add(decimal);
 					
 					filaCouta.setCuotaSI(filaCouta.getCuotaSI().subtract(decimal));
@@ -2434,13 +2439,20 @@ public class ContratoBean extends BaseBean implements Serializable{
 		BigDecimal totalInteres=BigDecimal.ZERO;
 		BigDecimal totalCuotaTotal=BigDecimal.ZERO;
 		
-		List<Cuota> lstCuotaContrato = cuotaService.findByContratoAndOriginal(contrato, true); 
+		List<Cuota> lstCuotaContrato = cuotaService.findByContratoAndOriginal(contrato, true);
+		int contador = 0;
 		for(Cuota c:lstCuotaContrato) {
 			Simulador simulador = new Simulador();
 			simulador.setNroCuota(c.getNroCuota()+"");
 			simulador.setFechaPago(c.getFechaPago()); 
-			simulador.setInicial(BigDecimal.ZERO);
-			simulador.setCuotaSI(c.getCuotaSI());
+			if(contador==0) {
+				simulador.setInicial(contrato.getMontoInicial());
+				simulador.setCuotaSI(BigDecimal.ZERO);
+			}else {
+				simulador.setInicial(BigDecimal.ZERO);
+				simulador.setCuotaSI(c.getCuotaSI());
+			}
+			
 			simulador.setInteres(c.getInteres());
 			simulador.setCuotaTotal(c.getCuotaTotal());
 			lstSimulador.add(simulador);
@@ -2448,6 +2460,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 			totalSI = totalSI.add(simulador.getCuotaSI()); //totalSI+simulador.getCuotaSI(); lo sbigdecimal se sunan de estam manera
 			totalInteres = totalInteres.add(simulador.getInteres());
 			totalCuotaTotal = totalCuotaTotal.add(simulador.getCuotaTotal());
+			contador++;
 		}
 			
 		Simulador filaTotal = new Simulador();

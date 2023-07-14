@@ -16,6 +16,7 @@ import javax.faces.convert.Converter;
 
 import org.apache.tomcat.jni.User;
 import org.eclipse.jdt.internal.compiler.env.IModule.IService;
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
@@ -353,6 +354,7 @@ public class UserBean extends BaseBean implements Serializable {
 
 			}
 		}
+		PrimeFaces.current().executeScript("PF('proyectoNewDialog').hide();");
 		addInfoMessage("Se guardó correctamente.");
 		Empleado empleado = empleadoService.findByPerson(userSelected.getPerson());
 		if(empleado != null) {

@@ -21,11 +21,11 @@ public class LoadImageBean extends BaseBean{
 	 public String nombreArchivo = "";
 
 	 public byte[] getImage() throws IOException {
-		 String ruta = "C:\\IMG-ALDASA\\0.png";
-//		 String ruta = "/home/imagen/voucher_separaciones/0.png"; 
+//		 String ruta = "C:\\IMG-ALDASA\\0.png";
+		 String ruta = "/home/imagen/voucher_separaciones/0.png"; 
 		 if(!nombreArchivo.equals("")) {
-			 ruta = "C:\\IMG-ALDASA\\"+nombreArchivo;
-//			 ruta = "/home/imagen/voucher_separaciones/"+nombreArchivo;
+//			 ruta = "C:\\IMG-ALDASA\\"+nombreArchivo;
+			 ruta = "/home/imagen/voucher_separaciones/"+nombreArchivo;
 		 }
 		 
 		 System.out.println(ruta);

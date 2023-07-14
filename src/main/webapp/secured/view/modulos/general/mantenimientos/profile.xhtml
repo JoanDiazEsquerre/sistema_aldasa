@@ -55,20 +55,18 @@
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogProfile" header="#{profileBean.tituloDialog}" widgetVar="profileDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formProfileDialog">
-		    <p:messages id="messages" showDetail="true" closable="true">
-	            <p:autoUpdate/>
-	        </p:messages>
+		   
 			<h:panelGrid id="grid" columns="2">
 				<h:outputLabel value="Nombre de Perfil: " for="nombrePerfil" />
 				<p:inputText value="#{profileBean.profileSelected.name}" id="nombrePerfil" > 
-							<p:ajax event="keyup" update="messages" />
+							<p:ajax event="keyup" />
 				</p:inputText>
 				
 				<h:outputLabel for="option" value="Estado:" /> 
 				<p:selectOneMenu id="option" value="#{profileBean.profileSelected.status}" style="margin:5px">
 					<f:selectItem itemLabel="ACTIVO" itemValue="#{true}" />
 					<f:selectItem itemLabel="INACTIVO" itemValue="#{false}" />
-						<p:ajax event="change" update="messages" />
+						<p:ajax event="change"  />
 				</p:selectOneMenu>	
 				<p:commandButton value="Guardar" action="#{profileBean.saveProfile()}" 
 					update=":form:idTableProfile :formProfileDialog"/>

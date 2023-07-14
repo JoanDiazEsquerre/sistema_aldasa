@@ -726,9 +726,26 @@
 					<p:inputNumber value="#{documentoVentaBean.nuevoInteres}" rendered="#{documentoVentaBean.tipoPrepago eq 'AR' or documentoVentaBean.tipoPrepago eq 'PAR'}" />
 					
 					
-					<p:commandButton value="Simular Pre-Pago" action="#{documentoVentaBean.simularPrepago()}"  style="margin-left:50px" update=":form:tabView:tableCuotaContrato :form:tabView:mntPrepago :form:tabView:btnGuardar"/>			
+					<p:commandButton value="Simular Pre-Pago" action="#{documentoVentaBean.simularPrepago()}"  style="margin-left:50px" update=":form:tabView:tableCuotaContrato :form:tabView:mntPrepago :form:tabView:btnGuardar :form:tabView:gridTotales"/>			
 					<p:commandButton value="Guardar" id="btnGuardar" action="#{documentoVentaBean.savePrepago()}" disabled="#{documentoVentaBean.habilitarBoton}" style="margin-left:50px" update=":form:tabView:tableContrato :form:tabView:pnlContrato :form:tabView:tableCuotaContrato"/>			
 		
+				</h:panelGrid>
+				
+				<h:panelGrid id="gridTotales" columns="2"> 
+					<h:outputText value="Total Cuota S.I.:" style="font-weight: bold;"/> 
+					<h:outputText value="#{documentoVentaBean.sumaCuotaSI}"> 
+						<f:convertNumber type="currency" currencySymbol=""/>
+					</h:outputText> 
+					
+					<h:outputText value="Total Interés:" style="font-weight: bold;"/> 
+					<h:outputText value="#{documentoVentaBean.sumaInteres}"> 
+						<f:convertNumber type="currency" currencySymbol=""/>
+					</h:outputText>
+					
+					<h:outputText value="Total Cuota Total:" style="font-weight: bold;"/> 
+					<h:outputText value="#{documentoVentaBean.sumaCuotaTotal}"> 
+						<f:convertNumber type="currency" currencySymbol=""/>
+					</h:outputText> 
 				</h:panelGrid>
 			
 				<p:dataTable var="cuotaContrato" value="#{documentoVentaBean.lstCuotaVista}" rows="25" paginator="true" selectionMode="single" rowIndexVar="row"  

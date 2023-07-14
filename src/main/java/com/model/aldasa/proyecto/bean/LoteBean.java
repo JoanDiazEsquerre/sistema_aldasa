@@ -352,67 +352,67 @@ public class LoteBean extends BaseBean implements Serializable{
 	
 	public void saveLote() {	
 		if(loteSelected.getNumberLote().equals("") || loteSelected.getNumberLote()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar número de lote."));
+			addErrorMessage("Ingresar número de lote.");
 			return ;
 		}
 		
 		if(loteSelected.getManzana()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una manzana."));
+			addErrorMessage("Seleccionar una manzana.");
 			return ;
 		} 
 		
 		if(loteSelected.getProject()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar un proyecto."));
+			addErrorMessage("Seleccionar un proyecto.");
 			return ;
 		} 
 		
 
 		if(loteSelected.getStatus().equals(EstadoLote.SEPARADO.getName())) {
 			if(loteSelected.getFechaSeparacion() == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una fecha separación."));
+				addErrorMessage("Seleccionar una fecha separación.");
 				return ;
 			}
 			
 			if(loteSelected.getFechaVencimiento() == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar una fecha vencimiento."));
+				addErrorMessage("Seleccionar una fecha vencimiento.");
 				return ;
 			}
 			
 			if(teamSelected == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar equipo."));
+				addErrorMessage("Seleccionar equipo.");
 				return ;
 			}else if (teamSelected != null) {
 				loteSelected.setPersonSupervisor(teamSelected.getPersonSupervisor());
 			}
 			
 			if (loteSelected.getPersonAssessor() == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar asesor."));
+				addErrorMessage("Ingresar asesor.");
 				return ;
 			}
 		}
 
 		if(loteSelected.getStatus().equals(EstadoLote.VENDIDO.getName())) {
 			if(personVenta == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
+				addErrorMessage("Completar todos los datos de venta.");
 				return ;
 			}else if (personVenta != null) {
 				loteSelected.setPersonVenta(personVenta);
 			}
 			
 			if(teamSelected == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar un equipo"));
+				addErrorMessage("Seleccionar un equipo");
 				return ;
 			}else if (teamSelected != null) {
 				loteSelected.setPersonSupervisor(teamSelected.getPersonSupervisor());
 			}
 			
 			if (loteSelected.getPersonAssessor() == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar un asesor."));
+				addErrorMessage("Seleccionar un asesor.");
 				return ;
 			}
 			
 			if(loteSelected.getFechaVendido() == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
+				addErrorMessage("Completar todos los datos de venta.");
 				return ;
 			}
 			
@@ -420,14 +420,14 @@ public class LoteBean extends BaseBean implements Serializable{
 				loteSelected.setMontoInicial(null);
 				loteSelected.setNumeroCuota(null);
 				if (loteSelected.getMontoVenta() == null) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
+					addErrorMessage("Completar todos los datos de venta.");
 					return ;
 				}
 			}
 			
 			if(loteSelected.getTipoPago().equals("Crédito")) {
 				if (loteSelected.getMontoVenta() == null || loteSelected.getMontoInicial() == null || loteSelected.getNumeroCuota() == null || loteSelected.getInteres() == null) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos de venta."));
+					addErrorMessage("Completar todos los datos de venta.");
 					return ;
 				}
 			}
@@ -449,11 +449,9 @@ public class LoteBean extends BaseBean implements Serializable{
 				}else {
 					loteVendido=false;
 				}
-				
-//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				PrimeFaces.current().executeScript("PF('loteDialog').hide();");
 				addInfoMessage("Se guardo correctamente.");
 			} else { 
-//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya existe."));
 				addErrorMessage("El lote ya existe.");
 			}
 		} else {
@@ -467,12 +465,10 @@ public class LoteBean extends BaseBean implements Serializable{
 				}else {
 					loteVendido=false;
 				}
-				
-//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				PrimeFaces.current().executeScript("PF('loteDialog').hide();");
 				addInfoMessage("Se guardo correctamente.");
 				nombreLoteSelected="Manzana " + loteSelected.getManzana().getName()+"/ lote: "+loteSelected.getNumberLote();
 			} else { 
-//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya existe."));
 				addErrorMessage("El lote ya existe.");
 
 			}

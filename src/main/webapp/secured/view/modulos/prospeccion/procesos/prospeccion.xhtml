@@ -152,23 +152,21 @@
 		<h:form id="formEvents"  enctype="multipart/form-data">
 			<p:tabView id="tabOpciones"> 
 				<p:tab title="Acciones" >
-					<p:messages id="messagesAction" showDetail="true" closable="true" >
-						<p:autoUpdate/>
-			        </p:messages>
+					
 					<h:panelGrid columns="2" id="gridAcciones"> 
 						<h:outputLabel for="accion" value="Acción: " />
 						<p:selectOneMenu id="accion" value="#{prospeccionBean.prospectionDetailNew.action}" converter="#{prospeccionBean.conversorAction}" style="margin:5px; width:220px" > 
 							<f:selectItems value="#{prospeccionBean.lstActions}" var="act" itemLabel="#{act.description}" itemValue="#{act}"/> 
-							<p:ajax update=":formEvents:tabOpciones:messagesAction  :formEvents:tabOpciones:gridAcciones" />
+							<p:ajax update=":formEvents:tabOpciones:gridAcciones" />
 						</p:selectOneMenu>
 						
 						
 						
 						<h:outputLabel for="time" value="Fecha y Hora: " />
-						<p:datePicker value="#{prospeccionBean.prospectionDetailNew.date}" id="time" showTime="true" style="margin:5px" pattern="dd/MM/yyyy HH:mm a"> <p:ajax update=":formEvents:tabOpciones:messagesAction" /> </p:datePicker>
+						<p:datePicker value="#{prospeccionBean.prospectionDetailNew.date}" id="time" showTime="true" style="margin:5px" pattern="dd/MM/yyyy HH:mm a"/> 
 						
 						<h:outputLabel value="Comentario: " />
-						<p:inputTextarea value="#{prospeccionBean.prospectionDetailNew.comment}" maxlength="200" rows="2" cols="50" style="margin:5px"> <p:ajax event="blur" update=":formEvents:tabOpciones:messagesAction" /> </p:inputTextarea>
+						<p:inputTextarea value="#{prospeccionBean.prospectionDetailNew.comment}" maxlength="200" rows="2" cols="50" style="margin:5px"> <p:ajax event="blur" /> </p:inputTextarea>
 											
 					</h:panelGrid>
 				
@@ -219,22 +217,19 @@
 
 				</p:tab>
 				<p:tab title="Agendar">
-					<p:messages id="messagesAgenda" showDetail="true" closable="true" >
-						<p:autoUpdate/>
-			        </p:messages>
+					
 					<h:panelGrid columns="2" id="gridAgendas"> 
 						<h:outputLabel for="accionAg" value="Acción: " />
 						<p:selectOneMenu id="accionAg" value="#{prospeccionBean.prospectionDetailAgendaNew.action}" converter="#{prospeccionBean.conversorAction}" style="margin:5px; width:220px" > 
 							<f:selectItems value="#{prospeccionBean.lstActions}" var="act" itemLabel="#{act.description}" itemValue="#{act}"/> 
 							
-							<p:ajax update=":formEvents:tabOpciones:messagesAgenda" />
 						</p:selectOneMenu>
 						
 						<h:outputLabel for="timeAg" value="Fecha y Hora: " />
-						<p:datePicker value="#{prospeccionBean.prospectionDetailAgendaNew.date}" id="timeAg" showTime="true" style="margin:5px" pattern="dd/MM/yyyy HH:mm a"> <p:ajax update=":formEvents:tabOpciones:messagesAgenda" /> </p:datePicker>
+						<p:datePicker value="#{prospeccionBean.prospectionDetailAgendaNew.date}" id="timeAg" showTime="true" style="margin:5px" pattern="dd/MM/yyyy HH:mm a"/> 
 						
 						<h:outputLabel value="Comentario: " />
-						<p:inputTextarea value="#{prospeccionBean.prospectionDetailAgendaNew.comment}" maxlength="200" rows="2" cols="50" style="margin:5px"> <p:ajax event="blur" update=":formEvents:tabOpciones:messagesAgenda" /> </p:inputTextarea>
+						<p:inputTextarea value="#{prospeccionBean.prospectionDetailAgendaNew.comment}" maxlength="200" rows="2" cols="50" style="margin:5px"> <p:ajax event="blur" /> </p:inputTextarea>
 					</h:panelGrid>
 					
 					<p:commandButton value="Guardar" actionListener="#{prospeccionBean.saveActionScheduledProspection}" update=":formEvents:tabOpciones:gridAgendas :formEvents:tabOpciones:idTableDetAg :form:tabView:idTableProy" style="margin-top:10px"/>
@@ -279,9 +274,6 @@
 				
 				</p:tab>
 				<p:tab title="Cambio de estado" id="tabCambioEstado" > 
-					<p:messages id="messages1" showDetail="true" closable="true" >
-						<p:autoUpdate/>
-			        </p:messages>
 					<h:panelGrid columns="2" id="gridCambio"> 
 						<h:outputText value="Estado: "  />
 						<p:selectOneMenu style="margin:5px" value="#{prospeccionBean.statusSelected}" >
@@ -302,9 +294,7 @@
 					
 				</p:tab>
 				<p:tab title="Requerimiento Separación" >
-					<p:messages id="messagesRequerimiento" showDetail="true" closable="true" >
-							<p:autoUpdate/>
-				    </p:messages>
+					
 					<h:panelGrid columns="2" id="gridRequerimiento" width="50%" style="float:left"> 
 						<h:outputLabel value="Proyecto: " />
 						<h:outputLabel value="#{prospeccionBean.prospectionSelected.project.name}" />
@@ -313,14 +303,13 @@
 						<p:selectOneMenu style="margin:5px; width:220px" id="manzana" value="#{prospeccionBean.manzanaSelected}" converter="#{prospeccionBean.conversorManzana}" > 
 							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
 							<f:selectItems value="#{prospeccionBean.lstManzana}" var="manz" itemLabel="#{manz.name}" itemValue="#{manz}"/>
-							<p:ajax update=":formEvents:tabOpciones:messagesRequerimiento :formEvents:tabOpciones:gridRequerimiento" listener="#{prospeccionBean.listarLotes}"/>
+							<p:ajax update=":formEvents:tabOpciones:gridRequerimiento" listener="#{prospeccionBean.listarLotes}"/>
 						</p:selectOneMenu>
 						
 						<h:outputLabel id="lblLote" for="lote" value="Lote: " />
 						<p:selectOneMenu style="margin:5px; width:220px" id="lote" value="#{prospeccionBean.loteSelected}" converter="#{prospeccionBean.conversorLote}" > 
 							<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
 							<f:selectItems value="#{prospeccionBean.lstLote}" var="manz" itemLabel="#{manz.numberLote}" itemValue="#{manz}"/>
-							<p:ajax update=":formEvents:tabOpciones:messagesRequerimiento" />
 						</p:selectOneMenu>
 				
 					</h:panelGrid>
@@ -413,8 +402,7 @@
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPerson" header="NUEVO PROSPECTO" widgetVar="personNewDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formDialog">
-			<p:messages id="messages2" showDetail="true" closable="true">
-	        </p:messages>
+			
 			<h:panelGrid id="grid" columns="4">
 				<h:outputLabel for="dni" value="DNI:" />
 				<p:inputText id="dni" value="#{prospeccionBean.personNew.dni}" style="margin:10px" maxlength="11"> 

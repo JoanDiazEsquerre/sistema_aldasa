@@ -14,6 +14,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import org.primefaces.PrimeFaces;
+
 import com.model.aldasa.entity.Country;
 import com.model.aldasa.entity.Department;
 import com.model.aldasa.entity.District;
@@ -26,10 +28,11 @@ import com.model.aldasa.service.DistrictService;
 import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.ProvinceService;
 import com.model.aldasa.service.SucursalService;
+import com.model.aldasa.util.BaseBean;
 
 @ManagedBean
 @ViewScoped
-public class ProjectBean implements Serializable {
+public class ProjectBean extends BaseBean implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -145,53 +148,53 @@ public class ProjectBean implements Serializable {
 	
 	public void saveProject() {
 		if(projectSelected.getName().equals("") || projectSelected.getName()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar Nombre del proyecto."));
+			addErrorMessage("Ingresar Nombre del proyecto.");
 			listarProject();
 			return ;
 		} 
 		
 		if(projectSelected.getUbicacion().equals("") || projectSelected.getUbicacion()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar ubicación."));
+			addErrorMessage("Ingresar ubicación.");
 			return ;
 		} 
 		
 		if(projectSelected.getSector().equals("") || projectSelected.getSector()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar sector."));
+			addErrorMessage("Ingresar sector.");
 			return ;
 		} 
 		
 		if(projectSelected.getPredio().equals("") || projectSelected.getPredio()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar predio."));
+			addErrorMessage("Ingresar predio.");
 			return ;
 		} 
 		
 		if(projectSelected.getCodigoPredio().equals("") || projectSelected.getCodigoPredio()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar código de predio."));
+			addErrorMessage("Ingresar código de predio.");
 			return ;
 		} 
 		
 		if(projectSelected.getAreaHectarea().equals("") || projectSelected.getAreaHectarea()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar área / hectárea."));
+			addErrorMessage("Ingresar área / hectárea.");
 			return ;
 		} 
 		
 		if(projectSelected.getUnidadCatastral().equals("") || projectSelected.getUnidadCatastral()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar unidad catastral."));
+			addErrorMessage("Ingresar unidad catastral.");
 			return ;
 		} 
 		
 		if(projectSelected.getNumPartidaElectronica().equals("") || projectSelected.getNumPartidaElectronica()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar N° de partida electrónica."));
+			addErrorMessage("Ingresar N° de partida electrónica.");
 			return ;
 		} 
 		
 		if(projectSelected.getZonaRegistral().equals("") || projectSelected.getZonaRegistral()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar zona registral."));
+			addErrorMessage("Ingresar zona registral.");
 			return ;
 		} 
 		
 		if(districtSelected==null ) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar distrito."));
+			addErrorMessage("Seleccionar distrito.");
 			return ;
 		} else {
 			projectSelected.setDistrict(districtSelected);
@@ -204,20 +207,22 @@ public class ProjectBean implements Serializable {
 				projectSelected.setSucursal(navegacionBean.getSucursalLogin());
 				projectService.save(projectSelected);
 				newProject();
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				PrimeFaces.current().executeScript("PF('projectDialog').hide();");
+				addInfoMessage("Se guardo correctamente.");
 				listarProject();
 			} else { 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El proyecto ya existe."));
+				addErrorMessage("El proyecto ya existe.");
 				listarProject();
 			}
 		} else {
 			Project validarExistencia = projectService.findByNameException(projectSelected.getName(), projectSelected.getId());
 			if (validarExistencia == null) {
 				projectService.save(projectSelected);
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				PrimeFaces.current().executeScript("PF('projectDialog').hide();");
+				addInfoMessage("Se guardo correctamente.");
 				listarProject();
 			} else { 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El proyecto ya existe."));
+				addErrorMessage("El proyecto ya existe.");
 				listarProject();
 			}
 		}

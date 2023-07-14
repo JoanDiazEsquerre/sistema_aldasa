@@ -75,9 +75,7 @@
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogEmpleado" header="#{empleadoBean.tituloDialog}" widgetVar="empleadoDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formEmpleadoDialog">
-		    <p:messages id="messages" showDetail="true" closable="true">
-	            <p:autoUpdate/>
-	        </p:messages>
+		  
 			<h:panelGrid id="grid" columns="2"> 
 			
 				<h:outputLabel for="optionPerson" value="Persona:" />
@@ -87,7 +85,6 @@
 				
 				<h:outputLabel value="Sueldo básico:" for="sueldoBasico" />
 						<p:inputNumber id="sueldoBasico" value="#{empleadoBean.empleadoSelected.sueldoBasico}" style="margin:10px; width:220px" modifyValueOnWheel="false" > 
-						<p:ajax update="messages" /> 
 						</p:inputNumber>
 					
 				<h:outputLabel for="optionArea" value="Área:" />
@@ -102,12 +99,12 @@
 				
 				<h:outputLabel value="Fecha de ingreso:" style="text-align:right" />
 				<p:datePicker value="#{empleadoBean.empleadoSelected.fechaIngreso}" readonlyInput="true" style="margin:10px"> 
-					<p:ajax event="keyup" update="messages" />
+					<p:ajax event="keyup"  />
 				</p:datePicker> 
 			
 				<h:outputLabel value="Fecha de salida:" style="text-align:right"/>
 				<p:datePicker value="#{empleadoBean.empleadoSelected.fechaSalida}" readonlyInput="true" style="margin:10px"> 
-					<p:ajax event="keyup" update="messages" />
+					<p:ajax event="keyup"  />
 				</p:datePicker>
 				
 				<h:outputLabel for="option" value="Estado:" />

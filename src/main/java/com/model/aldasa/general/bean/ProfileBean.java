@@ -18,6 +18,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
@@ -118,26 +119,29 @@ public class ProfileBean extends BaseBean implements Serializable {
 	
 	public void saveProfile() {
 		if(profileSelected.getName().equals("") || profileSelected.getName()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar Nombre del perfil."));
+			addErrorMessage("Ingresar Nombre del perfil.");
 			
 			return ;
 		} 
 		if (tituloDialog.equals("NUEVO PERFIL")) {
 			Profile validarExistencia = profileService.findByName(profileSelected.getName());
 			if (validarExistencia == null) {
+				profileSelected.setPermiso("");
 				profileService.save(profileSelected);
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				PrimeFaces.current().executeScript("PF('profileDialog').hide();");
+				addInfoMessage("Se guardo correctamente.");
 				newProfile();
 			} else { 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El perfil ya existe."));
+				addErrorMessage("El perfil ya existe.");
 			}
 		} else {
 			Profile validarExistencia = profileService.findByNameException(profileSelected.getName(), profileSelected.getId());
 			if (validarExistencia == null) {
 				profileService.save(profileSelected);
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				PrimeFaces.current().executeScript("PF('profileDialog').hide();");
+				addInfoMessage("Se guardo correctamente.");
 			} else { 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El perfil ya existe."));
+				addErrorMessage("El perfil ya existe.");
 			}
 		}
 		

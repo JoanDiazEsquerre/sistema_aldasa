@@ -16,11 +16,11 @@ public class LoadImageDocumentoBean {
 	 public String nombreArchivo = "";
 
 	 public byte[] getImage() throws IOException {
-		 String ruta = "C:\\IMG-DOCUMENTO-VENTA\\0.png";
-//		 String ruta = "/home/imagen/voucher_separaciones/0.png"; 
+//		 String ruta = "C:\\IMG-DOCUMENTO-VENTA\\0.png";
+		 String ruta = "/home/imagen/voucher_separaciones/0.png"; 
 		 if(!nombreArchivo.equals("")) {
-			 ruta = "C:\\IMG-DOCUMENTO-VENTA\\"+nombreArchivo;
-//			 ruta = "/home/imagen/voucher_separaciones/"+nombreArchivo;
+//			 ruta = "C:\\IMG-DOCUMENTO-VENTA\\"+nombreArchivo;
+			 ruta = "/home/imagen/voucher_separaciones/"+nombreArchivo;
 		 }
 		 
 		 System.out.println(ruta);

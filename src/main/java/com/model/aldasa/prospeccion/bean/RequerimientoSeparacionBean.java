@@ -149,16 +149,16 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	
 	public void ejecutarRequerimiento() {
 		if(fechaSeparacion == null) {
-			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar una fecha de Separación"));
+			addErrorMessage("Ingresar una fecha de Separación");
 			return;
 		}
 		if(fechaVencimiento==null) {
-			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar una fecha de separación"));
+			addErrorMessage("Ingresar una fecha de separación");
 			return;
 		}
 		
 		if(fechaSeparacion.after(fechaVencimiento)) {
-			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La fecha de vencimiento tiene que ser mayor a fecha de separación"));
+			addErrorMessage("La fecha de vencimiento tiene que ser mayor a fecha de separación");
 			return;
 		}
 		
@@ -194,12 +194,10 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 				}
 				
 			}	
-			
-			FacesContext.getCurrentInstance().addMessage("messages", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se ejecutó separación correctamente." ));
+			addInfoMessage("Se ejecutó separación correctamente.");
 			
 		}else {
-			FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote se encuentra " + lote.getStatus()));
-
+			addErrorMessage("El lote se encuentra " + lote.getStatus());
 		}		
 
 	}
@@ -295,33 +293,33 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	public void validar() {
 		
 		if(cuentaBancariaSelected == null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar cuenta bancaria."));
+			addErrorMessage("Seleccionar cuenta bancaria.");
 			return;
 		}
 		if(monto==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar monto."));
+			addErrorMessage("Ingresar monto.");
 			return;
 		}
 		if(tipoTransaccion.equals("")) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar tipo de transacción."));
+			addErrorMessage("Seleccionar tipo de transacción.");
 			return;
 		}
 		if(numeroTransaccion.equals("")) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar Nro. Transacción."));
+			addErrorMessage("Ingresar Nro. Transacción.");
 			return;
 		}
 		if(fechaOperacion==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar fecha de operación."));
+			addErrorMessage("Ingresar fecha de operación.");
 			return;
 		}
 		
 		Voucher validarVoucher = voucherService.findByCuentaBancariaAndMontoAndTipoTransaccionAndNumeroTransaccionAndFechaOperacion(cuentaBancariaSelected, monto, tipoTransaccion, numeroTransaccion, fechaOperacion);
 		if(validarVoucher!=null) {
 			mostrarBoton=false;
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El vaucher ya existe."));
+			addErrorMessage("El vaucher ya existe.");
 			return;
 		}else {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Voucher validado."));
+			addInfoMessage("Voucher validado.");
 			mostrarBoton=true;
 			
 		}

@@ -53,9 +53,7 @@
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogTeam" header="#{teamBean.tituloDialog}" widgetVar="teamDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formTeamDialog">
-		    <p:messages id="messages" showDetail="true" closable="true">
-	            <p:autoUpdate/>
-	        </p:messages>
+		    
 			<h:panelGrid id="grid" columns="2">
 				<h:outputLabel for="optionPerson" value="Persona:" />
 				<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{teamBean.teamSelected.personSupervisor}" converter="#{teamBean.conversorPersonSupervisor}" id="optionPerson" completeMethod="#{teamBean.completePersonSupervisor}"  

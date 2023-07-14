@@ -68,7 +68,7 @@ import com.model.aldasa.util.Perfiles;
 
 @ManagedBean
 @ViewScoped
-public class ProspeccionBean extends BaseBean{
+public class ProspeccionBean  extends BaseBean{
 	
 	@ManagedProperty(value = "#{navegacionBean}")
 	private NavegacionBean navegacionBean;
@@ -294,20 +294,20 @@ public class ProspeccionBean extends BaseBean{
 	
 	public void savePerson() {
 		if(personNew.getSurnames().equals("") || personNew.getSurnames()==null) {
-			FacesContext.getCurrentInstance().addMessage("messages2", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Apellidos."));
+			addErrorMessage("Falta ingresar Apellidos.");
 			return;
 		}
 		if(personNew.getNames().equals("") || personNew.getNames()==null) {
-			FacesContext.getCurrentInstance().addMessage("messages2", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Nombres."));
+			addErrorMessage("Falta ingresar Nombres.");
 			return;
 		}
 		
 		if(personNew.getPhone().equals("") && personNew.getCellphone().equals("")) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingrese telefono o celular."));
+			addErrorMessage("Ingrese telefono o celular.");
 			return;
 		}
 		if(districtSelected==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingrese distrito."));
+			addErrorMessage("Ingrese distrito.");
 			return;
 		} else {
 			personNew.setDistrict(districtSelected);
@@ -323,11 +323,10 @@ public class ProspeccionBean extends BaseBean{
 					if(fechaRest.after(new Date())) {
 						if (buscarProspecto.getPersonAssessor() != null) {
 							Usuario buscarInactivo = usuarioService.findByPerson(buscarProspecto.getPersonAssessor());
-							FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto está a cargo por el asesor "+ buscarProspecto.getPersonAssessor().getSurnames() + " "+ buscarProspecto.getPersonAssessor().getNames()));
+							addErrorMessage("El prospecto está a cargo por el asesor "+ buscarProspecto.getPersonAssessor().getSurnames() + " "+ buscarProspecto.getPersonAssessor().getNames());
 							return;
 						} else if (buscarProspecto.getPersonSupervisor() != null) {
-							FacesContext.getCurrentInstance().addMessage(null,
-									new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error","El prospecto está a cargo por el supervisor "+ buscarProspecto.getPersonSupervisor().getSurnames() + " "+ buscarProspecto.getPersonSupervisor().getNames()));
+							addErrorMessage("El prospecto está a cargo por el supervisor "+ buscarProspecto.getPersonSupervisor().getSurnames() + " "+ buscarProspecto.getPersonSupervisor().getNames());
 							return;
 						} 
 					}else {
@@ -353,7 +352,7 @@ public class ProspeccionBean extends BaseBean{
  							
 						}
 					    limpiarDatosCiudades();
-						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
+					    addInfoMessage("El prospecto se guardó correctamente");
 						newPerson();
 						return;
 					}
@@ -379,7 +378,7 @@ public class ProspeccionBean extends BaseBean{
 		
 		prospectService.save(prospectNew);
 	    limpiarDatosCiudades();
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
+	    addInfoMessage("El prospecto se guardó correctamente");
 		newPerson();
 		listarProspect();
 		
@@ -610,67 +609,9 @@ public class ProspeccionBean extends BaseBean{
 	}
 	
 	public void saveActionProspection() {
-//		prospectionDetailNew.setLote(loteSelected); 
-//		if(prospectionDetailNew.getAction().getDescription().equals("Separado")) {
-//			if(loteSelected == null) {
-//				FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar Manzana y Lote."));
-//				return;
-//			}else {
-//				int idLote = loteSelected.getId();
-//				Lote loteBusqueda = loteService.findById(idLote);
-//				
-//				if(loteBusqueda.getStatus().equals(EstadoLote.SEPARADO.getName())) {
-//					FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra separado."));
-//					return;
-//				}else if(loteBusqueda.getStatus().equals(EstadoLote.VENDIDO.getName())) {
-//					FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra Vendido."));
-//					return;
-//				}
-//				
-//				for(ProspectionDetail detalle: lstProspectionDetail) {
-//					if(detalle.getLote() != null) {
-//						if(loteSelected.getId() == detalle.getLote().getId() && detalle.getAction().getDescription().equals(EstadoLote.SEPARADO.getName())) {
-//							FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya seleccionó el lote "+ loteSelected.getNumberLote()+" de la Manzana "+manzanaSelected.getName()+ " como separado"));
-//							return;
-//						}
-//					}
-//				}
-//			}
-//		}else if(prospectionDetailNew.getAction().getDescription().equals("Vendido")){
-//			if(loteSelected == null) {
-//				FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar Manzana y Lote."));
-//				return;
-//			}else {
-//				int idLote = loteSelected.getId();
-//				Lote loteBusqueda = loteService.findById(idLote);
-//				
-//				if(loteBusqueda.getStatus().equals(EstadoLote.SEPARADO.getName())) {
-//					if(loteBusqueda.getPersonVenta().getId() != prospectionDetailNew.getProspection().getProspect().getPerson().getId()) {
-//						FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra separado."));
-//						return;
-//					}
-//					
-//				}else if(loteBusqueda.getStatus().equals(EstadoLote.VENDIDO.getName())) {
-//					FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote ya se encuentra Vendido."));
-//					return;
-//				}
-//				
-//				
-//				for(ProspectionDetail detalle: lstProspectionDetail) {
-//					if(detalle.getLote() != null) {
-//						if(loteSelected.getId() == detalle.getLote().getId() && detalle.getAction().getDescription().equals("Vendido")) {
-//							FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya seleccionó el lote "+ loteSelected.getNumberLote()+" de la Manzana "+manzanaSelected.getName()+ "como vendido"));
-//							return;
-//						}
-//					}
-//				}
-//			}
-//		}else {
-//			prospectionDetailNew.setLote(null);
-//		}
 		
 		if(prospectionDetailNew.getDate()==null) {
-			FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Selecciona Fecha y Hora."));
+			addErrorMessage("Selecciona Fecha y Hora.");
 			return;
 		}
 		
@@ -679,7 +620,7 @@ public class ProspeccionBean extends BaseBean{
 		
 		ProspectionDetail save = prospectionDetailService.save(prospectionDetailNew);
 		if(save!=null) {
-			FacesContext.getCurrentInstance().addMessage("messagesAction", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se registró correctamente la acción."));
+			addInfoMessage("Se registró correctamente la acción.");
 			lstProspectionDetail = prospectionDetailService.findByProspectionAndScheduled(prospectionSelected,false);
 			
 			if(prospectionDetailNew.getAction().getPorcentage()> prospectionSelected.getPorcentage()) {
@@ -720,7 +661,7 @@ public class ProspeccionBean extends BaseBean{
 	
 	public void saveActionScheduledProspection() {
 		if(prospectionDetailAgendaNew.getDate()==null) {
-			FacesContext.getCurrentInstance().addMessage("messagesAgenda", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Selecciona Fecha y Hora."));
+			addErrorMessage("Selecciona Fecha y Hora.");
 			return;
 		}
 		
@@ -728,7 +669,7 @@ public class ProspeccionBean extends BaseBean{
 		
 		ProspectionDetail save = prospectionDetailService.save(prospectionDetailAgendaNew);
 		if(save!=null) {
-			FacesContext.getCurrentInstance().addMessage("messagesAgenda", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se agendó correctamente la acción."));
+			addInfoMessage("Se agendó correctamente la acción.");
 			newProspectionDetailAgenda();
 			lstProspectionDetailAgenda = prospectionDetailService.findByProspectionAndScheduled(prospectionSelected,true);
 		}
@@ -750,7 +691,7 @@ public class ProspeccionBean extends BaseBean{
 		}
 		
 		prospectionService.save(prospectionSelected);
-		FacesContext.getCurrentInstance().addMessage("messages1", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se cambio correctamente el estado a: " + prospectionSelected.getStatus()));
+		addInfoMessage("Se cambio correctamente el estado a: " + prospectionSelected.getStatus());
 	}
 	
 	public void cargarRequerimiento() {
@@ -759,22 +700,22 @@ public class ProspeccionBean extends BaseBean{
 	
 	public void generarRequerimiento() {	
 		if(manzanaSelected == null) {
-			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar manzana"));	
+			addErrorMessage("Ingresar manzana");
 			return;
 		}
 		
 		if(loteSelected == null) {
-			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar número de lote"));	
+			addErrorMessage("Ingresar número de lote");
 			return;
 		}else {
 			Lote l = loteService.findById(loteSelected.getId());
 			if (!l.getStatus().equals(EstadoLote.DISPONIBLE.getName())) {
-				FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El lote se encuentra " + l.getStatus()));	
+				addErrorMessage("El lote se encuentra " + l.getStatus());
 				return;
 			}
 			for(RequerimientoSeparacion re : lstReqSepSelected) {
 				if(re.getEstado().equals("Pendiente") && re.getLote().getId()==loteSelected.getId()) {
-					FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Requerimiento registrado"));	
+					addErrorMessage("Requerimiento registrado");
 					return;
 				}
 			}
@@ -803,11 +744,11 @@ public class ProspeccionBean extends BaseBean{
 			requerimientoSeparacionService.save(guardarReq);
 			
             subirArchivo(rename);
-			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente el requerimiento" ));
+            addInfoMessage("Se guardo correctamente el requerimiento");
 			cargarRequerimiento();
 			
 		}else {
-			FacesContext.getCurrentInstance().addMessage("messagesRequerimiento", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo guardar el requerimiento"));	
+			addErrorMessage("No se pudo guardar el requerimiento");
 		}
 		
 	}

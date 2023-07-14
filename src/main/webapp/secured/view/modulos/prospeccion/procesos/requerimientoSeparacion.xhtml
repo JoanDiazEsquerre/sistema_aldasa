@@ -106,20 +106,18 @@
 					<p:graphicImage width="400"  value="#{loadImageBean.image}" id="imagenLoad" cache="false"/>
 				</p:tab>
 				<p:tab id="tabReg" title="Registrar Voucher" rendered="#{requerimientoSeparacionBean.estado eq 'Pendiente'}"> 
-					<p:messages id="messages" showDetail="true" closable="true">
-						<p:autoUpdate />
-					</p:messages>
+					
 					<h:panelGrid id="grid" columns="4">
 						<h:outputLabel  value="Cuenta Bancaria:" />
 						<p:selectOneMenu value="#{requerimientoSeparacionBean.cuentaBancariaSelected}" converter="#{requerimientoSeparacionBean.conversorCuentaBancaria}" >
 		                    <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
 		                    <f:selectItems value="#{requerimientoSeparacionBean.lstCuentaBancaria}" var="cb" itemLabel="#{cb.banco.abreviatura} : #{cb.numero}  (#{cb.moneda eq 'D'?'Dólares':'Soles'})" itemValue="#{cb}"/>
-		                	<p:ajax update="messages :idFormImagen:tvVoucher:gridBot" listener="#{requerimientoSeparacionBean.ocultarBotonAprobar}"/>
+		                	<p:ajax update=":idFormImagen:tvVoucher:gridBot" listener="#{requerimientoSeparacionBean.ocultarBotonAprobar}"/>
 		                </p:selectOneMenu>
 						
 						<h:outputLabel value="Monto:" />
 						<p:inputNumber value="#{requerimientoSeparacionBean.monto}" modifyValueOnWheel="false"> 
-						<p:ajax update="messages :idFormImagen:tvVoucher:gridBot" listener="#{requerimientoSeparacionBean.ocultarBotonAprobar}"/> 
+						<p:ajax update=":idFormImagen:tvVoucher:gridBot" listener="#{requerimientoSeparacionBean.ocultarBotonAprobar}"/> 
 						</p:inputNumber>
 						
 						<h:outputLabel value="Tipo de transacción: " />
@@ -128,17 +126,17 @@
 							<f:selectItem itemLabel="DEPOSITO EN EFECTIVO" itemValue="DEPOSITO EN EFECTIVO"/>
 							<f:selectItem itemLabel="TRASFERENCIAS ENTRE TERCEROS" itemValue="TRASFERENCIAS ENTRE TERCEROS"/>
 							<f:selectItem itemLabel="TRASFERENCIA INTERBANCARIA" itemValue="TRASFERENCIA INTERBANCARIA"/>
-							<p:ajax update="messages :idFormImagen:tvVoucher:gridBot" listener="#{requerimientoSeparacionBean.ocultarBotonAprobar}"/>
+							<p:ajax update=":idFormImagen:tvVoucher:gridBot" listener="#{requerimientoSeparacionBean.ocultarBotonAprobar}"/>
 						</p:selectOneMenu>
 						
 						<h:outputLabel value="Nro. transacción:" />
 						<p:inputText value="#{requerimientoSeparacionBean.numeroTransaccion}"> 
-							<p:ajax update="messages :idFormImagen:tvVoucher:gridBot" listener="#{requerimientoSeparacionBean.ocultarBotonAprobar}"/>
+							<p:ajax update=":idFormImagen:tvVoucher:gridBot" listener="#{requerimientoSeparacionBean.ocultarBotonAprobar}"/>
 						</p:inputText>
 						
 						<h:outputLabel value="Fecha Operación:" />
 						<p:datePicker value="#{requerimientoSeparacionBean.fechaOperacion}"  showTime="true" style="margin:5px" pattern="dd/MM/yyyy hh:mm:ss a" readonlyInput="true"> 
-							<p:ajax update="messages :idFormImagen:tvVoucher:gridBot" listener="#{requerimientoSeparacionBean.ocultarBotonAprobar}"/>
+							<p:ajax update=":idFormImagen:tvVoucher:gridBot" listener="#{requerimientoSeparacionBean.ocultarBotonAprobar}"/>
 						</p:datePicker>
 						
 						
@@ -160,19 +158,15 @@
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogReqSep" header="Ejecutar" widgetVar="dialogRequerimiento" resizable="false" closable="true"
 		appendTo="@(body)" >
 		<h:form id="formRequerimiento" >
-		<p:messages id="messages" showDetail="true" closable="true">
-	            <p:autoUpdate/>
-        </p:messages>
+		
 		<h:panelGrid id="grid" columns="2"> 
 			<h:outputLabel value="Fecha de separación: "/>
 			<p:datePicker value="#{requerimientoSeparacionBean.fechaSeparacion}" > 
-				<p:ajax update="messages" />
 			</p:datePicker>
 						
 		
 			<h:outputLabel  value="Fecha de vencimiento "/>
 			<p:datePicker value="#{requerimientoSeparacionBean.fechaVencimiento}"> 
-				<p:ajax update="messages" />
 			</p:datePicker>	
 			
 		</h:panelGrid>

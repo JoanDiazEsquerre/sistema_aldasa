@@ -14,6 +14,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
@@ -29,10 +30,11 @@ import com.model.aldasa.entity.Profile;
 import com.model.aldasa.service.AreaService;
 import com.model.aldasa.service.EmpleadoService;
 import com.model.aldasa.service.PersonService;
+import com.model.aldasa.util.BaseBean;
 
 @ManagedBean
 @ViewScoped
-public class EmpleadoBean implements Serializable {
+public class EmpleadoBean extends BaseBean implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -80,41 +82,43 @@ public class EmpleadoBean implements Serializable {
 	
 	public void saveEmpleado() {
 		if(empleadoSelected.getPerson()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar empleado."));
+			addErrorMessage("Ingresar empleado.");
 			return ;
 		}
 		if(empleadoSelected.getSueldoBasico()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar sueldo básico."));
+			addErrorMessage("Ingresar sueldo básico.");
 			return ;
 		}
 		if(empleadoSelected.getArea()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar área."));
+			addErrorMessage("Seleccionar área.");
 			return ;
 		}
 		if(empleadoSelected.getCargo().equals("")) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar cargo."));
+			addErrorMessage("Ingresar cargo.");
 			return ;
 		}
 		if(empleadoSelected.getFechaIngreso()==null && empleadoSelected.getFechaSalida()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Seleccionar fechas."));
+			addErrorMessage("Seleccionar fechas.");
 			return ;
 		}
 		if (tituloDialog.equals("NUEVO EMPLEADO")) {
 			Empleado validarExistencia = empleadoService.findByPerson(empleadoSelected.getPerson());
 			if (validarExistencia == null) {
 				empleadoService.save(empleadoSelected);
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				PrimeFaces.current().executeScript("PF('empleadoDialog').hide();");
+				addInfoMessage("Se guardo correctamente.");
 				newEmpleado();
 			} else { 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Persona ya se encuentra registrado como empleado."));
+				addErrorMessage("Persona ya se encuentra registrado como empleado.");
 			}
 		} else {
 			Empleado validarExistencia = empleadoService.findByPersonIdException(empleadoSelected.getPerson().getId() , empleadoSelected.getId());
 			if (validarExistencia == null) {
 				empleadoService.save(empleadoSelected);
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				PrimeFaces.current().executeScript("PF('empleadoDialog').hide();");
+				addInfoMessage("Se guardo correctamente.");
 			} else { 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Persona ya se encuentra registrado como empleado."));
+				addErrorMessage("Persona ya se encuentra registrado como empleado.");
 			}
 		}
 		

@@ -11,13 +11,15 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.PrimeFaces;
 
 import com.model.aldasa.entity.Manzana;
 import com.model.aldasa.service.ManzanaService;
+import com.model.aldasa.util.BaseBean;
 
 @ManagedBean
 @ViewScoped
-public class ManzanaBean implements Serializable{
+public class ManzanaBean extends BaseBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -53,7 +55,7 @@ public class ManzanaBean implements Serializable{
 	
 	public void saveManzana() {
 		if(manzanaSelected.getName().equals("") || manzanaSelected.getName()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar Nombre de la manzana."));
+			addErrorMessage("Ingresar Nombre de la manzana.");
 			listarManzana();
 			return ;
 		} 
@@ -62,20 +64,22 @@ public class ManzanaBean implements Serializable{
 			if (validarExistencia == null) {
 				manzanaService.save(manzanaSelected);
 				newManzana();
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				PrimeFaces.current().executeScript("PF('manzanaDialog').hide();");
+				addInfoMessage("Se guardo correctamente.");
 				listarManzana();
 			} else { 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La manzana ya existe."));
+				addErrorMessage("La manzana ya existe.");
 				listarManzana();
 			}
 		} else {
 			Manzana validarExistencia = manzanaService.findByNameException(manzanaSelected.getName(), manzanaSelected.getId());
 			if (validarExistencia == null) {
 				manzanaService.save(manzanaSelected);
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				PrimeFaces.current().executeScript("PF('manzanaDialog').hide();");
+				addInfoMessage("Se guardo correctamente.");
 				listarManzana();
 			} else { 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La manzana ya existe."));
+				addErrorMessage("La manzana ya existe.");
 				listarManzana();
 			}
 		}

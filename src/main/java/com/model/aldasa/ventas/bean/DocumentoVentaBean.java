@@ -190,6 +190,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private BigDecimal deudaActualConInteres = BigDecimal.ZERO;
 	private BigDecimal montoPrepago = BigDecimal.ZERO;
 	private BigDecimal nuevoInteres;
+	private BigDecimal sumaCuotaSI, sumaInteres, sumaCuotaTotal;
 	
 	private String tituloDialog;
 	private String imagen1, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8, imagen9, imagen10;
@@ -566,6 +567,20 @@ public class DocumentoVentaBean extends BaseBean {
 	
 		habilitarBoton=false;
 		habilitarMontoPrepago=true;
+		
+		sumaCuotaSI = BigDecimal.ZERO;
+		sumaInteres = BigDecimal.ZERO;
+		sumaCuotaTotal = BigDecimal.ZERO;
+		int contador = 0;
+		
+		for(Cuota c:lstCuotaVista) {
+			if(contador!=0){
+				sumaCuotaSI = sumaCuotaSI.add(c.getCuotaSI());
+				sumaInteres = sumaInteres.add(c.getInteres());
+				sumaCuotaTotal = sumaCuotaTotal.add(c.getCuotaTotal());
+			}
+			contador++;
+		}
 	
 	}
 	
@@ -1309,6 +1324,9 @@ public class DocumentoVentaBean extends BaseBean {
 		habilitarBoton=true;
 		habilitarMontoPrepago=false;
 		pagoTotalPrepago=false;
+		sumaCuotaSI = null;
+		sumaCuotaTotal = null;
+		sumaInteres = null;
 
 	}
 	
@@ -2859,6 +2877,29 @@ public class DocumentoVentaBean extends BaseBean {
 
 	public void setNroOperacionVoucherDialog(String nroOperacionVoucherDialog) {
 		this.nroOperacionVoucherDialog = nroOperacionVoucherDialog;
+	}
+
+	public BigDecimal getSumaCuotaSI() {
+		return sumaCuotaSI;
+	}
+
+	public void setSumaCuotaSI(BigDecimal sumaCuotaSI) {
+		this.sumaCuotaSI = sumaCuotaSI;
+	}
+
+	public BigDecimal getSumaInteres() {
+		return sumaInteres;
+	}
+
+	public void setSumaInteres(BigDecimal sumaInteres) {
+		this.sumaInteres = sumaInteres;
+	}
+
+	public BigDecimal getSumaCuotaTotal() {
+		return sumaCuotaTotal;
+	}
+	public void setSumaCuotaTotal(BigDecimal sumaCuotaTotal) {
+		this.sumaCuotaTotal = sumaCuotaTotal;
 	}
 	
 	

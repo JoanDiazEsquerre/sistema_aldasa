@@ -50,9 +50,7 @@
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogManzana" header="#{manzanaBean.tituloDialog}" widgetVar="manzanaDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formManzanaDialog">
-		    <p:messages id="messages" showDetail="true" closable="true">
-	            <p:autoUpdate/>
-	        </p:messages>
+		    
 			<h:panelGrid id="grid" columns="2">
 				<h:outputLabel value="Nombre de Manzana: " for="nombreManzana" />
 				<p:inputText value="#{manzanaBean.manzanaSelected.name}"

@@ -16,6 +16,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
@@ -43,11 +44,12 @@ import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.ProspectionService;
 import com.model.aldasa.service.ProvinceService;
 import com.model.aldasa.service.UsuarioService;
+import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.Perfiles;
 
 @ManagedBean
 @ViewScoped
-public class ProspectoBean  implements Serializable {
+public class ProspectoBean extends BaseBean implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -266,21 +268,21 @@ public class ProspectoBean  implements Serializable {
 	
 	public void savePerson() {	
 		if(personNew.getSurnames().equals("") || personNew.getSurnames()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Apellidos."));
+			addErrorMessage("Falta ingresar Apellidos.");
 			return;
 		}
 		if(personNew.getNames().equals("") || personNew.getNames()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Falta ingresar Nombres."));
+			addErrorMessage("Falta ingresar Nombres.");
 			return;
 		}
 		
 		if(personNew.getPhone().equals("") && personNew.getCellphone().equals("")) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingrese telefono o celular."));
+			addErrorMessage("Ingrese telefono o celular.");
 			return;
 		}
 		
 		if(districtSelected==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingrese distrito."));
+			addErrorMessage("Ingrese distrito.");
 			return;
 		} else {
 			personNew.setDistrict(districtSelected);
@@ -300,11 +302,10 @@ public class ProspectoBean  implements Serializable {
 						if(fechaRest.after(new Date())) {
 							if (buscarProspecto.getPersonAssessor() != null) {
 								Usuario buscarInactivo = usuarioService.findByPerson(buscarProspecto.getPersonAssessor());
-								FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El prospecto está a cargo por el asesor "+ buscarProspecto.getPersonAssessor().getSurnames() + " "+ buscarProspecto.getPersonAssessor().getNames()));
+								addErrorMessage("El prospecto está a cargo por el asesor "+ buscarProspecto.getPersonAssessor().getSurnames() + " "+ buscarProspecto.getPersonAssessor().getNames());
 								return;
 							} else if (buscarProspecto.getPersonSupervisor() != null) {
-								FacesContext.getCurrentInstance().addMessage(null,
-										new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error","El prospecto está a cargo por el supervisor "+ buscarProspecto.getPersonSupervisor().getSurnames() + " "+ buscarProspecto.getPersonSupervisor().getNames()));
+								addErrorMessage("El prospecto está a cargo por el supervisor "+ buscarProspecto.getPersonSupervisor().getSurnames() + " "+ buscarProspecto.getPersonSupervisor().getNames());
 								return;
 							} 
 						}else {
@@ -333,7 +334,8 @@ public class ProspectoBean  implements Serializable {
  	 							
  							}
  							limpiarDatosCiudades();
-							FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
+ 							PrimeFaces.current().executeScript("PF('personNewDialog').hide();");
+ 							addInfoMessage("El prospecto se guardó correctamente");
 							newPerson();
 							return;
 						}
@@ -359,7 +361,8 @@ public class ProspectoBean  implements Serializable {
 			
 			prospectService.save(prospectNew);
 		    limpiarDatosCiudades();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
+		    PrimeFaces.current().executeScript("PF('personNewDialog').hide();");
+		    addInfoMessage("El prospecto se guardó correctamente");
 			newPerson();
 			
 			
@@ -367,13 +370,14 @@ public class ProspectoBean  implements Serializable {
 			if (!personNew.getDni().equals("")) {
 				Person buscarPorDni = personService.findByDniException(personNew.getDni(),personNew.getId());
 				if(buscarPorDni!=null) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El DNI ya existe."));
+					addErrorMessage("El DNI ya existe.");
 					return;
 				}
 			}
 			
-			personService.save(personNew); 
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Info", "El prospecto se guardó correctamente"));
+			personService.save(personNew);
+			PrimeFaces.current().executeScript("PF('personNewDialog').hide();");
+			addInfoMessage("El prospecto se guardó correctamente");
 		}
 		
 	}
