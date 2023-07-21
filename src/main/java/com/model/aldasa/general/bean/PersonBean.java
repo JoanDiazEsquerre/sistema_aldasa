@@ -320,7 +320,7 @@ public class PersonBean extends BaseBean implements Serializable {
 		boolean valor = true;
 
 		if (person.getDni().equals("") || person.getDni() == null) {
-			personNew.setDni("");
+			addErrorMessage("Ingresar DNI.");
 
 		} else {
 			if (tituloDialog.equals("NUEVA PERSONA")) {

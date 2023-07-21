@@ -712,7 +712,7 @@
 					<h:outputText value="Monto:" rendered="#{documentoVentaBean.tipoPrepago eq 'PC' or documentoVentaBean.tipoPrepago eq 'PAR'}"/>
 					<p:inputNumber id="mntPrepago" value="#{documentoVentaBean.montoPrepago}" disabled="#{documentoVentaBean.habilitarMontoPrepago}" rendered="#{documentoVentaBean.tipoPrepago eq 'PC' or documentoVentaBean.tipoPrepago eq 'PAR'}" />
 					
-					<p:outputLabel for="incluir" value="Incluir última cuota:" rendered="#{documentoVentaBean.tipoPrepago eq 'PC' or documentoVentaBean.tipoPrepago eq 'PAR'}"/>
+					<p:outputLabel for="incluir" value="Incluir prox. cuota con interes:" rendered="#{documentoVentaBean.tipoPrepago eq 'PC' or documentoVentaBean.tipoPrepago eq 'PAR'}"/>
 			
 					<p:selectOneMenu id="incluir" value="#{documentoVentaBean.incluirUltimaCuota}" rendered="#{documentoVentaBean.tipoPrepago eq 'PC' or documentoVentaBean.tipoPrepago eq 'PAR'}">
 						<f:selectItem itemLabel="No" itemValue="No"/>
@@ -748,8 +748,8 @@
 					</h:outputText> 
 				</h:panelGrid>
 			
-				<p:dataTable var="cuotaContrato" value="#{documentoVentaBean.lstCuotaVista}" rows="25" paginator="true" selectionMode="single" rowIndexVar="row"  
-					paginatorPosition="bottom" selection="#{documentoVentaBean.cuotaPendienteContratoSelected}" rowKey="#{cuotaContrato.id}" id="tableCuotaContrato"
+				<p:dataTable var="cuotaContrato" value="#{documentoVentaBean.lstCuotaVista}"  selectionMode="single" rowIndexVar="row"  
+					selection="#{documentoVentaBean.cuotaPendienteContratoSelected}" rowKey="#{cuotaContrato.id}" id="tableCuotaContrato"
 					emptyMessage="No se encontraron cronograma de deudas." size="small">
 
 					<f:facet name="header">

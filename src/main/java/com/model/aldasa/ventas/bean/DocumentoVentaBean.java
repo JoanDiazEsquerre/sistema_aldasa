@@ -422,11 +422,17 @@ public class DocumentoVentaBean extends BaseBean {
 			lstCuotaVista.clear();
 
 			lstCuotaVista.addAll(lstCuotaPagadas);
+			int cantidadCuotasPagadas = 0;
+			for(Cuota cp:lstCuotaPagadas) {
+				if(cp.getNroCuota()!=0) {
+					cantidadCuotasPagadas ++;
+				}
+			}
 			
-			Integer nuevoNroCuotasPendientes = nuevoNroCuotas - lstCuotaPagadas.size()+1;
+			Integer nuevoNroCuotasPendientes = nuevoNroCuotas - cantidadCuotasPagadas ;
 			BigDecimal nuevaCuotaSI = saldo.divide(new BigDecimal(nuevoNroCuotasPendientes), 2, RoundingMode.HALF_UP);
 			BigDecimal nuevoInteresRedAmpl = nuevaCuotaSI.multiply(nuevoInteres.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
-			Integer nroCuota = lstCuotaPagadas.size();
+			Integer nroCuota = cantidadCuotasPagadas +1;
 			Date fecha = lstCuotaPagadas.get(1).getFechaPago();
 
 			
@@ -537,7 +543,12 @@ public class DocumentoVentaBean extends BaseBean {
 			BigDecimal nuevaCuotaSI = saldo.divide(new BigDecimal(nuevoNroCuotasPendientes), 2, RoundingMode.HALF_UP);
 			BigDecimal nuevoInteresRedAmpl = nuevaCuotaSI.multiply(nuevoInteres.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
 			Integer nroCuota = lstCuotaPagadas.size();
-			Date fecha = lstCuotaPagadas.get(1).getFechaPago();
+			Date fecha = null;
+			if(lstCuotaPagadas.size()==1) {
+				fecha = lstCuotaPendientes.get(0).getFechaPago();
+			}else {
+				fecha = lstCuotaPagadas.get(1).getFechaPago();
+			}
 
 			
 			for(int i=0; i<nuevoNroCuotasPendientes;i++) {
@@ -1352,7 +1363,7 @@ public class DocumentoVentaBean extends BaseBean {
 		if(!lstDetalleDocumentoVenta.isEmpty()) {
 			for(DetalleDocumentoVenta d:lstDetalleDocumentoVenta) {
 				if(d.getCuota() != null) {
-					if(cuotaSelected.getId()==d.getCuota().getId()) {
+					if(cuotaSelected.getId().equals(d.getCuota().getId())) {
 						addErrorMessage("Ya seleccionó la cuota");			
 						return;
 					}
