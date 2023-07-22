@@ -433,7 +433,12 @@ public class DocumentoVentaBean extends BaseBean {
 			BigDecimal nuevaCuotaSI = saldo.divide(new BigDecimal(nuevoNroCuotasPendientes), 2, RoundingMode.HALF_UP);
 			BigDecimal nuevoInteresRedAmpl = nuevaCuotaSI.multiply(nuevoInteres.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
 			Integer nroCuota = cantidadCuotasPagadas +1;
-			Date fecha = lstCuotaPagadas.get(1).getFechaPago();
+			Date fecha = null;
+			if(lstCuotaPagadas.size()==1) {
+				fecha = lstCuotaPendientes.get(0).getFechaPago();
+			}else {
+				fecha = lstCuotaPagadas.get(1).getFechaPago();
+			}
 
 			
 			for(int i=0; i<nuevoNroCuotasPendientes;i++) {
