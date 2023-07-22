@@ -69,6 +69,7 @@ import com.model.aldasa.entity.CuentaBancaria;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.Lote;
+import com.model.aldasa.entity.ObservacionContrato;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.Simulador;
@@ -134,6 +135,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 	private List<CuentaBancaria> lstCuentaBancaria = new ArrayList<>();
 	private List<Simulador> lstSimulador = new ArrayList<>();
 	private List<Simulador> lstSimuladorPrevio = new ArrayList<>();
+	private List<ObservacionContrato> lstObservacionContrato = new ArrayList<>();
 	
 	private List<Cuota> lstCuotaVista = new ArrayList<>();
 
@@ -2776,37 +2778,35 @@ public class ContratoBean extends BaseBean implements Serializable{
 	public void setParametros(Map<String, Object> parametros) {
 		this.parametros = parametros;
 	}
-
 	public ReportGenBo getReportGenBo() {
 		return reportGenBo;
 	}
-
 	public void setReportGenBo(ReportGenBo reportGenBo) {
 		this.reportGenBo = reportGenBo;
 	}
-
 	public BigDecimal getSumaCuotaSI() {
 		return sumaCuotaSI;
 	}
-
 	public void setSumaCuotaSI(BigDecimal sumaCuotaSI) {
 		this.sumaCuotaSI = sumaCuotaSI;
 	}
-
 	public BigDecimal getSumaInteres() {
 		return sumaInteres;
 	}
-
 	public void setSumaInteres(BigDecimal sumaInteres) {
 		this.sumaInteres = sumaInteres;
 	}
-
 	public BigDecimal getSumaCuotaTotal() {
 		return sumaCuotaTotal;
 	}
-
 	public void setSumaCuotaTotal(BigDecimal sumaCuotaTotal) {
 		this.sumaCuotaTotal = sumaCuotaTotal;
+	}
+	public List<ObservacionContrato> getLstObservacionContrato() {
+		return lstObservacionContrato;
+	}
+	public void setLstObservacionContrato(List<ObservacionContrato> lstObservacionContrato) {
+		this.lstObservacionContrato = lstObservacionContrato;
 	}
 	
 	

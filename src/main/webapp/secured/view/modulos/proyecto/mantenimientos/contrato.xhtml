@@ -338,7 +338,31 @@
 				<p:inputTextarea style="width:100%" rows="2" cols="30" counter="display" maxlength="500"
 	                         counterTemplate="{0} caracteres restantes." autoResize="false"/>
 	        	<h:outputText id="display" class="block" />
+	        	
+	        	<p:commandButton value="Añadir" update="idObsContrato" />
         	</h:panelGrid>
+        	
+        	<p:dataTable var="observacion" id="idObsContrato" value="#{contratoBean.lstObservacionContrato}"  rowIndexVar="row" paginator="true" rows="4" 
+				size="small" emptyMessage="No se encontratos resultados." paginatorPosition="bottom" rowKey="#{meta.id}" selection="#{contratoBean.contratoSelected}" selectionMode="single">
+				
+				<p:column width="25px">
+	                      #{row +1}
+	        	</p:column>
+	        	
+				<p:column headerText="Observación"  >
+					<h:outputText   />
+				</p:column>
+				
+				<p:column headerText="Usuario" filterMatchMode="contains" style="text-align: center">
+					<h:outputText  />
+				</p:column>
+				
+				<p:column headerText="Fecha Registro" filterMatchMode="contains" style="text-align: center">
+					<h:outputText  />
+				</p:column>
+				
+			</p:dataTable>
+			
 		</h:form>
 	</p:dialog>
 	
