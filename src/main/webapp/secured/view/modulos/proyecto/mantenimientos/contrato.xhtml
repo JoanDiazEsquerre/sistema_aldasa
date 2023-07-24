@@ -97,7 +97,7 @@
 		            <p:menuitem value="Descargar Contrato" icon="pi pi-check" action="#{contratoBean.generarExcel}" oncomplete="hacerClick('#{p:resolveFirstComponentWithId('btnAct', view).clientId}');"  />
 		            <p:menuitem value="Anular" icon="pi pi-trash" oncomplete="PF('anulaContra').show()"  />		        
 		        	<p:menuitem value="Ver Cronograma de Pago" icon="pi pi-search-plus" action="#{contratoBean.verCronogramaPago()}" oncomplete="PF('cronogramaPagoDialog').show();" update="dialogCronogramaPago"  />		        
-		        	<p:menuitem value="Añadir Observación" icon="pi pi-comments" oncomplete="PF('añadirObservacionDialog').show();" update="dialogAñadirObservacion"  />		        
+		        	<p:menuitem value="Añadir Observación" icon="pi pi-comments" action="#{contratoBean.cargarListaObservacion()}" oncomplete="PF('añadirObservacionDialog').show();" update="dialogAñadirObservacion"  />		        
 		        
 		        </p:contextMenu>
 			</p:tab>
@@ -331,34 +331,42 @@
 		</h:form>
 	</p:dialog>
 	
-	<p:dialog modal="true" height="600px" dynamic="true" closeOnEscape="true" id="dialogAñadirObservacion" header="Contrato Observación" widgetVar="añadirObservacionDialog" resizable="false" closable="true"
+	<p:dialog modal="true" height="600px" dynamic="true" closeOnEscape="true" id="dialogAñadirObservacion" header="Observaciones del Contrato" widgetVar="añadirObservacionDialog" resizable="false" closable="true"
 		appendTo="@(body)"  width="50%">
 		<h:form id="formAñadirObservacionDialog">
-			<h:panelGrid columns="1" width="100%">
-				<p:inputTextarea style="width:100%" rows="2" cols="30" counter="display" maxlength="500"
+			<h:panelGrid id="idPanelObs" columns="1" width="100%">
+				<p:inputTextarea value="#{contratoBean.observacion}" style="width:100%" rows="2" cols="30" counter="display" maxlength="500"
 	                         counterTemplate="{0} caracteres restantes." autoResize="false"/>
 	        	<h:outputText id="display" class="block" />
 	        	
-	        	<p:commandButton value="Añadir" update="idObsContrato" />
+	        	<p:commandButton value="Añadir" action="#{contratoBean.anadirObsContrato()}" update="idObsContrato idPanelObs" />
         	</h:panelGrid>
         	
-        	<p:dataTable var="observacion" id="idObsContrato" value="#{contratoBean.lstObservacionContrato}"  rowIndexVar="row" paginator="true" rows="4" 
-				size="small" emptyMessage="No se encontratos resultados." paginatorPosition="bottom" rowKey="#{meta.id}" selection="#{contratoBean.contratoSelected}" selectionMode="single">
+        	<p:dataTable var="observacion" id="idObsContrato" value="#{contratoBean.lstObservacionContrato}"  rowIndexVar="row" paginator="true" rows="5" 
+				size="small" emptyMessage="No se encontratos resultados." paginatorPosition="bottom" rowKey="#{observacion.id}" selectionMode="single">
 				
 				<p:column width="25px">
 	                      #{row +1}
 	        	</p:column>
 	        	
 				<p:column headerText="Observación"  >
-					<h:outputText   />
+					<h:outputText value="#{observacion.observacion}" />
 				</p:column>
 				
-				<p:column headerText="Usuario" filterMatchMode="contains" style="text-align: center">
-					<h:outputText  />
+				<p:column headerText="Usuario" filterMatchMode="contains" style="text-align: center; width:50px">
+					<h:outputText value="#{observacion.usuario.username}" />
 				</p:column>
 				
-				<p:column headerText="Fecha Registro" filterMatchMode="contains" style="text-align: center">
-					<h:outputText  />
+				<p:column headerText="Fecha Registro" filterMatchMode="contains" style="text-align: center; width:80px">
+					<h:outputText value="#{observacion.fechaRegistro}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				
+				<p:column width="10%" filterMatchMode="contains">
+					<p:commandButton icon="pi pi-trash" styleClass="rounded-button ui-button-danger" process="@this" oncomplete="PF('deleteObsDialog').show()" >
+						<f:setPropertyActionListener value="#{observacion}" target="#{contratoBean.obsSelected}"  />
+					</p:commandButton>
 				</p:column>
 				
 			</p:dataTable>
@@ -382,6 +390,11 @@
             <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('saveContra').hide()" value="SI" actionListener="#{contratoBean.saveContrato()}" update=":form:tabView:gridNomLote :form:tabView:grid :form:tabView:idTableContrato" />
             <p:commandButton value="NO" oncomplete="PF('saveContra').hide()"/>
         </h:form>
+    </p:confirmDialog>
+    
+    <p:confirmDialog widgetVar="deleteObsDialog" showEffect="fade" width="300" message="¿Deseas eliminar la observacion del contrato?" header="Confirmación" severity="warn" appendTo="@(body)">
+        <p:commandButton value="Si" icon="pi pi-check" process="@this" update=":formAñadirObservacionDialog:idObsContrato" oncomplete="PF('deleteObsDialog').hide()" actionListener="#{contratoBean.deleteObs()}" />
+        <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('deleteObsDialog').hide()" />
     </p:confirmDialog>
 	
 	

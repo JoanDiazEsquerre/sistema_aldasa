@@ -1,5 +1,6 @@
 package com.model.aldasa.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,11 @@ public class ObservacionContratoServiceImpl implements ObservacionContratoServic
 	public void delete(ObservacionContrato entity) {
 		// TODO Auto-generated method stub
 		observacionContratoRepository.delete(entity);
+	}
+
+	@Override
+	public List<ObservacionContrato> findByEstado(boolean estado) {
+		// TODO Auto-generated method stub
+		return observacionContratoRepository.findByEstado(estado);
 	}
 }

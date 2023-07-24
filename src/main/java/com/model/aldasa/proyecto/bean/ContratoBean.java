@@ -82,6 +82,7 @@ import com.model.aldasa.service.CuentaBancariaService;
 import com.model.aldasa.service.CuotaService;
 import com.model.aldasa.service.DetalleDocumentoVentaService;
 import com.model.aldasa.service.LoteService;
+import com.model.aldasa.service.ObservacionContratoService;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.RequerimientoSeparacionService;
 import com.model.aldasa.service.VoucherService;
@@ -126,6 +127,12 @@ public class ContratoBean extends BaseBean implements Serializable{
 	@ManagedProperty(value = "#{reportGenBo}")
 	private ReportGenBo reportGenBo;
 	
+	@ManagedProperty(value = "#{observacionContratoService}")
+	private ObservacionContratoService observacionContratoService;
+	
+	
+	
+	
 	private String meses[]= {"ENERO","FEBRERO","MARZO","ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE","DICIEMBRE"};
 	
 	private LazyDataModel<Contrato> lstContratoLazy;
@@ -141,6 +148,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 
 	private Lote loteSelected;
 	private Contrato contratoSelected;
+	private ObservacionContrato obsSelected;
 	
 	private StreamedContent fileDes;
 	private String nombreArchivo = "Contrato.docx";
@@ -151,6 +159,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 	private BigDecimal montoVenta, montoInicial, interes; 
 	private BigDecimal sumaCuotaSI, sumaInteres, sumaCuotaTotal;
 	private String tipoPago ="";
+	private String observacion ="";
 	private int nroCuotas;
 	private boolean estado;
 	
@@ -174,6 +183,47 @@ public class ContratoBean extends BaseBean implements Serializable{
 		listarPersonas();
 		lstCuentaBancaria = cuentaBancariaService.findByEstadoAndMonedaLike(true, "%S%");
 		verCronogramaPago();
+		observacion="";
+		
+	}
+	
+	public void deleteObs() {
+		
+		obsSelected.setEstado(false);
+		observacionContratoService.save(obsSelected);
+		addInfoMessage("Observacion eliminado.");
+		cargarListaObservacion();
+	}
+	
+	public void cargarListaObservacion() {
+		lstObservacionContrato = observacionContratoService.findByEstado(true);
+	}
+	
+	public void anadirObsContrato() {
+		
+		if(observacion.equals("")) {
+			addErrorMessage("Agrege una observacion.");
+			return;
+		}
+		
+		ObservacionContrato obs = new ObservacionContrato(); 
+		obs.setContrato(contratoSelected);
+		obs.setUsuario(navegacionBean.getUsuarioLogin());
+		obs.setObservacion(observacion);
+		obs.setFechaRegistro(new Date());
+		obs.setEstado(true);
+		ObservacionContrato observ =  observacionContratoService.save(obs);
+			
+		if(observ!=null) {
+			cargarListaObservacion();
+			addInfoMessage("Se guardo correctamente.");
+			observacion="";
+			
+		}else {
+			addErrorMessage("No se pudo guardar.");
+		}
+		
+		
 	}
 	
 	public void onCellEdit(CellEditEvent event) throws ParseException {
@@ -2808,8 +2858,24 @@ public class ContratoBean extends BaseBean implements Serializable{
 	public void setLstObservacionContrato(List<ObservacionContrato> lstObservacionContrato) {
 		this.lstObservacionContrato = lstObservacionContrato;
 	}
-	
-	
-	
+	public String getObservacion() {
+		return observacion;
+	}
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
+	}
+	public ObservacionContratoService getObservacionContratoService() {
+		return observacionContratoService;
+	}
+	public void setObservacionContratoService(ObservacionContratoService observacionContratoService) {
+		this.observacionContratoService = observacionContratoService;
+	}
+	public ObservacionContrato getObsSelected() {
+		return obsSelected;
+	}
+	public void setObsSelected(ObservacionContrato obsSelected) {
+		this.obsSelected = obsSelected;
+	}
+		
 	
 }

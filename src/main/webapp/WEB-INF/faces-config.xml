@@ -703,6 +703,10 @@
 			<property-name>reportGenBo</property-name>
 			<value>#{reportGenBo}</value>
 		</managed-property>
+		<managed-property> 
+			<property-name>observacionContratoService</property-name>
+			<value>#{observacionContratoService}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>

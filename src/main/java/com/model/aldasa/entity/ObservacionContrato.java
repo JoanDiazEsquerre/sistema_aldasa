@@ -32,7 +32,7 @@ public class ObservacionContrato {
 	@Column(name="fecharegistro")
 	private Date fechaRegistro;
 
-	
+	private boolean estado;
 	
 	
 	
@@ -65,6 +65,12 @@ public class ObservacionContrato {
 	}
 	public void setFechaRegistro(Date fechaRegistro) {
 		this.fechaRegistro = fechaRegistro;
+	}
+	public boolean isEstado() {
+		return estado;
+	}
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 
 	
