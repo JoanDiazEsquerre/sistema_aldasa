@@ -91,6 +91,11 @@
 					<p:column headerText="Persona Venta 5" filterMatchMode="contains">
 						<h:outputText  value="#{contrato.personVenta5.surnames} #{contrato.personVenta5.names}"/>
 					</p:column>
+					
+					<p:column width="10%" headerText="Firma" filterMatchMode="contains">
+						<p:commandButton id="botonFirma" update=":form:tabView:idTableContrato:botonFirma" value="#{contrato.firma eq true?'FIRMADO':'NO FIRMADO'}" action="#{contratoBean.cambiarEstadoFirma(contrato)}" styleClass="#{contrato.firma eq true? 'ui-button-success' : 'ui-button-warning'}"/>
+					</p:column>
+					
 				</p:dataTable>
 				
 				<p:contextMenu id="menuTableReq" for="idTableContrato" >

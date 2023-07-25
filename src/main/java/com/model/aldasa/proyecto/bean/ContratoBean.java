@@ -187,6 +187,20 @@ public class ContratoBean extends BaseBean implements Serializable{
 		
 	}
 	
+	public void cambiarEstadoFirma(Contrato contrato) {
+		if(contrato.isFirma()) {
+			contrato.setFirma(false);
+		}else {
+			contrato.setFirma(true);
+		}
+		Contrato cambioFirma = contratoService.save(contrato);
+		if(cambioFirma!=null) {
+			addInfoMessage("Se actualizo la firma del contrato correctamente.");
+		}else {
+			addErrorMessage("No se pudo actualizar la firma del contrato.");
+		}
+	}
+	
 	public void deleteObs() {
 		
 		obsSelected.setEstado(false);

@@ -68,7 +68,7 @@ public class Contrato {
 	@Column(name="cancelaciontotal")
 	private boolean cancelacionTotal;
 	
-	
+	private boolean firma;
 	
 	
 	public Integer getId() {
@@ -167,6 +167,12 @@ public class Contrato {
 	}
 	public void setCancelacionTotal(boolean cancelacionTotal) {
 		this.cancelacionTotal = cancelacionTotal;
+	}
+	public boolean isFirma() {
+		return firma;
+	}
+	public void setFirma(boolean firma) {
+		this.firma = firma;
 	}
 	
 	
