@@ -24,6 +24,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
 	Lote findByNumberLoteAndManzanaAndProject (String name, Manzana manzana, Project project);
 	
 	List<Lote> findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(Project project, Manzana manzana, String status);
+	List<Lote> findByProjectAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(Project project, String Status);
 	
 	@Query(nativeQuery = true,value = "SELECT * FROM lote WHERE numberLote=:name AND idManzana=:manzana AND idProject=:project AND id <> :idLote ")
 	Lote findByNumberLoteAndManzanaAndProjectException(String name, int manzana, int project, int idLote);

@@ -22,6 +22,7 @@ public interface LoteService {
 	List<Lote> findByStatusAndProjectSucursal(String status, Sucursal sucursal);
 
 	List<Lote> findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(Project project, Manzana manzana, String Status);
+	List<Lote> findByProjectAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(Project project, String Status);
 	Lote findByNumberLoteAndManzanaAndProject (String name, Manzana manzana, Project project);
 	Lote findByNumberLoteAndManzanaAndProjectException(String name, int manzana, int project, int idLote);
 	

@@ -116,5 +116,11 @@ public class LoteServiceImpl implements LoteService {
 		return loteRepository.findByStatusAndProjectSucursal(status, sucursal);
 	}
 
+	@Override
+	public List<Lote> findByProjectAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(Project project, String Status) {
+		// TODO Auto-generated method stub
+		return loteRepository.findByProjectAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(project, Status);
+	}
+
 	
 }

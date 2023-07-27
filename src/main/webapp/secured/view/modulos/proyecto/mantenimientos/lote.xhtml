@@ -291,16 +291,11 @@
 		
 			<p:outputLabel value="Proyecto: #{loteBean.projectFilter.name}" style="color: #007d4c;font-weight: bold" /><br> </br>
 			
-			<p:outputLabel for="filterMapeo" value="Manzana: " style="font-size: 25px;" />
-			<p:selectOneMenu id="filterMapeo" value="#{loteBean.manzanaFilterMapeo}" converter="#{loteBean.conversorManzana}" >
-				<f:selectItems value="#{loteBean.lstManzana}" var="proy" itemLabel="#{proy.name}" itemValue="#{proy}"/>
-				<p:ajax event="change" update=":formMapeoDialog:grdLotes" listener="#{loteBean.listarLotes()}"/>
-			</p:selectOneMenu>
-			
 			<p:panelGrid style="margin-bottom: 20px" id="grdLotes" columns="5" layout="grid">
 				<p:outputLabel value="No se ha registrado lotes" rendered="#{loteBean.cantidadLotes eq 0}"  />
 				<p:repeat value="#{loteBean.lstLotes}" var="lote">
-           			<p:button value="#{lote.manzana.name}-#{lote.numberLote}" disabled="true" style="margin:5px;background:#{lote.status eq 'Vendido'?'red':lote.status eq 'Separado'?'blue':lote.status eq 'Disponible'?'green':'black'}"> </p:button>
+           			<p:button value="#{lote.manzana.name}-#{lote.numberLote}" rendered="#{lote.numberLote ne 'x'}" disabled="true" style="background:#{lote.status eq 'Vendido'?'red':lote.status eq 'Separado'?'blue':lote.status eq 'Disponible'?'green':'black'}"> </p:button>
+        			<p:separator rendered="#{lote.numberLote eq 'x'}"/>
         		</p:repeat>
 			</p:panelGrid>
 			

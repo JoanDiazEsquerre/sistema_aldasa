@@ -13,5 +13,6 @@ public interface TipoDocumentoService {
 	void delete(TipoDocumento entity);
 	
 	List<TipoDocumento> findByEstado(boolean estado);
+	List<TipoDocumento> findByEstadoAndCodigoLike(boolean estado, String codigo);
 
 }

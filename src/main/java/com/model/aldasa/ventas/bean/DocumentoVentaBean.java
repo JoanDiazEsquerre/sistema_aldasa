@@ -119,6 +119,7 @@ public class DocumentoVentaBean extends BaseBean {
 
 	
 	private List<SerieDocumento> lstSerieDocumento;
+	private List<SerieDocumento> lstSerieNotaDocumento;
 	private List<Cuota> lstCuota;    
 	private List<Voucher> lstVoucher;
 	private List<DetalleDocumentoVenta> lstDetalleDocumentoVenta = new ArrayList<>();
@@ -129,11 +130,13 @@ public class DocumentoVentaBean extends BaseBean {
 	private List<Cuota> lstCuotaPendientes = new ArrayList<>();
 	private List<Cuota> lstCuotaPendientesTemporal = new ArrayList<>();
 	private List<TipoDocumento> lstTipoDocumento = new ArrayList<>();
+	private List<TipoDocumento> lstTipoDocumentoNota = new ArrayList<>();
 
 
 	
 	private DocumentoVenta documentoVentaSelected ;
 	private SerieDocumento serieDocumentoSelected ;
+	private SerieDocumento serieNotaDocumentoSelected ;
 	private Cuota cuotaSelected ;
 	private Voucher voucherSelected ;
 	private Cuota prepagoSelected ;
@@ -141,6 +144,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private Contrato contratoPendienteSelected;
 	private Cuota cuotaPendienteContratoSelected;
 	private TipoDocumento tipoDocumentoSelected;
+	private TipoDocumento tipoDocumentoNotaSelected;
 
 
 	private DocumentoVenta documentoVentaNew;
@@ -155,6 +159,7 @@ public class DocumentoVentaBean extends BaseBean {
 
 	
 	private Date fechaEmision = new Date() ;
+	private Date fechaEmisionNotaVenta = new Date() ;
 	private Date fechaImag1, fechaImag2, fechaImag3, fechaImag4, fechaImag5, fechaImag6, fechaImag7, fechaImag8, fechaImag9, fechaImag10 ;
 	private BigDecimal montoImag1, montoImag2, montoImag3, montoImag4, montoImag5, montoImag6, montoImag7, montoImag8, montoImag9, montoImag10;
 	private String nroOperImag1, nroOperImag2, nroOperImag3, nroOperImag4, nroOperImag5, nroOperImag6, nroOperImag7, nroOperImag8, nroOperImag9, nroOperImag10;
@@ -215,12 +220,15 @@ public class DocumentoVentaBean extends BaseBean {
 
 	SimpleDateFormat sdf = new SimpleDateFormat("dd 'de'  MMMMM 'del' yyyy");
 	SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
-
+	SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
 	
 	@PostConstruct
 	public void init() {
-		lstTipoDocumento = tipoDocumentoService.findByEstado(true);
+		lstTipoDocumento = tipoDocumentoService.findByEstadoAndCodigoLike(true, "01");
 		tipoDocumentoSelected = lstTipoDocumento.get(0);
+		
+		lstTipoDocumentoNota = tipoDocumentoService.findByEstadoAndCodigoLike(true, "08");
+		tipoDocumentoNotaSelected = lstTipoDocumentoNota.get(0);
 		
 		iniciarLazy();
 		iniciarDatosDocVenta();	
@@ -1588,8 +1596,11 @@ public class DocumentoVentaBean extends BaseBean {
 			for(DetalleDocumentoVenta d:lstDetalleDocumentoVenta) {
 				opInafecta= opInafecta.add(d.getImporteVenta());
 				importeTotal= importeTotal.add(d.getImporteVenta());
-				if(d.getTotalTemp()!=null) {
-					anticipos = anticipos.add(d.getAmortizacion());
+//				if(d.getTotalTemp()!=null) {
+//					anticipos = anticipos.add(d.getAmortizacion());
+//				}
+				if(d.getCuota()!=null) {
+					anticipos=anticipos.add(d.getCuota().getAdelanto());
 				}
 			}
 		}
@@ -1622,6 +1633,26 @@ public class DocumentoVentaBean extends BaseBean {
 		serieDocumentoSelected=lstSerieDocumento.get(0);
 
 		numero =  String.format("%0" + serieDocumentoSelected.getTamanioNumero()  + "d", Integer.valueOf(serieDocumentoSelected.getNumero()) ); 
+		
+	}
+	
+	public void listarSerieNota() {
+		
+		String anio = sdfYear.format(fechaEmisionNotaVenta);
+		
+		String codigoInt = "";
+		
+		if(tipoDocumentoNotaSelected.getAbreviatura().equals("C")) {
+			codigoInt = "NC" + documentoVentaSelected.getTipoDocumento().getAbreviatura();
+		}else {
+			codigoInt = "ND" + documentoVentaSelected.getTipoDocumento().getAbreviatura();
+		}
+		
+		
+		lstSerieNotaDocumento = serieDocumentoService.findByTipoDocumentoAndAnioAndSucursalAndCodigoInterno(tipoDocumentoNotaSelected, anio, navegacionBean.getSucursalLogin(), codigoInt);
+		serieNotaDocumentoSelected=lstSerieNotaDocumento.get(0);
+
+		numero =  String.format("%0" + serieNotaDocumentoSelected.getTamanioNumero()  + "d", Integer.valueOf(serieNotaDocumentoSelected.getNumero()) ); 
 		
 	}
 	
@@ -1952,6 +1983,34 @@ public class DocumentoVentaBean extends BaseBean {
         };
     }
 	
+	public Converter getConversorSerieNota() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	SerieDocumento c = null;
+                    for (SerieDocumento si : lstSerieNotaDocumento) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((SerieDocumento) value).getId() + "";
+                }
+            }
+        };
+    }
+	
 	public void pdfDocumentoElectronico() {
 
         if (lstDetalleDocumentoVentaSelected == null || lstDetalleDocumentoVentaSelected.isEmpty()) {
@@ -2030,6 +2089,34 @@ public class DocumentoVentaBean extends BaseBean {
                 } else {
                 	TipoDocumento c = null;
                     for (TipoDocumento si : lstTipoDocumento) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((TipoDocumento) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorNotaDocumento() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	TipoDocumento c = null;
+                    for (TipoDocumento si : lstTipoDocumentoNota) {
                         if (si.getId().toString().equals(value)) {
                             c = si;
                         }
@@ -2870,52 +2957,71 @@ public class DocumentoVentaBean extends BaseBean {
 	public void setImagen10(String imagen10) {
 		this.imagen10 = imagen10;
 	}
-
 	public Date getFechaVoucherDialog() {
 		return fechaVoucherDialog;
 	}
-
 	public void setFechaVoucherDialog(Date fechaVoucherDialog) {
 		this.fechaVoucherDialog = fechaVoucherDialog;
 	}
-
 	public BigDecimal getMontoVoucherDialog() {
 		return montoVoucherDialog;
 	}
-
 	public void setMontoVoucherDialog(BigDecimal montoVoucherDialog) {
 		this.montoVoucherDialog = montoVoucherDialog;
 	}
-
 	public String getNroOperacionVoucherDialog() {
 		return nroOperacionVoucherDialog;
 	}
-
 	public void setNroOperacionVoucherDialog(String nroOperacionVoucherDialog) {
 		this.nroOperacionVoucherDialog = nroOperacionVoucherDialog;
 	}
-
 	public BigDecimal getSumaCuotaSI() {
 		return sumaCuotaSI;
 	}
-
 	public void setSumaCuotaSI(BigDecimal sumaCuotaSI) {
 		this.sumaCuotaSI = sumaCuotaSI;
 	}
-
 	public BigDecimal getSumaInteres() {
 		return sumaInteres;
 	}
-
 	public void setSumaInteres(BigDecimal sumaInteres) {
 		this.sumaInteres = sumaInteres;
 	}
-
 	public BigDecimal getSumaCuotaTotal() {
 		return sumaCuotaTotal;
 	}
 	public void setSumaCuotaTotal(BigDecimal sumaCuotaTotal) {
 		this.sumaCuotaTotal = sumaCuotaTotal;
+	}
+	public List<TipoDocumento> getLstTipoDocumentoNota() {
+		return lstTipoDocumentoNota;
+	}
+	public void setLstTipoDocumentoNota(List<TipoDocumento> lstTipoDocumentoNota) {
+		this.lstTipoDocumentoNota = lstTipoDocumentoNota;
+	}
+	public TipoDocumento getTipoDocumentoNotaSelected() {
+		return tipoDocumentoNotaSelected;
+	}
+	public void setTipoDocumentoNotaSelected(TipoDocumento tipoDocumentoNotaSelected) {
+		this.tipoDocumentoNotaSelected = tipoDocumentoNotaSelected;
+	}
+	public List<SerieDocumento> getLstSerieNotaDocumento() {
+		return lstSerieNotaDocumento;
+	}
+	public void setLstSerieNotaDocumento(List<SerieDocumento> lstSerieNotaDocumento) {
+		this.lstSerieNotaDocumento = lstSerieNotaDocumento;
+	}
+	public SerieDocumento getSerieNotaDocumentoSelected() {
+		return serieNotaDocumentoSelected;
+	}
+	public void setSerieNotaDocumentoSelected(SerieDocumento serieNotaDocumentoSelected) {
+		this.serieNotaDocumentoSelected = serieNotaDocumentoSelected;
+	}
+	public Date getFechaEmisionNotaVenta() {
+		return fechaEmisionNotaVenta;
+	}
+	public void setFechaEmisionNotaVenta(Date fechaEmisionNotaVenta) {
+		this.fechaEmisionNotaVenta = fechaEmisionNotaVenta;
 	}
 	
 	

@@ -263,11 +263,27 @@ public class LoteBean extends BaseBean implements Serializable{
 		lstProject= projectService.findByStatusAndSucursal(true, navegacionBean.getSucursalLogin());
 	}
 	
-	public void listarLotes(){		
-		lstLotes= loteService.findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(projectFilter,manzanaFilterMapeo, "%%");
+	public void listarLotes(){	
+		lstLotes = new ArrayList<>();
+		if(!lstManzana.isEmpty()) {
+			for(Manzana m:lstManzana) {
+				List<Lote> lstLotesPorMz = loteService.findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(projectFilter, m, "%%");
+				if(!lstLotesPorMz.isEmpty()) {
+					lstLotes.addAll(lstLotesPorMz);
+					Lote lot = new Lote();
+					lot.setId(0);
+					lot.setNumberLote("x");
+					lstLotes.add(lot);
+				}
+			}
+		}
+//		lstLotes= loteService.findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(projectFilter,manzanaFilterMapeo, "%%");
 		cantidadLotes=0;
+		
 		if(!lstLotes.isEmpty()) {
+			
 			cantidadLotes = lstLotes.size();
+			
 		}
 	}
 	

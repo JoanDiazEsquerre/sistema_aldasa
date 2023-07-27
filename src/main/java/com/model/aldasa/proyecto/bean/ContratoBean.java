@@ -52,6 +52,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STJc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STVerticalJc;
+import org.primefaces.component.column.Column;
 import org.primefaces.context.PrimeRequestContext;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -131,8 +132,6 @@ public class ContratoBean extends BaseBean implements Serializable{
 	private ObservacionContratoService observacionContratoService;
 	
 	
-	
-	
 	private String meses[]= {"ENERO","FEBRERO","MARZO","ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE","DICIEMBRE"};
 	
 	private LazyDataModel<Contrato> lstContratoLazy;
@@ -195,7 +194,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 		}
 		Contrato cambioFirma = contratoService.save(contrato);
 		if(cambioFirma!=null) {
-			addInfoMessage("Se actualizo la firma del contrato correctamente.");
+			addInfoMessage("Se actualizó la firma del contrato correctamente.");
 		}else {
 			addErrorMessage("No se pudo actualizar la firma del contrato.");
 		}
@@ -205,7 +204,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 		
 		obsSelected.setEstado(false);
 		observacionContratoService.save(obsSelected);
-		addInfoMessage("Observacion eliminado.");
+		addInfoMessage("Observación eliminado.");
 		cargarListaObservacion();
 	}
 	
@@ -216,7 +215,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 	public void anadirObsContrato() {
 		
 		if(observacion.equals("")) {
-			addErrorMessage("Agrege una observacion.");
+			addErrorMessage("Agrege una observación.");
 			return;
 		}
 		
@@ -230,7 +229,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 			
 		if(observ!=null) {
 			cargarListaObservacion();
-			addInfoMessage("Se guardo correctamente.");
+			addInfoMessage("Se guardó correctamente.");
 			observacion="";
 			
 		}else {
@@ -241,24 +240,68 @@ public class ContratoBean extends BaseBean implements Serializable{
 	}
 	
 	public void onCellEdit(CellEditEvent event) throws ParseException {
+		
 		Cuota cuota = lstCuotaVista.get(event.getRowIndex());
-        Object oldValue = event.getOldValue();
-        Object newValue = event.getNewValue();
-      
+		Cuota cuotasiguiente = lstCuotaVista.get(event.getRowIndex()+1);
+		Column column = (Column) event.getColumn();
+		
+		if (column.getId().equals("idCuotaSI")) {
+			BigDecimal montoOld = new BigDecimal(event.getOldValue().toString());
+						
+			if(event.getNewValue()==null) {
+				cuota.setCuotaSI(montoOld);
+				addErrorMessage("Ingresar monto.");
+				return;
+			}
+			
+			BigDecimal monto = new BigDecimal(event.getNewValue().toString());
+			
+			
+			if(monto.compareTo(BigDecimal.ZERO)==-1) {
+				cuota.setCuotaSI(montoOld);
+				addErrorMessage("El monto tiene que se mayor a 0.");
+				return;
+			}
+			if(monto.compareTo(BigDecimal.ZERO)==0) {
+				cuota.setCuotaSI(montoOld);
+				addErrorMessage("El monto tiene que se mayor a 0.");
+				return;
+			}
+			
+		
+			BigDecimal diferencia = BigDecimal.ZERO;   
+			if(monto.compareTo(montoOld)==-1) {
+				diferencia = montoOld.subtract(monto);
+				cuotasiguiente.setCuotaSI(cuotasiguiente.getCuotaSI().add(diferencia));
+			}else if(monto.compareTo(montoOld)==1){
+				diferencia = monto.subtract(montoOld);
+				cuotasiguiente.setCuotaSI(cuotasiguiente.getCuotaSI().subtract(diferencia));
+			}
+			
+			cuota.setCuotaTotal(cuota.getCuotaSI().add(cuota.getInteres()));
+			cuotasiguiente.setCuotaTotal(cuotasiguiente.getCuotaSI().add(cuotasiguiente.getInteres()));
+			
+			cuotaService.save(cuota);
+			cuotaService.save(cuotasiguiente);
+			verCronogramaPago();
+			addInfoMessage("Se cambió correctamente el monto");
+		}
+		
+		if (column.getId().equals("idPeriodo")) {
+			
+	        Object oldValue = event.getOldValue();
+	        Object newValue = event.getNewValue();
+	      
 
-        if (newValue != null && !newValue.equals(oldValue)) {
-//        	Date fecha = sdf.parse(event.getNewValue().toString()+"");
-//        	cuota.setFechaPago(fecha);
-        	cuotaService.save(cuota);
-            addInfoMessage("Se cambió la fecha correctamente.");
-        }
+	        if (newValue != null && !newValue.equals(oldValue)) {
+//	        	Date fecha = sdf.parse(event.getNewValue().toString()+"");
+//	        	cuota.setFechaPago(fecha);
+	        	cuotaService.save(cuota);
+	            addInfoMessage("Se cambió la fecha correctamente.");
+	        }
+		}
     }
-	
-//	public void editarCronograma(Cuota cuota) {
-//		cuotaService.save(cuota);
-//		addInfoMessage("Se cambió la fecha correctamente.");
-//	}
-	
+
 	public void generarPdfCronograma() {
 		 if (lstCuotaVista == null || lstCuotaVista.isEmpty()) {
 	            addInfoMessage("No hay datos para mostrar");
@@ -281,8 +324,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 	            reportGenBo.exportByFormatNotConnectDb(dt, path, "pdf", parametros, "CRONOGRAMA DE PAGO " , contratoSelected.getLote().getManzana().getName()+"-"+contratoSelected.getLote().getNumberLote());
 	            dt = null;
 	            parametros = null;
-	       
-
+	      
 	        }
 	}
 	
@@ -362,7 +404,6 @@ public class ContratoBean extends BaseBean implements Serializable{
 			context.getCallbackParams().put("noEsValido", false);
 			return;
 		}
-		
 		
 		lstSimuladorPrevio.clear();
 		

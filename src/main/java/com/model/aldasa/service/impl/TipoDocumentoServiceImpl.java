@@ -40,4 +40,10 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoService {
 		return tipoDocumentoRepository.findByEstado(estado);
 	}
 
+	@Override
+	public List<TipoDocumento> findByEstadoAndCodigoLike(boolean estado, String codigo) {
+		// TODO Auto-generated method stub
+		return tipoDocumentoRepository.findByEstadoAndCodigoLike(estado, codigo);
+	}
+
 }

@@ -37,6 +37,9 @@ public class SerieDocumento {
 	@Column(name="tamanionumero")
 	private Integer tamanioNumero;
 	
+	@Column(name="codigointerno")
+	private String codigoInterno;
+	
 
 	
 	
@@ -88,6 +91,12 @@ public class SerieDocumento {
 	}
 	public void setTipoDocumento(TipoDocumento tipoDocumento) {
 		this.tipoDocumento = tipoDocumento;
+	}
+	public String getCodigoInterno() {
+		return codigoInterno;
+	}
+	public void setCodigoInterno(String codigoInterno) {
+		this.codigoInterno = codigoInterno;
 	}
 
 

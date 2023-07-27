@@ -102,6 +102,7 @@
 				<p:contextMenu id="menuTableDoc" for="idTableListDoc" >
 		            <p:menuitem value="Anular" icon="pi pi-trash" oncomplete="PF('anulaDocumento').show()"  />
 		            <p:menuitem value="Ver Voucher" icon="pi pi-image" action="#{documentoVentaBean.verVoucher()}"  update=":dialogVoucherDocumento" />	
+		            <p:menuitem value="Generar Nota Crédito/Débito" action="#{documentoVentaBean.listarSerieNota()}" icon="pi pi-wallet" oncomplete="PF('notaCreditoDebitoDialog').show()" update="dialogNotaCreditoDebito" />
 		        </p:contextMenu>
 		
 				
@@ -994,6 +995,38 @@
 			
 			
 			<p:graphicImage width="400"  value="#{loadImageDocumentoBean.image}" id="imagenLoad" cache="false"/>
+			
+		</h:form>
+	</p:dialog>
+	
+	<p:dialog modal="true" height="600px" dynamic="true" closeOnEscape="true" id="dialogNotaCreditoDebito" header="NOTA CRÉDITO/DÉBITO" widgetVar="notaCreditoDebitoDialog" resizable="false" closable="true"
+		appendTo="@(body)"  width="60%">
+		<h:form id="formNotaCreditoDebitoDialog">
+			
+			<h:panelGrid columns="7">
+
+				<h:outputLabel value="Documento:" />
+				<p:selectOneMenu id="idNotaDocumento" value="#{documentoVentaBean.tipoDocumentoNotaSelected}" converter="#{documentoVentaBean.conversorNotaDocumento}" style="margin:10px; width:100px" disabled="#{documentoVentaBean.cuotaSelected eq null ? false : true }">
+					<f:selectItems  value="#{documentoVentaBean.lstTipoDocumentoNota}" var="notaDocumento" itemLabel="#{notaDocumento.descripcion}" itemValue="#{notaDocumento}"/>
+					<p:ajax listener="#{documentoVentaBean.listarSerieNota()}" update="idSerieNumero, numero"/>
+				</p:selectOneMenu>
+				
+				
+				<h:outputLabel value="Serie-Número:" />
+
+				<p:selectOneMenu id="idSerieNumero" value="#{documentoVentaBean.serieNotaDocumentoSelected}" converter="#{documentoVentaBean.conversorSerieNota}" style="margin:10px">
+					<f:selectItems value="#{documentoVentaBean.lstSerieNotaDocumento}" var="serie" itemLabel="#{serie.serie}" itemValue="#{serie}" />
+<!-- 					<p:ajax listener="#{documentoVentaBean.cambiarSerie}" update="num" />  -->
+				</p:selectOneMenu>
+
+				<p:inputText value="#{documentoVentaBean.numero}"  style="margin:10px" id="numero"/>
+				
+				<h:outputLabel value="Fecha: " />
+				<p:datePicker id="fechaNota" value="#{documentoVentaBean.fechaEmisionNotaVenta}" style="margin:5px;">
+<!-- 					<p:ajax update="txt_fecha_Formated, fecha" listener="#{documentoVentaBean.validacionFecha}" /> -->
+				</p:datePicker>
+
+			</h:panelGrid>
 			
 		</h:form>
 	</p:dialog>
