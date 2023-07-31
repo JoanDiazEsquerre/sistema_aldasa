@@ -42,6 +42,7 @@ import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
 import com.model.aldasa.entity.Imagen;
+import com.model.aldasa.entity.MotivoNota;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Producto;
 import com.model.aldasa.entity.SerieDocumento;
@@ -55,6 +56,7 @@ import com.model.aldasa.service.CuotaService;
 import com.model.aldasa.service.DetalleDocumentoVentaService;
 import com.model.aldasa.service.DocumentoVentaService;
 import com.model.aldasa.service.ImagenService;
+import com.model.aldasa.service.MotivoNotaService;
 import com.model.aldasa.service.ProductoService;
 import com.model.aldasa.service.SerieDocumentoService;
 import com.model.aldasa.service.TipoDocumentoService;
@@ -109,6 +111,9 @@ public class DocumentoVentaBean extends BaseBean {
 	@ManagedProperty(value = "#{loadImageDocumentoBean}")
 	private LoadImageDocumentoBean loadImageDocumentoBean;
 	
+	@ManagedProperty(value = "#{motivoNotaService}")
+	private MotivoNotaService motivoNotaService;
+	
 	private boolean estado = true;
 
 	private LazyDataModel<DocumentoVenta> lstDocumentoVentaLazy;
@@ -131,6 +136,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private List<Cuota> lstCuotaPendientesTemporal = new ArrayList<>();
 	private List<TipoDocumento> lstTipoDocumento = new ArrayList<>();
 	private List<TipoDocumento> lstTipoDocumentoNota = new ArrayList<>();
+	private List<MotivoNota> lstMotivoNota = new ArrayList<>();
 
 
 	
@@ -145,6 +151,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private Cuota cuotaPendienteContratoSelected;
 	private TipoDocumento tipoDocumentoSelected;
 	private TipoDocumento tipoDocumentoNotaSelected;
+	private MotivoNota motivoNotaSelected;
 
 
 	private DocumentoVenta documentoVentaNew;
@@ -172,6 +179,8 @@ public class DocumentoVentaBean extends BaseBean {
 	private Date fechaVoucherDialog;
 	private BigDecimal montoVoucherDialog;
 	private String nroOperacionVoucherDialog;
+	private String motivo="";
+	private String motivoSunat="";
 
 	private boolean pagoTotalPrepago = false;
 	private boolean habilitarBoton = true;
@@ -1656,6 +1665,12 @@ public class DocumentoVentaBean extends BaseBean {
 		
 	}
 	
+	public void listarMotivoNota() {
+	
+		lstMotivoNota = motivoNotaService.findByTipoDocumentoAndEstado(tipoDocumentoNotaSelected.getAbreviatura(), true);
+		
+	}
+	
 	public void cambiarSerie() {
 		numero =  String.format("%0" + serieDocumentoSelected.getTamanioNumero()  + "d", Integer.valueOf(serieDocumentoSelected.getNumero()) ); 
 	}
@@ -2131,6 +2146,34 @@ public class DocumentoVentaBean extends BaseBean {
                     return "";
                 } else {
                     return ((TipoDocumento) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorMotivoNota() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	MotivoNota c = null;
+                    for (MotivoNota si : lstMotivoNota) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((MotivoNota) value).getId() + "";
                 }
             }
         };
@@ -3022,6 +3065,42 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setFechaEmisionNotaVenta(Date fechaEmisionNotaVenta) {
 		this.fechaEmisionNotaVenta = fechaEmisionNotaVenta;
+	}
+	public String getMotivo() {
+		return motivo;
+	}
+	public void setMotivo(String motivo) {
+		this.motivo = motivo;
+	}
+	public String getMotivoSunat() {
+		return motivoSunat;
+	}
+	public void setMotivoSunat(String motivoSunat) {
+		this.motivoSunat = motivoSunat;
+	}
+	public SimpleDateFormat getSdfYear() {
+		return sdfYear;
+	}
+	public void setSdfYear(SimpleDateFormat sdfYear) {
+		this.sdfYear = sdfYear;
+	}
+	public MotivoNotaService getMotivoNotaService() {
+		return motivoNotaService;
+	}
+	public void setMotivoNotaService(MotivoNotaService motivoNotaService) {
+		this.motivoNotaService = motivoNotaService;
+	}
+	public MotivoNota getMotivoNotaSelected() {
+		return motivoNotaSelected;
+	}
+	public void setMotivoNotaSelected(MotivoNota motivoNotaSelected) {
+		this.motivoNotaSelected = motivoNotaSelected;
+	}
+	public List<MotivoNota> getLstMotivoNota() {
+		return lstMotivoNota;
+	}
+	public void setLstMotivoNota(List<MotivoNota> lstMotivoNota) {
+		this.lstMotivoNota = lstMotivoNota;
 	}
 	
 	

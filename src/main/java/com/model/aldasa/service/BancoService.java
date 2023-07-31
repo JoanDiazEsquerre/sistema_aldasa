@@ -10,5 +10,6 @@ public interface BancoService {
 	Optional<Banco> findById(Integer id);
 	Banco save(Banco entity);
 	void delete(Banco entity);
+	
 	List<Banco> findByEstado(boolean estado);
 }

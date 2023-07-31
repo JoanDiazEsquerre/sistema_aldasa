@@ -765,6 +765,10 @@
 			<property-name>loadImageDocumentoBean</property-name>
 			<value>#{loadImageDocumentoBean}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>motivoNotaService</property-name>
+			<value>#{motivoNotaService}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>

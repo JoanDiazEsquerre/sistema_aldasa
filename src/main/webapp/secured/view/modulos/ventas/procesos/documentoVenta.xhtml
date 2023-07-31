@@ -1006,12 +1006,11 @@
 			<h:panelGrid columns="7">
 
 				<h:outputLabel value="Documento:" />
-				<p:selectOneMenu id="idNotaDocumento" value="#{documentoVentaBean.tipoDocumentoNotaSelected}" converter="#{documentoVentaBean.conversorNotaDocumento}" style="margin:10px; width:100px" disabled="#{documentoVentaBean.cuotaSelected eq null ? false : true }">
+				<p:selectOneMenu id="idNotaDocumento" value="#{documentoVentaBean.tipoDocumentoNotaSelected}" converter="#{documentoVentaBean.conversorNotaDocumento}" style="margin:10px; width:150px" disabled="#{documentoVentaBean.cuotaSelected eq null ? false : true }">
 					<f:selectItems  value="#{documentoVentaBean.lstTipoDocumentoNota}" var="notaDocumento" itemLabel="#{notaDocumento.descripcion}" itemValue="#{notaDocumento}"/>
 					<p:ajax listener="#{documentoVentaBean.listarSerieNota()}" update="idSerieNumero, numero"/>
 				</p:selectOneMenu>
-				
-				
+						
 				<h:outputLabel value="Serie-Número:" />
 
 				<p:selectOneMenu id="idSerieNumero" value="#{documentoVentaBean.serieNotaDocumentoSelected}" converter="#{documentoVentaBean.conversorSerieNota}" style="margin:10px">
@@ -1028,6 +1027,52 @@
 
 			</h:panelGrid>
 			
+			<h:panelGrid id="idDatosNota" columns="2">
+
+				<h:outputLabel value="Ruc:" />
+				<h:outputLabel value="#{documentoVentaBean.documentoVentaSelected.cliente.ruc}" />
+				
+				<h:outputLabel value="Cliente:" />
+				<h:outputLabel value="#{documentoVentaBean.documentoVentaSelected.cliente.razonSocial}" />
+				
+				<h:outputLabel value="Direcciòn:" />
+				<h:outputLabel value="#{documentoVentaBean.documentoVentaSelected.cliente.direccion}" />
+				
+				<h:outputLabel value="Motivo:" />
+				<p:selectOneMenu id="idMotivo" value="#{documentoVentaBean.motivoNotaSelected}" converter="#{documentoVentaBean.conversorMotivoNota}" style="margin:10px; width:200px">
+					<f:selectItems  value="#{documentoVentaBean.lstMotivoNota}" var="motivoNota" itemLabel="#{motivoNota.descripcion}" itemValue="motivoNota"/>
+					<p:ajax listener="#{documentoVentaBean.listarMotivoNota()}" update="formNotaCreditoDebitoDialog:idDatosNota"/>
+				</p:selectOneMenu>
+				
+				<h:outputLabel value="Motivo Sunat:" />
+				<p:inputText value="#{documentoVentaBean.motivoSunat}" />
+				
+			</h:panelGrid>
+			
+			<p:dataTable var="det" id="idTableNota" value="#{documentoVentaBean.lstTipoDocumentoNota}"  rowIndexVar="row" paginator="true" rows="15" size="small"
+			emptyMessage="No se encontraron detalles de documento de venta." style="width:100%" paginatorPosition="bottom" rowKey="#{det.id}"  selectionMode="single" >
+
+				<p:column headerText="Uni" filterMatchMode="contains" style="text-align:center">
+					<h:outputText value="1"/>
+				</p:column>
+				
+				<p:column headerText="Còdigo" filterMatchMode="contains" style="text-align:center;width:400px" >
+				</p:column>
+
+				<p:column headerText="Producto (Descripcion Comercial))" filterMatchMode="contains" style="text-align:center">
+				</p:column>
+				
+				<p:column headerText="Cantidad" filterMatchMode="contains" style="text-align:center">
+				</p:column>
+				
+				<p:column headerText="Precio" filterMatchMode="contains" style="text-align:center">
+				</p:column>
+				
+				<p:column headerText="Total" filterMatchMode="contains" style="text-align:center">
+				</p:column>
+		
+			</p:dataTable>
+	
 		</h:form>
 	</p:dialog>
 	
