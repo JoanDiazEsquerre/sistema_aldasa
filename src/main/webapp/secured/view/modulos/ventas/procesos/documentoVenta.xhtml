@@ -29,7 +29,7 @@
 						</div>
 					</f:facet>
 					
-					<p:ajax event="rowSelect" listener="#{documentoVentaBean.BoletaDocumentoVenta()}" update=":formDocumentoVentaDialog :dialogDocumentoVenta" oncomplete="PF('docVentDialog').show();" />
+					<p:ajax event="rowSelect" listener="#{documentoVentaBean.listarDetalleDocumentoVenta()}" update=":formDocumentoVentaDialog :dialogDocumentoVenta" oncomplete="PF('docVentDialog').show();" />
 
 					<p:column width="25px">
 			                      #{row +1}
@@ -40,7 +40,7 @@
 					</p:column>
 
 					<p:column headerText="Tipo Comprobante" filterMatchMode="contains">
-						<h:outputText value="#{documento.tipoDocumento.abreviatura eq 'B'?'Boleta':'Factura'}" />
+						<h:outputText value="#{documento.tipoDocumento.descripcion}" />
 					</p:column>
 
 					<p:column headerText="Número" sortBy="#{documento.numero}" filterBy="#{documento.numero}" filterMatchMode="contains">
@@ -800,7 +800,7 @@
 		</p:tabView>
 	</h:form>
 	
-	<p:dialog height="670px" modal="true" dynamic="true" closeOnEscape="true" id="dialogDocumentoVenta" header="#{documentoVentaBean.tituloDialog}" widgetVar="docVentDialog" resizable="false" closable="true"
+	<p:dialog height="670px" modal="true" dynamic="true" closeOnEscape="true" id="dialogDocumentoVenta" header="DOCUMENTO DE VENTA" widgetVar="docVentDialog" resizable="false" closable="true"
 		appendTo="@(body)" style="background-color:green;" width="80%" >
 		<h:form id="formDocumentoVentaDialog">
 
@@ -1008,7 +1008,7 @@
 				<h:outputLabel value="Documento:" />
 				<p:selectOneMenu id="idNotaDocumento" value="#{documentoVentaBean.tipoDocumentoNotaSelected}" converter="#{documentoVentaBean.conversorNotaDocumento}" style="margin:10px; width:150px" disabled="#{documentoVentaBean.cuotaSelected eq null ? false : true }">
 					<f:selectItems  value="#{documentoVentaBean.lstTipoDocumentoNota}" var="notaDocumento" itemLabel="#{notaDocumento.descripcion}" itemValue="#{notaDocumento}"/>
-					<p:ajax listener="#{documentoVentaBean.listarSerieNota()}" update="idSerieNumero, numero"/>
+					<p:ajax listener="#{documentoVentaBean.listarSerieNota()}" update="idSerieNumero, numero, idDatosNota"/>
 				</p:selectOneMenu>
 						
 				<h:outputLabel value="Serie-Número:" />
@@ -1018,7 +1018,7 @@
 <!-- 					<p:ajax listener="#{documentoVentaBean.cambiarSerie}" update="num" />  -->
 				</p:selectOneMenu>
 
-				<p:inputText value="#{documentoVentaBean.numero}"  style="margin:10px" id="numero"/>
+				<p:inputText value="#{documentoVentaBean.numeroNota}"  style="margin:10px" id="numero"/>
 				
 				<h:outputLabel value="Fecha: " />
 				<p:datePicker id="fechaNota" value="#{documentoVentaBean.fechaEmisionNotaVenta}" style="margin:5px;">
@@ -1038,40 +1038,80 @@
 				<h:outputLabel value="Direcciòn:" />
 				<h:outputLabel value="#{documentoVentaBean.documentoVentaSelected.cliente.direccion}" />
 				
-				<h:outputLabel value="Motivo:" />
-				<p:selectOneMenu id="idMotivo" value="#{documentoVentaBean.motivoNotaSelected}" converter="#{documentoVentaBean.conversorMotivoNota}" style="margin:10px; width:200px">
-					<f:selectItems  value="#{documentoVentaBean.lstMotivoNota}" var="motivoNota" itemLabel="#{motivoNota.descripcion}" itemValue="motivoNota"/>
-					<p:ajax listener="#{documentoVentaBean.listarMotivoNota()}" update="formNotaCreditoDebitoDialog:idDatosNota"/>
+				<h:outputLabel value="Motivo Sunat:" />
+				<p:selectOneMenu id="idMotivo" value="#{documentoVentaBean.motivoNotaSelected}" converter="#{documentoVentaBean.conversorMotivoNota}" style="margin:10px; width:300px">
+					<f:selectItems  value="#{documentoVentaBean.lstMotivoNota}" var="motivoNota" itemLabel="#{motivoNota.codigo} - #{motivoNota.descripcion}" itemValue="#{motivoNota}"/>
 				</p:selectOneMenu>
 				
-				<h:outputLabel value="Motivo Sunat:" />
-				<p:inputText value="#{documentoVentaBean.motivoSunat}" />
+				<h:outputLabel value="Tipo Operación:" />
+				<p:selectOneMenu id="idTipoOperacion" value="#{documentoVentaBean.tipoOperacionSelected}" converter="#{documentoVentaBean.conversorTipoOperacion}" style="margin:10px; width:300px">
+					<f:selectItems  value="#{documentoVentaBean.lstTipoOperacion}" var="tipoOperacion" itemLabel="#{tipoOperacion.descripcion}" itemValue="#{tipoOperacion}"/>
+				</p:selectOneMenu>
+				
+				<h:outputLabel value="Identificador:" />
+				<p:selectOneMenu id="idIdentificador" value="#{documentoVentaBean.identificadorSelected}" converter="#{documentoVentaBean.conversorIdentificador}" style="margin:10px; width:300px">
+					<f:selectItems  value="#{documentoVentaBean.lstIdentificador}" var="identificador" itemLabel="#{identificador.descripcion}" itemValue="#{identificador}"/>
+				</p:selectOneMenu>
+				
+				<p:commandButton value="Guardar" actionListener="#{documentoVentaBean.saveNota()}"  icon="pi pi-save"  update=":form:tabView:idTableListDoc"/>
 				
 			</h:panelGrid>
 			
-			<p:dataTable var="det" id="idTableNota" value="#{documentoVentaBean.lstTipoDocumentoNota}"  rowIndexVar="row" paginator="true" rows="15" size="small"
-			emptyMessage="No se encontraron detalles de documento de venta." style="width:100%" paginatorPosition="bottom" rowKey="#{det.id}"  selectionMode="single" >
+			<p:dataTable var="det" id="idTableDetalleDocumentoNota" value="#{documentoVentaBean.lstDetalleDocumentoVentaSelected}"  rowIndexVar="row" paginator="true" rows="15" size="small"
+				emptyMessage="No se encontraron detalles de documento de venta." style="width:100%" paginatorPosition="bottom" rowKey="#{det.id}"  selectionMode="single" selection="#{documentoVentaBean.detalleDocumentoVenta}">
+	
+					<p:column headerText="Cantidad" filterMatchMode="contains" style="text-align:center">
+						<h:outputText value="1"/>
+					</p:column>
+					
+					<p:column headerText="Descripción" filterMatchMode="contains" style="text-align:center;width:400px" >
+						<h:outputText value="#{det.descripcion}"  style="width:400px"/>
+					</p:column>
+	
+					<p:column headerText="Amortización" filterMatchMode="contains" style="text-align:center">
+						<h:outputText value="#{det.amortizacion}"> 
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Interés" filterMatchMode="contains" style="text-align:center">
+						<h:outputText value="#{det.interes}"> 
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Adelanto" filterMatchMode="contains" style="text-align:center">
+						<h:outputText value="#{det.adelanto}"> 
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Importe de Venta(**)" filterMatchMode="contains" style="text-align:center">
+						<h:outputText value="#{det.importeVenta}"> 
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
+					</p:column>
+			
+				</p:dataTable>
+				
+			<h:panelGrid columns="1">
 
-				<p:column headerText="Uni" filterMatchMode="contains" style="text-align:center">
-					<h:outputText value="1"/>
-				</p:column>
+				<h:outputLabel value="RESUMEN" style="font-weight: bold;"/>
 				
-				<p:column headerText="Còdigo" filterMatchMode="contains" style="text-align:center;width:400px" >
-				</p:column>
+			</h:panelGrid>
+				
+			<h:panelGrid columns="2">
 
-				<p:column headerText="Producto (Descripcion Comercial))" filterMatchMode="contains" style="text-align:center">
-				</p:column>
+				<h:outputLabel value="Subtotal:" />
+				<h:outputLabel value="#{documentoVentaBean.documentoVentaSelected.subTotal}" />
 				
-				<p:column headerText="Cantidad" filterMatchMode="contains" style="text-align:center">
-				</p:column>
+				<h:outputLabel value="IGV(18%):" />
+				<h:outputLabel value="#{documentoVentaBean.documentoVentaSelected.igv}" />
 				
-				<p:column headerText="Precio" filterMatchMode="contains" style="text-align:center">
-				</p:column>
-				
-				<p:column headerText="Total" filterMatchMode="contains" style="text-align:center">
-				</p:column>
-		
-			</p:dataTable>
+				<h:outputLabel value="Total:" style="font-weight: bold;"/>
+				<h:outputLabel value="#{documentoVentaBean.documentoVentaSelected.total}" />
+								
+			</h:panelGrid>
 	
 		</h:form>
 	</p:dialog>

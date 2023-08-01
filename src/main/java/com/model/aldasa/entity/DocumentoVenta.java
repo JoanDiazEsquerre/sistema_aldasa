@@ -101,7 +101,17 @@ public class DocumentoVenta {
 	@Column(name="otrostributos")
 	private BigDecimal otrosTributos;
 
-
+	@ManyToOne
+	@JoinColumn(name="idmotivonota")
+	private MotivoNota motivoNota;
+	
+	@ManyToOne
+	@JoinColumn(name="idtipooperacion")
+	private TipoOperacion tipoOperacion;
+	
+	@ManyToOne
+	@JoinColumn(name="ididentificador")
+	private Identificador identificador;
 	
 	
 	
@@ -288,6 +298,24 @@ public class DocumentoVenta {
 	}
 	public void setOtrosTributos(BigDecimal otrosTributos) {
 		this.otrosTributos = otrosTributos;
+	}
+	public MotivoNota getMotivoNota() {
+		return motivoNota;
+	}
+	public void setMotivoNota(MotivoNota motivoNota) {
+		this.motivoNota = motivoNota;
+	}
+	public TipoOperacion getTipoOperacion() {
+		return tipoOperacion;
+	}
+	public void setTipoOperacion(TipoOperacion tipoOperacion) {
+		this.tipoOperacion = tipoOperacion;
+	}
+	public Identificador getIdentificador() {
+		return identificador;
+	}
+	public void setIdentificador(Identificador identificador) {
+		this.identificador = identificador;
 	}
 
 	

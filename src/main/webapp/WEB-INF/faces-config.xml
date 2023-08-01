@@ -769,6 +769,14 @@
 			<property-name>motivoNotaService</property-name>
 			<value>#{motivoNotaService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>tipoOperacionService</property-name>
+			<value>#{tipoOperacionService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>identificadorService</property-name>
+			<value>#{identificadorService}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>

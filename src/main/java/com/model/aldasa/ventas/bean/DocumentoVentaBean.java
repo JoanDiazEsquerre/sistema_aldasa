@@ -41,12 +41,14 @@ import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
+import com.model.aldasa.entity.Identificador;
 import com.model.aldasa.entity.Imagen;
 import com.model.aldasa.entity.MotivoNota;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Producto;
 import com.model.aldasa.entity.SerieDocumento;
 import com.model.aldasa.entity.TipoDocumento;
+import com.model.aldasa.entity.TipoOperacion;
 import com.model.aldasa.entity.Voucher;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.reporteBo.ReportGenBo;
@@ -55,11 +57,13 @@ import com.model.aldasa.service.ContratoService;
 import com.model.aldasa.service.CuotaService;
 import com.model.aldasa.service.DetalleDocumentoVentaService;
 import com.model.aldasa.service.DocumentoVentaService;
+import com.model.aldasa.service.IdentificadorService;
 import com.model.aldasa.service.ImagenService;
 import com.model.aldasa.service.MotivoNotaService;
 import com.model.aldasa.service.ProductoService;
 import com.model.aldasa.service.SerieDocumentoService;
 import com.model.aldasa.service.TipoDocumentoService;
+import com.model.aldasa.service.TipoOperacionService;
 import com.model.aldasa.service.VoucherService;
 import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.NumeroALetra;
@@ -114,6 +118,12 @@ public class DocumentoVentaBean extends BaseBean {
 	@ManagedProperty(value = "#{motivoNotaService}")
 	private MotivoNotaService motivoNotaService;
 	
+	@ManagedProperty(value = "#{tipoOperacionService}")
+	private TipoOperacionService tipoOperacionService;
+	
+	@ManagedProperty(value = "#{identificadorService}")
+	private IdentificadorService identificadorService;
+	
 	private boolean estado = true;
 
 	private LazyDataModel<DocumentoVenta> lstDocumentoVentaLazy;
@@ -137,6 +147,9 @@ public class DocumentoVentaBean extends BaseBean {
 	private List<TipoDocumento> lstTipoDocumento = new ArrayList<>();
 	private List<TipoDocumento> lstTipoDocumentoNota = new ArrayList<>();
 	private List<MotivoNota> lstMotivoNota = new ArrayList<>();
+	private List<TipoOperacion> lstTipoOperacion = new ArrayList<>();
+	private List<Identificador> lstIdentificador = new ArrayList<>();
+	
 
 
 	
@@ -152,6 +165,8 @@ public class DocumentoVentaBean extends BaseBean {
 	private TipoDocumento tipoDocumentoSelected;
 	private TipoDocumento tipoDocumentoNotaSelected;
 	private MotivoNota motivoNotaSelected;
+	private TipoOperacion tipoOperacionSelected;
+	private Identificador identificadorSelected;
 
 
 	private DocumentoVenta documentoVentaNew;
@@ -171,7 +186,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private BigDecimal montoImag1, montoImag2, montoImag3, montoImag4, montoImag5, montoImag6, montoImag7, montoImag8, montoImag9, montoImag10;
 	private String nroOperImag1, nroOperImag2, nroOperImag3, nroOperImag4, nroOperImag5, nroOperImag6, nroOperImag7, nroOperImag8, nroOperImag9, nroOperImag10;
 	private String fechaTextoVista, montoLetra;
-	private String  ruc, nombreRazonSocial, direccion, observacion, numero ; 
+	private String  ruc, nombreRazonSocial, direccion, observacion, numero, numeroNota ; 
 	private String tipoPago = "Contado";
 	private String tipoPrepago ="PC";
 	private String incluirUltimaCuota = "No";
@@ -206,7 +221,6 @@ public class DocumentoVentaBean extends BaseBean {
 	private BigDecimal nuevoInteres;
 	private BigDecimal sumaCuotaSI, sumaInteres, sumaCuotaTotal;
 	
-	private String tituloDialog;
 	private String imagen1, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8, imagen9, imagen10;
 
 
@@ -252,8 +266,72 @@ public class DocumentoVentaBean extends BaseBean {
 		productoAmortizacion = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.AMORTIZACION.getTipo());
 		productoAdelanto = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.ADELANTO.getTipo());
 		
-
+		lstTipoOperacion = tipoOperacionService.findByEstado(true);
+		lstIdentificador = identificadorService.findByEstado(true);
 	} 
+	
+	public void saveNota() {
+		DocumentoVenta doc = new DocumentoVenta();
+		doc.setCliente(documentoVentaSelected.getCliente());
+		doc.setDocumentoVentaRef(documentoVentaSelected);
+		doc.setSucursal(documentoVentaSelected.getSucursal());
+		doc.setTipoDocumento(tipoDocumentoNotaSelected);
+		doc.setSerie(serieNotaDocumentoSelected.getSerie());
+		doc.setNumero(numeroNota);
+		doc.setRuc(documentoVentaSelected.getRuc());
+		doc.setRazonSocial(documentoVentaSelected.getRazonSocial());
+		doc.setNombreComercial(documentoVentaSelected.getNombreComercial());
+		doc.setDireccion(documentoVentaSelected.getDireccion());
+		doc.setFechaEmision(fechaEmisionNotaVenta);
+		doc.setTipoMoneda(documentoVentaSelected.getTipoMoneda());
+		doc.setObservacion("");
+		doc.setTipoPago(documentoVentaSelected.getTipoPago());
+		doc.setSubTotal(documentoVentaSelected.getSubTotal());
+		doc.setIgv(documentoVentaSelected.getIgv());
+		doc.setTotal(documentoVentaSelected.getTotal());
+		doc.setFechaRegistro(new Date());
+		doc.setUsuarioRegistro(documentoVentaSelected.getUsuarioRegistro());
+		doc.setEstado(true);
+		doc.setAnticipos(documentoVentaSelected.getAnticipos());
+		doc.setOpGravada(documentoVentaSelected.getOpGravada());
+		doc.setOpExonerada(documentoVentaSelected.getOpExonerada());
+		doc.setOpInafecta(documentoVentaSelected.getOpInafecta());
+		doc.setOpGratuita(documentoVentaSelected.getOpGratuita());
+		doc.setDescuentos(documentoVentaSelected.getDescuentos());
+		doc.setIsc(documentoVentaSelected.getIsc());
+		doc.setOtrosCargos(documentoVentaSelected.getOtrosCargos());
+		doc.setOtrosTributos(documentoVentaSelected.getOtrosTributos());
+		doc.setMotivoNota(motivoNotaSelected);
+		doc.setTipoOperacion(tipoOperacionSelected);
+		doc.setIdentificador(identificadorSelected);
+		
+		DocumentoVenta saveDocNota = documentoVentaService.save(doc);
+		if(saveDocNota!=null) {
+			SerieDocumento serie = serieDocumentoService.findById(serieNotaDocumentoSelected.getId()).get();
+			String numeroActual = String.format("%0" + serie.getTamanioNumero() + "d", Integer.valueOf(serie.getNumero()));
+
+			Integer aumento = Integer.parseInt(serie.getNumero())+1;
+
+			serie.setNumero(aumento+"");
+			serieDocumentoService.save(serie);
+
+			saveDocNota.setNumero(numeroActual); 
+			documentoVentaService.save(saveDocNota);
+			
+			for(DetalleDocumentoVenta d:lstDetalleDocumentoVenta) {
+				d.setId(null);
+				d.setDocumentoVenta(saveDocNota);
+				d.setEstado(true);
+				detalleDocumentoVentaService.save(d);
+					
+			} 
+			
+			addInfoMessage("Se guardó el documento correctamente.");
+			PrimeFaces.current().executeScript("PF('notaCreditoDebitoDialog').hide();");
+		}else {
+			addErrorMessage("No se pudo guardar la nota.");
+		}
+	}
 	
 	public void obtenerDatosVoucher(String nombre) {
 		Imagen imagen = imagenService.findByNombre(nombre); 
@@ -799,12 +877,7 @@ public class DocumentoVentaBean extends BaseBean {
         }
     }
 	
-	public void modifyDocumentoVenta() {
-		tituloDialog="MODIFICAR DETALLE DE DOCUMENTO DE VENTA";
-	}
-	
-	public void BoletaDocumentoVenta( ) {
-		tituloDialog="DOCUMENTO DE VENTA";
+	public void listarDetalleDocumentoVenta( ) {
 		montoLetra = numeroALetra.Convertir(documentoVentaSelected.getTotal()+"", true, "SOLES");
 		lstDetalleDocumentoVentaSelected = new ArrayList<>();
 		lstDetalleDocumentoVentaSelected = detalleDocumentoVentaService.findByDocumentoVentaAndEstado(documentoVentaSelected, true);
@@ -1661,8 +1734,11 @@ public class DocumentoVentaBean extends BaseBean {
 		lstSerieNotaDocumento = serieDocumentoService.findByTipoDocumentoAndAnioAndSucursalAndCodigoInterno(tipoDocumentoNotaSelected, anio, navegacionBean.getSucursalLogin(), codigoInt);
 		serieNotaDocumentoSelected=lstSerieNotaDocumento.get(0);
 
-		numero =  String.format("%0" + serieNotaDocumentoSelected.getTamanioNumero()  + "d", Integer.valueOf(serieNotaDocumentoSelected.getNumero()) ); 
-		
+		numeroNota =  String.format("%0" + serieNotaDocumentoSelected.getTamanioNumero()  + "d", Integer.valueOf(serieNotaDocumentoSelected.getNumero()) ); 
+		listarMotivoNota();	
+		listarDetalleDocumentoVenta();
+		tipoOperacionSelected=lstTipoOperacion.get(0);
+		identificadorSelected=lstIdentificador.get(0);
 	}
 	
 	public void listarMotivoNota() {
@@ -2179,6 +2255,62 @@ public class DocumentoVentaBean extends BaseBean {
         };
     }
 	
+	public Converter getConversorTipoOperacion() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	TipoOperacion c = null;
+                    for (TipoOperacion si : lstTipoOperacion) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((TipoOperacion) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorIdentificador() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Identificador c = null;
+                    for (Identificador si : lstIdentificador) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Identificador) value).getId() + "";
+                }
+            }
+        };
+    }
+	
 	public static String getExtension(String filename) {
         int index = filename.lastIndexOf('.');
         if (index == -1) {
@@ -2472,12 +2604,7 @@ public class DocumentoVentaBean extends BaseBean {
 	public void setDetalleDocumentoVentaService(DetalleDocumentoVentaService detalleDocumentoVentaService) {
 		this.detalleDocumentoVentaService = detalleDocumentoVentaService;
 	}
-	public String getTituloDialog() {
-		return tituloDialog;
-	}
-	public void setTituloDialog(String tituloDialog) {
-		this.tituloDialog = tituloDialog;
-	}
+	
 	public String getMontoLetra() {
 		return montoLetra;
 	}
@@ -3101,6 +3228,48 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setLstMotivoNota(List<MotivoNota> lstMotivoNota) {
 		this.lstMotivoNota = lstMotivoNota;
+	}
+	public TipoOperacionService getTipoOperacionService() {
+		return tipoOperacionService;
+	}
+	public void setTipoOperacionService(TipoOperacionService tipoOperacionService) {
+		this.tipoOperacionService = tipoOperacionService;
+	}
+	public IdentificadorService getIdentificadorService() {
+		return identificadorService;
+	}
+	public void setIdentificadorService(IdentificadorService identificadorService) {
+		this.identificadorService = identificadorService;
+	}
+	public TipoOperacion getTipoOperacionSelected() {
+		return tipoOperacionSelected;
+	}
+	public void setTipoOperacionSelected(TipoOperacion tipoOperacionSelected) {
+		this.tipoOperacionSelected = tipoOperacionSelected;
+	}
+	public List<TipoOperacion> getLstTipoOperacion() {
+		return lstTipoOperacion;
+	}
+	public void setLstTipoOperacion(List<TipoOperacion> lstTipoOperacion) {
+		this.lstTipoOperacion = lstTipoOperacion;
+	}
+	public List<Identificador> getLstIdentificador() {
+		return lstIdentificador;
+	}
+	public void setLstIdentificador(List<Identificador> lstIdentificador) {
+		this.lstIdentificador = lstIdentificador;
+	}
+	public Identificador getIdentificadorSelected() {
+		return identificadorSelected;
+	}
+	public void setIdentificadorSelected(Identificador identificadorSelected) {
+		this.identificadorSelected = identificadorSelected;
+	}
+	public String getNumeroNota() {
+		return numeroNota;
+	}
+	public void setNumeroNota(String numeroNota) {
+		this.numeroNota = numeroNota;
 	}
 	
 	

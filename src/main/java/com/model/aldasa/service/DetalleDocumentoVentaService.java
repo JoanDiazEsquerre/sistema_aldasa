@@ -9,9 +9,9 @@ import com.model.aldasa.entity.Voucher;
 
 public interface DetalleDocumentoVentaService {
 
-	Optional< DetalleDocumentoVenta> findById(Integer id);
-	DetalleDocumentoVenta save( DetalleDocumentoVenta entity);
-	void delete( DetalleDocumentoVenta entity);
+	Optional<DetalleDocumentoVenta> findById(Integer id);
+	DetalleDocumentoVenta save(DetalleDocumentoVenta entity);
+	void delete(DetalleDocumentoVenta entity);
 	
 	DetalleDocumentoVenta findByVoucherIdAndEstado(int voucher, boolean estado);
 	
