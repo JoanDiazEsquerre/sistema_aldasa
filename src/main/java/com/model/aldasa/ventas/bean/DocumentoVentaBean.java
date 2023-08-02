@@ -271,6 +271,13 @@ public class DocumentoVentaBean extends BaseBean {
 	} 
 	
 	public void saveNota() {
+		List<DocumentoVenta> lstBuscarNotaExistente = documentoVentaService.findByDocumentoVentaRefAndTipoDocumentoAndEstado(documentoVentaSelected, tipoDocumentoNotaSelected, true);
+		
+		if(!lstBuscarNotaExistente.isEmpty()) {
+			addErrorMessage( "Ya se registró una " + tipoDocumentoNotaSelected.getDescripcion() + " para la " + documentoVentaSelected.getTipoDocumento().getDescripcion());
+			return; 
+		}
+		
 		DocumentoVenta doc = new DocumentoVenta();
 		doc.setCliente(documentoVentaSelected.getCliente());
 		doc.setDocumentoVentaRef(documentoVentaSelected);
@@ -318,7 +325,7 @@ public class DocumentoVentaBean extends BaseBean {
 			saveDocNota.setNumero(numeroActual); 
 			documentoVentaService.save(saveDocNota);
 			
-			for(DetalleDocumentoVenta d:lstDetalleDocumentoVenta) {
+			for(DetalleDocumentoVenta d:lstDetalleDocumentoVentaSelected) {
 				d.setId(null);
 				d.setDocumentoVenta(saveDocNota);
 				d.setEstado(true);
@@ -1720,25 +1727,32 @@ public class DocumentoVentaBean extends BaseBean {
 	
 	public void listarSerieNota() {
 		
-		String anio = sdfYear.format(fechaEmisionNotaVenta);
-		
-		String codigoInt = "";
-		
-		if(tipoDocumentoNotaSelected.getAbreviatura().equals("C")) {
-			codigoInt = "NC" + documentoVentaSelected.getTipoDocumento().getAbreviatura();
-		}else {
-			codigoInt = "ND" + documentoVentaSelected.getTipoDocumento().getAbreviatura();
-		}
-		
-		
-		lstSerieNotaDocumento = serieDocumentoService.findByTipoDocumentoAndAnioAndSucursalAndCodigoInterno(tipoDocumentoNotaSelected, anio, navegacionBean.getSucursalLogin(), codigoInt);
-		serieNotaDocumentoSelected=lstSerieNotaDocumento.get(0);
+		if(documentoVentaSelected.getTipoDocumento().getAbreviatura().equals("B") || documentoVentaSelected.getTipoDocumento().getAbreviatura().equals("F")) {
+			String anio = sdfYear.format(fechaEmisionNotaVenta);
+			
+			String codigoInt = "";
+			
+			if(tipoDocumentoNotaSelected.getAbreviatura().equals("C")) {
+				codigoInt = "NC" + documentoVentaSelected.getTipoDocumento().getAbreviatura();
+			}else {
+				codigoInt = "ND" + documentoVentaSelected.getTipoDocumento().getAbreviatura();
+			}
+			
+			
+			lstSerieNotaDocumento = serieDocumentoService.findByTipoDocumentoAndAnioAndSucursalAndCodigoInterno(tipoDocumentoNotaSelected, anio, navegacionBean.getSucursalLogin(), codigoInt);
+			serieNotaDocumentoSelected=lstSerieNotaDocumento.get(0);
 
-		numeroNota =  String.format("%0" + serieNotaDocumentoSelected.getTamanioNumero()  + "d", Integer.valueOf(serieNotaDocumentoSelected.getNumero()) ); 
-		listarMotivoNota();	
-		listarDetalleDocumentoVenta();
-		tipoOperacionSelected=lstTipoOperacion.get(0);
-		identificadorSelected=lstIdentificador.get(0);
+			numeroNota =  String.format("%0" + serieNotaDocumentoSelected.getTamanioNumero()  + "d", Integer.valueOf(serieNotaDocumentoSelected.getNumero()) ); 
+			listarMotivoNota();	
+			listarDetalleDocumentoVenta();
+			tipoOperacionSelected=lstTipoOperacion.get(0);
+			identificadorSelected=lstIdentificador.get(0);
+		}else {
+			addErrorMessage("Debe seleccionar una factura o boleta.");
+			return;
+		}
+		PrimeFaces.current().executeScript("PF('notaCreditoDebitoDialog').show();");
+		
 	}
 	
 	public void listarMotivoNota() {

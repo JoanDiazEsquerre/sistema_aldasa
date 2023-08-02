@@ -102,7 +102,7 @@
 				<p:contextMenu id="menuTableDoc" for="idTableListDoc" >
 		            <p:menuitem value="Anular" icon="pi pi-trash" oncomplete="PF('anulaDocumento').show()"  />
 		            <p:menuitem value="Ver Voucher" icon="pi pi-image" action="#{documentoVentaBean.verVoucher()}"  update=":dialogVoucherDocumento" />	
-		            <p:menuitem value="Generar Nota Crédito/Débito" action="#{documentoVentaBean.listarSerieNota()}" icon="pi pi-wallet" oncomplete="PF('notaCreditoDebitoDialog').show()" update="dialogNotaCreditoDebito" />
+		            <p:menuitem value="Generar Nota Crédito/Débito" action="#{documentoVentaBean.listarSerieNota()}" icon="pi pi-wallet" update="dialogNotaCreditoDebito" />
 		        </p:contextMenu>
 		
 				

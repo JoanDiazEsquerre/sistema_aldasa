@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.model.aldasa.entity.DocumentoVenta;
 import com.model.aldasa.entity.Empresa;
 import com.model.aldasa.entity.Sucursal;
+import com.model.aldasa.entity.TipoDocumento;
 import com.model.aldasa.repository.DocumentoVentaRepository;
 import com.model.aldasa.service.DocumentoVentaService;
 
@@ -70,6 +71,13 @@ public class DocumentoVentaServiceImpl implements DocumentoVentaService{
 			Sucursal sucursal, String razonSocial, String numero, String ruc, Pageable pageable) {
 		// TODO Auto-generated method stub
 		return documentoVentaRepository.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLike(estado, sucursal, razonSocial, numero, ruc, pageable);
+	}
+
+	@Override
+	public List<DocumentoVenta> findByDocumentoVentaRefAndTipoDocumentoAndEstado(DocumentoVenta documentoVenta,
+			TipoDocumento tipoDocumento, boolean estado) {
+		// TODO Auto-generated method stub
+		return documentoVentaRepository.findByDocumentoVentaRefAndTipoDocumentoAndEstado(documentoVenta, tipoDocumento, estado);
 	}
 
 	
