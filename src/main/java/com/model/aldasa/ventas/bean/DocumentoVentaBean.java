@@ -267,7 +267,7 @@ public class DocumentoVentaBean extends BaseBean {
 		productoAdelanto = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.ADELANTO.getTipo());
 		
 		lstTipoOperacion = tipoOperacionService.findByEstado(true);
-		lstIdentificador = identificadorService.findByEstado(true);
+		lstIdentificador = identificadorService.findByEstado(true); 
 	} 
 	
 	public void saveNota() {
