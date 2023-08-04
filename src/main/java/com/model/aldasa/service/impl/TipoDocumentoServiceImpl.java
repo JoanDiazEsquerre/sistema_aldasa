@@ -41,9 +41,11 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoService {
 	}
 
 	@Override
-	public List<TipoDocumento> findByEstadoAndCodigoLike(boolean estado, String codigo) {
+	public List<TipoDocumento> findByEstadoAndCodigoIn(boolean estado, List<String> codigo) {
 		// TODO Auto-generated method stub
-		return tipoDocumentoRepository.findByEstadoAndCodigoLike(estado, codigo);
+		return tipoDocumentoRepository.findByEstadoAndCodigoIn(estado, codigo);
 	}
+
+	
 
 }

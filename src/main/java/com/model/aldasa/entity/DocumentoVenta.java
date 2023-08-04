@@ -113,7 +113,17 @@ public class DocumentoVenta {
 	@JoinColumn(name="ididentificador")
 	private Identificador identificador;
 	
+	@Column(name="notacredito")
+	private Boolean notacredito;
 	
+	@Column(name="notadebito")
+	private Boolean notaDebito;
+	
+	@Column(name="numeronotacredito")
+	private String numeroNotaCredito;
+	
+	@Column(name="numeronotadebito")
+	private String numeroNotaDebito;
 	
 	
 	
@@ -316,6 +326,30 @@ public class DocumentoVenta {
 	}
 	public void setIdentificador(Identificador identificador) {
 		this.identificador = identificador;
+	}
+	public boolean isNotacredito() {
+		return notacredito;
+	}
+	public void setNotacredito(boolean notacredito) {
+		this.notacredito = notacredito;
+	}
+	public boolean isNotaDebito() {
+		return notaDebito;
+	}
+	public void setNotaDebito(boolean notaDebito) {
+		this.notaDebito = notaDebito;
+	}
+	public String getNumeroNotaCredito() {
+		return numeroNotaCredito;
+	}
+	public void setNumeroNotaCredito(String numeroNotaCredito) {
+		this.numeroNotaCredito = numeroNotaCredito;
+	}
+	public String getNumeroNotaDebito() {
+		return numeroNotaDebito;
+	}
+	public void setNumeroNotaDebito(String numeroNotaDebito) {
+		this.numeroNotaDebito = numeroNotaDebito;
 	}
 
 	

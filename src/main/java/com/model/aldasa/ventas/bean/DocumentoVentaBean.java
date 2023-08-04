@@ -247,10 +247,16 @@ public class DocumentoVentaBean extends BaseBean {
 	
 	@PostConstruct
 	public void init() {
-		lstTipoDocumento = tipoDocumentoService.findByEstadoAndCodigoLike(true, "01");
+		List<String> lstCodigoFB=new ArrayList<>();
+		lstCodigoFB.add("01");
+		lstCodigoFB.add("03");
+		lstTipoDocumento = tipoDocumentoService.findByEstadoAndCodigoIn(true, lstCodigoFB);
 		tipoDocumentoSelected = lstTipoDocumento.get(0);
 		
-		lstTipoDocumentoNota = tipoDocumentoService.findByEstadoAndCodigoLike(true, "08");
+		List<String> lstCodigoCD=new ArrayList<>();
+		lstCodigoCD.add("07");
+		lstCodigoCD.add("08");
+		lstTipoDocumentoNota = tipoDocumentoService.findByEstadoAndCodigoIn(true, lstCodigoCD);
 		tipoDocumentoNotaSelected = lstTipoDocumentoNota.get(0);
 		
 		iniciarLazy();
@@ -342,9 +348,19 @@ public class DocumentoVentaBean extends BaseBean {
 				d.setId(null);
 				d.setDocumentoVenta(saveDocNota);
 				d.setEstado(true);
-				detalleDocumentoVentaService.save(d);
-					
+				detalleDocumentoVentaService.save(d);	
 			} 
+			
+//			aqui actualizamos los campos del documento de origen
+			
+			if(tipoDocumentoNotaSelected.getAbreviatura().equals("C")) {
+				documentoVentaSelected.setNotacredito(true);
+				documentoVentaSelected.setNumeroNotaCredito(saveDocNota.getSerie() + "-" + saveDocNota.getNumero());
+			}else {
+				documentoVentaSelected.setNotaDebito(true);
+				documentoVentaSelected.setNumeroNotaDebito(saveDocNota.getSerie() + "-" + saveDocNota.getNumero());
+			}
+			documentoVentaService.save(documentoVentaSelected);
 			
 			addInfoMessage("Se guardó el documento correctamente.");
 			PrimeFaces.current().executeScript("PF('notaCreditoDebitoDialog').hide();");
@@ -364,60 +380,67 @@ public class DocumentoVentaBean extends BaseBean {
 	
 	public void verVoucher() {
 		
-		fechaVoucherDialog = null;
-		montoVoucherDialog=null;
-		nroOperacionVoucherDialog="";
-		
-		loadImageDocumentoBean.setNombreArchivo("0.png");
-		imagen1 = "";
-		imagen2 = "";
-		imagen3 = "";
-		imagen4 = "";
-		imagen5 = "";
-		imagen6 = "";
-		imagen7 = "";
-		imagen8 = "";
-		imagen9 = "";
-		imagen10 = "";
-		
-		String nombreBusqueda = "%"+documentoVentaSelected.getId() +"_%";
-		
-		List<Imagen> lstImagen = imagenService.findByNombreLikeAndEstado(nombreBusqueda, true);
-		int contador = 1;
-		for(Imagen i:lstImagen) {
-			if(contador==1) {
-				imagen1 = i.getNombre();
+		if(documentoVentaSelected.getTipoDocumento().getAbreviatura().equals("B") || documentoVentaSelected.getTipoDocumento().getAbreviatura().equals("F")) {
+			fechaVoucherDialog = null;
+			montoVoucherDialog=null;
+			nroOperacionVoucherDialog="";
+			
+			loadImageDocumentoBean.setNombreArchivo("0.png");
+			imagen1 = "";
+			imagen2 = "";
+			imagen3 = "";
+			imagen4 = "";
+			imagen5 = "";
+			imagen6 = "";
+			imagen7 = "";
+			imagen8 = "";
+			imagen9 = "";
+			imagen10 = "";
+			
+			String nombreBusqueda = "%"+documentoVentaSelected.getId() +"_%";
+			
+			List<Imagen> lstImagen = imagenService.findByNombreLikeAndEstado(nombreBusqueda, true);
+			int contador = 1;
+			for(Imagen i:lstImagen) {
+				if(contador==1) {
+					imagen1 = i.getNombre();
+				}
+				if(contador==2) {
+					imagen2 = i.getNombre();
+				}
+				if(contador==3) {
+					imagen3 = i.getNombre();
+				}
+				if(contador==4) {
+					imagen4 = i.getNombre();
+				}
+				if(contador==5) {
+					imagen5 = i.getNombre();
+				}
+				if(contador==6) {
+					imagen6 = i.getNombre();
+				}
+				if(contador==7) {
+					imagen7 = i.getNombre();
+				}
+				if(contador==8) {
+					imagen8 = i.getNombre();
+				}
+				if(contador==9) {
+					imagen9 = i.getNombre();
+				}
+				if(contador==10) {
+					imagen10 = i.getNombre();
+				}
+				contador ++;
 			}
-			if(contador==2) {
-				imagen2 = i.getNombre();
-			}
-			if(contador==3) {
-				imagen3 = i.getNombre();
-			}
-			if(contador==4) {
-				imagen4 = i.getNombre();
-			}
-			if(contador==5) {
-				imagen5 = i.getNombre();
-			}
-			if(contador==6) {
-				imagen6 = i.getNombre();
-			}
-			if(contador==7) {
-				imagen7 = i.getNombre();
-			}
-			if(contador==8) {
-				imagen8 = i.getNombre();
-			}
-			if(contador==9) {
-				imagen9 = i.getNombre();
-			}
-			if(contador==10) {
-				imagen10 = i.getNombre();
-			}
-			contador ++;
+			PrimeFaces.current().executeScript("PF('voucherDocumentoDialog').show();");
+		}else {
+			addErrorMessage("Las notas de Credito/Debito no tienen voucher");
+			return;
 		}
-		PrimeFaces.current().executeScript("PF('voucherDocumentoDialog').show();");
+		
+		
 	}
 	
 	
@@ -807,6 +830,18 @@ public class DocumentoVentaBean extends BaseBean {
 	
 	
 	public void anularDocumento() {
+		if(documentoVentaSelected.getDocumentoVentaRef()!=null) {
+			if(documentoVentaSelected.getDocumentoVentaRef().getTipoDocumento().getAbreviatura().equals("C")) {
+				documentoVentaSelected.getDocumentoVentaRef().setNotacredito(false);
+				documentoVentaSelected.getDocumentoVentaRef().setNumeroNotaCredito(null);
+
+			}
+			if(documentoVentaSelected.getDocumentoVentaRef().getTipoDocumento().getAbreviatura().equals("D")) {
+				documentoVentaSelected.getDocumentoVentaRef().setNotaDebito(false);
+				documentoVentaSelected.getDocumentoVentaRef().setNumeroNotaDebito(null);
+			}
+			documentoVentaService.save(documentoVentaSelected.getDocumentoVentaRef());
+		}
 		documentoVentaSelected.setEstado(false);
 		documentoVentaService.save(documentoVentaSelected);
 		lstDetalleDocumentoVentaSelected = detalleDocumentoVentaService.findByDocumentoVentaAndEstado(documentoVentaSelected, true);
@@ -920,7 +955,7 @@ public class DocumentoVentaBean extends BaseBean {
 		return valor;
 	}
 	
-	public boolean validarDatosImagen() {
+	public boolean validarDatosImagen(BigDecimal suma) {
 		boolean valida=false;
 		if(file2!=null){
 			if(fechaImag2==null) {
@@ -930,6 +965,8 @@ public class DocumentoVentaBean extends BaseBean {
 			if(montoImag2==null) {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
+			}else {
+				suma = suma.add(montoImag2);
 			}
 			if(nroOperImag2.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -945,6 +982,8 @@ public class DocumentoVentaBean extends BaseBean {
 			if(montoImag3==null) {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
+			}else {
+				suma = suma.add(montoImag3);
 			}
 			if(nroOperImag3.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -960,6 +999,8 @@ public class DocumentoVentaBean extends BaseBean {
 			if(montoImag4==null) {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
+			}else {
+				suma = suma.add(montoImag4);
 			}
 			if(nroOperImag4.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -975,6 +1016,8 @@ public class DocumentoVentaBean extends BaseBean {
 			if(montoImag5==null) {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
+			}else {
+				suma = suma.add(montoImag5);
 			}
 			if(nroOperImag5.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -990,6 +1033,8 @@ public class DocumentoVentaBean extends BaseBean {
 			if(montoImag6==null) {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
+			}else {
+				suma = suma.add(montoImag6);
 			}
 			if(nroOperImag6.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -1005,6 +1050,8 @@ public class DocumentoVentaBean extends BaseBean {
 			if(montoImag7==null) {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
+			}else {
+				suma = suma.add(montoImag7);
 			}
 			if(nroOperImag7.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -1020,6 +1067,8 @@ public class DocumentoVentaBean extends BaseBean {
 			if(montoImag8==null) {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
+			}else {
+				suma = suma.add(montoImag8);
 			}
 			if(nroOperImag8.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -1035,6 +1084,8 @@ public class DocumentoVentaBean extends BaseBean {
 			if(montoImag9==null) {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
+			}else {
+				suma = suma.add(montoImag9);
 			}
 			if(nroOperImag9.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -1050,6 +1101,8 @@ public class DocumentoVentaBean extends BaseBean {
 			if(montoImag10==null) {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
+			}else {
+				suma = suma.add(montoImag10);
 			}
 			if(nroOperImag10.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -1060,8 +1113,7 @@ public class DocumentoVentaBean extends BaseBean {
 		return valida;
 	}
 	
-	public void saveDocumentoVenta() {
-		
+	public void validarFormularioDocumentoVenta() {
 		if(lstDetalleDocumentoVenta.isEmpty()) { 
 			addErrorMessage("Debes importar al menos un documento.");
 			return;
@@ -1097,6 +1149,8 @@ public class DocumentoVentaBean extends BaseBean {
 			addErrorMessage("Ingresar dirección.");
 			return;
 		}
+
+		BigDecimal sumaMontoVoucher = BigDecimal.ZERO;
 		
 		if(file1 == null) {
 			addErrorMessage("Seleccione una imagen (voucher)");
@@ -1109,18 +1163,30 @@ public class DocumentoVentaBean extends BaseBean {
 			if(montoImag1==null) {
 				addErrorMessage("Ingresar monto del primer voucher");
 				return;
+			}else {
+				sumaMontoVoucher=sumaMontoVoucher.add(montoImag1);
 			}
 			if(nroOperImag1.equals("")) {
 				addErrorMessage("Ingresar número de operación del primer voucher");
 				return;
 			}
 		}
-		
-		boolean validaImagenes = validarDatosImagen();
+		boolean validaImagenes = validarDatosImagen(sumaMontoVoucher);
 		
 		if(validaImagenes) {
 			return;
+		}else {
+			if(sumaMontoVoucher.compareTo(importeTotal)!=0) {
+				addErrorMessage("Los importes de los voucher no coinciden con el total del documento.");
+				return;
+			}
 		}
+		
+		PrimeFaces.current().executeScript("PF('saveDocumento').show();");
+
+	}
+	
+	public void saveDocumentoVenta() {
 		
 		if(clienteSelected==null) {
 			Cliente cliente = new Cliente();
