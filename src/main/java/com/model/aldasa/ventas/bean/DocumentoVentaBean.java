@@ -190,7 +190,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private String tipoPago = "Contado";
 	private String tipoPrepago ="PC";
 	private String incluirUltimaCuota = "No";
-	private Integer nuevoNroCuotas;
+	private Integer nuevoNroCuotas, numMuestraImagen;
 	private Date fechaVoucherDialog;
 	private BigDecimal montoVoucherDialog;
 	private String nroOperacionVoucherDialog;
@@ -268,7 +268,20 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		lstTipoOperacion = tipoOperacionService.findByEstado(true);
 		lstIdentificador = identificadorService.findByEstado(true); 
+		numMuestraImagen=1;
 	} 
+	
+	public void menorarImagen() {
+		if(numMuestraImagen !=1) {
+			numMuestraImagen--;
+		}
+	}
+	
+	public void aumentarImagen() {
+		if(numMuestraImagen !=10) {
+			numMuestraImagen++;
+		}
+	}
 	
 	public void saveNota() {
 		List<DocumentoVenta> lstBuscarNotaExistente = documentoVentaService.findByDocumentoVentaRefAndTipoDocumentoAndEstado(documentoVentaSelected, tipoDocumentoNotaSelected, true);
@@ -1061,6 +1074,12 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Ingresar RUC.");
 			}
 			return;
+		}else {
+			if(tipoDocumentoSelected.getAbreviatura().equals("F")) {
+				if(ruc.length()<11) {
+					addErrorMessage("Ingresar un RUC válido.");
+				}
+			}
 		}
 		
 		if(nombreRazonSocial.equals("")) {
@@ -1125,7 +1144,7 @@ public class DocumentoVentaBean extends BaseBean {
 		}else {
 //			aqui actualiza los datos del cliente y guarda run razon doreccion
 			clienteSelected.setPerson(persona);
-			clienteSelected.setRuc(ruc);
+			if(tipoDocumentoSelected.getAbreviatura().equals("F"))clienteSelected.setRuc(ruc);
 			clienteSelected.setNombreComercial(nombreRazonSocial);
 			clienteSelected.setDireccion(direccion);
 			clienteService.save(clienteSelected);
@@ -1422,6 +1441,7 @@ public class DocumentoVentaBean extends BaseBean {
 		clienteSelected=null;
 		lstDetalleDocumentoVenta.clear();
 		calcularTotales();
+		numMuestraImagen=1;
 	}
 	
 	public void cancelarContrato() {
@@ -1459,6 +1479,26 @@ public class DocumentoVentaBean extends BaseBean {
 		lstCuota = new ArrayList<>();
 		lstCuota = cuotaService.findByPagoTotalAndEstado("N", true);
 		
+	}
+	
+	public void changeTipoDocumentoVenta() {
+		if(clienteSelected!=null) {
+			if(tipoDocumentoSelected.getAbreviatura().equals("B")) {
+				clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(clienteSelected.getPerson(), true, true);
+				if(clienteSelected != null) {
+					ruc = clienteSelected.getPerson().getDni();
+					nombreRazonSocial = clienteSelected.getRazonSocial();
+					direccion = clienteSelected.getDireccion();
+				}
+			}else {
+				clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(clienteSelected.getPerson(), true, false);
+				if(clienteSelected != null) {
+					ruc = clienteSelected.getRuc();
+					nombreRazonSocial = clienteSelected.getRazonSocial();
+					direccion = clienteSelected.getDireccion();
+				}
+			} 
+		}
 	}
 	
 	public void importarCuota() {
@@ -1722,7 +1762,7 @@ public class DocumentoVentaBean extends BaseBean {
 		serieDocumentoSelected=lstSerieDocumento.get(0);
 
 		numero =  String.format("%0" + serieDocumentoSelected.getTamanioNumero()  + "d", Integer.valueOf(serieDocumentoSelected.getNumero()) ); 
-		
+		changeTipoDocumentoVenta();
 	}
 	
 	public void listarSerieNota() {
@@ -3284,6 +3324,12 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setNumeroNota(String numeroNota) {
 		this.numeroNota = numeroNota;
+	}
+	public Integer getNumMuestraImagen() {
+		return numMuestraImagen;
+	}
+	public void setNumMuestraImagen(Integer numMuestraImagen) {
+		this.numMuestraImagen = numMuestraImagen;
 	}
 	
 	
