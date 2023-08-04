@@ -25,7 +25,9 @@ public class Empresa {
 	@Column(name="rutadocumentoventa")
 	private String rutaDocumentoVenta;
 
-	
+
+	private String rutaFe;
+	private String tokenFe;
 	
 	
 	public Integer getId() {
@@ -58,6 +60,9 @@ public class Empresa {
 	public void setRutaDocumentoVenta(String rutaDocumentoVenta) {
 		this.rutaDocumentoVenta = rutaDocumentoVenta;
 	}
-	
+	public String getRutaFe() {	return rutaFe; }
+	public void setRutaFe(String rutaFe) { this.rutaFe = rutaFe; }
+	public String getTokenFe() { return tokenFe; }
+	public void setTokenFe(String tokenFe) { this.tokenFe = tokenFe; }
 
 }

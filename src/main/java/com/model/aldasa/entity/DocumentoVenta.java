@@ -52,6 +52,9 @@ public class DocumentoVenta {
 	
 	@Column(name="fechaemision")
 	private Date fechaEmision;
+
+	@Column(name="fechavencimiento")
+	private Date fechaVencimiento;
 	
 	@Column(name="tipomoneda")
 	private String tipoMoneda;
@@ -100,6 +103,9 @@ public class DocumentoVenta {
 	
 	@Column(name="otrostributos")
 	private BigDecimal otrosTributos;
+
+	@Column(name="tasacambio")
+	private BigDecimal tasaCambio;
 
 	@ManyToOne
 	@JoinColumn(name="idmotivonota")
@@ -318,6 +324,19 @@ public class DocumentoVenta {
 		this.identificador = identificador;
 	}
 
-	
-	
+	public Date getFechaVencimiento() {
+		return fechaVencimiento;
+	}
+
+	public void setFechaVencimiento(Date fechaVencimiento) {
+		this.fechaVencimiento = fechaVencimiento;
+	}
+
+	public BigDecimal getTasaCambio() {
+		return tasaCambio;
+	}
+
+	public void setTasaCambio(BigDecimal tasaCambio) {
+		this.tasaCambio = tasaCambio;
+	}
 }

@@ -44,9 +44,11 @@ public class Cliente {
 	@JoinColumn(name="idusuarioregistro")
 	private Usuario idUsuarioRegistro;
 
-	
-	
-	
+	private String email1Fe;
+	private String email2Fe;
+	private String email3Fe;
+
+
 	public Integer getId() {
 		return id;
 	}
@@ -107,6 +109,28 @@ public class Cliente {
 	public void setPersonaNatural(boolean personaNatural) {
 		this.personaNatural = personaNatural;
 	}
-	
-	
+
+	public String getEmail1Fe() {
+		return email1Fe;
+	}
+
+	public void setEmail1Fe(String email1Fe) {
+		this.email1Fe = email1Fe;
+	}
+
+	public String getEmail2Fe() {
+		return email2Fe;
+	}
+
+	public void setEmail2Fe(String email2Fe) {
+		this.email2Fe = email2Fe;
+	}
+
+	public String getEmail3Fe() {
+		return email3Fe;
+	}
+
+	public void setEmail3Fe(String email3Fe) {
+		this.email3Fe = email3Fe;
+	}
 }
