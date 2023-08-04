@@ -234,10 +234,16 @@
 				</p:tab>
 				<p:tab title="Datos de venta" rendered="#{loteBean.loteSelected.status eq 'Vendido'}">
 					<h:panelGrid id="gridDatosVenta" columns="4">
+						<h:outputLabel value="Tipo de Pago:" for="optionPago" />
+						<p:selectOneMenu id="optionPago" value="#{loteBean.loteSelected.tipoPago}" >
+							<f:selectItem itemLabel="Contado" itemValue="Contado" />
+							<f:selectItem itemLabel="Crédito" itemValue="Crédito"/>
+							<p:ajax update="gridDatosVenta " />
+						</p:selectOneMenu>
 					
 					   	<h:outputLabel for="optionPerson" value="Comprador:" rendered="#{loteBean.loteSelected.status eq 'Separado' or loteBean.loteSelected.status eq 'Vendido'}" />
 		                <p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{loteBean.personVenta}" converter="#{loteBean.conversorPerson}" id="optionPerson"  completeMethod="#{loteBean.completePerson}" 
-		                          var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px" rendered="#{loteBean.loteSelected.status eq 'Separado' or loteBean.loteSelected.status eq 'Vendido'}" >
+		                          var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" rendered="#{loteBean.loteSelected.status eq 'Separado' or loteBean.loteSelected.status eq 'Vendido'}" >
 							<p:column width="400px">
 								<h:outputLabel value="#{per.surnames} #{per.names}" />
 							</p:column>
@@ -248,28 +254,19 @@
 						</p:autoComplete>
 
 						<h:outputLabel id="lblFechaVend" for="vend" value="Fecha venta:" />
-						<p:datePicker id="vend" style="margin:5px; width:220px" value="#{loteBean.loteSelected.fechaVendido}" /> 
+						<p:datePicker id="vend"  value="#{loteBean.loteSelected.fechaVendido}" /> 
 						
 						<h:outputLabel value="Monto Venta:" for="montoVenta" />
-						<p:inputNumber id="montoVenta" value="#{loteBean.loteSelected.montoVenta}" style="margin:5px; width:220px" modifyValueOnWheel="false" /> 
-
-						<h:outputLabel value="Tipo de Pago:" for="optionPago" />
-						<p:selectOneMenu id="optionPago" value="#{loteBean.loteSelected.tipoPago}" style="margin:5px; width:220px" >
-							<f:selectItem itemLabel="Contado" itemValue="Contado" />
-							<f:selectItem itemLabel="Crédito" itemValue="Crédito"/>
-							<p:ajax update="gridDatosVenta " />
-						</p:selectOneMenu>
-						
-
+						<p:inputNumber id="montoVenta" value="#{loteBean.loteSelected.montoVenta}"  modifyValueOnWheel="false" />
 											
 						<h:outputLabel value="Monto Inicial: " id="lblMontoInicial" for="montoIni" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}" />
-						<p:inputNumber id="montoIni" value="#{loteBean.loteSelected.montoInicial}" style="margin:5px; width:220px" modifyValueOnWheel="false" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}" /> 
+						<p:inputNumber id="montoIni" value="#{loteBean.loteSelected.montoInicial}"  modifyValueOnWheel="false" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}" /> 
 											
 						<h:outputLabel value="Nro. de Cuotas: " id="lblNroCuota" for="nroCuota" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"/>
-						<p:inputNumber id="nroCuota" value="#{loteBean.loteSelected.numeroCuota}" style="margin:5px; width:220px" minValue="1" decimalPlaces="0" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"/> 
+						<p:inputNumber id="nroCuota" value="#{loteBean.loteSelected.numeroCuota}"  minValue="1" decimalPlaces="0" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"/> 
 					
 						<h:outputLabel value="Interés:" for="interes" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"/>
-						<p:inputNumber id="interes" value="#{loteBean.loteSelected.interes}" style="margin:5px; width:220px" rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"/> 
+						<p:inputNumber id="interes" value="#{loteBean.loteSelected.interes}"  rendered="#{loteBean.loteSelected.tipoPago eq 'Crédito'}"/> 
 					</h:panelGrid>
 					
 				</p:tab> 

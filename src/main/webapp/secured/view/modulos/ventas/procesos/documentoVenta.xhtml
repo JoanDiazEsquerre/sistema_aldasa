@@ -196,7 +196,7 @@
 
 					<h:panelGrid id="gridImpVoucher">
 						<p:commandButton id="movieBtnVou" style="font-size: 14px;" value="Importar Voucher Inicial" icon="pi pi-search" update=":form:tabView:tableVoucher" />
-						<p:overlayPanel for="movieBtnVou" dynamic="true" style="width:600px" widgetVar="moviePickerVoucher">
+						<p:overlayPanel for="movieBtnVou" dynamic="true" style="width:700px" widgetVar="moviePickerVoucher">
 							<p:dataTable var="voucher" value="#{documentoVentaBean.lstVoucherLazy}" rows="5" paginator="true" selectionMode="single" rowIndexVar="row"
 								paginatorPosition="bottom" selection="#{documentoVentaBean.voucherSelected}" rowKey="#{voucher.id}" id="tableVoucher"
 								emptyMessage="No se encontraron resultados" size="small">
@@ -224,6 +224,14 @@
 									<h:outputText value="#{voucher.fechaOperacion}" style="font-size: 14px;">
 										<f:convertDateTime pattern="dd/MM/yyyy" />
 									</h:outputText>
+								</p:column>
+								
+								<p:column headerText="Lote - Mz" style="text-align:center; width:60px">
+									<h:outputText value="#{voucher.requerimientoSeparacion.lote.numberLote}-#{voucher.requerimientoSeparacion.lote.manzana.name}" style="font-size: 14px;" />
+								</p:column>
+								
+								<p:column headerText="Proyecto" style="text-align:center; width:60px">
+									<h:outputText value="#{voucher.requerimientoSeparacion.lote.project.name}" style="font-size: 14px;" />
 								</p:column>
 
 							</p:dataTable>
@@ -317,15 +325,16 @@
 
 								</p:column>
 
-								<p:column>
-									<h:outputText value="Observación:" style="margin-left:10px" />
-								</p:column>
+								
 								<p:column colspan="3">
-									<p:inputText id="txt_observacion" style="width:450px;" label="" value="#{documentoVentaBean.observacion}" maxlength="200" />
+									<span class="ui-float-label" style="margin-top: 25px;">
+       									<p:inputText id="txt_observacion" style="width:100%;" label="" value="#{documentoVentaBean.observacion}" maxlength="200" />
+						               	<p:outputLabel for="@previous" value="Observación" />
+						            </span>
 								</p:column>
 								
-								<p:commandButton value="Guardar" oncomplete="PF('saveDocumento').show()" styleClass="mt-3 ui-button-outlined block"  style="margin-left:50px" icon="pi pi-save"  />
-								<p:commandButton value="Cancelar" oncomplete="PF('cancelarDocumento').show()"   style="margin-left:50px" icon="pi pi-times"  />
+								<p:commandButton value="Guardar" actionListener="#{documentoVentaBean.validarFormularioDocumentoVenta()}" styleClass="mt-3 ui-button-outlined block"  style="margin-left:10px" icon="pi pi-save"  />
+								<p:commandButton value="Cancelar" oncomplete="PF('cancelarDocumento').show()"   style="margin-left:10px" icon="pi pi-times"  />
 								
 								<p:commandButton icon="pi pi-minus" action="#{documentoVentaBean.menorarImagen}" update=":form:tabView:pnlCond" styleClass="rounded-button ui-button-success" style="margin:10px;" />
 								<p:commandButton icon="pi pi-plus" action="#{documentoVentaBean.aumentarImagen}" update=":form:tabView:pnlCond" styleClass="rounded-button ui-button-success" />
@@ -474,10 +483,10 @@
 	
 				</h:panelGrid>
 				
-				<h:panelGrid  style="width:80%;float:left">
-				
+				<h:panelGrid  style="width:100%;float:left">
+					
 					<p:dataTable var="detalle" id="idTableDetalleDocVenta" value="#{documentoVentaBean.lstDetalleDocumentoVenta}" widgetVar="detalleTable" rowIndexVar="row" paginator="true" rows="15" size="small"
-					emptyMessage="No se encontraron detalles de documento de venta." editable="true" style="width:100%"  editMode="cell" paginatorPosition="bottom" rowKey="#{detalle.id}"  selectionMode="single" selection="#{documentoVentaBean.detalleDocumentoVentaSelected}">
+					emptyMessage="No se encontraron detalles de documento de venta." editable="true"  editMode="cell" paginatorPosition="bottom" rowKey="#{detalle.id}"  selectionMode="single" selection="#{documentoVentaBean.detalleDocumentoVentaSelected}">
 			
 						
 						<f:facet name="header">
