@@ -1119,40 +1119,53 @@
 		</h:form>
 	</p:dialog>
 	
-	<p:confirmDialog id="saveDocumento" message="¿Está seguro de guardar el documento de venta?" header="Confirmación"
-                      severity="alert" widgetVar="saveDocumento" appendTo="@(body)">
+	<pe:blockUI target="saveDocumento" widgetVar="blockUIWidgetDocumento">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+	<p:confirmDialog id="saveDocumento" message="¿Está seguro de guardar el documento de venta?" header="Confirmación" severity="alert" widgetVar="saveDocumento" appendTo="@(body)">
         <h:form >
-            <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('saveDocumento').hide()" value="SI" action="#{documentoVentaBean.saveDocumentoVenta()}" update=":form:tabView:idTableListDoc :form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante"/>
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetDocumento').block();" oncomplete="PF('blockUIWidgetDocumento').unblock();PF('saveDocumento').hide()"  action="#{documentoVentaBean.saveDocumentoVenta()}" update=":form:tabView:idTableListDoc :form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante"/>
             <p:commandButton value="NO" oncomplete="PF('saveDocumento').hide()"/>
         </h:form>
     </p:confirmDialog>
     
-    <p:confirmDialog id="cancelarDocumento" message="¿Está seguro de cancelar el documento de venta?" header="Confirmación"
-                      severity="alert" widgetVar="cancelarDocumento" appendTo="@(body)">
+    <pe:blockUI target="cancelarDocumento" widgetVar="blockUIWidgetCancelarDoc">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="cancelarDocumento" message="¿Está seguro de cancelar el documento de venta?" header="Confirmación" severity="alert" widgetVar="cancelarDocumento" appendTo="@(body)">
         <h:form >
-            <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('cancelarDocumento').hide()" value="SI" action="#{documentoVentaBean.cancelarDocumentoVenta()}" update="form:tabView:pnl :form:tabView:gridMontos :form:tabView:pnlCond :form:tabView:idTableDetalleDocVenta"/>
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetCancelarDoc').block();" oncomplete="PF('blockUIWidgetCancelarDoc').unblock();PF('cancelarDocumento').hide()"  action="#{documentoVentaBean.cancelarDocumentoVenta()}" update="form:tabView:pnl :form:tabView:gridMontos :form:tabView:pnlCond :form:tabView:idTableDetalleDocVenta"/>
             <p:commandButton value="NO" oncomplete="PF('cancelarDocumento').hide()"/>
         </h:form>
     </p:confirmDialog>
     
-    <p:confirmDialog id="cancelarContrato" message="¿Está seguro de cancelar la simulación del prepago?" header="Confirmación"
-                      severity="alert" widgetVar="cancelarContrato" appendTo="@(body)">
+    <pe:blockUI target="cancelarContrato" widgetVar="blockUIWidgetCancelarContrato">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="cancelarContrato" message="¿Está seguro de cancelar la simulación del prepago?" header="Confirmación" severity="alert" widgetVar="cancelarContrato" appendTo="@(body)">
         <h:form >
-            <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('cancelarContrato').hide()" value="SI" action="#{documentoVentaBean.cancelarContrato()}" update=":form:tabView:tableContrato :form:tabView:pnlContrato"/>
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetCancelarContrato').block();" oncomplete="PF('blockUIWidgetCancelarContrato').unblock();PF('cancelarContrato').hide()"  action="#{documentoVentaBean.cancelarContrato()}" update=":form:tabView:tableContrato :form:tabView:pnlContrato"/>
             <p:commandButton value="NO" oncomplete="PF('cancelarContrato').hide()"/>
         </h:form>
     </p:confirmDialog>
     
-    <p:confirmDialog id="anulaDocumento" message="¿Está seguro de anular el documento de venta?" header="Confirmación"
-                      severity="alert" widgetVar="anulaDocumento" appendTo="@(body)">
+     <pe:blockUI target="anulaDocumento" widgetVar="blockUIWidgetAnularDoc">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="anulaDocumento" message="¿Está seguro de anular el documento de venta?" header="Confirmación" severity="alert" widgetVar="anulaDocumento" appendTo="@(body)">
         <h:form >
-            <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('anulaDocumento').hide()" value="SI" action="#{documentoVentaBean.anularDocumento()}" update=":form:tabView:idTableListDoc"/>
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetAnularDoc').block();" oncomplete="PF('blockUIWidgetAnularDoc').unblock();PF('anulaDocumento').hide()"  action="#{documentoVentaBean.anularDocumento()}" update=":form:tabView:idTableListDoc"/>
             <p:commandButton value="NO" oncomplete="PF('anulaDocumento').hide()"/>
         </h:form>
     </p:confirmDialog>
     
-    
-    
-	
 
 </ui:composition>

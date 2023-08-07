@@ -1280,6 +1280,11 @@ public class DocumentoVentaBean extends BaseBean {
 				if(ruc.length()<11) {
 					addErrorMessage("Ingresar un RUC válido.");
 				}
+				
+				String primerosNumeros = ruc.charAt(0) + ruc.charAt(1) + "";
+				if(!primerosNumeros.equals("10") || !primerosNumeros.equals("15") || !primerosNumeros.equals("17") || !primerosNumeros.equals("20") ) {
+					addErrorMessage("");
+				}
 			}
 		}
 		

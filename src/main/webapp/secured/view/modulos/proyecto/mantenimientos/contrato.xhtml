@@ -388,26 +388,39 @@
 		</h:form>
 	</p:dialog>
 	
+	<pe:blockUI target="anulaContra" widgetVar="blockUIWidgetAnularContrato">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
 	<p:confirmDialog id="anulaContra" message="¿Está seguro de anular el cotrato?" header="Confirmación"
                       severity="alert" widgetVar="anulaContra" appendTo="@(body)">
         <h:form >
-            <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('anulaContra').hide()" value="SI" action="#{contratoBean.anularContrato}" update=":form:tabView:idTableContrato"/>
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetAnularContrato').block();" oncomplete="PF('blockUIWidgetAnularContrato').unblock();PF('anulaContra').hide()"  action="#{contratoBean.anularContrato}" update=":form:tabView:idTableContrato"/>
             <p:commandButton value="NO" oncomplete="PF('anulaContra').hide()"/>
         </h:form>
     </p:confirmDialog>
     
-   
-    
+    <pe:blockUI target="saveContra" widgetVar="blockUIWidgetSaveContrato">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
     <p:confirmDialog id="saveContra" message="¿Está seguro de guardar el cotrato?" header="Confirmación"
                       severity="alert" widgetVar="saveContra" appendTo="@(body)">
         <h:form >
-            <p:commandButton onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('saveContra').hide()" value="SI" actionListener="#{contratoBean.saveContrato()}" update=":form:tabView:gridNomLote :form:tabView:grid :form:tabView:idTableContrato" />
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetSaveContrato').block();" oncomplete="PF('blockUIWidgetSaveContrato').unblock();PF('saveContra').hide()"  actionListener="#{contratoBean.saveContrato()}" update=":form:tabView:gridNomLote :form:tabView:grid :form:tabView:idTableContrato" />
             <p:commandButton value="NO" oncomplete="PF('saveContra').hide()"/>
         </h:form>
     </p:confirmDialog>
     
-    <p:confirmDialog widgetVar="deleteObsDialog" showEffect="fade" width="300" message="¿Deseas eliminar la observación del contrato?" header="Confirmación" severity="warn" appendTo="@(body)">
-        <p:commandButton value="Si" icon="pi pi-check" process="@this" update=":formAñadirObservacionDialog:idObsContrato" oncomplete="PF('deleteObsDialog').hide()" actionListener="#{contratoBean.deleteObs()}" />
+     <pe:blockUI target="idDeleteObsDialog" widgetVar="blockUIWidgetDeleteObs">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="idDeleteObsDialog" widgetVar="deleteObsDialog" showEffect="fade" width="300" message="¿Deseas eliminar la observación del contrato?" header="Confirmación" severity="warn" appendTo="@(body)">
+        <p:commandButton value="Si" onstart="PF('blockUIWidgetDeleteObs').block();" oncomplete="PF('blockUIWidgetDeleteObs').unblock();PF('deleteObsDialog').hide()" icon="pi pi-check" process="@this" update=":formAñadirObservacionDialog:idObsContrato" actionListener="#{contratoBean.deleteObs()}" />
         <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('deleteObsDialog').hide()" />
     </p:confirmDialog>
 	

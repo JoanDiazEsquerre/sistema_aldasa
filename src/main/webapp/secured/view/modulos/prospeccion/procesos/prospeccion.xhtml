@@ -500,18 +500,33 @@
 		</h:form>
 	</p:dialog>
 	
-	<p:confirmDialog widgetVar="deleteProductDialog" showEffect="fade" width="300" message="¿Deseas eliminar la acción?" header="Confirmación" severity="warn" appendTo="@(body)">
-        <p:commandButton value="Si" icon="pi pi-check" process="@this" update=":formEvents:tabOpciones:idTableDet :form:tabView:idTableProy" oncomplete="PF('deleteProductDialog').hide()" actionListener="#{prospeccionBean.deleteDetailAction}" />
+	<pe:blockUI target="idDeleteProductDialog" widgetVar="blockUIWidgetDeleteProduct">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+	<p:confirmDialog id="idDeleteProductDialog" widgetVar="deleteProductDialog" showEffect="fade" width="300" message="¿Deseas eliminar la acción?" header="Confirmación" severity="warn" appendTo="@(body)">
+        <p:commandButton value="Si" onstart="PF('blockUIWidgetDeleteProduct').block();" oncomplete="PF('blockUIWidgetDeleteProduct').unblock();PF('deleteProductDialog').hide()" icon="pi pi-check" process="@this" update=":formEvents:tabOpciones:idTableDet :form:tabView:idTableProy" actionListener="#{prospeccionBean.deleteDetailAction}" />
         <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('deleteProductDialog').hide()" />
     </p:confirmDialog>
     
-    <p:confirmDialog widgetVar="deleteProductDialogAg" showEffect="fade" width="300" message="¿Deseas eliminar la agenda?" header="Confirmación" severity="warn" appendTo="@(body)">
-        <p:commandButton value="Si" icon="pi pi-check" process="@this" update=":formEvents:tabOpciones:idTableDetAg :form:tabView:idTableProy" oncomplete="PF('deleteProductDialogAg').hide()" actionListener="#{prospeccionBean.deleteDetailActionAgenda}" />
+    <pe:blockUI target="idDeleteProductDialogAg" widgetVar="blockUIWidgetDeleteProductAg">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="idDeleteProductDialogAg" widgetVar="deleteProductDialogAg" showEffect="fade" width="300" message="¿Deseas eliminar la agenda?" header="Confirmación" severity="warn" appendTo="@(body)">
+        <p:commandButton value="Si" onstart="PF('blockUIWidgetDeleteProductAg').block();" oncomplete="PF('blockUIWidgetDeleteProductAg').unblock();PF('deleteProductDialogAg').hide()" icon="pi pi-check" process="@this" update=":formEvents:tabOpciones:idTableDetAg :form:tabView:idTableProy" actionListener="#{prospeccionBean.deleteDetailActionAgenda}" />
         <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('deleteProductDialogAg').hide()" />
     </p:confirmDialog>
     
-    <p:confirmDialog widgetVar="deleteReqDialog" showEffect="fade" width="300" message="¿Deseas eliminar el requerimieto de separación?" header="Confirmación" severity="warn" appendTo="@(body)">
-        <p:commandButton value="Si" icon="pi pi-check" process="@this" update=":formEvents:tabOpciones:idTableReqsep :form:tabView:idTableProy" oncomplete="PF('deleteReqDialog').hide()" actionListener="#{prospeccionBean.deleteRequerimieto}" />
+    <pe:blockUI target="idDeleteReqDialog" widgetVar="blockUIWidgetDeleteReq">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="idDeleteReqDialog" widgetVar="deleteReqDialog" showEffect="fade" width="300" message="¿Deseas eliminar el requerimieto de separación?" header="Confirmación" severity="warn" appendTo="@(body)">
+        <p:commandButton value="Si" onstart="PF('blockUIWidgetDeleteReq').block();" oncomplete="PF('blockUIWidgetDeleteReq').unblock();PF('deleteReqDialog').hide()" icon="pi pi-check" process="@this" update=":formEvents:tabOpciones:idTableReqsep :form:tabView:idTableProy" actionListener="#{prospeccionBean.deleteRequerimieto}" />
         <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('deleteReqDialog').hide()" />
     </p:confirmDialog>
 	
