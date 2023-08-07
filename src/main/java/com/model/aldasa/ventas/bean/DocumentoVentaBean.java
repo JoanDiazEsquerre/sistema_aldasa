@@ -411,6 +411,7 @@ public class DocumentoVentaBean extends BaseBean {
 		doc.setNombreComercial(documentoVentaSelected.getNombreComercial());
 		doc.setDireccion(documentoVentaSelected.getDireccion());
 		doc.setFechaEmision(fechaEmisionNotaVenta);
+		doc.setFechaVencimiento(fechaEmisionNotaVenta);
 		doc.setTipoMoneda(documentoVentaSelected.getTipoMoneda());
 		doc.setObservacion("");
 		doc.setTipoPago(documentoVentaSelected.getTipoPago());
@@ -1279,11 +1280,13 @@ public class DocumentoVentaBean extends BaseBean {
 			if(tipoDocumentoSelected.getAbreviatura().equals("F")) {
 				if(ruc.length()<11) {
 					addErrorMessage("Ingresar un RUC válido.");
+					return;
 				}
 				
 				String primerosNumeros = ruc.charAt(0) + ruc.charAt(1) + "";
 				if(!primerosNumeros.equals("10") || !primerosNumeros.equals("15") || !primerosNumeros.equals("17") || !primerosNumeros.equals("20") ) {
-					addErrorMessage("");
+					addErrorMessage("Ruc incorrecto, debe iniciar con 10, 15, 17 o 20");
+					return;
 				}
 			}
 		}

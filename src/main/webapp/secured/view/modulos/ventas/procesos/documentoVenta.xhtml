@@ -824,8 +824,6 @@
 				</h:panelGrid>
 			</h:panelGrid>
 			
-			
-			
 			<h:panelGrid columns="2" styleClass="companyHeaderGrid">
 	
 				<h:outputText value="Ruc:" />
@@ -925,8 +923,61 @@
 			
 			<h:panelGrid columns="2" >
 				<p:commandButton value="Descargar"   icon="pi pi-file-pdf" action="#{documentoVentaBean.pdfDocumentoElectronico()}" ajax="false" />
-				<p:commandButton value="Enviar a SUNAT" rendered="#{documentoVentaBean.documentoVentaSelected.envioSunat eq false}" update=":form:tabView:idTableListDoc" icon="pi pi-send" action="#{documentoVentaBean.enviarDocumentoSunat}" ajax="false" /> 
-			</h:panelGrid>
+				<p:commandButton value="Enviar a SUNAT" onstart="PF('blockUIWidgetEnvioSunat').block();" oncomplete="PF('blockUIWidgetEnvioSunat').unblock();" rendered="#{documentoVentaBean.documentoVentaSelected.envioSunat eq false}" update=":form:tabView:idTableListDoc formDocumentoVentaDialog" icon="pi pi-send" action="#{documentoVentaBean.enviarDocumentoSunat}" /> 
+			</h:panelGrid>  
+		
+			<p:panel id="pnl" header="Datos Sunat" toggleable="true" toggleSpeed="500" widgetVar="panelDatos" style="width:80%" rendered="#{documentoVentaBean.documentoVentaSelected.envioSunat eq true}">
+				<h:panelGrid columns="2">
+					<h:outputText value="Envio aceptado por sunat:" style="font-weight: bold;"/>
+					<h:outputText value="#{documentoVentaBean.documentoVentaSelected.envioAceptadaPorSunat}" />
+					
+					<h:outputText value="Envio sunat descripcion:" style="font-weight: bold;"/>
+					<h:outputText value="#{documentoVentaBean.documentoVentaSelected.envioSunatDescription}" />
+					
+					<h:outputText value="Envio sunat note:" style="font-weight: bold;"/>
+					<h:outputText value="#{documentoVentaBean.documentoVentaSelected.envioSunatNote}" />
+					
+					<h:outputText value="Envio sunat soap error:" style="font-weight: bold;"/>
+					<h:outputText value="#{documentoVentaBean.documentoVentaSelected.envioSunatSoapError}" />
+					
+					<h:outputText value="Envio enlace del pdf:" style="font-weight: bold;"/>
+					<h:outputText value="#{documentoVentaBean.documentoVentaSelected.envioEnlaceDelPdf}" />
+					
+					<h:outputText value="Envio enlace del xml:" style="font-weight: bold;"/>
+					<h:outputText value="#{documentoVentaBean.documentoVentaSelected.envioEnlaceDelXml}" />
+					
+					<h:outputText value="Envio enlace del cdr:" style="font-weight: bold;"/>
+					<h:outputText value="#{documentoVentaBean.documentoVentaSelected.envioEnlaceDelCdr}" />
+					
+					<h:outputText value="Envio cadena codigo qr:" style="font-weight: bold;"/>
+					<h:outputText value="#{documentoVentaBean.documentoVentaSelected.envioCadenaCodigoQr}" />
+					
+					<h:outputText value="Envio cadena codigo hash:" style="font-weight: bold;"/>
+					<h:outputText value="#{documentoVentaBean.documentoVentaSelected.envioCodigoHash}" />
+					
+					<h:outputText value="Anulacion sunat ticket numero:" style="font-weight: bold;"/>
+					<h:outputText value="#{documentoVentaBean.documentoVentaSelected.anulacionSunatTicketNumero}" />
+					
+					<h:outputText value="Annulacion aceptado por sunat:" style="font-weight: bold;"/>
+					<h:outputText value="#{documentoVentaBean.documentoVentaSelected.anulacionAceptadaPorSunat}" />
+					
+					<h:outputText value="Anulacion sunat descripcion:" style="font-weight: bold;"/>
+					<h:outputText value="#{documentoVentaBean.documentoVentaSelected.anulacionSunatDescription}" />
+					
+					<h:outputText value="Anulacion sunat note:" style="font-weight: bold;"/>
+					<h:outputText value="#{documentoVentaBean.documentoVentaSelected.anulacionSunatNote}" />
+					
+					<h:outputText value="Anulacion sunat response code:" style="font-weight: bold;"/>
+					<h:outputText value="#{documentoVentaBean.documentoVentaSelected.anulacionSunatResponsecode}" />
+					
+					<h:outputText value="Anulacion sunat soap error:" style="font-weight: bold;"/>
+					<h:outputText value="#{documentoVentaBean.documentoVentaSelected.anulacionSunatSoapError}" />
+					
+					<h:outputText value="Envio sunat responde code:" style="font-weight: bold;"/>
+					<h:outputText value="#{documentoVentaBean.documentoVentaSelected.envioSunatResponseCode}" />
+			
+				</h:panelGrid>
+			</p:panel>
 			
 		</h:form>
 	</p:dialog>
@@ -1126,7 +1177,7 @@
     </pe:blockUI>
 	<p:confirmDialog id="saveDocumento" message="¿Está seguro de guardar el documento de venta?" header="Confirmación" severity="alert" widgetVar="saveDocumento" appendTo="@(body)">
         <h:form >
-            <p:commandButton value="SI" onstart="PF('blockUIWidgetDocumento').block();" oncomplete="PF('blockUIWidgetDocumento').unblock();PF('saveDocumento').hide()"  action="#{documentoVentaBean.saveDocumentoVenta()}" update=":form:tabView:idTableListDoc :form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante"/>
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetDocumento').block();" oncomplete="PF('blockUIWidgetDocumento').unblock();PF('saveDocumento').hide()"  action="#{documentoVentaBean.saveDocumentoVenta()}" update=":form:tabView:idTableListDoc :form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante :form:tabView:pnlCond"/>
             <p:commandButton value="NO" oncomplete="PF('saveDocumento').hide()"/>
         </h:form>
     </p:confirmDialog>
@@ -1166,6 +1217,14 @@
             <p:commandButton value="NO" oncomplete="PF('anulaDocumento').hide()"/>
         </h:form>
     </p:confirmDialog>
+    
+    
+    
+     <pe:blockUI target="dialogDocumentoVenta" widgetVar="blockUIWidgetEnvioSunat">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
     
 
 </ui:composition>
