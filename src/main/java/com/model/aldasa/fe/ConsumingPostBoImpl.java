@@ -53,13 +53,13 @@ public class ConsumingPostBoImpl {
             String TOKEN = documentoVenta.getSucursal().getEmpresa().getTokenFe();
 
             Integer tipoComprobante = 1;
-            if (documentoVenta.getTipoDocumento().getAbreviatura() == "F") {
+            if (documentoVenta.getTipoDocumento().getAbreviatura().equals("F")) {
                 tipoComprobante = 1;
-            } else if (documentoVenta.getTipoDocumento().getAbreviatura() == "B") {
+            } else if (documentoVenta.getTipoDocumento().getAbreviatura().equals("B")) {
                 tipoComprobante = 2;
-            } else if (documentoVenta.getTipoDocumento().getAbreviatura() == "C") {
+            } else if (documentoVenta.getTipoDocumento().getAbreviatura().equals("C")) {
                 tipoComprobante = 3;
-            } else if (documentoVenta.getTipoDocumento().getAbreviatura() == "D") {
+            } else if (documentoVenta.getTipoDocumento().getAbreviatura().equals("D")) {
                 tipoComprobante = 4;
             }
 
@@ -95,7 +95,7 @@ public class ConsumingPostBoImpl {
             0 = NO DOMICILIADO, SIN RUC (EXPORTACIÓN)
              */
             String moneda = "1";
-            if (documentoVenta.getTipoMoneda() == "S") {
+            if (documentoVenta.getTipoMoneda().equals("S")) {
                 moneda = "1";
             } else {
                 moneda = "2";
@@ -141,9 +141,9 @@ public class ConsumingPostBoImpl {
             objetoCabecera.put("detraccion", "false");
             objetoCabecera.put("observaciones", documentoVenta.getObservacion());
 
-            if (documentoVenta.getTipoDocumento().getAbreviatura() == "C") {
+            if (documentoVenta.getTipoDocumento().getAbreviatura().equals("C")) {
 
-                if (documentoVenta.getDocumentoVentaRef().getTipoDocumento().getAbreviatura() == "F") {
+                if (documentoVenta.getDocumentoVentaRef().getTipoDocumento().getAbreviatura().equals("F")) {
                     objetoCabecera.put("documento_que_se_modifica_tipo", 1);
                 } else {
                     objetoCabecera.put("documento_que_se_modifica_tipo", 2);
@@ -153,8 +153,8 @@ public class ConsumingPostBoImpl {
                 objetoCabecera.put("documento_que_se_modifica_numero", Integer.parseInt(documentoVenta.getDocumentoVentaRef().getNumero()));
                 objetoCabecera.put("tipo_de_nota_de_credito", Integer.parseInt(documentoVenta.getMotivoNota().getCodigo()));
                 objetoCabecera.put("tipo_de_nota_de_debito", "");
-            } else if (documentoVenta.getTipoDocumento().getAbreviatura() == "D") {
-                if (documentoVenta.getDocumentoVentaRef().getTipoDocumento().getAbreviatura() == "F") {
+            } else if (documentoVenta.getTipoDocumento().getAbreviatura().equals("D")) {
+                if (documentoVenta.getDocumentoVentaRef().getTipoDocumento().getAbreviatura().equals("F")) {
                     objetoCabecera.put("documento_que_se_modifica_tipo", 1);
                 } else {
                     objetoCabecera.put("documento_que_se_modifica_tipo", 2);
@@ -193,7 +193,7 @@ public class ConsumingPostBoImpl {
                 BigDecimal valorUnitario = ddv.getImporteVenta();
                 BigDecimal precioUnitario = ddv.getImporteVenta();
 
-                detalle_linea_1.put("unidad_de_medida", "ZZ"); //ZZ servicio  NIU producto
+                detalle_linea_1.put("unidad_de_medida", "NIU"); //ZZ servicio  NIU producto
                 detalle_linea_1.put("codigo", ddv.getProducto().getId());
                 detalle_linea_1.put("descripcion", ddv.getDescripcion());
                 detalle_linea_1.put("cantidad", 1);
@@ -296,13 +296,13 @@ public class ConsumingPostBoImpl {
             String TOKEN = documentoVenta.getSucursal().getEmpresa().getTokenFe();
 
             Integer tipoComprobante = 1;
-            if (documentoVenta.getTipoDocumento().getAbreviatura() == "F") {
+            if (documentoVenta.getTipoDocumento().getAbreviatura().equals("F")) {
                 tipoComprobante = 1;
-            } else if (documentoVenta.getTipoDocumento().getAbreviatura() == "B") {
+            } else if (documentoVenta.getTipoDocumento().getAbreviatura().equals("B")) {
                 tipoComprobante = 2;
-            } else if (documentoVenta.getTipoDocumento().getAbreviatura() == "C") {
+            } else if (documentoVenta.getTipoDocumento().getAbreviatura().equals("C")) {
                 tipoComprobante = 3;
-            } else if (documentoVenta.getTipoDocumento().getAbreviatura() == "D") {
+            } else if (documentoVenta.getTipoDocumento().getAbreviatura().equals("D")) {
                 tipoComprobante = 4;
             }
 
@@ -346,13 +346,13 @@ public class ConsumingPostBoImpl {
             String TOKEN = documentoVenta.getSucursal().getEmpresa().getTokenFe();
 
             Integer tipoComprobante = 1;
-            if (documentoVenta.getTipoDocumento().getAbreviatura() == "F") {
+            if (documentoVenta.getTipoDocumento().getAbreviatura().equals("F")) {
                 tipoComprobante = 1;
-            } else if (documentoVenta.getTipoDocumento().getAbreviatura() == "B") {
+            } else if (documentoVenta.getTipoDocumento().getAbreviatura().equals("B")) {
                 tipoComprobante = 2;
-            } else if (documentoVenta.getTipoDocumento().getAbreviatura() == "C") {
+            } else if (documentoVenta.getTipoDocumento().getAbreviatura().equals("C")) {
                 tipoComprobante = 3;
-            } else if (documentoVenta.getTipoDocumento().getAbreviatura() == "D") {
+            } else if (documentoVenta.getTipoDocumento().getAbreviatura().equals("D")) {
                 tipoComprobante = 4;
             }
 
@@ -398,13 +398,13 @@ public class ConsumingPostBoImpl {
             String TOKEN = documentoVenta.getSucursal().getEmpresa().getTokenFe();
 
             Integer tipoComprobante = 1;
-            if (documentoVenta.getTipoDocumento().getAbreviatura() == "F") {
+            if (documentoVenta.getTipoDocumento().getAbreviatura().equals("F")) {
                 tipoComprobante = 1;
-            } else if (documentoVenta.getTipoDocumento().getAbreviatura() == "B") {
+            } else if (documentoVenta.getTipoDocumento().getAbreviatura().equals("B")) {
                 tipoComprobante = 2;
-            } else if (documentoVenta.getTipoDocumento().getAbreviatura() == "C") {
+            } else if (documentoVenta.getTipoDocumento().getAbreviatura().equals("C")) {
                 tipoComprobante = 3;
-            } else if (documentoVenta.getTipoDocumento().getAbreviatura() == "D") {
+            } else if (documentoVenta.getTipoDocumento().getAbreviatura().equals("D")) {
                 tipoComprobante = 4;
             }
 

@@ -24,6 +24,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import org.json.simple.JSONObject;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.model.FilterMeta;
@@ -50,6 +51,7 @@ import com.model.aldasa.entity.SerieDocumento;
 import com.model.aldasa.entity.TipoDocumento;
 import com.model.aldasa.entity.TipoOperacion;
 import com.model.aldasa.entity.Voucher;
+import com.model.aldasa.fe.ConsumingPostBoImpl;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.reporteBo.ReportGenBo;
 import com.model.aldasa.service.ClienteService;
@@ -124,7 +126,11 @@ public class DocumentoVentaBean extends BaseBean {
 	@ManagedProperty(value = "#{identificadorService}")
 	private IdentificadorService identificadorService;
 	
+	@ManagedProperty(value = "#{consumingPostBo}")
+	private ConsumingPostBoImpl consumingPostBo;
+	
 	private boolean estado = true;
+	private Boolean estadoSunat;
 
 	private LazyDataModel<DocumentoVenta> lstDocumentoVentaLazy;
 	private LazyDataModel<Cuota> lstCuotaLazy;
@@ -146,6 +152,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private List<Cuota> lstCuotaPendientesTemporal = new ArrayList<>();
 	private List<TipoDocumento> lstTipoDocumento = new ArrayList<>();
 	private List<TipoDocumento> lstTipoDocumentoNota = new ArrayList<>();
+	private List<TipoDocumento> lstTipoDocumentoEnvioSunat = new ArrayList<>();
 	private List<MotivoNota> lstMotivoNota = new ArrayList<>();
 	private List<TipoOperacion> lstTipoOperacion = new ArrayList<>();
 	private List<Identificador> lstIdentificador = new ArrayList<>();
@@ -162,7 +169,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private Cliente clienteSelected;
 	private Contrato contratoPendienteSelected;
 	private Cuota cuotaPendienteContratoSelected;
-	private TipoDocumento tipoDocumentoSelected;
+	private TipoDocumento tipoDocumentoSelected, tipoDocumentoEnvioSunat;
 	private TipoDocumento tipoDocumentoNotaSelected;
 	private MotivoNota motivoNotaSelected;
 	private TipoOperacion tipoOperacionSelected;
@@ -182,7 +189,7 @@ public class DocumentoVentaBean extends BaseBean {
 	
 	private Date fechaEmision = new Date() ;
 	private Date fechaEmisionNotaVenta = new Date() ;
-	private Date fechaImag1, fechaImag2, fechaImag3, fechaImag4, fechaImag5, fechaImag6, fechaImag7, fechaImag8, fechaImag9, fechaImag10 ;
+	private Date fechaImag1, fechaImag2, fechaImag3, fechaImag4, fechaImag5, fechaImag6, fechaImag7, fechaImag8, fechaImag9, fechaImag10, fechaEnvioSunat ;
 	private BigDecimal montoImag1, montoImag2, montoImag3, montoImag4, montoImag5, montoImag6, montoImag7, montoImag8, montoImag9, montoImag10;
 	private String nroOperImag1, nroOperImag2, nroOperImag3, nroOperImag4, nroOperImag5, nroOperImag6, nroOperImag7, nroOperImag8, nroOperImag9, nroOperImag10;
 	private String fechaTextoVista, montoLetra;
@@ -259,6 +266,14 @@ public class DocumentoVentaBean extends BaseBean {
 		lstTipoDocumentoNota = tipoDocumentoService.findByEstadoAndCodigoIn(true, lstCodigoCD);
 		tipoDocumentoNotaSelected = lstTipoDocumentoNota.get(0);
 		
+		List<String> lstCodigoSunat=new ArrayList<>();
+		lstCodigoSunat.add("01");
+		lstCodigoSunat.add("03");
+		lstCodigoSunat.add("07");
+		lstCodigoSunat.add("08");
+		lstTipoDocumentoEnvioSunat = tipoDocumentoService.findByEstadoAndCodigoIn(true, lstCodigoSunat);
+		tipoDocumentoEnvioSunat = lstTipoDocumentoEnvioSunat.get(0);
+		
 		iniciarLazy();
 		iniciarDatosDocVenta();	
 		listarSerie();
@@ -275,7 +290,94 @@ public class DocumentoVentaBean extends BaseBean {
 		lstTipoOperacion = tipoOperacionService.findByEstado(true);
 		lstIdentificador = identificadorService.findByEstado(true); 
 		numMuestraImagen=1;
-	} 
+		fechaEnvioSunat= new Date();
+	}
+	
+	public void enviarDocumentoSunatMasivo() {
+		if(fechaEnvioSunat ==  null) {
+			addErrorMessage("Seleccione una fecha.");
+			return;
+		}
+		
+		List<DocumentoVenta> lstDoc = documentoVentaService.findByEstadoAndSucursalAndFechaEmisionAndEnvioSunat(true, navegacionBean.getSucursalLogin(), fechaEnvioSunat, false);
+		if(!lstDoc.isEmpty()) {
+			for(DocumentoVenta d:lstDoc) {
+				List<DetalleDocumentoVenta> lstDetalle = detalleDocumentoVentaService.findByDocumentoVentaAndEstado(d, true);
+				consumingPostBo.apiConsume(d, lstDetalle);
+				
+				d.setEnvioSunat(true);
+				documentoVentaService.save(d);
+				
+			}
+			addInfoMessage("Se enviaron correctamente "+ lstDoc.size() + " documentos a SUNAT.");
+			
+		}else {
+			addErrorMessage("No se encontraron documentos pendientes de envio para el dia "+ sdf.format(fechaEnvioSunat));
+		}
+		
+	}
+	
+	public void enviarDocumentoSunat() {
+		//ENVIAMOS FACTURA A NUBEFACT
+        //JSONObject json_rspta = null;
+        JSONObject json_rspta = consumingPostBo.apiConsume(documentoVentaSelected, lstDetalleDocumentoVentaSelected);
+        System.out.println("Error => " + json_rspta);
+        if (json_rspta != null) {
+            if (json_rspta.get("errors") != null) {
+                System.out.println("Error => " + json_rspta.get("errors"));
+                addErrorMessage("Error al Enviar el comprobante electrónico: " + json_rspta.get("errors"));
+            } else {
+            	documentoVentaSelected.setEnvioSunat(true);
+                /*JSONParser parsearRsptaDetalleOK = new JSONParser();
+                JSONObject json_rspta_ok = (JSONObject) parsearRsptaDetalleOK.parse(json_rspta.get("invoice").toString());*/
+
+                if (json_rspta.get("aceptada_por_sunat") != null) {
+                    documentoVentaSelected.setEnvioAceptadaPorSunat(json_rspta.get("aceptada_por_sunat").toString());
+                }
+
+                if (json_rspta.get("sunat_description") != null) {
+                	documentoVentaSelected.setEnvioSunatDescription(json_rspta.get("sunat_description").toString());
+                }
+
+                if (json_rspta.get("sunat_note") != null) {
+                	documentoVentaSelected.setEnvioSunatNote(json_rspta.get("sunat_note").toString());
+                }
+
+                if (json_rspta.get("sunat_responsecode") != null) {
+                	documentoVentaSelected.setEnvioSunatResponseCode(json_rspta.get("sunat_responsecode").toString());
+                }
+
+                if (json_rspta.get("sunat_soap_error") != null) {
+                	documentoVentaSelected.setEnvioSunatSoapError(json_rspta.get("sunat_soap_error").toString());
+                }
+
+                if (json_rspta.get("enlace_del_pdf") != null) {
+                	documentoVentaSelected.setEnvioEnlaceDelPdf(json_rspta.get("enlace_del_pdf").toString());
+                }
+
+                if (json_rspta.get("enlace_del_xml") != null) {
+                	documentoVentaSelected.setEnvioEnlaceDelXml(json_rspta.get("enlace_del_xml").toString());
+                }
+
+                if (json_rspta.get("enlace_del_cdr") != null) {
+                	documentoVentaSelected.setEnvioEnlaceDelCdr(json_rspta.get("enlace_del_cdr").toString());
+                }
+
+                if (json_rspta.get("cadena_para_codigo_qr") != null) {
+                	documentoVentaSelected.setEnvioCadenaCodigoQr(json_rspta.get("cadena_para_codigo_qr").toString());
+                }
+
+                if (json_rspta.get("codigo_hash") != null) {
+                	documentoVentaSelected.setEnvioCodigoHash(json_rspta.get("codigo_hash").toString());
+                }
+
+                documentoVentaService.save(documentoVentaSelected);
+                addInfoMessage("Documento Electrónico enviado a Sunat Correctamente...");
+            }
+        }
+		
+	}
+	
 	
 	public void menorarImagen() {
 		if(numMuestraImagen !=1) {
@@ -828,8 +930,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 	}
 	
-	
-	public void anularDocumento() {
+	private void anulacionFinalDeDocumento() {
 		if(documentoVentaSelected.getDocumentoVentaRef()!=null) {
 			if(documentoVentaSelected.getDocumentoVentaRef().getTipoDocumento().getAbreviatura().equals("C")) {
 				documentoVentaSelected.getDocumentoVentaRef().setNotacredito(false);
@@ -842,11 +943,13 @@ public class DocumentoVentaBean extends BaseBean {
 			}
 			documentoVentaService.save(documentoVentaSelected.getDocumentoVentaRef());
 		}
+		
 		documentoVentaSelected.setEstado(false);
 		documentoVentaService.save(documentoVentaSelected);
 		lstDetalleDocumentoVentaSelected = detalleDocumentoVentaService.findByDocumentoVentaAndEstado(documentoVentaSelected, true);
 	
 		for(DetalleDocumentoVenta d:lstDetalleDocumentoVentaSelected) {
+			// estte recorrido	AQUI HACERLO CON CONSULTA NATIVA
 			d.setEstado(false); 
 			detalleDocumentoVentaService.save(d);
 			
@@ -858,10 +961,56 @@ public class DocumentoVentaBean extends BaseBean {
 				d.getCuota().setPagoTotal("N");
 				cuotaService.save(d.getCuota());
 			}
-			
 		}
+		addInfoMessage("Documento de venta anulado.");	
+	}
+	
+	
+	public void anularDocumento() {
+		if(!documentoVentaSelected.isEnvioSunat()) {
+			anulacionFinalDeDocumento();
+			return;
+		}
+		//ENVIAMO LA BAJA A NUBEFACT
+        JSONObject json_rspta = consumingPostBo.apiConsumeDelete(documentoVentaSelected);
+
+        if (json_rspta != null) {
+            if (json_rspta.get("errors") != null) {
+                addErrorMessage("Error al Enviar Anulación de comprobante electrónico: " + json_rspta.get("errors").toString());
+            } else {
+
+                if (json_rspta.get("sunat_ticket_numero") != null) {
+                    documentoVentaSelected.setAnulacionSunatTicketNumero(json_rspta.get("sunat_ticket_numero").toString());
+                    addInfoMessage("Se envió la baja a Sunat correctamente Nro de Ticket:" + json_rspta.get("sunat_ticket_numero").toString());
+                }
+
+                if (json_rspta.get("aceptada_por_sunat") != null) {
+                    documentoVentaSelected.setAnulacionAceptadaPorSunat(json_rspta.get("aceptada_por_sunat").toString());
+                }
+
+                if (json_rspta.get("sunat_description") != null) {
+                    documentoVentaSelected.setAnulacionSunatDescription(json_rspta.get("sunat_description").toString());
+                }
+
+                if (json_rspta.get("sunat_note") != null) {
+                    documentoVentaSelected.setAnulacionSunatNote(json_rspta.get("sunat_note").toString());
+                }
+
+                if (json_rspta.get("sunat_responsecode") != null) {
+                    documentoVentaSelected.setAnulacionSunatResponsecode(json_rspta.get("sunat_responsecode").toString());
+                }
+
+                if (json_rspta.get("sunat_soap_error") != null) {
+                    documentoVentaSelected.setAnulacionSunatSoapError(json_rspta.get("sunat_soap_error").toString());
+                }
+
+                anulacionFinalDeDocumento();
+        		
+        			
+            }
+        }
 		
-		addInfoMessage("Documento de venta anulado.");		
+		
 		
 		
 	}
@@ -1228,6 +1377,7 @@ public class DocumentoVentaBean extends BaseBean {
 		documentoVenta.setNombreComercial(clienteSelected.getNombreComercial());
 		documentoVenta.setDireccion(direccion);
 		documentoVenta.setFechaEmision(fechaEmision);
+		documentoVenta.setFechaVencimiento(fechaEmision);
 		documentoVenta.setTipoMoneda(moneda);
 		documentoVenta.setObservacion(observacion);
 		documentoVenta.setTipoPago(tipoPago);
@@ -1247,53 +1397,8 @@ public class DocumentoVentaBean extends BaseBean {
 		documentoVenta.setOtrosCargos(otrosCargos);
 		documentoVenta.setOtrosTributos(otrosTributos);
 		
-		DocumentoVenta documento = documentoVentaService.save(documentoVenta); 
+		DocumentoVenta documento = documentoVentaService.save(documentoVenta, lstDetalleDocumentoVenta, serieDocumentoSelected); 
 		if(documento != null) {
-			SerieDocumento serie = serieDocumentoService.findById(serieDocumentoSelected.getId()).get();
-			String numeroActual = String.format("%0" + serie.getTamanioNumero() + "d", Integer.valueOf(serie.getNumero()));
-			
-			Integer aumento = Integer.parseInt(serie.getNumero())+1;
-			  			
-			serie.setNumero(aumento+"");
-			serieDocumentoService.save(serie);
-			
-			documento.setNumero(numeroActual); 
-			documentoVentaService.save(documento);
-			
-			for(DetalleDocumentoVenta d:lstDetalleDocumentoVenta) {
-				d.setDocumentoVenta(documento);
-				d.setEstado(true);
-				detalleDocumentoVentaService.save(d);
-				
-				if(d.getCuota()!=null) {
-					if(!d.getProducto().getTipoProducto().equals(TipoProductoType.INTERES.getTipo())) {
-						BigDecimal cuota = d.getCuota().getCuotaTotal().subtract(d.getCuota().getAdelanto());
-						BigDecimal cuota2 = d.getImporteVenta().add(d.getCuota().getInteres());
-						if(cuota.compareTo(cuota2)==0 ) {
-							d.getCuota().setPagoTotal("S");
-						}else {
-							d.getCuota().setAdelanto(d.getImporteVenta());
-						}
-						
-						cuotaService.save(d.getCuota()); 
-					}
-					if(d.getCuota().getNroCuota()==0 && d.getCuota().getContrato().getTipoPago().equals("Contado") && d.getCuota().getPagoTotal().equals("S")) {
-						d.getCuota().getContrato().setCancelacionTotal(true);							
-						contratoService.save(d.getCuota().getContrato());
-					}
-					
-				}
-				
-				if(d.getVoucher()!=null) {
-					d.getVoucher().setGeneraDocumento(true); 
-					voucherService.save(d.getVoucher());
-				}
-				if(d.getCuotaPrepago()!=null) {
-					d.getCuotaPrepago().setPagoTotal("S");
-					cuotaService.save(d.getCuotaPrepago());
-				}
-					
-			}  
 			
 			lstDetalleDocumentoVenta.clear();// claer es limpiar en ingles prueba
 			ruc = "";
@@ -1923,8 +2028,13 @@ public class DocumentoVentaBean extends BaseBean {
                
                 Page<DocumentoVenta> pageDocumentoVenta=null;
                
-                
-                pageDocumentoVenta= documentoVentaService.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLike(estado, navegacionBean.getSucursalLogin(), razonSocial, numero, ruc, pageable);
+                if(estadoSunat==null) {
+                    pageDocumentoVenta= documentoVentaService.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLike(estado, navegacionBean.getSucursalLogin(), razonSocial, numero, ruc, pageable);
+
+                }else {
+                    pageDocumentoVenta= documentoVentaService.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndEnvioSunat(estado, navegacionBean.getSucursalLogin(), razonSocial, numero, ruc,estadoSunat, pageable);
+
+                }
                 
                 setRowCount((int) pageDocumentoVenta.getTotalElements());
                 return datasource = pageDocumentoVenta.getContent();
@@ -2300,6 +2410,34 @@ public class DocumentoVentaBean extends BaseBean {
                 } else {
                 	TipoDocumento c = null;
                     for (TipoDocumento si : lstTipoDocumento) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((TipoDocumento) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorTipoDocumentoSunat() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	TipoDocumento c = null;
+                    for (TipoDocumento si : lstTipoDocumentoEnvioSunat) {
                         if (si.getId().toString().equals(value)) {
                             c = si;
                         }
@@ -3397,7 +3535,37 @@ public class DocumentoVentaBean extends BaseBean {
 	public void setNumMuestraImagen(Integer numMuestraImagen) {
 		this.numMuestraImagen = numMuestraImagen;
 	}
-	
+	public ConsumingPostBoImpl getConsumingPostBo() {
+		return consumingPostBo;
+	}
+	public void setConsumingPostBo(ConsumingPostBoImpl consumingPostBo) {
+		this.consumingPostBo = consumingPostBo;
+	}
+	public List<TipoDocumento> getLstTipoDocumentoEnvioSunat() {
+		return lstTipoDocumentoEnvioSunat;
+	}
+	public void setLstTipoDocumentoEnvioSunat(List<TipoDocumento> lstTipoDocumentoEnvioSunat) {
+		this.lstTipoDocumentoEnvioSunat = lstTipoDocumentoEnvioSunat;
+	}
+	public TipoDocumento getTipoDocumentoEnvioSunat() {
+		return tipoDocumentoEnvioSunat;
+	}
+	public void setTipoDocumentoEnvioSunat(TipoDocumento tipoDocumentoEnvioSunat) {
+		this.tipoDocumentoEnvioSunat = tipoDocumentoEnvioSunat;
+	}
+	public Date getFechaEnvioSunat() {
+		return fechaEnvioSunat;
+	}
+	public void setFechaEnvioSunat(Date fechaEnvioSunat) {
+		this.fechaEnvioSunat = fechaEnvioSunat;
+	}
+	public Boolean getEstadoSunat() {
+		return estadoSunat;
+	}
+	public void setEstadoSunat(Boolean estadoSunat) {
+		this.estadoSunat = estadoSunat;
+	}
+
 	
 
 }

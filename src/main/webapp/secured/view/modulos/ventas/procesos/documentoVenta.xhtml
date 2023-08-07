@@ -16,11 +16,17 @@
 					unselectable="false">
 					<f:selectItem itemLabel="Activos" itemValue="#{true}" />
 					<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
-					<p:ajax update=":form:tabView:idTableListDoc"
-						listener="#{documentoVentaBean.iniciarLazy()}" />
+					<p:ajax update=":form:tabView:idTableListDoc" listener="#{documentoVentaBean.iniciarLazy()}" />
+				</p:selectOneButton>
+				
+				<p:selectOneButton value="#{documentoVentaBean.estadoSunat}" unselectable="false" style="margin-left:40px">
+					<f:selectItem itemLabel="Todos" itemValue="#{null}" />
+					<f:selectItem itemLabel="Pendientes" itemValue="#{false}" />
+					<f:selectItem itemLabel="Enviados" itemValue="#{true}" />
+					<p:ajax update=":form:tabView:idTableListDoc" listener="#{documentoVentaBean.iniciarLazy()}" />
 				</p:selectOneButton>
 
-				<p:dataTable var="documento" id="idTableListDoc" value="#{documentoVentaBean.lstDocumentoVentaLazy}" rowIndexVar="row" paginator="true" rows="15" size="small" style="width:130%"
+				<p:dataTable var="documento" id="idTableListDoc" value="#{documentoVentaBean.lstDocumentoVentaLazy}" rowIndexVar="row" paginator="true" rows="15" size="small" 
 					emptyMessage="No se encontraron documentos de venta." paginatorPosition="bottom" rowKey="#{documento.id}" selection="#{documentoVentaBean.documentoVentaSelected}" selectionMode="single">
 
 					<f:facet name="header">
@@ -47,7 +53,7 @@
 						<h:outputText value="#{documento.serie}-#{documento.numero}" />
 					</p:column>
 
-					<p:column headerText="RUC/DNI" sortBy="#{documento.ruc}" filterBy="#{documento.ruc}" filterMatchMode="contains">
+					<p:column headerText="RUC/DNI" sortBy="#{documento.ruc}" style="text-align:center;" filterBy="#{documento.ruc}" filterMatchMode="contains">
 						<h:outputText value="#{documento.ruc}" />
 					</p:column>
 
@@ -55,47 +61,52 @@
 						<h:outputText value="#{documento.direccion}" />
 					</p:column>
 
-					<p:column headerText="Fecha Emision" sortBy="#{documento.fechaEmision}" filterMatchMode="contains">
+					<p:column headerText="Fecha Emision" sortBy="#{documento.fechaEmision}" style="text-align:center;" filterMatchMode="contains">
 						<h:outputText value="#{documento.fechaEmision}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Tipo Moneda" filterMatchMode="contains">
+					<p:column headerText="Tipo Moneda" filterMatchMode="contains" style="text-align:center;">
 						<h:outputText value="#{documento.tipoMoneda eq 'S'?'Soles':'Dólares'}" />
 					</p:column>
 
-					<p:column headerText="Tipo Pago" filterMatchMode="contains">
+					<p:column headerText="Tipo Pago" filterMatchMode="contains" style="text-align:center;">
 						<h:outputText value="#{documento.tipoPago}" />
 					</p:column>
 
-					<p:column headerText="SubTotal" filterMatchMode="contains">
+					<p:column headerText="SubTotal" filterMatchMode="contains" style="text-align:center;" rendered="false">
 						<h:outputText value="#{documento.subTotal}" > 
 							<f:convertNumber type="currency" currencySymbol=""/>
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="IGV" filterMatchMode="contains">
+					<p:column headerText="IGV" filterMatchMode="contains" style="text-align:center;" rendered="false">
 						<h:outputText value="#{documento.igv}" > 
 							<f:convertNumber type="currency" currencySymbol=""/>
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Total" filterMatchMode="contains">
+					<p:column headerText="Total" filterMatchMode="contains" style="text-align:center;">
 						<h:outputText value="#{documento.total}" > 
 							<f:convertNumber type="currency" currencySymbol=""/>
 						</h:outputText>
 					</p:column>
+					<p:column headerText="Enviado SUNAT" sortBy="#{documento.envioSunat}" filterMatchMode="contains" style="text-align:center;">
+						<h:outputText value="#{documento.envioSunat?'SI': 'NO'}" style="font-weight: bolder;color:#{documento.envioSunat?'red': 'black'}" />
+					</p:column>
 
-					<p:column headerText="Fecha Registro" filterMatchMode="contains">
+					<p:column headerText="Fecha Registro" filterMatchMode="contains" style="text-align:center;">
 						<h:outputText value="#{documento.fechaRegistro}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Usuario Registro"	sortBy="#{documento.usuarioRegistro.username}" filterMatchMode="contains">
+					<p:column headerText="Usuario Registro"	sortBy="#{documento.usuarioRegistro.username}" filterMatchMode="contains" style="text-align:center;">
 						<h:outputText value="#{documento.usuarioRegistro.username}" />
 					</p:column>
+					
+					
 
 				</p:dataTable>
 				
@@ -104,6 +115,22 @@
 		            <p:menuitem value="Ver Voucher" icon="pi pi-image" action="#{documentoVentaBean.verVoucher()}"  update=":dialogVoucherDocumento" />	
 		            <p:menuitem value="Generar Nota Crédito/Débito" action="#{documentoVentaBean.listarSerieNota()}" icon="pi pi-wallet" update="dialogNotaCreditoDebito" />
 		        </p:contextMenu>
+		        
+		        
+		        <p:panel header="Enviar a SUNAT" style="margin: 20px; width: 40%">
+			        <h:panelGrid columns="5">
+			        	<h:outputLabel value="Tipo Documento:" />
+			        	<p:selectOneMenu value="#{documentoVentaBean.tipoDocumentoEnvioSunat}" converter="#{documentoVentaBean.conversorTipoDocumentoSunat}" style="margin:5px; width:100px" >
+							<f:selectItems value="#{documentoVentaBean.lstTipoDocumentoEnvioSunat}" var="tipoDocumento" itemLabel="#{tipoDocumento.descripcion}" itemValue="#{tipoDocumento}"/>
+							<p:ajax listener="#{documentoVentaBean.listarSerie}" update="optionSerie, num, pnl"/>
+						</p:selectOneMenu>
+						
+						<h:outputLabel value="Fecha:" />
+						<p:datePicker value="#{documentoVentaBean.fechaEnvioSunat}" />
+						<p:commandButton value="Enviar" action="#{documentoVentaBean.enviarDocumentoSunatMasivo}" update=":form:tabView:idTableListDoc" />
+			        
+			        </h:panelGrid>
+			    </p:panel>
 		
 				
 			</p:tab>
@@ -896,8 +923,9 @@
 				</h:panelGrid>
 			</h:panelGrid>
 			
-			<h:panelGrid style="width:100%" columns="1" >
-				<p:commandButton value="Descargar"   icon="pi pi-file-pdf" action="#{documentoVentaBean.pdfDocumentoElectronico()}" ajax="false" /> 
+			<h:panelGrid columns="2" >
+				<p:commandButton value="Descargar"   icon="pi pi-file-pdf" action="#{documentoVentaBean.pdfDocumentoElectronico()}" ajax="false" />
+				<p:commandButton value="Enviar a SUNAT" rendered="#{documentoVentaBean.documentoVentaSelected.envioSunat eq false}" update=":form:tabView:idTableListDoc" icon="pi pi-send" action="#{documentoVentaBean.enviarDocumentoSunat}" ajax="false" /> 
 			</h:panelGrid>
 			
 		</h:form>

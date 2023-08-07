@@ -44,8 +44,13 @@ public class Cliente {
 	@JoinColumn(name="idusuarioregistro")
 	private Usuario idUsuarioRegistro;
 
+	@Column(name="email1fe")
 	private String email1Fe;
+	
+	@Column(name="email2fe")
 	private String email2Fe;
+	
+	@Column(name="email3fe")
 	private String email3Fe;
 
 
@@ -109,27 +114,21 @@ public class Cliente {
 	public void setPersonaNatural(boolean personaNatural) {
 		this.personaNatural = personaNatural;
 	}
-
 	public String getEmail1Fe() {
 		return email1Fe;
 	}
-
 	public void setEmail1Fe(String email1Fe) {
 		this.email1Fe = email1Fe;
 	}
-
 	public String getEmail2Fe() {
 		return email2Fe;
 	}
-
 	public void setEmail2Fe(String email2Fe) {
 		this.email2Fe = email2Fe;
 	}
-
 	public String getEmail3Fe() {
 		return email3Fe;
 	}
-
 	public void setEmail3Fe(String email3Fe) {
 		this.email3Fe = email3Fe;
 	}

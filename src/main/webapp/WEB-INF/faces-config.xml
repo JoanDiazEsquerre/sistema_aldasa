@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='UTF-8'?>
 <faces-config version="2.2"
 	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -776,6 +775,10 @@
 		<managed-property>
 			<property-name>identificadorService</property-name>
 			<value>#{identificadorService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>consumingPostBo</property-name>
+			<value>#{consumingPostBo}</value>
 		</managed-property>
 	</managed-bean>
 	

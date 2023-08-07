@@ -131,7 +131,56 @@ public class DocumentoVenta {
 	@Column(name="numeronotadebito")
 	private String numeroNotaDebito;
 	
+	@Column(name="enviosunat")
+	private boolean envioSunat;
 	
+	@Column(name="envioaceptadaporsunat")
+	private String envioAceptadaPorSunat;
+	
+	@Column(name="enviosunatdescription")
+	private String envioSunatDescription;
+	
+	@Column(name="enviosunatnote")
+	private String envioSunatNote;
+	
+	@Column(name="enviosunatsoaperror")
+	private String envioSunatSoapError;
+	
+	@Column(name="envioenlacedelpdf")
+	private String envioEnlaceDelPdf;
+	
+	@Column(name="envioenlacedelxml")
+	private String envioEnlaceDelXml;
+	
+	@Column(name="envioenlacedelcdr")
+	private String envioEnlaceDelCdr;
+	
+	@Column(name="enviocadenacodigoqr")
+	private String envioCadenaCodigoQr;
+	
+	@Column(name="enviocodigohash")
+	private String envioCodigoHash;
+	
+	@Column(name="anulacionsunatticketnumero")
+	private String anulacionSunatTicketNumero;
+	
+	@Column(name="anulacionaceptadaporsunat")
+	private String anulacionAceptadaPorSunat;
+	
+	@Column(name="anulacionsunatdescription")
+	private String anulacionSunatDescription;
+	
+	@Column(name="anulacionsunatnote")
+	private String anulacionSunatNote;
+	
+	@Column(name="anulacionsunatresponsecode")
+	private String anulacionSunatResponsecode;
+	
+	@Column(name="anulacionsunatsoaperror")
+	private String anulacionSunatSoapError;
+	
+	@Column(name="enviosunatresponsecode")
+	private String envioSunatResponseCode;
 	
 	
 
@@ -361,16 +410,127 @@ public class DocumentoVenta {
 	public Date getFechaVencimiento() {
 		return fechaVencimiento;
 	}
-
 	public void setFechaVencimiento(Date fechaVencimiento) {
 		this.fechaVencimiento = fechaVencimiento;
 	}
-
 	public BigDecimal getTasaCambio() {
 		return tasaCambio;
 	}
-
 	public void setTasaCambio(BigDecimal tasaCambio) {
 		this.tasaCambio = tasaCambio;
+	}
+	public Boolean getNotacredito() {
+		return notacredito;
+	}
+	public void setNotacredito(Boolean notacredito) {
+		this.notacredito = notacredito;
+	}
+	public Boolean getNotaDebito() {
+		return notaDebito;
+	}
+	public void setNotaDebito(Boolean notaDebito) {
+		this.notaDebito = notaDebito;
+	}
+	public boolean isEnvioSunat() {
+		return envioSunat;
+	}
+	public void setEnvioSunat(boolean envioSunat) {
+		this.envioSunat = envioSunat;
+	}
+	public String getEnvioAceptadaPorSunat() {
+		return envioAceptadaPorSunat;
+	}
+	public void setEnvioAceptadaPorSunat(String envioAceptadaPorSunat) {
+		this.envioAceptadaPorSunat = envioAceptadaPorSunat;
+	}
+	public String getEnvioSunatDescription() {
+		return envioSunatDescription;
+	}
+	public void setEnvioSunatDescription(String envioSunatDescription) {
+		this.envioSunatDescription = envioSunatDescription;
+	}
+	public String getEnvioSunatNote() {
+		return envioSunatNote;
+	}
+	public void setEnvioSunatNote(String envioSunatNote) {
+		this.envioSunatNote = envioSunatNote;
+	}
+	public String getEnvioSunatSoapError() {
+		return envioSunatSoapError;
+	}
+	public void setEnvioSunatSoapError(String envioSunatSoapError) {
+		this.envioSunatSoapError = envioSunatSoapError;
+	}
+	public String getEnvioEnlaceDelPdf() {
+		return envioEnlaceDelPdf;
+	}
+	public void setEnvioEnlaceDelPdf(String envioEnlaceDelPdf) {
+		this.envioEnlaceDelPdf = envioEnlaceDelPdf;
+	}
+	public String getEnvioEnlaceDelXml() {
+		return envioEnlaceDelXml;
+	}
+	public void setEnvioEnlaceDelXml(String envioEnlaceDelXml) {
+		this.envioEnlaceDelXml = envioEnlaceDelXml;
+	}
+	public String getEnvioEnlaceDelCdr() {
+		return envioEnlaceDelCdr;
+	}
+	public void setEnvioEnlaceDelCdr(String envioEnlaceDelCdr) {
+		this.envioEnlaceDelCdr = envioEnlaceDelCdr;
+	}
+	public String getEnvioCadenaCodigoQr() {
+		return envioCadenaCodigoQr;
+	}
+	public void setEnvioCadenaCodigoQr(String envioCadenaCodigoQr) {
+		this.envioCadenaCodigoQr = envioCadenaCodigoQr;
+	}
+	public String getEnvioCodigoHash() {
+		return envioCodigoHash;
+	}
+	public void setEnvioCodigoHash(String envioCodigoHash) {
+		this.envioCodigoHash = envioCodigoHash;
+	}
+	public String getAnulacionSunatTicketNumero() {
+		return anulacionSunatTicketNumero;
+	}
+	public void setAnulacionSunatTicketNumero(String anulacionSunatTicketNumero) {
+		this.anulacionSunatTicketNumero = anulacionSunatTicketNumero;
+	}
+	public String getAnulacionAceptadaPorSunat() {
+		return anulacionAceptadaPorSunat;
+	}
+	public void setAnulacionAceptadaPorSunat(String anulacionAceptadaPorSunat) {
+		this.anulacionAceptadaPorSunat = anulacionAceptadaPorSunat;
+	}
+	public String getAnulacionSunatDescription() {
+		return anulacionSunatDescription;
+	}
+	public void setAnulacionSunatDescription(String anulacionSunatDescription) {
+		this.anulacionSunatDescription = anulacionSunatDescription;
+	}
+	public String getAnulacionSunatNote() {
+		return anulacionSunatNote;
+	}
+	public void setAnulacionSunatNote(String anulacionSunatNote) {
+		this.anulacionSunatNote = anulacionSunatNote;
+	}
+	public String getAnulacionSunatResponsecode() {
+		return anulacionSunatResponsecode;
+	}
+	public void setAnulacionSunatResponsecode(String anulacionSunatResponsecode) {
+		this.anulacionSunatResponsecode = anulacionSunatResponsecode;
+	}
+	public String getAnulacionSunatSoapError() {
+		return anulacionSunatSoapError;
+	}
+	public void setAnulacionSunatSoapError(String anulacionSunatSoapError) {
+		this.anulacionSunatSoapError = anulacionSunatSoapError;
+	}
+	public String getEnvioSunatResponseCode() {
+		return envioSunatResponseCode;
+	}
+	public void setEnvioSunatResponseCode(String envioSunatResponseCode) {
+		this.envioSunatResponseCode = envioSunatResponseCode;
 	}
 }
