@@ -6,20 +6,27 @@ import java.nio.file.Files;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 
 import org.primefaces.model.StreamedContent;
 
+import com.model.aldasa.general.bean.NavegacionBean;
+import com.model.aldasa.service.DocumentoVentaService;
+
 @ManagedBean
 public class LoadImageDocumentoBean {
+	
+	@ManagedProperty(value = "#{navegacionBean}")
+	private NavegacionBean navegacionBean;
 	
 	public StreamedContent graphicImage;
 	 public String nombreArchivo = "";
 
 	 public byte[] getImage() throws IOException {
-		 String ruta = "C:\\IMG-DOCUMENTO-VENTA\\0.png";
+		 String ruta = navegacionBean.getSucursalLogin().getEmpresa().getRutaDocumentoVenta()+"0.png";
 //		 String ruta = "/home/imagen/voucher_separaciones/0.png"; 
 		 if(!nombreArchivo.equals("")) {
-			 ruta = "C:\\IMG-DOCUMENTO-VENTA\\"+nombreArchivo;
+			 ruta = navegacionBean.getSucursalLogin().getEmpresa().getRutaDocumentoVenta()+nombreArchivo;
 //			 ruta = "/home/imagen/voucher_separaciones/"+nombreArchivo;
 		 }
 		 
@@ -51,5 +58,15 @@ public class LoadImageDocumentoBean {
 
 	public void setNombreArchivo(String nombreArchivo) {
 		this.nombreArchivo = nombreArchivo;
+	}
+
+	public NavegacionBean getNavegacionBean() {
+		return navegacionBean;
+	}
+
+	public void setNavegacionBean(NavegacionBean navegacionBean) {
+		this.navegacionBean = navegacionBean;
 	}	
+	
+	
 }

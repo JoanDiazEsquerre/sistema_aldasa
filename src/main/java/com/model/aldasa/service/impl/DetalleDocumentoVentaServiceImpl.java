@@ -43,7 +43,7 @@ public class DetalleDocumentoVentaServiceImpl implements DetalleDocumentoVentaSe
 	}
 
 	@Override
-	public DetalleDocumentoVenta findByVoucherIdAndEstado(int voucher, boolean estado) {
+	public List<DetalleDocumentoVenta> findByVoucherIdAndEstado(int voucher, boolean estado) {
 		// TODO Auto-generated method stub
 		return detalleDocumentoVentaRepository.findByVoucherIdAndEstado(voucher, estado);
 	}

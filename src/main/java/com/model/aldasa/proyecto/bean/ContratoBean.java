@@ -429,9 +429,13 @@ public class ContratoBean extends BaseBean implements Serializable{
 			if(requerimiento!=null) {
 				Voucher voucher = voucherService.findByRequerimientoSeparacion(requerimiento);
 				if(voucher!=null) {
-					DetalleDocumentoVenta detalle = detalleDocumentoVentaService.findByVoucherIdAndEstado(voucher.getId(), true);
-					if(detalle!=null) {
-						cuotaCero.setAdelanto(detalle.getImporteVenta());
+					List<DetalleDocumentoVenta> detalle = detalleDocumentoVentaService.findByVoucherIdAndEstado(voucher.getId(), true);
+					if(!detalle.isEmpty()) {
+						for(DetalleDocumentoVenta d: detalle) {
+							if(d.getDocumentoVenta().getTipoDocumento().getAbreviatura().equals("F") || d.getDocumentoVenta().getTipoDocumento().getAbreviatura().equals("B")) {
+								cuotaCero.setAdelanto(d.getImporteVenta());
+							}
+						}
 					}
 					
 				}
@@ -1732,8 +1736,16 @@ public class ContratoBean extends BaseBean implements Serializable{
 				if(requerimiento!=null) {
 					Voucher voucher = voucherService.findByRequerimientoSeparacion(requerimiento);
 					if(voucher!=null) {
-						DetalleDocumentoVenta detalle = detalleDocumentoVentaService.findByVoucherIdAndEstado(voucher.getId(), true); 
-						cuota.setAdelanto(detalle.getImporteVenta());
+						List<DetalleDocumentoVenta> detalle = detalleDocumentoVentaService.findByVoucherIdAndEstado(voucher.getId(), true); 
+						if(!detalle.isEmpty()) {
+							for(DetalleDocumentoVenta d: detalle) {
+								if(d.getDocumentoVenta().getTipoDocumento().getAbreviatura().equals("F") || d.getDocumentoVenta().getTipoDocumento().getAbreviatura().equals("B")) {
+									cuota.setAdelanto(d.getImporteVenta());
+								}
+							}
+							
+						}
+						
 					}
 				} 
 				

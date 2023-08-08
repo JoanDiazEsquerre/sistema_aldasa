@@ -127,7 +127,8 @@
 						
 						<h:outputLabel value="Fecha:" />
 						<p:datePicker value="#{documentoVentaBean.fechaEnvioSunat}" />
-						<p:commandButton value="Enviar" action="#{documentoVentaBean.enviarDocumentoSunatMasivo}" update=":form:tabView:idTableListDoc" />
+						<p:commandButton value="Enviar" action="#{documentoVentaBean.enviarDocumentoSunatMasivo}" update=":form:tabView:idTableListDoc" 
+							onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('blockUIWidgetGeneral').unblock();"/>
 			        
 			        </h:panelGrid>
 			    </p:panel>
@@ -1060,7 +1061,7 @@
 			<h:panelGrid columns="7">
 
 				<h:outputLabel value="Documento:" />
-				<p:selectOneMenu id="idNotaDocumento" value="#{documentoVentaBean.tipoDocumentoNotaSelected}" converter="#{documentoVentaBean.conversorNotaDocumento}" style="margin:10px; width:150px" disabled="#{documentoVentaBean.cuotaSelected eq null ? false : true }">
+				<p:selectOneMenu id="idNotaDocumento" value="#{documentoVentaBean.tipoDocumentoNotaSelected}" converter="#{documentoVentaBean.conversorNotaDocumento}" style="margin:10px; width:150px" >
 					<f:selectItems  value="#{documentoVentaBean.lstTipoDocumentoNota}" var="notaDocumento" itemLabel="#{notaDocumento.descripcion}" itemValue="#{notaDocumento}"/>
 					<p:ajax listener="#{documentoVentaBean.listarSerieNota()}" update="idSerieNumero, numero, idDatosNota"/>
 				</p:selectOneMenu>
@@ -1225,6 +1226,10 @@
           <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
           </h:form>
     </pe:blockUI>
-    
+    <pe:blockUI widgetVar="blockUIWidgetGeneral">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
 
 </ui:composition>

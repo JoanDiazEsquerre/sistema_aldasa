@@ -634,6 +634,10 @@
 		<managed-bean-name>loadImageBean</managed-bean-name>
 		<managed-bean-class>com.model.aldasa.prospeccion.bean.LoadImageBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope> 
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>
@@ -829,7 +833,11 @@
 	<managed-bean>
 		<managed-bean-name>loadImageDocumentoBean</managed-bean-name>
 		<managed-bean-class>com.model.aldasa.ventas.bean.LoadImageDocumentoBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope> 
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
 	</managed-bean>
 		
 </faces-config>

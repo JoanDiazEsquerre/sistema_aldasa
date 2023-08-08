@@ -1284,7 +1284,7 @@ public class DocumentoVentaBean extends BaseBean {
 				}
 				
 				String primerosNumeros = ruc.charAt(0) + ruc.charAt(1) + "";
-				if(!primerosNumeros.equals("10") || !primerosNumeros.equals("15") || !primerosNumeros.equals("17") || !primerosNumeros.equals("20") ) {
+				if(!primerosNumeros.equals("10") && !primerosNumeros.equals("15") && !primerosNumeros.equals("17") && !primerosNumeros.equals("20") ) {
 					addErrorMessage("Ruc incorrecto, debe iniciar con 10, 15, 17 o 20");
 					return;
 				}

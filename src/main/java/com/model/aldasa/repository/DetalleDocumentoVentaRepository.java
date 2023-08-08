@@ -10,7 +10,7 @@ import com.model.aldasa.entity.Voucher;
 
 public interface DetalleDocumentoVentaRepository extends JpaRepository<DetalleDocumentoVenta, Integer>{
 	
-	DetalleDocumentoVenta findByVoucherIdAndEstado(int voucher, boolean estado);
+	List<DetalleDocumentoVenta> findByVoucherIdAndEstado(int voucher, boolean estado);
 
 	List<DetalleDocumentoVenta> findByDocumentoVentaAndEstado(DocumentoVenta documentoVenta, boolean estado);
 

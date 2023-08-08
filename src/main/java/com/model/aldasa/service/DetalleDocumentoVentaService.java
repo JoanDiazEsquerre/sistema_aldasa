@@ -13,7 +13,7 @@ public interface DetalleDocumentoVentaService {
 	DetalleDocumentoVenta save(DetalleDocumentoVenta entity);
 	void delete(DetalleDocumentoVenta entity);
 	
-	DetalleDocumentoVenta findByVoucherIdAndEstado(int voucher, boolean estado);
+	List<DetalleDocumentoVenta> findByVoucherIdAndEstado(int voucher, boolean estado);
 	
 	List<DetalleDocumentoVenta> findByDocumentoVentaAndEstado(DocumentoVenta documentoVenta, boolean estado);
 
