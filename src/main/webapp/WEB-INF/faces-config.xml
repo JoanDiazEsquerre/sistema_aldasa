@@ -784,6 +784,10 @@
 			<property-name>consumingPostBo</property-name>
 			<value>#{consumingPostBo}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>personService</property-name>
+			<value>#{personService}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>

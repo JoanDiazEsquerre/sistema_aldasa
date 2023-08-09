@@ -42,14 +42,18 @@ import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
+import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Identificador;
 import com.model.aldasa.entity.Imagen;
 import com.model.aldasa.entity.MotivoNota;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Producto;
+import com.model.aldasa.entity.Prospect;
+import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.SerieDocumento;
 import com.model.aldasa.entity.TipoDocumento;
 import com.model.aldasa.entity.TipoOperacion;
+import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.entity.Voucher;
 import com.model.aldasa.fe.ConsumingPostBoImpl;
 import com.model.aldasa.general.bean.NavegacionBean;
@@ -62,13 +66,16 @@ import com.model.aldasa.service.DocumentoVentaService;
 import com.model.aldasa.service.IdentificadorService;
 import com.model.aldasa.service.ImagenService;
 import com.model.aldasa.service.MotivoNotaService;
+import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProductoService;
+import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.SerieDocumentoService;
 import com.model.aldasa.service.TipoDocumentoService;
 import com.model.aldasa.service.TipoOperacionService;
 import com.model.aldasa.service.VoucherService;
 import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.NumeroALetra;
+import com.model.aldasa.util.Perfiles;
 import com.model.aldasa.util.TipoProductoType;
 import com.model.aldasa.ventas.jrdatasource.DataSourceDocumentoVenta;
 
@@ -129,6 +136,12 @@ public class DocumentoVentaBean extends BaseBean {
 	@ManagedProperty(value = "#{consumingPostBo}")
 	private ConsumingPostBoImpl consumingPostBo;
 	
+	@ManagedProperty(value = "#{personService}")
+	private PersonService personService;
+	
+	
+	
+	
 	private boolean estado = true;
 	private Boolean estadoSunat;
 
@@ -156,8 +169,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private List<MotivoNota> lstMotivoNota = new ArrayList<>();
 	private List<TipoOperacion> lstTipoOperacion = new ArrayList<>();
 	private List<Identificador> lstIdentificador = new ArrayList<>();
-	
-
+	private List<Cliente> lstCliente;
 
 	
 	private DocumentoVenta documentoVentaSelected ;
@@ -174,6 +186,8 @@ public class DocumentoVentaBean extends BaseBean {
 	private MotivoNota motivoNotaSelected;
 	private TipoOperacion tipoOperacionSelected;
 	private Identificador identificadorSelected;
+	private Person personSelected;
+	private Cliente newCliente;
 
 
 	private DocumentoVenta documentoVentaNew;
@@ -185,6 +199,8 @@ public class DocumentoVentaBean extends BaseBean {
 	private Producto productoAmortizacion;
 	private Producto productoAdelanto;
 	private Person persona;
+	private Usuario usuarioLogin = new Usuario();
+	
 
 	
 	private Date fechaEmision = new Date() ;
@@ -291,7 +307,13 @@ public class DocumentoVentaBean extends BaseBean {
 		lstIdentificador = identificadorService.findByEstado(true); 
 		numMuestraImagen=1;
 		fechaEnvioSunat= new Date();
+		lstCliente=clienteService.findByEstado(true);
 	}
+	
+	public void iniciarDatosNewCliente() {
+		
+	}
+	
 	
 	public void enviarDocumentoSunatMasivo() {
 		if(fechaEnvioSunat ==  null) {
@@ -2652,6 +2674,43 @@ public class DocumentoVentaBean extends BaseBean {
         }
     }
 	
+	public Converter getConversorCliente() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Cliente c = null;
+                    for (Cliente si : lstCliente) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Cliente) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public List<Cliente> completeCliente(String query) {
+        List<Cliente> lista = new ArrayList<>();
+        for (Cliente c : lstCliente) {
+            if (c.getPerson().getSurnames().toUpperCase().contains(query.toUpperCase()) || c.getPerson().getNames().toUpperCase().contains(query.toUpperCase()) || c.getPerson().getDni().toUpperCase().contains(query.toUpperCase())) {
+                lista.add(c);
+            }
+        }
+        return lista;
+    }
 	
 	
 	public boolean isEstado() {
@@ -3639,7 +3698,36 @@ public class DocumentoVentaBean extends BaseBean {
 	public void setEstadoSunat(Boolean estadoSunat) {
 		this.estadoSunat = estadoSunat;
 	}
-
+	public Person getPersonSelected() {
+		return personSelected;
+	}
+	public void setPersonSelected(Person personSelected) {
+		this.personSelected = personSelected;
+	}
+	public PersonService getPersonService() {
+		return personService;
+	}
+	public void setPersonService(PersonService personService) {
+		this.personService = personService;
+	}
+	public Usuario getUsuarioLogin() {
+		return usuarioLogin;
+	}
+	public void setUsuarioLogin(Usuario usuarioLogin) {
+		this.usuarioLogin = usuarioLogin;
+	}
+	public List<Cliente> getLstCliente() {
+		return lstCliente;
+	}
+	public void setLstCliente(List<Cliente> lstCliente) {
+		this.lstCliente = lstCliente;
+	}
+	public Cliente getNewCliente() {
+		return newCliente;
+	}
+	public void setNewCliente(Cliente newCliente) {
+		this.newCliente = newCliente;
+	}
 	
 
 }

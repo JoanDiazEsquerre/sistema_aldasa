@@ -303,7 +303,11 @@
 				<h:panelGrid style="width:60%;float:left" columns="1" > 
 					<p:panel id="pnl" header="Datos del Cliente" toggleable="true" toggleSpeed="500" widgetVar="panelDatos" style="width:100%">
 						<h:panelGrid styleClass="companyHeaderGrid">
+							
 							<p:row>
+							
+								<p:commandButton actionListener="#{documentoVentaBean.iniciarDatosNewCliente}" oncomplete="PF('userDialog').show();" icon="pi pi-user-plus" styleClass="rounded-button ui-button-success" style="margin:10px;"/>
+								
 								<p:column>
 									<h:outputText value="RUC: " rendered="#{documentoVentaBean.tipoDocumentoSelected.abreviatura eq 'F'}" />
 									<h:outputText value="DNI: " rendered="#{documentoVentaBean.tipoDocumentoSelected.abreviatura eq 'B'}" />
@@ -332,33 +336,8 @@
 								</p:column>
 
 							</p:row>
-							<p:row>
-								<p:column>
-									<h:outputText value="E-mail 1: " />
-								</p:column>
-								<p:column colspan="3">
-									<p:inputText id="txt_direccion" style="width:800px;" label="" value="#{documentoVentaBean.direccion}" maxlength="200" />
-								</p:column>
-
-							</p:row>
-							<p:row>
-								<p:column>
-									<h:outputText value="E-mail 2: " />
-								</p:column>
-								<p:column colspan="3">
-									<p:inputText id="txt_direccion" style="width:800px;" label="" value="#{documentoVentaBean.direccion}" maxlength="200" />
-								</p:column>
-
-							</p:row>
-							<p:row>
-								<p:column>
-									<h:outputText value="E-mail 3: " />
-								</p:column>
-								<p:column colspan="3">
-									<p:inputText id="txt_direccion" style="width:800px;" label="" value="#{documentoVentaBean.direccion}" maxlength="200" />
-								</p:column>
-
-							</p:row>
+							
+							
 						</h:panelGrid>
 					</p:panel>
 						
@@ -1195,6 +1174,45 @@
 								
 			</h:panelGrid>
 	
+		</h:form>
+	</p:dialog>
+	
+	<p:dialog modal="true" height="600px" dynamic="true" closeOnEscape="true" id="dialogUser" header="DATOS DEL USUARIO" widgetVar="userDialog" resizable="false" closable="true"
+		appendTo="@(body)"  width="60%">
+		<h:form id="formUserDialog">
+		
+			<h:outputLabel for="idCliente" value="Persona: " />
+			<p:autoComplete  scrollHeight="500" styleClass="ui-autocompV" value="#{documentoVentaBean.newCliente}" converter="#{documentoVentaBean.conversorCliente}" id="idCliente" completeMethod="#{documentoVentaBean.completeCliente}"  
+                  var="cliente" itemLabel="#{cliente.person.surnames.concat(' ')}#{cliente.person.names}" itemValue="#{cliente}" forceSelection="true" style="margin:5px;" >
+            	<p:column width="400px">
+                	<h:outputLabel value="#{cliente.person.surnames} #{cliente.person.names}" /> 
+                </p:column>
+                <p:column width="400px">
+                	<h:outputLabel value="#{cliente.person.dni}" /> 
+                </p:column> 
+                 
+                 <p:ajax event="blur" update=":formUserDialog" />
+            </p:autoComplete>
+			
+			<h:panelGrid columns="4">
+			
+                 <h:outputText value="Razon social:" />
+                 <p:inputText value="#{documentoVentaBean.newCliente.razonSocial}" />
+                 
+                 <h:outputText value="Nombre comercial:" />
+                 <p:inputText value="#{documentoVentaBean.newCliente.nombreComercial}" />
+                 
+                 <h:outputText value="Ruc:" />
+                 <p:inputText value="#{documentoVentaBean.newCliente.ruc}" />
+                 
+                 <h:outputText value="Direccion:" />
+                 <p:inputText value="#{documentoVentaBean.newCliente.direccion}" />
+                 
+                 <h:outputText value="Fecha de registro:" />
+                 <p:datePicker value="#{documentoVentaBean.newCliente.fechaRegistro}" />
+                 
+			</h:panelGrid>
+			
 		</h:form>
 	</p:dialog>
 	
