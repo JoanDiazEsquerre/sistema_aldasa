@@ -301,15 +301,17 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		List<DocumentoVenta> lstDoc = documentoVentaService.findByEstadoAndSucursalAndFechaEmisionAndEnvioSunat(true, navegacionBean.getSucursalLogin(), fechaEnvioSunat, false);
 		if(!lstDoc.isEmpty()) {
+			int cont = 0;
 			for(DocumentoVenta d:lstDoc) {
 				List<DetalleDocumentoVenta> lstDetalle = detalleDocumentoVentaService.findByDocumentoVentaAndEstado(d, true);
-				consumingPostBo.apiConsume(d, lstDetalle);
+				cont = cont+enviarDocumentoSunat(d, lstDetalle); 
+//				consumingPostBo.apiConsume(d, lstDetalle);
 				
-				d.setEnvioSunat(true);
-				documentoVentaService.save(d);
+//				d.setEnvioSunat(true);
+//				documentoVentaService.save(d);
 				
 			}
-			addInfoMessage("Se enviaron correctamente "+ lstDoc.size() + " documentos a SUNAT.");
+			addInfoMessage("Se enviaron correctamente "+ cont + " documentos a SUNAT.");
 			
 		}else {
 			addErrorMessage("No se encontraron documentos pendientes de envio para el dia "+ sdf.format(fechaEnvioSunat));
@@ -375,6 +377,70 @@ public class DocumentoVentaBean extends BaseBean {
                 addInfoMessage("Documento Electrónico enviado a Sunat Correctamente...");
             }
         }
+		
+	}
+	
+	public int enviarDocumentoSunat(DocumentoVenta docVenta, List<DetalleDocumentoVenta> lstDetalle) {
+		int num = 0;
+		//ENVIAMOS FACTURA A NUBEFACT
+        //JSONObject json_rspta = null;
+        JSONObject json_rspta = consumingPostBo.apiConsume(docVenta, lstDetalle);
+        System.out.println("Error => " + json_rspta);
+        if (json_rspta != null) {
+            if (json_rspta.get("errors") != null) {
+                System.out.println("Error => " + json_rspta.get("errors"));
+                addErrorMessage("Error al Enviar el comprobante electrónico: " + json_rspta.get("errors"));
+            } else {
+            	num++;
+            	documentoVentaSelected.setEnvioSunat(true);
+                /*JSONParser parsearRsptaDetalleOK = new JSONParser();
+                JSONObject json_rspta_ok = (JSONObject) parsearRsptaDetalleOK.parse(json_rspta.get("invoice").toString());*/
+
+                if (json_rspta.get("aceptada_por_sunat") != null) {
+                    documentoVentaSelected.setEnvioAceptadaPorSunat(json_rspta.get("aceptada_por_sunat").toString());
+                }
+
+                if (json_rspta.get("sunat_description") != null) {
+                	documentoVentaSelected.setEnvioSunatDescription(json_rspta.get("sunat_description").toString());
+                }
+
+                if (json_rspta.get("sunat_note") != null) {
+                	documentoVentaSelected.setEnvioSunatNote(json_rspta.get("sunat_note").toString());
+                }
+
+                if (json_rspta.get("sunat_responsecode") != null) {
+                	documentoVentaSelected.setEnvioSunatResponseCode(json_rspta.get("sunat_responsecode").toString());
+                }
+
+                if (json_rspta.get("sunat_soap_error") != null) {
+                	documentoVentaSelected.setEnvioSunatSoapError(json_rspta.get("sunat_soap_error").toString());
+                }
+
+                if (json_rspta.get("enlace_del_pdf") != null) {
+                	documentoVentaSelected.setEnvioEnlaceDelPdf(json_rspta.get("enlace_del_pdf").toString());
+                }
+
+                if (json_rspta.get("enlace_del_xml") != null) {
+                	documentoVentaSelected.setEnvioEnlaceDelXml(json_rspta.get("enlace_del_xml").toString());
+                }
+
+                if (json_rspta.get("enlace_del_cdr") != null) {
+                	documentoVentaSelected.setEnvioEnlaceDelCdr(json_rspta.get("enlace_del_cdr").toString());
+                }
+
+                if (json_rspta.get("cadena_para_codigo_qr") != null) {
+                	documentoVentaSelected.setEnvioCadenaCodigoQr(json_rspta.get("cadena_para_codigo_qr").toString());
+                }
+
+                if (json_rspta.get("codigo_hash") != null) {
+                	documentoVentaSelected.setEnvioCodigoHash(json_rspta.get("codigo_hash").toString());
+                }
+
+                documentoVentaService.save(documentoVentaSelected);
+                addInfoMessage("Documento Electrónico enviado a Sunat Correctamente...");
+            }
+        }
+        return num;
 		
 	}
 	
@@ -1407,6 +1473,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		DocumentoVenta documento = documentoVentaService.save(documentoVenta, lstDetalleDocumentoVenta, serieDocumentoSelected); 
 		if(documento != null) {
+			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
 			
 			lstDetalleDocumentoVenta.clear();// claer es limpiar en ingles prueba
 			ruc = "";
@@ -1414,10 +1481,10 @@ public class DocumentoVentaBean extends BaseBean {
 			direccion = "";
 			calcularTotales();
 			
-			addInfoMessage("Se guardó el documento correctamente.");
-			
 			subirImagenes(documento.getId() + "");
 			setearInfoVoucher();
+			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
+			addInfoMessage("Se guardó el documento correctamente. "+addMensaje);
 			
 		}else {
 			addErrorMessage("No se puede guardar el documento."); 
@@ -1985,7 +2052,6 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	
 	public void iniciarLazy() {
-
 		lstDocumentoVentaLazy = new LazyDataModel<DocumentoVenta>() {
 			private List<DocumentoVenta> datasource;
 

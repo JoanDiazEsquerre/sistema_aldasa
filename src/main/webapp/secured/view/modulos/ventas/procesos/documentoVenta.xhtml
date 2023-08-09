@@ -16,14 +16,14 @@
 					unselectable="false">
 					<f:selectItem itemLabel="Activos" itemValue="#{true}" />
 					<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
-					<p:ajax update=":form:tabView:idTableListDoc" listener="#{documentoVentaBean.iniciarLazy()}" />
+					<p:ajax update=":form:tabView:idTableListDoc" listener="#{documentoVentaBean.iniciarLazy()}" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('blockUIWidgetGeneral').unblock();"/>
 				</p:selectOneButton>
 				
 				<p:selectOneButton value="#{documentoVentaBean.estadoSunat}" unselectable="false" style="margin-left:40px">
 					<f:selectItem itemLabel="Todos" itemValue="#{null}" />
 					<f:selectItem itemLabel="Pendientes" itemValue="#{false}" />
 					<f:selectItem itemLabel="Enviados" itemValue="#{true}" />
-					<p:ajax update=":form:tabView:idTableListDoc" listener="#{documentoVentaBean.iniciarLazy()}" />
+					<p:ajax update=":form:tabView:idTableListDoc" listener="#{documentoVentaBean.iniciarLazy()}" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('blockUIWidgetGeneral').unblock();" />
 				</p:selectOneButton>
 
 				<p:dataTable var="documento" id="idTableListDoc" value="#{documentoVentaBean.lstDocumentoVentaLazy}" rowIndexVar="row" paginator="true" rows="15" size="small" 
@@ -35,7 +35,7 @@
 						</div>
 					</f:facet>
 					
-					<p:ajax event="rowSelect" listener="#{documentoVentaBean.listarDetalleDocumentoVenta()}" update=":formDocumentoVentaDialog :dialogDocumentoVenta" oncomplete="PF('docVentDialog').show();" />
+					<p:ajax event="rowSelect" listener="#{documentoVentaBean.listarDetalleDocumentoVenta()}" update=":formDocumentoVentaDialog :dialogDocumentoVenta" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('blockUIWidgetGeneral').unblock(); PF('docVentDialog').show();" />
 
 					<p:column width="25px">
 			                      #{row +1}
@@ -137,7 +137,7 @@
 			</p:tab>
 
 			<p:tab title="Nuevo Documento de Venta">
-				<h:panelGrid columns="8" id="gridNuevoDoc">
+				<h:panelGrid columns="9" id="gridNuevoDoc">
 
 					<h:outputLabel value="Fecha: " />
 					<p:datePicker id="fecha" value="#{documentoVentaBean.fechaEmision}" style="margin:5px;">
@@ -161,8 +161,8 @@
 						<f:selectItems value="#{documentoVentaBean.lstSerieDocumento}" var="serie" itemLabel="#{serie.serie}" itemValue="#{serie}" />
 						<p:ajax listener="#{documentoVentaBean.cambiarSerie}" update="num" /> 
 					</p:selectOneMenu>
-
-					<p:inputText value="#{documentoVentaBean.numero}"  style="margin:10px" id="num"/>
+					<p:outputLabel value="-" style="font-weight: bolder"/>
+					<p:inputText value="#{documentoVentaBean.numero}"  style="margin:10px" id="num" disabled="true"/>
 
 				</h:panelGrid>
 
@@ -332,6 +332,33 @@
 								</p:column>
 
 							</p:row>
+							<p:row>
+								<p:column>
+									<h:outputText value="E-mail 1: " />
+								</p:column>
+								<p:column colspan="3">
+									<p:inputText id="txt_direccion" style="width:800px;" label="" value="#{documentoVentaBean.direccion}" maxlength="200" />
+								</p:column>
+
+							</p:row>
+							<p:row>
+								<p:column>
+									<h:outputText value="E-mail 2: " />
+								</p:column>
+								<p:column colspan="3">
+									<p:inputText id="txt_direccion" style="width:800px;" label="" value="#{documentoVentaBean.direccion}" maxlength="200" />
+								</p:column>
+
+							</p:row>
+							<p:row>
+								<p:column>
+									<h:outputText value="E-mail 3: " />
+								</p:column>
+								<p:column colspan="3">
+									<p:inputText id="txt_direccion" style="width:800px;" label="" value="#{documentoVentaBean.direccion}" maxlength="200" />
+								</p:column>
+
+							</p:row>
 						</h:panelGrid>
 					</p:panel>
 						
@@ -361,7 +388,7 @@
 						            </span>
 								</p:column>
 								
-								<p:commandButton value="Guardar" actionListener="#{documentoVentaBean.validarFormularioDocumentoVenta()}" styleClass="mt-3 ui-button-outlined block"  style="margin-left:10px" icon="pi pi-save"  />
+								<p:commandButton value="Guardar" actionListener="#{documentoVentaBean.validarFormularioDocumentoVenta()}" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('blockUIWidgetGeneral').unblock();" styleClass="mt-3 ui-button-outlined block"  style="margin-left:10px" icon="pi pi-save"  />
 								<p:commandButton value="Cancelar" oncomplete="PF('cancelarDocumento').show()"   style="margin-left:10px" icon="pi pi-times"  />
 								
 								<p:commandButton icon="pi pi-minus" action="#{documentoVentaBean.menorarImagen}" update=":form:tabView:pnlCond" styleClass="rounded-button ui-button-success" style="margin:10px;" />
@@ -923,7 +950,7 @@
 			</h:panelGrid>
 			
 			<h:panelGrid columns="2" >
-				<p:commandButton value="Descargar"   icon="pi pi-file-pdf" action="#{documentoVentaBean.pdfDocumentoElectronico()}" ajax="false" />
+				<p:commandButton value="Descargar"   icon="pi pi-file-pdf" onstart="PF('blockUIWidgetEnvioSunat').block();" oncomplete="PF('blockUIWidgetEnvioSunat').unblock();" action="#{documentoVentaBean.pdfDocumentoElectronico()}" ajax="false" />
 				<p:commandButton value="Enviar a SUNAT" onstart="PF('blockUIWidgetEnvioSunat').block();" oncomplete="PF('blockUIWidgetEnvioSunat').unblock();" rendered="#{documentoVentaBean.documentoVentaSelected.envioSunat eq false}" update=":form:tabView:idTableListDoc formDocumentoVentaDialog" icon="pi pi-send" action="#{documentoVentaBean.enviarDocumentoSunat}" /> 
 			</h:panelGrid>  
 		
