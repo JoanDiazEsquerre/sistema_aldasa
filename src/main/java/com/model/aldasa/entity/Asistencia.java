@@ -26,6 +26,22 @@ public class Asistencia {
 	private String tipo;
 	
 	private Date hora;
+	
+	@ManyToOne
+	@JoinColumn(name="idusercrea")
+	private Usuario userCrea;
+	
+	@Column(name="fechacrea")
+	private Date fechaCrea;
+
+	@ManyToOne
+	@JoinColumn(name="idusermodifica")
+	private Usuario userModifica;
+	
+	@Column(name="fechamodifica")
+	private Date fechaModifica;
+	
+	private boolean estado;
 
 	
 	
@@ -54,6 +70,40 @@ public class Asistencia {
 	public void setHora(Date hora) {
 		this.hora = hora;
 	}
+	public Usuario getUserCrea() {
+		return userCrea;
+	}
+	public void setUserCrea(Usuario userCrea) {
+		this.userCrea = userCrea;
+	}
+	public Date getFechaCrea() {
+		return fechaCrea;
+	}
+	public void setFechaCrea(Date fechaCrea) {
+		this.fechaCrea = fechaCrea;
+	}
+	public Usuario getUserModifica() {
+		return userModifica;
+	}
+	public void setUserModifica(Usuario userModifica) {
+		this.userModifica = userModifica;
+	}
+	public Date getFechaModifica() {
+		return fechaModifica;
+	}
+	public void setFechaModifica(Date fechaModifica) {
+		this.fechaModifica = fechaModifica;
+	}
+	public boolean isEstado() {
+		return estado;
+	}
+	public void setEstado(boolean estado) {
+		this.estado = estado;
+	}
+	
+	
+	
+	
 	
 	@Override
     public boolean equals(Object other) {

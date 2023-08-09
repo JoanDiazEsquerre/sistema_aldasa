@@ -21,14 +21,14 @@ public interface AsistenciaService {
 	
 	Asistencia findByEmpleadoPerson (Person empleado);
 	
-	List<Asistencia> findByEmpleadoAndHoraBetweenOrderByHoraAsc(Empleado empleado, Date horaIni, Date horaFin);
-	List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetween(String dni, String tipo, Date fechaIni, Date fechaFin);
-	List<Asistencia> findByEmpleadoPersonDniAndTipoAndHoraBetween(String dni, String tipo, Date fechaIni, Date fechaFin);
+	List<Asistencia> findByEmpleadoAndHoraBetweenAndEstadoOrderByHoraAsc(Empleado empleado, Date horaIni, Date horaFin, boolean estado);
+	List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenAndEstado(String dni, String tipo, Date fechaIni, Date fechaFin, boolean estado);
+	List<Asistencia> findByEmpleadoPersonDniAndTipoAndHoraBetweenAndEstado(String dni, String tipo, Date fechaIni, Date fechaFin, boolean estado);
 	
-	List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraDesc(String dni, String tipo, Date fechaIni, Date fechaFin);
-	List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraAsc(String dni, String tipo, Date fechaIni, Date fechaFin);
+	List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenAndEstadoOrderByHoraDesc(String dni, String tipo, Date fechaIni, Date fechaFin, boolean estado);
+	List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenAndEstadoOrderByHoraAsc(String dni, String tipo, Date fechaIni, Date fechaFin, boolean estado);
 
 	
-	Page<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndEmpleadoSucursalAndHoraBetween(String dni, String tipo,Sucursal sucursal, Date fechaIni, Date fechaFin, Pageable pageable);
+	Page<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndEmpleadoSucursalAndHoraBetweenAndEstado(String dni, String tipo,Sucursal sucursal, Date fechaIni, Date fechaFin, boolean estado, Pageable pageable);
 
 }

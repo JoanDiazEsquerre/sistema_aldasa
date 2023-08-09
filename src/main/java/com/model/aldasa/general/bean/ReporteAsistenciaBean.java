@@ -140,12 +140,12 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 			
 			List<Asistencia> lstAsist = new ArrayList<>();
 			if(tipo.equals("E")) {
-				lstAsist = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraAsc("%"+empleado.getPerson().getDni()+"%", "%E%", fechaIni, fechaFin);
+				lstAsist = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenAndEstadoOrderByHoraAsc("%"+empleado.getPerson().getDni()+"%", "%E%", fechaIni, fechaFin, true);
 				if(!lstAsist.isEmpty()) {
 					fecha=sdfTime.format(lstAsist.get(0).getHora());
 				}
 			}else {
-				lstAsist = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraDesc("%"+empleado.getPerson().getDni()+"%", "%S%", fechaIni, fechaFin);
+				lstAsist = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenAndEstadoOrderByHoraDesc("%"+empleado.getPerson().getDni()+"%", "%S%", fechaIni, fechaFin, true);
 				if(!lstAsist.isEmpty()) {
 					fecha=sdfTime.format(lstAsist.get(0).getHora());
 				}
@@ -164,12 +164,12 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 			
 			List<Asistencia> lstAsist = new ArrayList<>();
 			if(tipo.equals("E")) {
-				lstAsist = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraAsc("%"+empleado.getPerson().getDni()+"%", "%E%", fechaIni, fechaFin);
+				lstAsist = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenAndEstadoOrderByHoraAsc("%"+empleado.getPerson().getDni()+"%", "%E%", fechaIni, fechaFin, true);
 				if(!lstAsist.isEmpty()) {
 					fecha=sdfTime.format(lstAsist.get(0).getHora());
 				}
 			}else {
-				lstAsist = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraDesc("%"+empleado.getPerson().getDni()+"%", "%S%", fechaIni, fechaFin);
+				lstAsist = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenAndEstadoOrderByHoraDesc("%"+empleado.getPerson().getDni()+"%", "%S%", fechaIni, fechaFin, true);
 				if(!lstAsist.isEmpty()) {
 					fecha=sdfTime.format(lstAsist.get(0).getHora());
 				}
@@ -268,7 +268,7 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 					fechafin.setHours(23);
 					fechafin.setMinutes(59);
 					fechafin.setSeconds(59);
-					List<Asistencia> lstAsistencia = asistenciaService.findByEmpleadoAndHoraBetweenOrderByHoraAsc(empleadoSelected, fechaIni, fechafin);
+					List<Asistencia> lstAsistencia = asistenciaService.findByEmpleadoAndHoraBetweenAndEstadoOrderByHoraAsc(empleadoSelected, fechaIni, fechafin, true);
 
 					if (lstAsistencia.isEmpty()) {
 						Date hora1 = fechaIni;
@@ -392,7 +392,7 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 					fechafin.setHours(23);
 					fechafin.setMinutes(59);
 					fechafin.setSeconds(59);
-					List<Asistencia> lstAsistencia = asistenciaService.findByEmpleadoAndHoraBetweenOrderByHoraAsc(empleadoSelected, fechaIni, fechafin);
+					List<Asistencia> lstAsistencia = asistenciaService.findByEmpleadoAndHoraBetweenAndEstadoOrderByHoraAsc(empleadoSelected, fechaIni, fechafin, true);
 
 					if (lstAsistencia.isEmpty()) {
 						Date hora1 = fechaIni;
@@ -530,7 +530,6 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 		empleadoDialog = asistenciaSelected.getEmpleado();
 		tipoDialog = asistenciaSelected.getTipo();
 		horaDialog = asistenciaSelected.getHora();
-
 	}
 
 	public void newAsistencia() {
@@ -542,8 +541,12 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 	}
 	
 	public void eliminarAsistencia() {
-
-		asistenciaService.delete(asistenciaSelected);
+		
+		asistenciaSelected.setEstado(false);
+		asistenciaSelected.setUserModifica(navegacionBean.getUsuarioLogin());
+		asistenciaSelected.setFechaModifica(new Date());
+		asistenciaService.save(asistenciaSelected);
+		
 		addInfoMessage("Eliminado correctamente.");
 		return ;  
 		
@@ -565,11 +568,21 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar fecha."));
 			return;
 		}
+		
 		Asistencia crear = new Asistencia();
+		if(tituloDialog.equals("MODIFICAR ASISTENCIA")) {
+			crear.setUserModifica(navegacionBean.getUsuarioLogin());
+			crear.setFechaModifica(new Date());
+		}else{
+			crear.setUserCrea(navegacionBean.getUsuarioLogin());
+			crear.setFechaCrea(new Date());
+		}
 		crear.setId(idSelected);
 		crear.setEmpleado(empleadoDialog);
 		crear.setTipo(tipoDialog);
 		crear.setHora(horaDialog);
+		crear.setEstado(true);
+		
 		Asistencia asistencia = asistenciaService.save(crear);
 
 		if (tituloDialog.equals("NUEVA ASISTENCIA")) {
@@ -657,8 +670,8 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 						dia2.setMinutes(59);
 						dia2.setSeconds(59);
 						List<Asistencia> lstasistenciasEntrada = asistenciaService
-								.findByEmpleadoPersonDniAndTipoAndHoraBetween(empleado.getPerson().getDni(), "E", dia1,
-										dia2);
+								.findByEmpleadoPersonDniAndTipoAndHoraBetweenAndEstado(empleado.getPerson().getDni(), "E", dia1,
+										dia2, true);
 
 						if (!lstasistenciasEntrada.isEmpty()) {
 							Asistencia entrada1 = lstasistenciasEntrada.get(0);
@@ -675,8 +688,8 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 						}
 
 						List<Asistencia> lstasistenciasSalida = asistenciaService
-								.findByEmpleadoPersonDniAndTipoAndHoraBetween(empleado.getPerson().getDni(), "S", dia1,
-										dia2);
+								.findByEmpleadoPersonDniAndTipoAndHoraBetweenAndEstado(empleado.getPerson().getDni(), "S", dia1,
+										dia2, true);
 
 						if (!lstasistenciasSalida.isEmpty()) {
 							int b = 3;
@@ -946,7 +959,7 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 				fechaFin.setMinutes(59);
 				fechaFin.setSeconds(59);
 
-				pageAsistencia = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndEmpleadoSucursalAndHoraBetween(dni, "%" + tipo + "%", navegacionBean.getSucursalLogin(), fechaIni, fechaFin, pageable);
+				pageAsistencia = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndEmpleadoSucursalAndHoraBetweenAndEstado(dni, "%" + tipo + "%", navegacionBean.getSucursalLogin(), fechaIni, fechaFin, true, pageable);
 
 				setRowCount((int) pageAsistencia.getTotalElements());
 				return datasource = pageAsistencia.getContent();

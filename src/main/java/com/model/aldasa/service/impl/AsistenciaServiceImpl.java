@@ -42,23 +42,23 @@ public class AsistenciaServiceImpl  implements AsistenciaService  {
 	}
 
 	@Override
-	public List<Asistencia> findByEmpleadoAndHoraBetweenOrderByHoraAsc(Empleado empleado, Date horaIni, Date horaFin) {
+	public List<Asistencia> findByEmpleadoAndHoraBetweenAndEstadoOrderByHoraAsc(Empleado empleado, Date horaIni, Date horaFin, boolean estado) {
 		// TODO Auto-generated method stub
-		return asistenciaRepository.findByEmpleadoAndHoraBetweenOrderByHoraAsc(empleado, horaIni, horaFin);
+		return asistenciaRepository.findByEmpleadoAndHoraBetweenAndEstadoOrderByHoraAsc(empleado, horaIni, horaFin, estado);
 	}
 
 	@Override
-	public List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetween(String dni, String tipo, Date fechaIni,
-			Date fechaFin) {
+	public List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenAndEstado(String dni, String tipo, Date fechaIni,
+			Date fechaFin, boolean estado) {
 		// TODO Auto-generated method stub
-		return asistenciaRepository.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetween(dni, tipo, fechaIni, fechaFin);
+		return asistenciaRepository.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenAndEstado(dni, tipo, fechaIni, fechaFin, estado);
 	}
 
 	@Override
-	public List<Asistencia> findByEmpleadoPersonDniAndTipoAndHoraBetween(String dni, String tipo, Date fechaIni,
-			Date fechaFin) {
+	public List<Asistencia> findByEmpleadoPersonDniAndTipoAndHoraBetweenAndEstado(String dni, String tipo, Date fechaIni,
+			Date fechaFin, boolean estado) {
 		// TODO Auto-generated method stub
-		return asistenciaRepository.findByEmpleadoPersonDniAndTipoAndHoraBetween(dni, tipo, fechaIni, fechaFin);
+		return asistenciaRepository.findByEmpleadoPersonDniAndTipoAndHoraBetweenAndEstado(dni, tipo, fechaIni, fechaFin, estado);
 	}
 
 	@Override
@@ -68,24 +68,24 @@ public class AsistenciaServiceImpl  implements AsistenciaService  {
 	}
 
 	@Override
-	public List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraDesc(String dni, String tipo,
-			Date fechaIni, Date fechaFin) {
+	public List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenAndEstadoOrderByHoraDesc(String dni, String tipo,
+			Date fechaIni, Date fechaFin, boolean estado) {
 		// TODO Auto-generated method stub
-		return asistenciaRepository.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraDesc(dni, tipo, fechaIni, fechaFin);
+		return asistenciaRepository.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenAndEstadoOrderByHoraDesc(dni, tipo, fechaIni, fechaFin, estado);
 	}
 
 	@Override
-	public List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraAsc(String dni, String tipo,
-			Date fechaIni, Date fechaFin) {
+	public List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenAndEstadoOrderByHoraAsc(String dni, String tipo,
+			Date fechaIni, Date fechaFin, boolean estado) {
 		// TODO Auto-generated method stub
-		return asistenciaRepository.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenOrderByHoraAsc(dni, tipo, fechaIni, fechaFin);
+		return asistenciaRepository.findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenAndEstadoOrderByHoraAsc(dni, tipo, fechaIni, fechaFin, estado);
 	}
 
 	@Override
-	public Page<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndEmpleadoSucursalAndHoraBetween(String dni,
-			String tipo, Sucursal sucursal, Date fechaIni, Date fechaFin, Pageable pageable) {
+	public Page<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndEmpleadoSucursalAndHoraBetweenAndEstado(String dni,
+			String tipo, Sucursal sucursal, Date fechaIni, Date fechaFin, boolean estado, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return asistenciaRepository.findByEmpleadoPersonDniLikeAndTipoLikeAndEmpleadoSucursalAndHoraBetween(dni, tipo, sucursal, fechaIni, fechaFin, pageable);
+		return asistenciaRepository.findByEmpleadoPersonDniLikeAndTipoLikeAndEmpleadoSucursalAndHoraBetweenAndEstado(dni, tipo, sucursal, fechaIni, fechaFin, estado, pageable);
 	}
 
 }

@@ -235,7 +235,8 @@
 					</p:datePicker>
 					
 					<p:commandButton value="Guardar" actionListener="#{reporteAsistenciaBean.saveAsistencia()}"
-						update=":form:tabView:idTableDet :formAsistencia" />
+						update=":form:tabView:idTableDet :formAsistencia" 
+						onstart="PF('blockUIWidgetSaveAsistencia').block();" oncomplete="PF('blockUIWidgetSaveAsistencia').unblock();"/>
 
 			</h:panelGrid>
 
@@ -248,5 +249,14 @@
 	       </h:form>
 		        
 	   </pe:blockUI>
+	   
+	   
+	   <pe:blockUI target="dialogAsistencia" widgetVar="blockUIWidgetSaveAsistencia">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    
+   
 
 </ui:composition>

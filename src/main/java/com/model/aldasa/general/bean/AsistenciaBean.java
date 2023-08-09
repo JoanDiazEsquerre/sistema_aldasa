@@ -94,7 +94,7 @@ public class AsistenciaBean implements Serializable {
 			horaFin.setHours(23);
 			horaFin.setMinutes(59);
 			horaFin.setSeconds(59);
-			List<Asistencia> lstAsistencia = asistenciaService.findByEmpleadoAndHoraBetweenOrderByHoraAsc(empleado, horaIni, horaFin);
+			List<Asistencia> lstAsistencia = asistenciaService.findByEmpleadoAndHoraBetweenAndEstadoOrderByHoraAsc(empleado, horaIni, horaFin, true);
 			if (lstAsistencia.isEmpty()) {
 				Asistencia asistencia = new Asistencia();
 				asistencia.setEmpleado(empleado);
