@@ -35,9 +35,9 @@ public class CuentaBancariaServiceImpl  implements CuentaBancariaService {
 	}
 
 	@Override
-	public List<CuentaBancaria> findByEstadoAndMonedaLike(boolean estado, String moneda){
+	public List<CuentaBancaria> findByEstado(boolean estado){
 		// TODO Auto-generated method stub
-		return cuentaBancariaRepository.findByEstadoAndMonedaLike(estado,moneda);
+		return cuentaBancariaRepository.findByEstado(estado);
 	}
 
 

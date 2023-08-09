@@ -180,7 +180,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 		estado = true;
 		iniciarLazy();
 		listarPersonas();
-		lstCuentaBancaria = cuentaBancariaService.findByEstadoAndMonedaLike(true, "%S%");
+		lstCuentaBancaria = cuentaBancariaService.findByEstado(true);
 		verCronogramaPago();
 		observacion="";
 		

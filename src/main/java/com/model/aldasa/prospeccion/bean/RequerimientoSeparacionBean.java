@@ -123,7 +123,7 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	}
 	
 	public void listarCuentaBancaria() {
-		lstCuentaBancaria=cuentaBancariaService.findByEstadoAndMonedaLike(true, "%D%");
+		lstCuentaBancaria=cuentaBancariaService.findByEstado(true);
 	}
 	
 	public void permisosAprobaciones() {

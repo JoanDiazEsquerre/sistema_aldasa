@@ -11,7 +11,7 @@ public interface CuentaBancariaService {
 	CuentaBancaria save(CuentaBancaria entity);
 	void delete(CuentaBancaria entity);
 	
-	List<CuentaBancaria> findByEstadoAndMonedaLike(boolean estado, String moneda);
+	List<CuentaBancaria> findByEstado(boolean estado);
 
 
 }

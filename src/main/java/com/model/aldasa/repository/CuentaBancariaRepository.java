@@ -10,6 +10,6 @@ import com.model.aldasa.entity.Profile;
 
 public interface CuentaBancariaRepository  extends JpaRepository<CuentaBancaria, Integer>  {
 
-	List<CuentaBancaria> findByEstadoAndMonedaLike(boolean estado, String moneda);
+	List<CuentaBancaria> findByEstado(boolean estado);
 
 }
