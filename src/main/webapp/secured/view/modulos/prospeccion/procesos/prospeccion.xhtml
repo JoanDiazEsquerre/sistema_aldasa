@@ -318,7 +318,7 @@
 						
 									
 						<p:fileUpload value="#{prospeccionBean.file}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>			  
-        				<p:commandButton  value="Guardar" update=":formEvents:tabOpciones:gridRequerimiento :formEvents:tabOpciones:idTableReqsep" action="#{prospeccionBean.generarRequerimiento()}" styleClass="mt-3 ui-button-outlined block"/>
+        				<p:commandButton  value="Guardar"  onstart="PF('blockUIWidgetDialogReq').block();" oncomplete="PF('blockUIWidgetDialogReq').unblock();" update=":formEvents:tabOpciones:gridRequerimiento :formEvents:tabOpciones:idTableReqsep" action="#{prospeccionBean.generarRequerimiento()}" styleClass="mt-3 ui-button-outlined block"/>
 						
 					</h:panelGrid>
 					
@@ -373,7 +373,7 @@
 						</p:column>
 						
 						<p:column width="10%" headerText="Voucher" filterMatchMode="contains">
-							<p:commandButton value="VER" oncomplete="PF('dlg').show()" update=":idImg"  process="@this :idImg">
+							<p:commandButton onstart="PF('blockUIWidgetBotonVer').block();" oncomplete="PF('blockUIWidgetBotonVer').unblock();PF('dlg').show()" value="VER" update=":idImg"  process="@this :idImg">
 								<f:setPropertyActionListener value="#{req.nombreImagen}" target="#{loadImageBean.nombreArchivo}"  />
 							</p:commandButton>
 						</p:column>
@@ -529,6 +529,24 @@
         <p:commandButton value="Si" onstart="PF('blockUIWidgetDeleteReq').block();" oncomplete="PF('blockUIWidgetDeleteReq').unblock();PF('deleteReqDialog').hide()" icon="pi pi-check" process="@this" update=":formEvents:tabOpciones:idTableReqsep :form:tabView:idTableProy" actionListener="#{prospeccionBean.deleteRequerimieto}" />
         <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('deleteReqDialog').hide()" />
     </p:confirmDialog>
+    
+    <pe:blockUI widgetVar="blockUIWidget">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    
+    <pe:blockUI target="dialogPro" widgetVar="blockUIWidgetDialogReq">  
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    
+    <pe:blockUI target="dialogPro" widgetVar="blockUIWidgetBotonVer">  
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
 	
 	<script>
     PrimeFaces.locales['es'] = {

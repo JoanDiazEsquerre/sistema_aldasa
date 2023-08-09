@@ -83,7 +83,7 @@
 			</p:column>
 			
 			<p:column width="10%" headerText="Voucher" filterMatchMode="contains">
-				<p:commandButton value="VER" oncomplete="PF('dlg').show()" update=":idFormImagen" process="@this :idFormImagen:tvVoucher:imagenLoad" actionListener="#{requerimientoSeparacionBean.botonVer}">
+				<p:commandButton value="VER" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('dlg').show()" update=":idFormImagen" process="@this :idFormImagen:tvVoucher:imagenLoad" actionListener="#{requerimientoSeparacionBean.botonVer}">
 					<f:setPropertyActionListener value="#{req.nombreImagen}" target="#{loadImageBean.nombreArchivo}"  />
 					<f:setPropertyActionListener value="#{req}" target="#{requerimientoSeparacionBean.requerimientoSeparacionSelected}"  />
 				</p:commandButton>

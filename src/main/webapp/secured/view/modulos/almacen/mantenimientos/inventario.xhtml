@@ -78,7 +78,6 @@
 						<p:ajax update=":form:tabView:idTableInventarioBienes" />
 					</p:selectOneMenu>
 				</h:panelGrid>
-				
 		
 				<p:dataTable var="inventario" id="idTableInventarioBienes" value="#{inventarioBean.lstInventarioBienesLazy}" widgetVar="inventarioTable" rowIndexVar="row" style="width:100%" paginator="true" rows="15" size="small" 
 					emptyMessage="No se encontraron Inventarios." paginatorPosition="bottom" rowKey="#{inventario.id}" selection="#{inventarioBean.inventarioBienesSelected}" selectionMode="single"
@@ -282,10 +281,9 @@
 				<h:outputLabel value="Fecha: "  />	               	
 				<p:inputText value="#{inventarioBean.inventarioBienesSelected.ubicacion}" style="margin:10px" modifyValueOnWheel="false" maxlength="100"/>
 				
-				
-	               
-	           
 			</h:panelGrid>
+			
+			<p:commandButton value="Guardar" />
 			
 		</h:form>
 	</p:dialog>
