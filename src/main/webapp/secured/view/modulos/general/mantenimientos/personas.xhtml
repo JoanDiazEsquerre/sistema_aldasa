@@ -23,13 +23,13 @@
 					<span>Lista de Personas</span>
 				</div>
 			</f:facet>
-			<p:ajax event="rowSelect" update=":formDialog :dialogPerson" listener="#{personBean.updatePerson()}" oncomplete="PF('personNewDialog').show();" />
+			<p:ajax  onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('personNewDialog').show();" event="rowSelect" update=":formDialog :dialogPerson" listener="#{personBean.updatePerson()}" />
 
 			<p:column style="width:42px;text-align: left">
 				<f:facet name="header">
-					<p:commandLink action="#{personBean.newPerson()}"
-						update=":formDialog :dialogPerson"
-						oncomplete="PF('personNewDialog').show();" title="NUEVA USUARIO">
+					<p:commandLink onstart="PF('blockUIWidget').block();" 
+					oncomplete="PF('blockUIWidget').unblock();PF('personNewDialog').show();"  action="#{personBean.newPerson()}"
+						update=":formDialog :dialogPerson" title="NUEVA USUARIO">
 						<p:graphicImage width="50" value="/recursos/images/anadir.png" />
 
 					</p:commandLink>
@@ -166,7 +166,7 @@
 						</p:selectOneMenu>
 
 					</h:panelGrid>
-					<p:commandButton value="Guardar" actionListener="#{personBean.savePerson()}" update=":form:idTablePer :formDialog" />
+					<p:commandButton value="Guardar"  onstart="PF('blockUIWidgetDialogPerson').block();" oncomplete="PF('blockUIWidgetDialogPerson').unblock();" actionListener="#{personBean.savePerson()}" update=":form:idTablePer :formDialog" />
 
 				</p:tab>
 				<p:tab title="Cónyuge o Conviviente">
@@ -262,4 +262,18 @@
 			
 		</h:form>
 	</p:dialog>
+	
+	
+	<pe:blockUI target="dialogPerson" widgetVar="blockUIWidgetDialogPerson">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    
+    <pe:blockUI widgetVar="blockUIWidget">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    
 </ui:composition>

@@ -17,7 +17,7 @@
 		
 		<p:dataTable var="empleado" id="idTableEmpleado" value="#{empleadoBean.lstEmpleadoLazy}" widgetVar="empleadoTable" rowIndexVar="row" paginator="true" rows="15" size="small"
 		emptyMessage="No se encontraron empleados."	paginatorPosition="bottom" rowKey="#{empleado.id}" selection="#{empleadoBean.empleadoSelected}" selectionMode="single">
-			<p:ajax event="rowSelect" listener="#{empleadoBean.modifyEmpleado()}" update=":formEmpleadoDialog :dialogEmpleado" oncomplete="PF('empleadoDialog').show();" />
+			<p:ajax event="rowSelect" listener="#{empleadoBean.modifyEmpleado()}" update=":formEmpleadoDialog :dialogEmpleado" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('empleadoDialog').show();" />
 		
 			<f:facet name="header">
 				<div class="p-d-flex p-ai-center p-jc-between">
@@ -29,7 +29,7 @@
 				<f:facet name="header">
 					<p:commandLink action="#{empleadoBean.newEmpleado()}"
 						update=":formEmpleadoDialog :dialogEmpleado"
-						oncomplete="PF('empleadoDialog').show();"
+						onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('empleadoDialog').show();"
 						title="NUEVO EMPLEADO">
 						<p:graphicImage width="50" value="/recursos/images/anadir.png" />
 	
@@ -113,8 +113,21 @@
 					<f:selectItem itemLabel="INACTIVO" itemValue="#{false}" />
 				</p:selectOneMenu>	
 			</h:panelGrid>
-			<p:commandButton value="Guardar" action="#{empleadoBean.saveEmpleado()}" update=":form:idTableEmpleado :formEmpleadoDialog" />
+			<p:commandButton value="Guardar" action="#{empleadoBean.saveEmpleado()}" update=":form:idTableEmpleado :formEmpleadoDialog" 
+			onstart="PF('blockUIWidgetDialogEmpleado').block();" oncomplete="PF('blockUIWidgetDialogEmpleado').unblock();"/>
 		</h:form>
 	</p:dialog>
+	
+	<pe:blockUI target="dialogEmpleado" widgetVar="blockUIWidgetDialogEmpleado">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    
+    <pe:blockUI widgetVar="blockUIWidget">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
 
 </ui:composition>
