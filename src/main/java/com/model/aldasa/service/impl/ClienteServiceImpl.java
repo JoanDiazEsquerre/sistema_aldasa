@@ -62,6 +62,12 @@ public class ClienteServiceImpl implements ClienteService {
 		return clienteRepository.findByRazonSocialLikeAndNombreComercialLikeAndRucLikeAndDniLikeAndEstado(razonSocial, noombreComercial, ruc, dni, status, pageable);
 	}
 
+	@Override
+	public Cliente findByRazonSocialAndEstado(String razonSocial, boolean estado) {
+		// TODO Auto-generated method stub
+		return clienteRepository.findByRazonSocialAndEstado(razonSocial, estado);
+	}
+
 
 
 	

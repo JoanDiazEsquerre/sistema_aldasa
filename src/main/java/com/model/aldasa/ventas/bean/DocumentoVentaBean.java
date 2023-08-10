@@ -187,7 +187,6 @@ public class DocumentoVentaBean extends BaseBean {
 	private TipoOperacion tipoOperacionSelected;
 	private Identificador identificadorSelected;
 	private Person personSelected;
-	private Cliente newCliente;
 
 
 	private DocumentoVenta documentoVentaNew;
@@ -209,7 +208,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private BigDecimal montoImag1, montoImag2, montoImag3, montoImag4, montoImag5, montoImag6, montoImag7, montoImag8, montoImag9, montoImag10;
 	private String nroOperImag1, nroOperImag2, nroOperImag3, nroOperImag4, nroOperImag5, nroOperImag6, nroOperImag7, nroOperImag8, nroOperImag9, nroOperImag10;
 	private String fechaTextoVista, montoLetra;
-	private String  ruc, nombreRazonSocial, direccion, observacion, numero, numeroNota ; 
+	private String  ruc, nombreRazonSocial, direccion, observacion, numero, numeroNota, razonSocialCliente, nombreComercialCliente,rucDniCliente, direccionCliente, email1Cliente, email2Cliente, email3Cliente  ; 
 	private String tipoPago = "Contado";
 	private String tipoPrepago ="PC";
 	private String incluirUltimaCuota = "No";
@@ -223,6 +222,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private boolean pagoTotalPrepago = false;
 	private boolean habilitarBoton = true;
 	private boolean habilitarMontoPrepago = false;
+	private boolean personaNaturalCliente = true;
 
 
 	private String moneda = "S";
@@ -312,33 +312,62 @@ public class DocumentoVentaBean extends BaseBean {
 	
 	public void onChangePerson() {
 		if(personSelected!=null) {
-			newCliente.setPerson(personSelected);
-			newCliente.setRazonSocial(personSelected.getSurnames()+" "+ personSelected.getNames());
-			newCliente.setNombreComercial(personSelected.getSurnames()+" "+ personSelected.getNames());
-			newCliente.setRuc(personSelected.getDni());
-			newCliente.setDireccion(personSelected.getAddress());
-			newCliente.setEstado(true);
-			newCliente.setEmail1Fe(personSelected.getEmail());
-			newCliente.setEmail2Fe(null);
-			newCliente.setEmail3Fe(null);
+			razonSocialCliente=personSelected.getSurnames()+" "+ personSelected.getNames();
+			nombreComercialCliente=personSelected.getSurnames()+" "+ personSelected.getNames();
+			rucDniCliente=personSelected.getDni();
+			direccionCliente=personSelected.getAddress();
+			email1Cliente=personSelected.getEmail();;
+			
 		}else {
-			newCliente.setPerson(personSelected);
-			newCliente.setRazonSocial("");
-			newCliente.setNombreComercial("");
-			newCliente.setRuc("");
-			newCliente.setDireccion("");
-			newCliente.setEstado(true);
-			newCliente.setEmail1Fe("");
-			newCliente.setEmail2Fe(null);
-			newCliente.setEmail3Fe(null);
+			iniciarDatosCliente();
 		}
 	}
 	
-	public void iniciarDatosNewCliente() { 
+	public void iniciarDatosCliente() { 
+		personaNaturalCliente = true;
 		personSelected=null;
-		newCliente = new Cliente();
-		newCliente.setPersonaNatural(true);
-//		newCliente.setFechaRegistro(new Date());
+		razonSocialCliente = "";
+		nombreComercialCliente = "";
+		rucDniCliente = "";
+		direccionCliente = "";
+		email1Cliente = "";
+		email2Cliente = "";
+		email3Cliente = "";
+	}
+	
+	public void saveCliente() {
+		if(personSelected == null) {
+			addErrorMessage("Debes seleccionar una persona o representante.");
+			return;
+		}
+		if(razonSocialCliente.equals("")) {
+			addErrorMessage("Debes ingresar la Razon Social.");
+			return;
+		}
+		if(nombreComercialCliente.equals("")) {
+			addErrorMessage("Debes ingresar un nombre Comercial.");
+			return;
+		}
+		if(rucDniCliente.equals("")) {
+			addErrorMessage("Debes ingresar RUC o DNI.");
+			return;
+		}
+		if(direccionCliente.equals("")) {
+			addErrorMessage("Debes ingresar una direccion.");
+			return;
+		}
+		
+		if(personaNaturalCliente) {
+			Cliente busqueda = clienteService.findByPersonAndEstadoAndPersonaNatural(personSelected, true, personaNaturalCliente);
+		}else {
+			
+		}
+		
+		
+		
+		
+		
+		
 	}
 	
 	
@@ -3749,11 +3778,53 @@ public class DocumentoVentaBean extends BaseBean {
 	public void setLstPerson(List<Person> lstPerson) {
 		this.lstPerson = lstPerson;
 	}
-	public Cliente getNewCliente() {
-		return newCliente;
+	public String getRazonSocialCliente() {
+		return razonSocialCliente;
 	}
-	public void setNewCliente(Cliente newCliente) {
-		this.newCliente = newCliente;
+	public void setRazonSocialCliente(String razonSocialCliente) {
+		this.razonSocialCliente = razonSocialCliente;
+	}
+	public String getNombreComercialCliente() {
+		return nombreComercialCliente;
+	}
+	public void setNombreComercialCliente(String nombreComercialCliente) {
+		this.nombreComercialCliente = nombreComercialCliente;
+	}
+	public String getDireccionCliente() {
+		return direccionCliente;
+	}
+	public void setDireccionCliente(String direccionCliente) {
+		this.direccionCliente = direccionCliente;
+	}
+	public String getEmail1Cliente() {
+		return email1Cliente;
+	}
+	public void setEmail1Cliente(String email1Cliente) {
+		this.email1Cliente = email1Cliente;
+	}
+	public String getEmail2Cliente() {
+		return email2Cliente;
+	}
+	public void setEmail2Cliente(String email2Cliente) {
+		this.email2Cliente = email2Cliente;
+	}
+	public String getEmail3Cliente() {
+		return email3Cliente;
+	}
+	public void setEmail3Cliente(String email3Cliente) {
+		this.email3Cliente = email3Cliente;
+	}
+	public boolean isPersonaNaturalCliente() {
+		return personaNaturalCliente;
+	}
+	public void setPersonaNaturalCliente(boolean personaNaturalCliente) {
+		this.personaNaturalCliente = personaNaturalCliente;
+	}
+	public String getRucDniCliente() {
+		return rucDniCliente;
+	}
+	public void setRucDniCliente(String rucDniCliente) {
+		this.rucDniCliente = rucDniCliente;
 	}
 	
 

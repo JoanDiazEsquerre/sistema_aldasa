@@ -306,7 +306,7 @@
 							
 							<p:row>
 							
-								<p:commandButton actionListener="#{documentoVentaBean.iniciarDatosNewCliente}" update=":formUserDialog" oncomplete="PF('userDialog').show();" icon="pi pi-user-plus" styleClass="rounded-button ui-button-success" style="margin:10px;"/>
+								<p:commandButton actionListener="#{documentoVentaBean.iniciarDatosCliente}" update=":formUserDialog" oncomplete="PF('userDialog').show();" icon="pi pi-user-plus" styleClass="rounded-button ui-button-success" style="margin:10px;"/>
 								
 								<p:column>
 									<h:outputText value="RUC: " rendered="#{documentoVentaBean.tipoDocumentoSelected.abreviatura eq 'F'}" />
@@ -1180,16 +1180,16 @@
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogUser" header="NUEVO CLIENTE" widgetVar="userDialog" resizable="false" closable="true"
 		appendTo="@(body)">
 		<h:form id="formUserDialog">
-			<p:selectOneButton value="#{documentoVentaBean.newCliente.personaNatural}"
+			<p:selectOneButton value="#{documentoVentaBean.personaNaturalCliente}"
 				unselectable="false">
 				<f:selectItem itemLabel="Persona" itemValue="#{true}" />
 				<f:selectItem itemLabel="Empresa" itemValue="#{false}" />
 				<p:ajax update=":formUserDialog"/>
 			</p:selectOneButton>
 			
-			<h:panelGrid columns="4">
-				<h:outputLabel value="Persona: " rendered="#{documentoVentaBean.newCliente.personaNatural eq true}" />
-				<h:outputLabel value="Representante: " rendered="#{documentoVentaBean.newCliente.personaNatural eq false}"/>
+			<h:panelGrid columns="2">
+				<h:outputLabel value="Persona: " rendered="#{documentoVentaBean.personaNaturalCliente eq true}" />
+				<h:outputLabel value="Representante: " rendered="#{documentoVentaBean.personaNaturalCliente eq false}"/>
 				<p:autoComplete  scrollHeight="500" styleClass="ui-autocompV" value="#{documentoVentaBean.personSelected}" converter="#{documentoVentaBean.conversorPerson}" completeMethod="#{documentoVentaBean.completePerson}"  
 	                  var="person" itemLabel="#{person.surnames.concat(' ')}#{person.names}" itemValue="#{person}" forceSelection="true" style="margin:5px;" >
 	            	<p:column width="400px">
@@ -1203,20 +1203,29 @@
 	            </p:autoComplete>
 			
                  <h:outputText value="Razon social:" />
-                 <p:inputText value="#{documentoVentaBean.newCliente.razonSocial}" disabled="#{documentoVentaBean.newCliente.personaNatural}" />
+                 <p:inputText value="#{documentoVentaBean.razonSocialCliente}" />
                  
                  <h:outputText value="Nombre comercial:" />
-                 <p:inputText value="#{documentoVentaBean.newCliente.nombreComercial}" disabled="#{documentoVentaBean.newCliente.personaNatural}" />
+                 <p:inputText value="#{documentoVentaBean.nombreComercialCliente}" />
                  
-                 <h:outputText value="DNI:" rendered="#{documentoVentaBean.newCliente.personaNatural eq true}"/>
-                 <h:outputText value="RUC:" rendered="#{documentoVentaBean.newCliente.personaNatural eq false}"/>
+                 <h:outputText value="DNI:" rendered="#{documentoVentaBean.personaNaturalCliente eq true}"/>
+                 <h:outputText value="RUC:" rendered="#{documentoVentaBean.personaNaturalCliente eq false}"/>
                  
-                 <p:inputText value="#{documentoVentaBean.newCliente.ruc}" disabled="#{documentoVentaBean.newCliente.personaNatural}" />
+                 <p:inputText value="#{documentoVentaBean.rucDniCliente}" />
                  
                  <h:outputText value="Direccion:" />
-                 <p:inputText value="#{documentoVentaBean.newCliente.direccion}" />
+                 <p:inputText value="#{documentoVentaBean.direccionCliente}" />
                  
+                 <h:outputText value="E-mail 1:" />
+                 <p:inputText value="#{documentoVentaBean.email1Cliente}" />
                  
+                 <h:outputText value="E-mail 2:" />
+                 <p:inputText value="#{documentoVentaBean.email2Cliente}" />
+                 
+                 <h:outputText value="E-mail 3:" />
+                 <p:inputText value="#{documentoVentaBean.email3Cliente}" />
+                 
+                 <p:commandButton value="GUARDAR" actionListener="#{documentoVentaBean.saveCliente}" />
 			</h:panelGrid>
 			
 		</h:form>
