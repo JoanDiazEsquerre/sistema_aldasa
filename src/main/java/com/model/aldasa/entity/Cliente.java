@@ -30,6 +30,7 @@ public class Cliente {
 	private String nombreComercial;
 	
 	private String ruc;
+	private String dni;
 	private String direccion;
 	
 	@Column(name="personanatural")
@@ -132,4 +133,11 @@ public class Cliente {
 	public void setEmail3Fe(String email3Fe) {
 		this.email3Fe = email3Fe;
 	}
+	public String getDni() {
+		return dni;
+	}
+	public void setDni(String dni) {
+		this.dni = dni;
+	}
+	
 }

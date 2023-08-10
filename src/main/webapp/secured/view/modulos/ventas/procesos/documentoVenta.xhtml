@@ -306,7 +306,7 @@
 							
 							<p:row>
 							
-								<p:commandButton actionListener="#{documentoVentaBean.iniciarDatosNewCliente}" oncomplete="PF('userDialog').show();" icon="pi pi-user-plus" styleClass="rounded-button ui-button-success" style="margin:10px;"/>
+								<p:commandButton actionListener="#{documentoVentaBean.iniciarDatosNewCliente}" update=":formUserDialog" oncomplete="PF('userDialog').show();" icon="pi pi-user-plus" styleClass="rounded-button ui-button-success" style="margin:10px;"/>
 								
 								<p:column>
 									<h:outputText value="RUC: " rendered="#{documentoVentaBean.tipoDocumentoSelected.abreviatura eq 'F'}" />
@@ -1177,39 +1177,45 @@
 		</h:form>
 	</p:dialog>
 	
-	<p:dialog modal="true" height="600px" dynamic="true" closeOnEscape="true" id="dialogUser" header="DATOS DEL USUARIO" widgetVar="userDialog" resizable="false" closable="true"
-		appendTo="@(body)"  width="60%">
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogUser" header="NUEVO CLIENTE" widgetVar="userDialog" resizable="false" closable="true"
+		appendTo="@(body)">
 		<h:form id="formUserDialog">
-		
-			<h:outputLabel for="idCliente" value="Persona: " />
-			<p:autoComplete  scrollHeight="500" styleClass="ui-autocompV" value="#{documentoVentaBean.newCliente}" converter="#{documentoVentaBean.conversorCliente}" id="idCliente" completeMethod="#{documentoVentaBean.completeCliente}"  
-                  var="cliente" itemLabel="#{cliente.person.surnames.concat(' ')}#{cliente.person.names}" itemValue="#{cliente}" forceSelection="true" style="margin:5px;" >
-            	<p:column width="400px">
-                	<h:outputLabel value="#{cliente.person.surnames} #{cliente.person.names}" /> 
-                </p:column>
-                <p:column width="400px">
-                	<h:outputLabel value="#{cliente.person.dni}" /> 
-                </p:column> 
-                 
-                 <p:ajax event="blur" update=":formUserDialog" />
-            </p:autoComplete>
+			<p:selectOneButton value="#{documentoVentaBean.newCliente.personaNatural}"
+				unselectable="false">
+				<f:selectItem itemLabel="Persona" itemValue="#{true}" />
+				<f:selectItem itemLabel="Empresa" itemValue="#{false}" />
+				<p:ajax update=":formUserDialog"/>
+			</p:selectOneButton>
 			
 			<h:panelGrid columns="4">
+				<h:outputLabel value="Persona: " rendered="#{documentoVentaBean.newCliente.personaNatural eq true}" />
+				<h:outputLabel value="Representante: " rendered="#{documentoVentaBean.newCliente.personaNatural eq false}"/>
+				<p:autoComplete  scrollHeight="500" styleClass="ui-autocompV" value="#{documentoVentaBean.personSelected}" converter="#{documentoVentaBean.conversorPerson}" completeMethod="#{documentoVentaBean.completePerson}"  
+	                  var="person" itemLabel="#{person.surnames.concat(' ')}#{person.names}" itemValue="#{person}" forceSelection="true" style="margin:5px;" >
+	            	<p:column width="400px">
+	                	<h:outputLabel value="#{person.surnames} #{person.names}" /> 
+	                </p:column>
+	                <p:column width="400px">
+	                	<h:outputLabel value="#{person.dni}" /> 
+	                </p:column> 
+	                 
+	                 <p:ajax event="change" update=":formUserDialog" listener="#{documentoVentaBean.onChangePerson}" />
+	            </p:autoComplete>
 			
                  <h:outputText value="Razon social:" />
-                 <p:inputText value="#{documentoVentaBean.newCliente.razonSocial}" />
+                 <p:inputText value="#{documentoVentaBean.newCliente.razonSocial}" disabled="#{documentoVentaBean.newCliente.personaNatural}" />
                  
                  <h:outputText value="Nombre comercial:" />
-                 <p:inputText value="#{documentoVentaBean.newCliente.nombreComercial}" />
+                 <p:inputText value="#{documentoVentaBean.newCliente.nombreComercial}" disabled="#{documentoVentaBean.newCliente.personaNatural}" />
                  
-                 <h:outputText value="Ruc:" />
-                 <p:inputText value="#{documentoVentaBean.newCliente.ruc}" />
+                 <h:outputText value="DNI:" rendered="#{documentoVentaBean.newCliente.personaNatural eq true}"/>
+                 <h:outputText value="RUC:" rendered="#{documentoVentaBean.newCliente.personaNatural eq false}"/>
+                 
+                 <p:inputText value="#{documentoVentaBean.newCliente.ruc}" disabled="#{documentoVentaBean.newCliente.personaNatural}" />
                  
                  <h:outputText value="Direccion:" />
                  <p:inputText value="#{documentoVentaBean.newCliente.direccion}" />
                  
-                 <h:outputText value="Fecha de registro:" />
-                 <p:datePicker value="#{documentoVentaBean.newCliente.fechaRegistro}" />
                  
 			</h:panelGrid>
 			

@@ -169,7 +169,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private List<MotivoNota> lstMotivoNota = new ArrayList<>();
 	private List<TipoOperacion> lstTipoOperacion = new ArrayList<>();
 	private List<Identificador> lstIdentificador = new ArrayList<>();
-	private List<Cliente> lstCliente;
+	private List<Person> lstPerson;
 
 	
 	private DocumentoVenta documentoVentaSelected ;
@@ -307,11 +307,38 @@ public class DocumentoVentaBean extends BaseBean {
 		lstIdentificador = identificadorService.findByEstado(true); 
 		numMuestraImagen=1;
 		fechaEnvioSunat= new Date();
-		lstCliente=clienteService.findByEstado(true);
+		lstPerson=personService.findByStatus(true);
 	}
 	
-	public void iniciarDatosNewCliente() {
-		
+	public void onChangePerson() {
+		if(personSelected!=null) {
+			newCliente.setPerson(personSelected);
+			newCliente.setRazonSocial(personSelected.getSurnames()+" "+ personSelected.getNames());
+			newCliente.setNombreComercial(personSelected.getSurnames()+" "+ personSelected.getNames());
+			newCliente.setRuc(personSelected.getDni());
+			newCliente.setDireccion(personSelected.getAddress());
+			newCliente.setEstado(true);
+			newCliente.setEmail1Fe(personSelected.getEmail());
+			newCliente.setEmail2Fe(null);
+			newCliente.setEmail3Fe(null);
+		}else {
+			newCliente.setPerson(personSelected);
+			newCliente.setRazonSocial("");
+			newCliente.setNombreComercial("");
+			newCliente.setRuc("");
+			newCliente.setDireccion("");
+			newCliente.setEstado(true);
+			newCliente.setEmail1Fe("");
+			newCliente.setEmail2Fe(null);
+			newCliente.setEmail3Fe(null);
+		}
+	}
+	
+	public void iniciarDatosNewCliente() { 
+		personSelected=null;
+		newCliente = new Cliente();
+		newCliente.setPersonaNatural(true);
+//		newCliente.setFechaRegistro(new Date());
 	}
 	
 	
@@ -2674,15 +2701,15 @@ public class DocumentoVentaBean extends BaseBean {
         }
     }
 	
-	public Converter getConversorCliente() {
+	public Converter getConversorPerson() {
         return new Converter() {
             @Override
             public Object getAsObject(FacesContext context, UIComponent component, String value) {
                 if (value.trim().equals("") || value == null || value.trim().equals("null")) {
                     return null;
                 } else {
-                	Cliente c = null;
-                    for (Cliente si : lstCliente) {
+                	Person c = null;
+                    for (Person si : lstPerson) {
                         if (si.getId().toString().equals(value)) {
                             c = si;
                         }
@@ -2696,16 +2723,16 @@ public class DocumentoVentaBean extends BaseBean {
                 if (value == null || value.equals("")) {
                     return "";
                 } else {
-                    return ((Cliente) value).getId() + "";
+                    return ((Person) value).getId() + "";
                 }
             }
         };
     }
 	
-	public List<Cliente> completeCliente(String query) {
-        List<Cliente> lista = new ArrayList<>();
-        for (Cliente c : lstCliente) {
-            if (c.getPerson().getSurnames().toUpperCase().contains(query.toUpperCase()) || c.getPerson().getNames().toUpperCase().contains(query.toUpperCase()) || c.getPerson().getDni().toUpperCase().contains(query.toUpperCase())) {
+	public List<Person> completePerson(String query) {
+        List<Person> lista = new ArrayList<>();
+        for (Person c : lstPerson) {
+            if (c.getSurnames().toUpperCase().contains(query.toUpperCase()) || c.getNames().toUpperCase().contains(query.toUpperCase()) || c.getDni().toUpperCase().contains(query.toUpperCase())) {
                 lista.add(c);
             }
         }
@@ -3716,11 +3743,11 @@ public class DocumentoVentaBean extends BaseBean {
 	public void setUsuarioLogin(Usuario usuarioLogin) {
 		this.usuarioLogin = usuarioLogin;
 	}
-	public List<Cliente> getLstCliente() {
-		return lstCliente;
+	public List<Person> getLstPerson() {
+		return lstPerson;
 	}
-	public void setLstCliente(List<Cliente> lstCliente) {
-		this.lstCliente = lstCliente;
+	public void setLstPerson(List<Person> lstPerson) {
+		this.lstPerson = lstPerson;
 	}
 	public Cliente getNewCliente() {
 		return newCliente;
