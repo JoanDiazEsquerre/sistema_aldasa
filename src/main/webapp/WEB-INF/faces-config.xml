@@ -843,5 +843,15 @@
 			<value>#{navegacionBean}</value>
 		</managed-property>
 	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>clienteBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.general.bean.ClienteBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>clienteService</property-name>
+			<value>#{clienteService}</value>
+		</managed-property>
+	</managed-bean>
 		
 </faces-config>

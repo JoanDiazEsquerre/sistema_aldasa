@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Cliente;
@@ -51,6 +53,13 @@ public class ClienteServiceImpl implements ClienteService {
 	public List<Cliente> findByEstado(boolean estado) {
 		// TODO Auto-generated method stub
 		return clienteRepository.findByEstado(estado);
+	}
+
+	@Override
+	public Page<Cliente> findByRazonSocialLikeAndNombreComercialLikeAndRucLikeAndDniLikeAndEstado(String razonSocial,
+			String noombreComercial, String ruc, String dni, boolean status, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return clienteRepository.findByRazonSocialLikeAndNombreComercialLikeAndRucLikeAndDniLikeAndEstado(razonSocial, noombreComercial, ruc, dni, status, pageable);
 	}
 
 

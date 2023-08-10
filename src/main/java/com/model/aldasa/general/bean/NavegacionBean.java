@@ -47,7 +47,7 @@ public class NavegacionBean implements Serializable  {
 	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas, menuAlmacen;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
 					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato, subMenuDocumentoVentas, 
-					subMenuDocumentoVenta, subMenuInventario;
+					subMenuDocumentoVenta, subMenuInventario, subMenuCliente;
 	
 	private int[] permisoProspectos;
 	private int[] permisoProspeccion;
@@ -74,6 +74,7 @@ public class NavegacionBean implements Serializable  {
 	private int[] permisoReporteDocumentoVentas;
 	private int[] permisoDocumentoVenta;
 	private int[] permisoInventario;
+	private int[] permisoCliente;
 
 	@PostConstruct
 	public void init() {
@@ -113,6 +114,7 @@ public class NavegacionBean implements Serializable  {
 		permisoReporteDocumentoVentas= obtenerPermisosPorPerfil(23);
 		permisoAsistencia= obtenerPermisosPorPerfil(24);
 		permisoInventario= obtenerPermisosPorPerfil(25);
+		permisoCliente= obtenerPermisosPorPerfil(26);
 		
 		permisoPantallas();
 	}
@@ -187,10 +189,11 @@ public class NavegacionBean implements Serializable  {
 		subMenuPerfiles= validaPermiso(permisoPerfiles);
 		subMenuEquipos= validaPermiso(permisoEquipos);
 		subMenuEmpleado= validaPermiso(permisoEmpleado);
+		subMenuCliente= validaPermiso(permisoCliente);
 		subMenuComision= validaPermiso(permisoComision);
 		subMenuCambiarContrasenia= validaPermiso(permisoCambiarConstrasenia);
 		
-		if(subMenuPersonas || subMenuUsuarios || subMenuPerfiles || subMenuEquipos || subMenuEmpleado || subMenuComision || subMenuCambiarContrasenia) {
+		if(subMenuPersonas || subMenuUsuarios || subMenuPerfiles || subMenuEquipos || subMenuEmpleado || subMenuCliente || subMenuComision || subMenuCambiarContrasenia) {
 			menuMantenimiento=true;
 		}
 		
@@ -297,6 +300,10 @@ public class NavegacionBean implements Serializable  {
 
 	public void getMantenimientoEmpleadoPage() {
 		ruta = "modulos/general/mantenimientos/empleado.xhtml";
+	}
+	
+	public void getMantenimientoClientePage() {
+		ruta = "modulos/general/mantenimientos/cliente.xhtml";
 	}
 
 	public void getMantenimientoComisionPage() {
@@ -763,6 +770,18 @@ public class NavegacionBean implements Serializable  {
 	}
 	public void setPermisoInventario(int[] permisoInventario) {
 		this.permisoInventario = permisoInventario;
+	}
+	public boolean isSubMenuCliente() {
+		return subMenuCliente;
+	}
+	public void setSubMenuCliente(boolean subMenuCliente) {
+		this.subMenuCliente = subMenuCliente;
+	}
+	public int[] getPermisoCliente() {
+		return permisoCliente;
+	}
+	public void setPermisoCliente(int[] permisoCliente) {
+		this.permisoCliente = permisoCliente;
 	}
 	
 	

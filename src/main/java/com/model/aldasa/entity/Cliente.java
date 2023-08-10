@@ -54,6 +54,8 @@ public class Cliente {
 	@Column(name="email3fe")
 	private String email3Fe;
 
+	
+	
 
 	public Integer getId() {
 		return id;
