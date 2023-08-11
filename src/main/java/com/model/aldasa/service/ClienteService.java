@@ -18,8 +18,9 @@ public interface ClienteService {
 	
 	Cliente findByPersonAndEstado (Person person, boolean estado);
 	Cliente findByPersonAndEstadoAndPersonaNatural (Person person, boolean estado, boolean personaNatural);
-	Cliente findByRazonSocialAndEstado (String razonSocial, boolean estado);
+	Cliente findByRucAndEstado (String ruc, boolean estado);
 	List<Cliente> findByEstado (boolean estado);
+	List<Cliente> findByEstadoAndPersonaNatural (boolean estado, boolean personaNatural);
 	
 	Page<Cliente> findByRazonSocialLikeAndNombreComercialLikeAndRucLikeAndDniLikeAndEstado(String razonSocial,String noombreComercial,String ruc,String dni, boolean status, Pageable pageable);
 

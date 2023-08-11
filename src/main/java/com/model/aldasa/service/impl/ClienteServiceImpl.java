@@ -63,9 +63,15 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	@Override
-	public Cliente findByRazonSocialAndEstado(String razonSocial, boolean estado) {
+	public Cliente findByRucAndEstado(String ruc, boolean estado) {
 		// TODO Auto-generated method stub
-		return clienteRepository.findByRazonSocialAndEstado(razonSocial, estado);
+		return clienteRepository.findByRucAndEstado(ruc, estado);
+	}
+
+	@Override
+	public List<Cliente> findByEstadoAndPersonaNatural(boolean estado, boolean personaNatural) {
+		// TODO Auto-generated method stub
+		return clienteRepository.findByEstadoAndPersonaNatural(estado, personaNatural);
 	}
 
 

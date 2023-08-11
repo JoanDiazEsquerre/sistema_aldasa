@@ -170,6 +170,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private List<TipoOperacion> lstTipoOperacion = new ArrayList<>();
 	private List<Identificador> lstIdentificador = new ArrayList<>();
 	private List<Person> lstPerson;
+	private List<Cliente> lstCliente;
 
 	
 	private DocumentoVenta documentoVentaSelected ;
@@ -192,11 +193,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private DocumentoVenta documentoVentaNew;
 	private DetalleDocumentoVenta detalleDocumentoVentaSelected;
 	private DetalleDocumentoVenta detalleDocumentoVenta;
-	private Producto productoCuota;
-	private Producto productoInteres;
-	private Producto productoVoucher;
-	private Producto productoAmortizacion;
-	private Producto productoAdelanto;
+	private Producto productoCuota,productoAdelanto,productoInteres, productoVoucher,productoAmortizacion;
 	private Person persona;
 	private Usuario usuarioLogin = new Usuario();
 	
@@ -208,7 +205,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private BigDecimal montoImag1, montoImag2, montoImag3, montoImag4, montoImag5, montoImag6, montoImag7, montoImag8, montoImag9, montoImag10;
 	private String nroOperImag1, nroOperImag2, nroOperImag3, nroOperImag4, nroOperImag5, nroOperImag6, nroOperImag7, nroOperImag8, nroOperImag9, nroOperImag10;
 	private String fechaTextoVista, montoLetra;
-	private String  ruc, nombreRazonSocial, direccion, observacion, numero, numeroNota, razonSocialCliente, nombreComercialCliente,rucDniCliente, direccionCliente, email1Cliente, email2Cliente, email3Cliente  ; 
+	private String observacion, numero, numeroNota, razonSocialCliente, nombreComercialCliente,rucDniCliente, direccionCliente, email1Cliente, email2Cliente, email3Cliente  ; 
 	private String tipoPago = "Contado";
 	private String tipoPrepago ="PC";
 	private String incluirUltimaCuota = "No";
@@ -310,6 +307,8 @@ public class DocumentoVentaBean extends BaseBean {
 		lstPerson=personService.findByStatus(true);
 	}
 	
+	
+	
 	public void onChangePerson() {
 		if(personSelected!=null) {
 			razonSocialCliente=personSelected.getSurnames()+" "+ personSelected.getNames();
@@ -351,25 +350,84 @@ public class DocumentoVentaBean extends BaseBean {
 		if(rucDniCliente.equals("")) {
 			addErrorMessage("Debes ingresar RUC o DNI.");
 			return;
+		}else {
+			if(!personaNaturalCliente) {
+				if(!validarRuc(rucDniCliente)) {
+					return;
+				}
+			}
+			
 		}
 		if(direccionCliente.equals("")) {
 			addErrorMessage("Debes ingresar una direccion.");
 			return;
 		}
 		
+		Cliente busqueda = null;
 		if(personaNaturalCliente) {
-			Cliente busqueda = clienteService.findByPersonAndEstadoAndPersonaNatural(personSelected, true, personaNaturalCliente);
+			busqueda = clienteService.findByPersonAndEstadoAndPersonaNatural(personSelected, true, personaNaturalCliente);
+			if(busqueda!=null) {
+				addErrorMessage("Ya existe el cliente."); 
+				return;
+			}
 		}else {
-			
+			busqueda = clienteService.findByRucAndEstado(rucDniCliente, true);
+			if(busqueda!=null) {
+				addErrorMessage("Ya existe un cliente con RUC "+ rucDniCliente); 
+				return;
+			}
 		}
 		
+		Cliente nuevoCliente = new Cliente();
+		nuevoCliente.setPerson(personSelected);
+		nuevoCliente.setRazonSocial(razonSocialCliente);
+		nuevoCliente.setNombreComercial(nombreComercialCliente);
+		if(personaNaturalCliente) {
+			nuevoCliente.setDni(rucDniCliente);
+		}else {
+			nuevoCliente.setRuc(rucDniCliente);
+		}
+		nuevoCliente.setDireccion(direccionCliente);
+		nuevoCliente.setPersonaNatural(personaNaturalCliente);
+		nuevoCliente.setEstado(true);
+		nuevoCliente.setFechaRegistro(new Date());
+		nuevoCliente.setIdUsuarioRegistro(navegacionBean.getUsuarioLogin());
+		nuevoCliente.setEmail1Fe(email1Cliente);
+		nuevoCliente.setEmail2Fe(email2Cliente);
+		nuevoCliente.setEmail3Fe(email3Cliente);
+		clienteService.save(nuevoCliente);
 		
-		
-		
-		
-		
+		listarClientes();
+		addInfoMessage("Se registro correctamente el cliente.");
+		PrimeFaces.current().executeScript("PF('clienteDialog').hide();"); 
 	}
-	
+		
+		
+	public boolean validarRuc(String ruc) {
+		if(ruc.length()!=11) {
+			addErrorMessage("El RUC debe tener 11 dígitos.");
+			return false;
+		}
+		
+		boolean valor = false;
+		
+		
+		String primerosNumeros =ruc.substring(0,2);
+		
+		if(primerosNumeros.equals("10"))valor = true;
+		
+		if(primerosNumeros.equals("15"))valor = true;
+		
+		if(primerosNumeros.equals("17"))valor = true;
+		
+		if(primerosNumeros.equals("20"))valor = true;
+		
+		if(!valor) addErrorMessage("Ruc incorrecto, debe iniciar con 10, 15, 17 o 20");
+		
+		
+		
+		return valor;
+	}
 	
 	public void enviarDocumentoSunatMasivo() {
 		if(fechaEnvioSunat ==  null) {
@@ -1232,12 +1290,6 @@ public class DocumentoVentaBean extends BaseBean {
 		lstDetalleDocumentoVentaSelected = detalleDocumentoVentaService.findByDocumentoVentaAndEstado(documentoVentaSelected, true);
 	}
 	
-	
-	public void listarNombreRazonSocial() {
-		DocumentoVenta documento = new DocumentoVenta();
-		documento.getRazonSocial();
-	}
-	
 	public String extension(String filename) {
 		String valor = "" ;
 		int index = filename.lastIndexOf('.');
@@ -1413,41 +1465,8 @@ public class DocumentoVentaBean extends BaseBean {
 			return;
 		}
 		
-		if(ruc.equals("")) {
-			if(tipoDocumentoSelected.getAbreviatura().equals("B")) {
-				addErrorMessage("Ingresar DNI.");
-			}else {
-				addErrorMessage("Ingresar RUC.");
-			}
-			return;
-		}else {
-			if(tipoDocumentoSelected.getAbreviatura().equals("F")) {
-				if(ruc.length()<11) {
-					addErrorMessage("Ingresar un RUC válido.");
-					return;
-				}
-				
-				String primerosNumeros = ruc.charAt(0) + ruc.charAt(1) + "";
-				if(!primerosNumeros.equals("10") && !primerosNumeros.equals("15") && !primerosNumeros.equals("17") && !primerosNumeros.equals("20") ) {
-					addErrorMessage("Ruc incorrecto, debe iniciar con 10, 15, 17 o 20");
-					return;
-				}
-			}
-		}
-		
-		if(nombreRazonSocial.equals("")) {
-			if(ruc.equals("")) {
-				if(tipoDocumentoSelected.getAbreviatura().equals("B")) {
-					addErrorMessage("Ingresar nombre.");
-				}else {
-					addErrorMessage("Ingresar razón social.");
-				}
-				return;
-			}
-		}
-		
-		if(direccion.equals("")) {
-			addErrorMessage("Ingresar dirección.");
+		if(clienteSelected == null) {
+			addErrorMessage("Debes seleccionar un cliente");
 			return;
 		}
 
@@ -1488,34 +1507,9 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	
 	public void saveDocumentoVenta() {
-		
-		if(clienteSelected==null) {
-			Cliente cliente = new Cliente();
-			
-			cliente.setPerson(persona);
-			cliente.setRazonSocial(nombreRazonSocial);
-			cliente.setNombreComercial("");   
-			cliente.setRuc(ruc);
-			cliente.setDireccion(direccion);
-			cliente.setPersonaNatural(tipoDocumentoSelected.getAbreviatura().equals("B")?true:false);
-			cliente.setEstado(true);
-			cliente.setFechaRegistro(new Date());
-			cliente.setIdUsuarioRegistro(navegacionBean.getUsuarioLogin());
-			clienteSelected=clienteService.save(cliente);
-			
-			if(clienteSelected==null) {
-				addErrorMessage("No se puede registrar el cliente.");
-				return;
-			}
-			
-		}else {
 //			aqui actualiza los datos del cliente y guarda run razon doreccion
-			clienteSelected.setPerson(persona);
-			if(tipoDocumentoSelected.getAbreviatura().equals("F"))clienteSelected.setRuc(ruc);
-			clienteSelected.setNombreComercial(nombreRazonSocial);
-			clienteSelected.setDireccion(direccion);
-			clienteService.save(clienteSelected);
-		}
+		clienteService.save(clienteSelected);
+		
 		
 		DocumentoVenta documentoVenta = new DocumentoVenta();
 		documentoVenta.setCliente(clienteSelected);
@@ -1524,10 +1518,14 @@ public class DocumentoVentaBean extends BaseBean {
 		documentoVenta.setTipoDocumento(tipoDocumentoSelected);
 		documentoVenta.setSerie(serieDocumentoSelected.getSerie());
 		documentoVenta.setNumero(""); // vamos a setear el numero despues de haber guardado el documento
-		documentoVenta.setRuc(ruc);
-		documentoVenta.setRazonSocial(nombreRazonSocial);
+		if(tipoDocumentoSelected.getAbreviatura().equals("F")) {
+			documentoVenta.setRuc(clienteSelected.getRuc());
+		}else {
+			documentoVenta.setRuc(clienteSelected.getDni());
+		}
+		documentoVenta.setRazonSocial(clienteSelected.getRazonSocial());
 		documentoVenta.setNombreComercial(clienteSelected.getNombreComercial());
-		documentoVenta.setDireccion(direccion);
+		documentoVenta.setDireccion(clienteSelected.getDireccion());
 		documentoVenta.setFechaEmision(fechaEmision);
 		documentoVenta.setFechaVencimiento(fechaEmision);
 		documentoVenta.setTipoMoneda(moneda);
@@ -1554,9 +1552,7 @@ public class DocumentoVentaBean extends BaseBean {
 			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
 			
 			lstDetalleDocumentoVenta.clear();// claer es limpiar en ingles prueba
-			ruc = "";
-			nombreRazonSocial = "";
-			direccion = "";
+			clienteSelected=null;
 			calcularTotales();
 			
 			subirImagenes(documento.getId() + "");
@@ -1758,9 +1754,6 @@ public class DocumentoVentaBean extends BaseBean {
   }
 	     
 	public void cancelarDocumentoVenta() {
-		ruc="";
-		nombreRazonSocial="";
-		direccion="";
 		observacion="";
 		clienteSelected=null;
 		lstDetalleDocumentoVenta.clear();
@@ -1806,23 +1799,16 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	
 	public void changeTipoDocumentoVenta() {
-		if(clienteSelected!=null) {
+		if(persona !=null) {
 			if(tipoDocumentoSelected.getAbreviatura().equals("B")) {
-				clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(clienteSelected.getPerson(), true, true);
-				if(clienteSelected != null) {
-					ruc = clienteSelected.getPerson().getDni();
-					nombreRazonSocial = clienteSelected.getRazonSocial();
-					direccion = clienteSelected.getDireccion();
-				}
+				clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(persona, true, true);
 			}else {
-				clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(clienteSelected.getPerson(), true, false);
-				if(clienteSelected != null) {
-					ruc = clienteSelected.getRuc();
-					nombreRazonSocial = clienteSelected.getRazonSocial();
-					direccion = clienteSelected.getDireccion();
-				}
+				clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(persona, true, false);
 			} 
 		}
+		
+			
+		
 	}
 	
 	public void importarCuota() {
@@ -1849,17 +1835,6 @@ public class DocumentoVentaBean extends BaseBean {
 		}else {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(cuotaSelected.getContrato().getPersonVenta(), true, false);
 		} 
-		
-		if(clienteSelected != null) {
-			ruc = clienteSelected.getRuc();
-			nombreRazonSocial = clienteSelected.getRazonSocial();
-			direccion = clienteSelected.getDireccion();
-		}else {
-			ruc = cuotaSelected.getContrato().getPersonVenta().getDni();
-			nombreRazonSocial = cuotaSelected.getContrato().getPersonVenta().getSurnames() + " " +cuotaSelected.getContrato().getPersonVenta().getNames();
-			direccion = cuotaSelected.getContrato().getPersonVenta().getAddress(); 
-		}
-		
 		
 		if(cuotaSelected.getNroCuota() ==0) {
 			DetalleDocumentoVenta detalle = new DetalleDocumentoVenta();
@@ -1943,19 +1918,7 @@ public class DocumentoVentaBean extends BaseBean {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(voucherSelected.getRequerimientoSeparacion().getProspection().getProspect().getPerson(), true, true);
 		}else {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(voucherSelected.getRequerimientoSeparacion().getProspection().getProspect().getPerson(), true, false);
-		} 
-		
-		if(clienteSelected != null) {
-			ruc = clienteSelected.getRuc();
-			nombreRazonSocial = clienteSelected.getRazonSocial();
-			direccion = clienteSelected.getDireccion();
-		}else {
-			ruc = voucherSelected.getRequerimientoSeparacion().getProspection().getProspect().getPerson().getDni();
-			nombreRazonSocial = voucherSelected.getRequerimientoSeparacion().getProspection().getProspect().getPerson().getSurnames() + " " +voucherSelected.getRequerimientoSeparacion().getProspection().getProspect().getPerson().getNames();
-			direccion = voucherSelected.getRequerimientoSeparacion().getProspection().getProspect().getPerson().getAddress(); 
-		}
-		
-		
+		} 	
 		
 		DetalleDocumentoVenta detalle = new DetalleDocumentoVenta();
 		//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
@@ -2001,16 +1964,6 @@ public class DocumentoVentaBean extends BaseBean {
 		}else {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(prepagoSelected.getContrato().getPersonVenta(), true, false);
 		} 
-		
-		if(clienteSelected != null) {
-			ruc = clienteSelected.getRuc();
-			nombreRazonSocial = clienteSelected.getRazonSocial();
-			direccion = clienteSelected.getDireccion();
-		}else {
-			ruc = prepagoSelected.getContrato().getPersonVenta().getDni();
-			nombreRazonSocial = prepagoSelected.getContrato().getPersonVenta().getSurnames() + " " +prepagoSelected.getContrato().getPersonVenta().getNames();
-			direccion = prepagoSelected.getContrato().getPersonVenta().getAddress(); 
-		}
 		
 		if(prepagoSelected.getCuotaRef()!=null) {
 			cuotaSelected=prepagoSelected.getCuotaRef();
@@ -2064,11 +2017,8 @@ public class DocumentoVentaBean extends BaseBean {
 		calcularTotales();
 		if(lstDetalleDocumentoVenta.isEmpty()) {
 			clienteSelected = null;
-			ruc = "";
-			nombreRazonSocial = "";
-			direccion = "";
 			cuotaSelected = null;
-			
+			persona=null;
 		}
 		addInfoMessage("Detalle eliminado");
 		
@@ -2078,6 +2028,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		documentoVentaNew= new DocumentoVenta(); 
 		documentoVentaNew.setFechaEmision(new Date());
+		persona=null;
 		
 	}
 	
@@ -2087,6 +2038,16 @@ public class DocumentoVentaBean extends BaseBean {
 
 		numero =  String.format("%0" + serieDocumentoSelected.getTamanioNumero()  + "d", Integer.valueOf(serieDocumentoSelected.getNumero()) ); 
 		changeTipoDocumentoVenta();
+		
+		listarClientes();
+	}
+	
+	public void listarClientes() {
+		if(tipoDocumentoSelected.getAbreviatura().equals("B")) {
+			lstCliente = clienteService.findByEstadoAndPersonaNatural(true, true);
+		}else {
+			lstCliente = clienteService.findByEstadoAndPersonaNatural(true, false);
+		}
 	}
 	
 	public void listarSerieNota() {
@@ -2768,6 +2729,51 @@ public class DocumentoVentaBean extends BaseBean {
         return lista;
     }
 	
+	public Converter getConversorCliente() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Cliente c = null;
+                    for (Cliente si : lstCliente) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Cliente) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public List<Cliente> completeCliente(String query) {
+        List<Cliente> lista = new ArrayList<>();
+        for (Cliente c : lstCliente) {
+        	if(tipoDocumentoSelected.getAbreviatura().equals("F")) {
+        		if (c.getRuc().toUpperCase().contains(query.toUpperCase()) ){
+                    lista.add(c);
+                } 
+        	}else {
+        		if (c.getDni().toUpperCase().contains(query.toUpperCase()) ){
+                	lista.add(c);
+                }
+        	}
+            
+        }
+        return lista;
+    }
+	
 	
 	public boolean isEstado() {
 		return estado;
@@ -2876,24 +2882,6 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setVoucherSelected(Voucher voucherSelected) {
 		this.voucherSelected = voucherSelected;
-	}
-	public String getRuc() {
-		return ruc;
-	}
-	public void setRuc(String ruc) {
-		this.ruc = ruc;
-	}
-	public String getNombreRazonSocial() {
-		return nombreRazonSocial;
-	}
-	public void setNombreRazonSocial(String nombreRazonSocial) {
-		this.nombreRazonSocial = nombreRazonSocial;
-	}
-	public String getDireccion() {
-		return direccion;
-	}
-	public void setDireccion(String direccion) {
-		this.direccion = direccion;
 	}
 	public String getTipoPago() {
 		return tipoPago;
@@ -3825,6 +3813,12 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setRucDniCliente(String rucDniCliente) {
 		this.rucDniCliente = rucDniCliente;
+	}
+	public List<Cliente> getLstCliente() {
+		return lstCliente;
+	}
+	public void setLstCliente(List<Cliente> lstCliente) {
+		this.lstCliente = lstCliente;
 	}
 	
 
