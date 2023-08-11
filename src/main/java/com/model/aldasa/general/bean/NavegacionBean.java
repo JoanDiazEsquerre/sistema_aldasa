@@ -177,7 +177,7 @@ public class NavegacionBean implements Serializable  {
 		
 		//******************************************************************************
 		subMenuRankingVentas= validaPermiso(permisoRankingVentas);
-		subMenuDocumentoVentas=validaPermiso(permisoReporteDocumentoVentas);
+		subMenuDocumentoVentas=validaPermiso(permisoDocumentoVenta);
 				
 		if(subMenuRankingVentas || subMenuDocumentoVentas){
 			menuVentas=true;
@@ -201,7 +201,7 @@ public class NavegacionBean implements Serializable  {
 		subMenuReporteAcciones = validaPermiso(permisoReporteAcciones);
 		subMenuReporteLotes = validaPermiso(permisoReporteLotes);
 		subMenuReporteAsistencia = validaPermiso(permisoReporteAsistencia);
-		subMenuDocumentoVenta=validaPermiso(permisoDocumentoVenta);
+		subMenuDocumentoVenta=validaPermiso(permisoReporteDocumentoVentas);
 
 		
 		if(subMenuReporteAcciones || subMenuReporteLotes || subMenuReporteAsistencia || subMenuDocumentoVenta) {

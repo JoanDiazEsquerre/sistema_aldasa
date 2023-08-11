@@ -322,7 +322,7 @@ public class DocumentoVentaBean extends BaseBean {
 		}
 	}
 	
-	public void iniciarDatosCliente() { 
+	public void iniciarDatosCliente() {
 		personaNaturalCliente = true;
 		personSelected=null;
 		razonSocialCliente = "";
