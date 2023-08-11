@@ -2,6 +2,7 @@ package com.model.aldasa.general.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
@@ -34,6 +36,12 @@ public class ClienteBean extends BaseBean implements Serializable{
 	
 	@ManagedProperty(value = "#{clienteService}")
 	private ClienteService clienteService; 
+	
+	@ManagedProperty(value = "#{personService}")
+	private PersonService personService; 
+	
+	@ManagedProperty(value = "#{navegacionBean}")
+	private NavegacionBean navegacionBean; 
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -60,7 +68,8 @@ public class ClienteBean extends BaseBean implements Serializable{
 	
 	@PostConstruct
 	public void init() {
-		
+		iniciarLazy();
+		lstPerson=personService.findByStatus(true);
 	}
 	
 	public void modifyCliente( ) {
@@ -104,7 +113,6 @@ public class ClienteBean extends BaseBean implements Serializable{
             addErrorMessage("Debes seleccionar una persona o representante.");
             return;
         }
-        
         if(razonSocialCliente.equals("")) {
             addErrorMessage("Debes ingresar la Razon Social.");
             return;
@@ -116,9 +124,84 @@ public class ClienteBean extends BaseBean implements Serializable{
         if(rucDniCliente.equals("")) {
             addErrorMessage("Debes ingresar RUC o DNI.");
             return;
+        }else {
+            if(!personaNaturalCliente) {
+                if(!validarRuc(rucDniCliente)) {
+                    return;
+                }
+            }
+            
+        }
+        if(direccionCliente.equals("")) {
+            addErrorMessage("Debes ingresar una direccion.");
+            return;
         }
         
+        Cliente busqueda = null;
+        if(personaNaturalCliente) {
+            busqueda = clienteService.findByPersonAndEstadoAndPersonaNatural(personSelected, true, personaNaturalCliente);
+            if(busqueda!=null) {
+                addErrorMessage("Ya existe el cliente.");
+                return;
+            }
+        }else {
+            busqueda = clienteService.findByRucAndEstado(rucDniCliente, true);
+            if(busqueda!=null) {
+                addErrorMessage("Ya existe un cliente con RUC "+ rucDniCliente);
+                return;
+            }
+        }
         
+        Cliente nuevoCliente = new Cliente();
+        nuevoCliente.setPerson(personSelected);
+        nuevoCliente.setRazonSocial(razonSocialCliente);
+        nuevoCliente.setNombreComercial(nombreComercialCliente);
+        if(personaNaturalCliente) {
+            nuevoCliente.setDni(rucDniCliente);
+            nuevoCliente.setRuc("");
+        }else {
+        	nuevoCliente.setDni("");
+            nuevoCliente.setRuc(rucDniCliente);
+        }
+        nuevoCliente.setDireccion(direccionCliente);
+        nuevoCliente.setPersonaNatural(personaNaturalCliente);
+        nuevoCliente.setEstado(true);
+        nuevoCliente.setFechaRegistro(new Date());
+        nuevoCliente.setIdUsuarioRegistro(navegacionBean.getUsuarioLogin());
+        nuevoCliente.setEmail1Fe(email1Cliente);
+        nuevoCliente.setEmail2Fe(email2Cliente);
+        nuevoCliente.setEmail3Fe(email3Cliente);
+        clienteService.save(nuevoCliente);
+        
+        
+        addInfoMessage("Se registro correctamente el cliente.");
+        PrimeFaces.current().executeScript("PF('clienteDialog').hide();");
+    }
+    
+    public boolean validarRuc(String ruc) {
+        if(ruc.length()!=11) {
+            addErrorMessage("El RUC debe tener 11 dígitos.");
+            return false;
+        }
+        
+        boolean valor = false;
+        
+        
+        String primerosNumeros =ruc.substring(0,2);
+        
+        if(primerosNumeros.equals("10"))valor = true;
+        
+        if(primerosNumeros.equals("15"))valor = true;
+        
+        if(primerosNumeros.equals("17"))valor = true;
+        
+        if(primerosNumeros.equals("20"))valor = true;
+        
+        if(!valor) addErrorMessage("Ruc incorrecto, debe iniciar con 10, 15, 17 o 20");
+        
+        
+        
+        return valor;
     }
 	
 	public void iniciarLazy() {
@@ -314,6 +397,18 @@ public class ClienteBean extends BaseBean implements Serializable{
 	}
 	public void setEmail3Cliente(String email3Cliente) {
 		this.email3Cliente = email3Cliente;
+	}
+	public PersonService getPersonService() {
+		return personService;
+	}
+	public void setPersonService(PersonService personService) {
+		this.personService = personService;
+	}
+	public NavegacionBean getNavegacionBean() {
+		return navegacionBean;
+	}
+	public void setNavegacionBean(NavegacionBean navegacionBean) {
+		this.navegacionBean = navegacionBean;
 	}
 	
 	

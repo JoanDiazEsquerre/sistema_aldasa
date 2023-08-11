@@ -13,9 +13,15 @@
 			<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
 			<p:ajax update=":form:idTableCliente" />
 		</p:selectOneButton>  
+		<p:selectOneButton value="#{clienteBean.estado}" unselectable="false" >
+			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
+			<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
+			<p:ajax update=":form:idTableCliente" />
+		</p:selectOneButton>  
 		
 		<p:dataTable var="cliente" id="idTableCliente" value="#{clienteBean.lstClienteLazy}" widgetVar="clienteTable" rowIndexVar="row" paginator="true" rows="15" size="small"
 		emptyMessage="No se encontraron clientes."	paginatorPosition="bottom" rowKey="#{cliente.id}" selection="#{clienteBean.clienteSelected}" selectionMode="single">
+			
 			<p:ajax event="rowSelect" listener="#{clienteBean.modifyCliente()}" update=":formClienteDialog :dialogCliente" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('clienteDialog').show();" />
 		
 			<f:facet name="header">
