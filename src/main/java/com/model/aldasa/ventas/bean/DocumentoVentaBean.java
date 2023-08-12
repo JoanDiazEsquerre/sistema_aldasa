@@ -215,6 +215,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private String nroOperacionVoucherDialog;
 	private String motivo="";
 	private String motivoSunat="";
+	private String razonSocialText, direccionText, email1Text, email2Text, email3Text;
 
 	private boolean pagoTotalPrepago = false;
 	private boolean habilitarBoton = true;
@@ -528,51 +529,51 @@ public class DocumentoVentaBean extends BaseBean {
                 addErrorMessage("Error al Enviar el comprobante electrónico: " + json_rspta.get("errors"));
             } else {
             	num++;
-            	documentoVentaSelected.setEnvioSunat(true);
+            	docVenta.setEnvioSunat(true);
                 /*JSONParser parsearRsptaDetalleOK = new JSONParser();
                 JSONObject json_rspta_ok = (JSONObject) parsearRsptaDetalleOK.parse(json_rspta.get("invoice").toString());*/
 
                 if (json_rspta.get("aceptada_por_sunat") != null) {
-                    documentoVentaSelected.setEnvioAceptadaPorSunat(json_rspta.get("aceptada_por_sunat").toString());
+                	docVenta.setEnvioAceptadaPorSunat(json_rspta.get("aceptada_por_sunat").toString());
                 }
 
                 if (json_rspta.get("sunat_description") != null) {
-                	documentoVentaSelected.setEnvioSunatDescription(json_rspta.get("sunat_description").toString());
+                	docVenta.setEnvioSunatDescription(json_rspta.get("sunat_description").toString());
                 }
 
                 if (json_rspta.get("sunat_note") != null) {
-                	documentoVentaSelected.setEnvioSunatNote(json_rspta.get("sunat_note").toString());
+                	docVenta.setEnvioSunatNote(json_rspta.get("sunat_note").toString());
                 }
 
                 if (json_rspta.get("sunat_responsecode") != null) {
-                	documentoVentaSelected.setEnvioSunatResponseCode(json_rspta.get("sunat_responsecode").toString());
+                	docVenta.setEnvioSunatResponseCode(json_rspta.get("sunat_responsecode").toString());
                 }
 
                 if (json_rspta.get("sunat_soap_error") != null) {
-                	documentoVentaSelected.setEnvioSunatSoapError(json_rspta.get("sunat_soap_error").toString());
+                	docVenta.setEnvioSunatSoapError(json_rspta.get("sunat_soap_error").toString());
                 }
 
                 if (json_rspta.get("enlace_del_pdf") != null) {
-                	documentoVentaSelected.setEnvioEnlaceDelPdf(json_rspta.get("enlace_del_pdf").toString());
+                	docVenta.setEnvioEnlaceDelPdf(json_rspta.get("enlace_del_pdf").toString());
                 }
 
                 if (json_rspta.get("enlace_del_xml") != null) {
-                	documentoVentaSelected.setEnvioEnlaceDelXml(json_rspta.get("enlace_del_xml").toString());
+                	docVenta.setEnvioEnlaceDelXml(json_rspta.get("enlace_del_xml").toString());
                 }
 
                 if (json_rspta.get("enlace_del_cdr") != null) {
-                	documentoVentaSelected.setEnvioEnlaceDelCdr(json_rspta.get("enlace_del_cdr").toString());
+                	docVenta.setEnvioEnlaceDelCdr(json_rspta.get("enlace_del_cdr").toString());
                 }
 
                 if (json_rspta.get("cadena_para_codigo_qr") != null) {
-                	documentoVentaSelected.setEnvioCadenaCodigoQr(json_rspta.get("cadena_para_codigo_qr").toString());
+                	docVenta.setEnvioCadenaCodigoQr(json_rspta.get("cadena_para_codigo_qr").toString());
                 }
 
                 if (json_rspta.get("codigo_hash") != null) {
-                	documentoVentaSelected.setEnvioCodigoHash(json_rspta.get("codigo_hash").toString());
+                	docVenta.setEnvioCodigoHash(json_rspta.get("codigo_hash").toString());
                 }
 
-                documentoVentaService.save(documentoVentaSelected);
+                documentoVentaService.save(docVenta);
                 addInfoMessage("Documento Electrónico enviado a Sunat Correctamente...");
             }
         }
@@ -1468,6 +1469,15 @@ public class DocumentoVentaBean extends BaseBean {
 		if(clienteSelected == null) {
 			addErrorMessage("Debes seleccionar un cliente");
 			return;
+		}else {
+			if(razonSocialText.equals("")) {
+				addErrorMessage("Ingresar Razon Social para el cliente");
+				return;
+			}
+			if(direccionText.equals("")) {
+				addErrorMessage("Ingresar Direccion para el cliente");
+				return;
+			}
 		}
 
 		BigDecimal sumaMontoVoucher = BigDecimal.ZERO;
@@ -1508,6 +1518,30 @@ public class DocumentoVentaBean extends BaseBean {
 	
 	public void saveDocumentoVenta() {
 //			aqui actualiza los datos del cliente y guarda run razon doreccion
+		clienteSelected.setRazonSocial(razonSocialText);
+		clienteSelected.setDireccion(direccionText);
+		clienteSelected.setEmail1Fe(email1Text);
+		clienteSelected.setEmail2Fe(email2Text);
+		clienteSelected.setEmail3Fe(email3Text);
+
+		if(email1Text!=null) {
+			if(email1Text.equals("")) {
+				clienteSelected.setEmail1Fe(null);
+			}
+		}
+		
+		if(email2Text!=null) {
+			if(email2Text.equals("")) {
+				clienteSelected.setEmail2Fe(null);
+			}
+		}
+		
+		if(email3Text!=null) {
+			if(email3Text.equals("")) {
+				clienteSelected.setEmail3Fe(null);
+			}
+		}
+		
 		clienteService.save(clienteSelected);
 		
 		
@@ -1557,6 +1591,13 @@ public class DocumentoVentaBean extends BaseBean {
 			
 			subirImagenes(documento.getId() + "");
 			setearInfoVoucher();
+			
+			razonSocialText = "";
+			direccionText = "";
+			email1Text = "";
+			email2Text = "";
+			email3Text = "";
+			
 			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
 			addInfoMessage("Se guardó el documento correctamente. "+addMensaje);
 			
@@ -1756,6 +1797,12 @@ public class DocumentoVentaBean extends BaseBean {
 	public void cancelarDocumentoVenta() {
 		observacion="";
 		clienteSelected=null;
+		razonSocialText = "";
+		direccionText = "";
+		email1Text = "";
+		email2Text = "";
+		email3Text = "";
+
 		lstDetalleDocumentoVenta.clear();
 		calcularTotales();
 		numMuestraImagen=1;
@@ -1798,17 +1845,21 @@ public class DocumentoVentaBean extends BaseBean {
 		
 	}
 	
-	public void changeTipoDocumentoVenta() {
-		if(persona !=null) {
-			if(tipoDocumentoSelected.getAbreviatura().equals("B")) {
-				clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(persona, true, true);
-			}else {
-				clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(persona, true, false);
-			} 
+	public void onChangeCliente() {
+		if(clienteSelected !=null) {
+			razonSocialText = clienteSelected.getRazonSocial();
+			direccionText = clienteSelected.getDireccion();
+			email1Text = clienteSelected.getEmail1Fe();
+			email2Text = clienteSelected.getEmail2Fe();
+			email3Text = clienteSelected.getEmail3Fe();
+		}else {
+			razonSocialText = "";
+			direccionText = "";
+			email1Text = "";
+			email2Text = "";
+			email3Text = "";
 		}
-		
-			
-		
+	
 	}
 	
 	public void importarCuota() {
@@ -1834,7 +1885,8 @@ public class DocumentoVentaBean extends BaseBean {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(cuotaSelected.getContrato().getPersonVenta(), true, true);
 		}else {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(cuotaSelected.getContrato().getPersonVenta(), true, false);
-		} 
+		}
+		onChangeCliente();
 		
 		if(cuotaSelected.getNroCuota() ==0) {
 			DetalleDocumentoVenta detalle = new DetalleDocumentoVenta();
@@ -1918,7 +1970,8 @@ public class DocumentoVentaBean extends BaseBean {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(voucherSelected.getRequerimientoSeparacion().getProspection().getProspect().getPerson(), true, true);
 		}else {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(voucherSelected.getRequerimientoSeparacion().getProspection().getProspect().getPerson(), true, false);
-		} 	
+		}
+		onChangeCliente();
 		
 		DetalleDocumentoVenta detalle = new DetalleDocumentoVenta();
 		//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
@@ -1963,7 +2016,8 @@ public class DocumentoVentaBean extends BaseBean {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(prepagoSelected.getContrato().getPersonVenta(), true, true);
 		}else {
 			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(prepagoSelected.getContrato().getPersonVenta(), true, false);
-		} 
+		}
+		onChangeCliente();
 		
 		if(prepagoSelected.getCuotaRef()!=null) {
 			cuotaSelected=prepagoSelected.getCuotaRef();
@@ -2037,7 +2091,7 @@ public class DocumentoVentaBean extends BaseBean {
 		serieDocumentoSelected=lstSerieDocumento.get(0);
 
 		numero =  String.format("%0" + serieDocumentoSelected.getTamanioNumero()  + "d", Integer.valueOf(serieDocumentoSelected.getNumero()) ); 
-		changeTipoDocumentoVenta();
+//		changeTipoDocumentoVenta();
 		
 		listarClientes();
 	}
@@ -3819,6 +3873,36 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setLstCliente(List<Cliente> lstCliente) {
 		this.lstCliente = lstCliente;
+	}
+	public String getRazonSocialText() {
+		return razonSocialText;
+	}
+	public void setRazonSocialText(String razonSocialText) {
+		this.razonSocialText = razonSocialText;
+	}
+	public String getDireccionText() {
+		return direccionText;
+	}
+	public void setDireccionText(String direccionText) {
+		this.direccionText = direccionText;
+	}
+	public String getEmail1Text() {
+		return email1Text;
+	}
+	public void setEmail1Text(String email1Text) {
+		this.email1Text = email1Text;
+	}
+	public String getEmail2Text() {
+		return email2Text;
+	}
+	public void setEmail2Text(String email2Text) {
+		this.email2Text = email2Text;
+	}
+	public String getEmail3Text() {
+		return email3Text;
+	}
+	public void setEmail3Text(String email3Text) {
+		this.email3Text = email3Text;
 	}
 	
 

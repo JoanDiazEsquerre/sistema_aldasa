@@ -122,7 +122,6 @@
 			        	<h:outputLabel value="Tipo Documento:" />
 			        	<p:selectOneMenu value="#{documentoVentaBean.tipoDocumentoEnvioSunat}" converter="#{documentoVentaBean.conversorTipoDocumentoSunat}" style="margin:5px; width:100px" >
 							<f:selectItems value="#{documentoVentaBean.lstTipoDocumentoEnvioSunat}" var="tipoDocumento" itemLabel="#{tipoDocumento.descripcion}" itemValue="#{tipoDocumento}"/>
-							<p:ajax listener="#{documentoVentaBean.listarSerie}" update="optionSerie, num, pnl"/>
 						</p:selectOneMenu>
 						
 						<h:outputLabel value="Fecha:" />
@@ -151,7 +150,7 @@
 					<h:outputLabel value="Documento:" />
 					<p:selectOneMenu id="idTipoComprobante" value="#{documentoVentaBean.tipoDocumentoSelected}" converter="#{documentoVentaBean.conversorTipoDocumento}" style="margin:5px; width:100px" >
 						<f:selectItems value="#{documentoVentaBean.lstTipoDocumento}" var="tipoDocumento" itemLabel="#{tipoDocumento.descripcion}" itemValue="#{tipoDocumento}"/>
-						<p:ajax listener="#{documentoVentaBean.listarSerie}" update="optionSerie, num, pnl"/>
+						<p:ajax listener="#{documentoVentaBean.listarSerie}" update=":form:tabView:optionSerie :form:tabView:num :form:tabView:pnl"/>
 					</p:selectOneMenu>
 					
 					
@@ -159,7 +158,7 @@
 
 					<p:selectOneMenu id="optionSerie" value="#{documentoVentaBean.serieDocumentoSelected}" converter="#{documentoVentaBean.conversorSerie}" style="margin:10px">
 						<f:selectItems value="#{documentoVentaBean.lstSerieDocumento}" var="serie" itemLabel="#{serie.serie}" itemValue="#{serie}" />
-						<p:ajax listener="#{documentoVentaBean.cambiarSerie}" update="num" /> 
+						<p:ajax listener="#{documentoVentaBean.cambiarSerie}" update=":form:tabView:num" /> 
 					</p:selectOneMenu>
 					<p:outputLabel value="-" style="font-weight: bolder"/>
 					<p:inputText value="#{documentoVentaBean.numero}"  style="margin:10px" id="num" disabled="true"/>
@@ -302,7 +301,8 @@
 				
 				<h:panelGrid style="width:60%;float:left" columns="1" > 
 					<p:panel id="pnl" header="Datos del Cliente" toggleable="true" toggleSpeed="500" widgetVar="panelDatos" style="width:100%">
-						<h:panelGrid styleClass="companyHeaderGrid">
+						<h:panelGrid styleClass="companyHeaderGrid" >
+							
 							<p:row>
 								<p:commandButton actionListener="#{documentoVentaBean.iniciarDatosCliente}" title="AGREGAR CLIENTE" update=":formUserDialog" oncomplete="PF('clienteDialog').show();" icon="pi pi-user-plus" styleClass="rounded-button ui-button-success" style="margin:10px;"/>
 								<p:column>
@@ -319,7 +319,7 @@
 						                <p:column width="400px">
 						                	<h:outputLabel value="#{cli.razonSocial}" /> 
 						                </p:column> 
-						                <p:ajax event="change" update=":form:tabView:pnl" />						                						              
+						                <p:ajax event="change" listener="#{documentoVentaBean.onChangeCliente}" update=":form:tabView:pnl" />						                						              
 						            </p:autoComplete>
 								</p:column>
 								
@@ -328,7 +328,7 @@
 									<h:outputText style="margin-left:20px" value="Razón Social: " rendered="#{documentoVentaBean.tipoDocumentoSelected.abreviatura eq 'F'}" />
 								</p:column>
 								<p:column>
-									<p:inputText id="txt_nombre" style="width:420px;" label="" value="#{documentoVentaBean.clienteSelected eq null?'':documentoVentaBean.clienteSelected.razonSocial}" maxlength="100" /> 
+									<p:inputText id="txt_nombre" style="width:420px;" label="" value="#{documentoVentaBean.razonSocialText}" maxlength="100" /> 
 								</p:column>
 
 							</p:row>
@@ -337,7 +337,7 @@
 									<h:outputText value="Dirección: " />
 								</p:column>
 								<p:column colspan="3">
-									<p:inputText id="txt_direccion" style="width:800px;" label="" value="#{documentoVentaBean.clienteSelected eq null?'':documentoVentaBean.clienteSelected.direccion}" maxlength="200" />
+									<p:inputText id="txt_direccion" style="width:800px;" label="" value="#{documentoVentaBean.direccionText}" maxlength="200" />
 								</p:column>
 
 							</p:row>
@@ -346,7 +346,7 @@
 									<h:outputText value="E-mail 1: " />
 								</p:column>
 								<p:column colspan="3">
-									<p:inputText style="width:800px;" label="" value="#{documentoVentaBean.clienteSelected eq null?'':documentoVentaBean.clienteSelected.email1Fe}" />
+									<p:inputText style="width:800px;" label="" value="#{documentoVentaBean.email1Text}" />
 								</p:column>
 
 							</p:row>
@@ -355,7 +355,7 @@
 									<h:outputText value="E-mail 2: " />
 								</p:column>
 								<p:column colspan="3">
-									<p:inputText style="width:800px;" label="" value="#{documentoVentaBean.clienteSelected eq null?'':documentoVentaBean.clienteSelected.email2Fe}" />
+									<p:inputText style="width:800px;" label="" value="#{documentoVentaBean.email2Text}" />
 								</p:column>
 							</p:row>
 							<p:row>
@@ -363,7 +363,7 @@
 									<h:outputText value="E-mail 3: " />
 								</p:column>
 								<p:column colspan="3">
-									<p:inputText style="width:800px;" label="" value="#{documentoVentaBean.clienteSelected eq null?'':documentoVentaBean.clienteSelected.email3Fe}" />
+									<p:inputText style="width:800px;" label="" value="#{documentoVentaBean.email2Text}" />
 								</p:column>
 							</p:row>
 							
