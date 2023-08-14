@@ -23,6 +23,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.faces.model.SelectItem;
 
 import org.json.simple.JSONObject;
 import org.primefaces.PrimeFaces;
@@ -137,10 +138,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private ConsumingPostBoImpl consumingPostBo;
 	
 	@ManagedProperty(value = "#{personService}")
-	private PersonService personService;
-	
-	
-	
+	private PersonService personService;	
 	
 	private boolean estado = true;
 	private Boolean estadoSunat;
@@ -182,7 +180,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private Cliente clienteSelected;
 	private Contrato contratoPendienteSelected;
 	private Cuota cuotaPendienteContratoSelected;
-	private TipoDocumento tipoDocumentoSelected, tipoDocumentoEnvioSunat;
+	private TipoDocumento tipoDocumentoSelected, tipoDocumentoEnvioSunat, tipoDocumentoFilter;
 	private TipoDocumento tipoDocumentoNotaSelected;
 	private MotivoNota motivoNotaSelected;
 	private TipoOperacion tipoOperacionSelected;
@@ -244,8 +242,6 @@ public class DocumentoVentaBean extends BaseBean {
 	
 	private String imagen1, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8, imagen9, imagen10;
 
-
-	
 	private NumeroALetra numeroALetra = new  NumeroALetra();
 	
 	private Map<String, Object> parametros;
@@ -265,6 +261,8 @@ public class DocumentoVentaBean extends BaseBean {
 	SimpleDateFormat sdf = new SimpleDateFormat("dd 'de'  MMMMM 'del' yyyy");
 	SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
 	SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
+	
+	private SelectItem[] cdoTipoVenta;
 	
 	@PostConstruct
 	public void init() {
@@ -287,6 +285,8 @@ public class DocumentoVentaBean extends BaseBean {
 		lstCodigoSunat.add("08");
 		lstTipoDocumentoEnvioSunat = tipoDocumentoService.findByEstadoAndCodigoIn(true, lstCodigoSunat);
 		tipoDocumentoEnvioSunat = lstTipoDocumentoEnvioSunat.get(0);
+		tipoDocumentoFilter = null;
+		crearFiltroTipoVenta();
 		
 		iniciarLazy();
 		iniciarDatosDocVenta();	
@@ -306,9 +306,16 @@ public class DocumentoVentaBean extends BaseBean {
 		numMuestraImagen=1;
 		fechaEnvioSunat= new Date();
 		lstPerson=personService.findByStatus(true);
+		
 	}
 	
-	
+	private void crearFiltroTipoVenta() {
+        cdoTipoVenta = new SelectItem[4];
+        cdoTipoVenta[0] = new SelectItem("", "Todos");
+        cdoTipoVenta[1] = new SelectItem("F", "Factura");
+        cdoTipoVenta[2] = new SelectItem("S", "Servicio");
+        cdoTipoVenta[3] = new SelectItem("M", "Muestra");
+    }
 	
 	public void onChangePerson() {
 		if(personSelected!=null) {
@@ -2196,11 +2203,17 @@ public class DocumentoVentaBean extends BaseBean {
                 Page<DocumentoVenta> pageDocumentoVenta=null;
                
                 if(estadoSunat==null) {
-                    pageDocumentoVenta= documentoVentaService.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLike(estado, navegacionBean.getSucursalLogin(), razonSocial, numero, ruc, pageable);
-
+                	if(tipoDocumentoFilter==null) {
+                        pageDocumentoVenta= documentoVentaService.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLike(estado, navegacionBean.getSucursalLogin(), razonSocial, numero, ruc, pageable);
+                	}else {
+                        pageDocumentoVenta= documentoVentaService.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndTipoDocumento(estado, navegacionBean.getSucursalLogin(), razonSocial, numero, ruc, tipoDocumentoFilter, pageable);
+                	}
                 }else {
-                    pageDocumentoVenta= documentoVentaService.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndEnvioSunat(estado, navegacionBean.getSucursalLogin(), razonSocial, numero, ruc,estadoSunat, pageable);
-
+                	if(tipoDocumentoFilter==null) {
+                        pageDocumentoVenta= documentoVentaService.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndEnvioSunat(estado, navegacionBean.getSucursalLogin(), razonSocial, numero, ruc,estadoSunat, pageable);
+                	}else {
+                		pageDocumentoVenta= documentoVentaService.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndEnvioSunatAndTipoDocumento(estado, navegacionBean.getSucursalLogin(), razonSocial, numero, ruc,estadoSunat, tipoDocumentoFilter, pageable);
+                	}
                 }
                 
                 setRowCount((int) pageDocumentoVenta.getTotalElements());
@@ -3903,6 +3916,18 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setEmail3Text(String email3Text) {
 		this.email3Text = email3Text;
+	}
+	public SelectItem[] getCdoTipoVenta() {
+		return cdoTipoVenta;
+	}
+	public void setCdoTipoVenta(SelectItem[] cdoTipoVenta) {
+		this.cdoTipoVenta = cdoTipoVenta;
+	}
+	public TipoDocumento getTipoDocumentoFilter() {
+		return tipoDocumentoFilter;
+	}
+	public void setTipoDocumentoFilter(TipoDocumento tipoDocumentoFilter) {
+		this.tipoDocumentoFilter = tipoDocumentoFilter;
 	}
 	
 

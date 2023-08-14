@@ -9,6 +9,11 @@
 
 	<h:form id="form">
 		<h2 style="color: #007d4c;">REPORTE > REPORTE DE ASISTENCIA</h2>
+		<p:selectOneButton value="#{reporteAsistenciaBean.estado}" unselectable="false">
+			<f:selectItem itemLabel="Activos" itemValue="#{true}" />
+			<f:selectItem itemLabel="Eliminados" itemValue="#{false}" />
+			<p:ajax update=":form:tabView:idTableDet" />
+		</p:selectOneButton>  
 		<p:tabView id="tabView">
 			<p:tab title="Lista de Asistencias">
 			
@@ -90,6 +95,28 @@
 					<p:column headerText="Área" sortBy="#{asistencia.empleado.area.nombre}"
 						filterMatchMode="contains">
 						<h:outputText value="#{asistencia.empleado.area.nombre}" />
+					</p:column>
+					
+					<p:column headerText="Usuario Crea" sortBy="#{asistencia.userCrea.username}"
+						filterMatchMode="contains">
+						<h:outputText value="#{asistencia.userCrea.username}" />
+					</p:column>
+					
+					<p:column headerText="Fecha Crea" filterMatchMode="contains" responsivePriority="3">
+						<h:outputText value="#{asistencia.fechaCrea}" > 
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Usuario Modifica" sortBy="#{asistencia.userModifica.username}"
+						filterMatchMode="contains">
+						<h:outputText value="#{asistencia.userModifica.username}" />
+					</p:column>
+					
+					<p:column headerText="Fecha Modifica" filterMatchMode="contains" responsivePriority="3">
+						<h:outputText value="#{asistencia.fechaModifica}" > 
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
 					</p:column>
 				</p:dataTable>
 				

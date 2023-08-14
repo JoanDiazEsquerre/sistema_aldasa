@@ -45,7 +45,15 @@
 						<h:outputText value="#{documento.razonSocial}" />
 					</p:column>
 
-					<p:column headerText="Tipo Comprobante" filterMatchMode="contains">
+					<p:column headerText="Tipo Comprobante" filterMatchMode="contains" style="margin:5px; width:150px">
+						<f:facet name="header">
+							Tipo Documento
+				        	<p:selectOneMenu value="#{documentoVentaBean.tipoDocumentoFilter}" converter="#{documentoVentaBean.conversorTipoDocumentoSunat}" style="margin:5px; width:130px" >
+								<f:selectItem itemLabel="TODOS" value="#{null}"/>
+								<f:selectItems value="#{documentoVentaBean.lstTipoDocumentoEnvioSunat}" var="tipoDocumento" itemLabel="#{tipoDocumento.descripcion}" itemValue="#{tipoDocumento}"/>
+								<p:ajax update=":form:tabView:idTableListDoc" listener="#{documentoVentaBean.iniciarLazy()}" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('blockUIWidgetGeneral').unblock();" />
+							</p:selectOneMenu>
+						</f:facet>
 						<h:outputText value="#{documento.tipoDocumento.descripcion}" />
 					</p:column>
 
@@ -105,9 +113,7 @@
 					<p:column headerText="Usuario Registro"	sortBy="#{documento.usuarioRegistro.username}" filterMatchMode="contains" style="text-align:center;">
 						<h:outputText value="#{documento.usuarioRegistro.username}" />
 					</p:column>
-					
-					
-
+				
 				</p:dataTable>
 				
 				<p:contextMenu id="menuTableDoc" for="idTableListDoc" >

@@ -100,6 +100,7 @@ public class AsistenciaBean implements Serializable {
 				asistencia.setEmpleado(empleado);
 				asistencia.setTipo("E");
 				asistencia.setHora(new Date());
+				asistencia.setEstado(true);
 				Asistencia guarda = asistenciaService.save(asistencia);
 				if(guarda == null) {
 					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo guardar");

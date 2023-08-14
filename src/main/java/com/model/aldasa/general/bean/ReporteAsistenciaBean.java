@@ -104,6 +104,7 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 	private Date fechaIni, fechaFin;
 	private boolean mostrarBoton = false;
 	private Integer idSelected;
+	private boolean estado = true;
 
 	private StreamedContent fileDes;
 
@@ -623,6 +624,10 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 		Cell cellSubSalida2 = rowSubTitulo.createCell(5);cellSubSalida2.setCellValue("SALIDA");cellSubSalida2.setCellStyle(styleTitulo);
 		Cell cellSubArea = rowSubTitulo.createCell(6);cellSubArea.setCellValue("ÁREA");cellSubArea.setCellStyle(styleTitulo);
 		Cell cellSubMinTard = rowSubTitulo.createCell(7);cellSubMinTard.setCellValue("MINUTOS DE TARDANZA");cellSubMinTard.setCellStyle(styleTitulo);
+//		Cell cellUserCrea = rowSubTitulo.createCell(8);cellUserCrea.setCellValue("USER CREA");cellUserCrea.setCellStyle(styleTitulo);
+//		Cell cellFechaCrea = rowSubTitulo.createCell(9);cellFechaCrea.setCellValue("FECHA CREA");cellFechaCrea.setCellStyle(styleTitulo);
+//		Cell cellUserModifica = rowSubTitulo.createCell(10);cellUserModifica.setCellValue("USER MODIFICA");cellUserModifica.setCellStyle(styleTitulo);
+//		Cell cellFechaModifica = rowSubTitulo.createCell(11);cellFechaModifica.setCellValue("FECHA MODIFICA");cellFechaModifica.setCellStyle(styleTitulo);
 
 		if (fechaFin.before(fechaIni)) {
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
@@ -655,6 +660,7 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 						Cell cellS2 = rowDetail.createCell(5);cellS2.setCellStyle(styleBorder);
 						Cell cellArea = rowDetail.createCell(6);cellArea.setCellValue(empleado.getArea().getNombre());cellArea.setCellStyle(styleBorder);
 						Cell cellMinTard = rowDetail.createCell(7);cellMinTard.setCellStyle(styleBorder);
+						
 
 						Date dia1 = fecha1;
 						String day = sdf.format(dia1);
@@ -669,9 +675,7 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 						dia2.setHours(23);
 						dia2.setMinutes(59);
 						dia2.setSeconds(59);
-						List<Asistencia> lstasistenciasEntrada = asistenciaService
-								.findByEmpleadoPersonDniAndTipoAndHoraBetweenAndEstado(empleado.getPerson().getDni(), "E", dia1,
-										dia2, true);
+						List<Asistencia> lstasistenciasEntrada = asistenciaService.findByEmpleadoPersonDniAndTipoAndHoraBetweenAndEstado(empleado.getPerson().getDni(), "E", dia1, dia2, true);
 
 						if (!lstasistenciasEntrada.isEmpty()) {
 							Asistencia entrada1 = lstasistenciasEntrada.get(0);
@@ -959,7 +963,7 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 				fechaFin.setMinutes(59);
 				fechaFin.setSeconds(59);
 
-				pageAsistencia = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndEmpleadoSucursalAndHoraBetweenAndEstado(dni, "%" + tipo + "%", navegacionBean.getSucursalLogin(), fechaIni, fechaFin, true, pageable);
+				pageAsistencia = asistenciaService.findByEmpleadoPersonDniLikeAndTipoLikeAndEmpleadoSucursalAndHoraBetweenAndEstado(dni, "%" + tipo + "%", navegacionBean.getSucursalLogin(), fechaIni, fechaFin, estado, pageable);
 
 				setRowCount((int) pageAsistencia.getTotalElements());
 				return datasource = pageAsistencia.getContent();
@@ -1050,205 +1054,163 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
             }
         };
     }
-
+	
+	
 	public List<Empleado> getLstEmpleado() {
 		return lstEmpleado;
 	}
-
 	public void setLstEmpleado(List<Empleado> lstEmpleado) {
 		this.lstEmpleado = lstEmpleado;
 	}
-
 	public EmpleadoService getEmpleadoService() {
 		return empleadoService;
 	}
-
 	public void setEmpleadoService(EmpleadoService empleadoService) {
 		this.empleadoService = empleadoService;
 	}
-
 	public Empleado getEmpleadoSelected() {
 		return empleadoSelected;
 	}
-
 	public void setEmpleadoSelected(Empleado empleadoSelected) {
 		this.empleadoSelected = empleadoSelected;
 	}
-
 	public Asistencia getAsistenciaSelected() {
 		return asistenciaSelected;
 	}
-
 	public void setAsistenciaSelected(Asistencia asistenciaSelected) {
 		this.asistenciaSelected = asistenciaSelected;
 	}
-
 	public LazyDataModel<Asistencia> getLstAsistenciaLazy() {
 		return lstAsistenciaLazy;
 	}
-
 	public void setLstAsistenciaLazy(LazyDataModel<Asistencia> lstAsistenciaLazy) {
 		this.lstAsistenciaLazy = lstAsistenciaLazy;
 	}
-
 	public String getTipo() {
 		return tipo;
 	}
-
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
-
 	public Date getFechaIni() {
 		return fechaIni;
 	}
-
 	public void setFechaIni(Date fechaIni) {
 		this.fechaIni = fechaIni;
 	}
-
 	public Date getFechaFin() {
 		return fechaFin;
 	}
-
 	public void setFechaFin(Date fechaFin) {
 		this.fechaFin = fechaFin;
 	}
-
 	public AsistenciaService getAsistenciaService() {
 		return asistenciaService;
 	}
-
 	public void setAsistenciaService(AsistenciaService asistenciaService) {
 		this.asistenciaService = asistenciaService;
 	}
-
 	public StreamedContent getFileDes() {
 		return fileDes;
 	}
-
 	public void setFileDes(StreamedContent fileDes) {
 		this.fileDes = fileDes;
 	}
-
 	public String getNombreArchivo() {
 		return nombreArchivo;
 	}
-
 	public void setNombreArchivo(String nombreArchivo) {
 		this.nombreArchivo = nombreArchivo;
 	}
-
 	public String getTituloDialog() {
 		return tituloDialog;
 	}
-
 	public void setTituloDialog(String tituloDialog) {
 		this.tituloDialog = tituloDialog;
 	}
-
 	public boolean isMostrarBoton() {
 		return mostrarBoton;
 	}
-
 	public void setMostrarBoton(boolean mostrarBoton) {
 		this.mostrarBoton = mostrarBoton;
 	}
-
 	public Integer getIdSelected() {
 		return idSelected;
 	}
-
 	public void setIdSelected(Integer idSelected) {
 		this.idSelected = idSelected;
 	}
-
 	public Empleado getEmpleadoDialog() {
 		return empleadoDialog;
 	}
-
 	public void setEmpleadoDialog(Empleado empleadoDialog) {
 		this.empleadoDialog = empleadoDialog;
 	}
-
 	public String getTipoDialog() {
 		return tipoDialog;
 	}
-
 	public void setTipoDialog(String tipoDialog) {
 		this.tipoDialog = tipoDialog;
 	}
-
 	public Date getHoraDialog() {
 		return horaDialog;
 	}
-
 	public void setHoraDialog(Date horaDialog) {
 		this.horaDialog = horaDialog;
 	}
-
 	public Empleado getEmpleadoBusqueda() {
 		return empleadoBusqueda;
 	}
-
 	public void setEmpleadoBusqueda(Empleado empleadoBusqueda) {
 		this.empleadoBusqueda = empleadoBusqueda;
 	}
-
 	public List<Area> getLstArea() {
 		return lstArea;
 	}
-
 	public void setLstArea(List<Area> lstArea) {
 		this.lstArea = lstArea;
 	}
-
 	public AreaService getAreaService() {
 		return areaService;
 	}
-
 	public void setAreaService(AreaService areaService) {
 		this.areaService = areaService;
 	}
-
 	public Area getAreaSelected() {
 		return areaSelected;
 	}
-
 	public void setAreaSelected(Area areaSelected) {
 		this.areaSelected = areaSelected;
 	}
-
 	public LazyDataModel<Empleado> getLstEmpeladoLazy() {
 		return lstEmpeladoLazy;
 	}
-
 	public void setLstEmpeladoLazy(LazyDataModel<Empleado> lstEmpeladoLazy) {
 		this.lstEmpeladoLazy = lstEmpeladoLazy;
 	}
-
 	public SemanaService getSemanaService() {
 		return semanaService;
 	}
-
 	public void setSemanaService(SemanaService semanaService) {
 		this.semanaService = semanaService;
 	}
-
 	public Semana getSemanaSelected() {
 		return semanaSelected;
 	}
-
 	public void setSemanaSelected(Semana semanaSelected) {
 		this.semanaSelected = semanaSelected;
 	}
-
 	public NavegacionBean getNavegacionBean() {
 		return navegacionBean;
 	}
-
 	public void setNavegacionBean(NavegacionBean navegacionBean) {
 		this.navegacionBean = navegacionBean;
+	}
+	public boolean isEstado() {
+		return estado;
+	}
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 
 }

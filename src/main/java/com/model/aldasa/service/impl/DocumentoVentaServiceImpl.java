@@ -29,8 +29,6 @@ import com.model.aldasa.util.TipoProductoType;
 @Service("documentoVentaService")
 public class DocumentoVentaServiceImpl implements DocumentoVentaService{
 	
-	
-
 	@Autowired
 	private DocumentoVentaRepository documentoVentaRepository;
 
@@ -141,12 +139,6 @@ public class DocumentoVentaServiceImpl implements DocumentoVentaService{
 	}
 
 	@Override
-	public Page<DocumentoVenta> findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLike(boolean estado, Sucursal sucursal, String razonSocial, String numero, String ruc, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return documentoVentaRepository.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLike(estado, sucursal, razonSocial, numero, ruc, pageable);
-	}
-
-	@Override
 	public List<DocumentoVenta> findByDocumentoVentaRefAndTipoDocumentoAndEstado(DocumentoVenta documentoVenta, TipoDocumento tipoDocumento, boolean estado) {
 		// TODO Auto-generated method stub
 		return documentoVentaRepository.findByDocumentoVentaRefAndTipoDocumentoAndEstado(documentoVenta, tipoDocumento, estado);
@@ -159,17 +151,40 @@ public class DocumentoVentaServiceImpl implements DocumentoVentaService{
 	}
 
 	@Override
+	public DocumentoVenta save(DocumentoVenta entity) {
+		// TODO Auto-generated method stub
+		return documentoVentaRepository.save(entity);
+	}
+
+	@Override
+	public Page<DocumentoVenta> findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndEnvioSunatAndTipoDocumento(
+			boolean estado, Sucursal sucursal, String razonSocial, String numero, String ruc, boolean envioSunat,
+			TipoDocumento tipoDocumento, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return documentoVentaRepository.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndEnvioSunatAndTipoDocumento(estado, sucursal, razonSocial, numero, ruc, envioSunat, tipoDocumento, pageable);
+	}
+
+	@Override
+	public Page<DocumentoVenta> findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndTipoDocumento(
+			boolean estado, Sucursal sucursal, String razonSocial, String numero, String ruc,
+			TipoDocumento tipoDocumento, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return documentoVentaRepository.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndTipoDocumento(estado, sucursal, razonSocial, numero, ruc, tipoDocumento, pageable);
+	}
+
+	@Override
+	public Page<DocumentoVenta> findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLike(boolean estado,
+			Sucursal sucursal, String razonSocial, String numero, String ruc, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return documentoVentaRepository.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLike(estado, sucursal, razonSocial, numero, ruc, pageable);
+	}
+
+	@Override
 	public Page<DocumentoVenta> findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndEnvioSunat(
 			boolean estado, Sucursal sucursal, String razonSocial, String numero, String ruc, boolean envioSunat,
 			Pageable pageable) {
 		// TODO Auto-generated method stub
 		return documentoVentaRepository.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndEnvioSunat(estado, sucursal, razonSocial, numero, ruc, envioSunat, pageable);
-	}
-
-	@Override
-	public DocumentoVenta save(DocumentoVenta entity) {
-		// TODO Auto-generated method stub
-		return documentoVentaRepository.save(entity);
 	}
 
 	
