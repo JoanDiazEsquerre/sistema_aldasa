@@ -102,10 +102,8 @@
 						<h:outputText value="#{asistencia.userCrea.username}" />
 					</p:column>
 					
-					<p:column headerText="Fecha Crea" filterMatchMode="contains" responsivePriority="3">
-						<h:outputText value="#{asistencia.fechaCrea}" > 
-							<f:convertDateTime pattern="dd/MM/yyyy" />
-						</h:outputText>
+					<p:column headerText="Fecha Crea" sortBy="#{asistencia.fechaCrea}" filterMatchMode="contains">
+		    			<h:outputText value="#{asistencia.fechaCrea eq null ? '' : reporteAsistenciaBean.convertirHora(asistencia.fechaCrea)}" />
 					</p:column>
 					
 					<p:column headerText="Usuario Modifica" sortBy="#{asistencia.userModifica.username}"
@@ -113,11 +111,10 @@
 						<h:outputText value="#{asistencia.userModifica.username}" />
 					</p:column>
 					
-					<p:column headerText="Fecha Modifica" filterMatchMode="contains" responsivePriority="3">
-						<h:outputText value="#{asistencia.fechaModifica}" > 
-							<f:convertDateTime pattern="dd/MM/yyyy" />
-						</h:outputText>
+					<p:column headerText="Fecha Modifica" sortBy="#{asistencia.fechaModifica}" filterMatchMode="contains">
+		    			<h:outputText value="#{asistencia.fechaModifica eq null ? '' : reporteAsistenciaBean.convertirHora(asistencia.fechaModifica)}" />
 					</p:column>
+				
 				</p:dataTable>
 				
 				<p:contextMenu for="idTableDet" >
@@ -237,28 +234,26 @@
 	 <p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogAsistencia" header="#{reporteAsistenciaBean.tituloDialog}" widgetVar="asistenciaNewDialog" resizable="false" closable="true"
 	       appendTo="@(body)" style="width:auto">
 	       <h:form id="formAsistencia">
-	         	<p:messages id="messages" showDetail="true" closable="true">
-	               <p:autoUpdate/>
-	           	</p:messages>
+	         	
 				<h:panelGrid id="grid" columns="2">
 					<h:outputLabel  for="assessor"  value="Empleado: " style="text-align:right" />
-					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{reporteAsistenciaBean.empleadoDialog}"
+					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{reporteAsistenciaBean.asistenciaSelected.empleado}"
 						converter="#{reporteAsistenciaBean.conversorEmpleado}" id="assessor" completeMethod="#{reporteAsistenciaBean.completeEmpleado}"
 						var="ase" itemLabel="#{ase.person.surnames.concat(' ')}#{ase.person.names}" itemValue="#{ase}" forceSelection="true">
-						<p:ajax  event="keyup" update="messages" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
+						<p:ajax  event="keyup" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
 					</p:autoComplete>
 	
 					<h:outputLabel for="tipo" value="Tipo:" />
-					<p:selectOneMenu id="tipo" value="#{reporteAsistenciaBean.tipoDialog}" style="margin:10px">
+					<p:selectOneMenu id="tipo" value="#{reporteAsistenciaBean.asistenciaSelected.tipo}" style="margin:10px">
 						<f:selectItem itemLabel="[--SELECCIONAR--]" itemValue="" />
 						<f:selectItem itemLabel="Entrada" itemValue="E" />
 						<f:selectItem itemLabel="Salida" itemValue="S" />
-						<p:ajax event="keyup" update="messages" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
+						<p:ajax event="keyup" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
 					</p:selectOneMenu>
 	
 					<h:outputLabel value="Fecha:" style="text-align:right" />
-					<p:datePicker value="#{reporteAsistenciaBean.horaDialog}" showTime="true" style="margin:5px" pattern="dd/MM/yyyy hh:mm:ss a" readonlyInput="true">
-						<p:ajax event="keyup" update="messages" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
+					<p:datePicker value="#{reporteAsistenciaBean.asistenciaSelected.hora}" showTime="true" style="margin:5px" pattern="dd/MM/yyyy hh:mm:ss a" readonlyInput="true">
+						<p:ajax event="keyup"  onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
 					</p:datePicker>
 					
 					<p:commandButton value="Guardar" actionListener="#{reporteAsistenciaBean.saveAsistencia()}"

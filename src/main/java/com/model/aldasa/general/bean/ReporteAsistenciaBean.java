@@ -94,16 +94,16 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 	private Semana semanaSelected;
 
 
-	private Empleado empleadoDialog;
-	private String tipoDialog;
-	private Date horaDialog;
+//	private Empleado empleadoDialog;
+//	private String tipoDialog;
+//	private Date horaDialog;
 
 	private String tipo;
 	private String tituloDialog = "";
 	private String nombreArchivo = "Reporte de Asistencia.xlsx";
 	private Date fechaIni, fechaFin;
 	private boolean mostrarBoton = false;
-	private Integer idSelected;
+//	private Integer idSelected;
 	private boolean estado = true;
 
 	private StreamedContent fileDes;
@@ -246,7 +246,6 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 		}
 	}
 
-
 	public void autogenerarRegistroMes() throws ParseException {
 		if (fechaFin.before(fechaIni)) {
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
@@ -385,7 +384,6 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 					}
 				}
 				
-				
 				if(fechaI.getDay()!=0 && fechaI.getDay()!=6) { // si es 0, entonces es domingo, para que haga el registro, debe ser diferente de 0
 					Date fechaIni = sdf.parse(sdf.format(fechaI)); 
 
@@ -509,9 +507,7 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 					}
 					
 				}
-				
- 
-				
+			
 				fechaI = sumarDiasAFecha(fechaI, 1);
 			}
 		}
@@ -522,23 +518,28 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 		asistencia.setEmpleado(empleado);
 		asistencia.setTipo(tipo);
 		asistencia.setHora(hora);
+		asistencia.setUserCrea(navegacionBean.getUsuarioLogin());
+		asistencia.setFechaCrea(new Date());
+		asistencia.setEstado(true);
 		asistenciaService.save(asistencia);
 	}
 
 	public void updateAsistencia() {
 		tituloDialog = "MODIFICAR ASISTENCIA";
-		idSelected = asistenciaSelected.getId();
-		empleadoDialog = asistenciaSelected.getEmpleado();
-		tipoDialog = asistenciaSelected.getTipo();
-		horaDialog = asistenciaSelected.getHora();
+		
+//		idSelected = asistenciaSelected.getId();
+//		empleadoDialog = asistenciaSelected.getEmpleado();
+//		tipoDialog = asistenciaSelected.getTipo();
+//		horaDialog = asistenciaSelected.getHora();
 	}
 
 	public void newAsistencia() {
 		tituloDialog = "NUEVA ASISTENCIA";
-		idSelected = null;
-		empleadoDialog = null;
-		tipoDialog = "";
-		horaDialog = null;
+		asistenciaSelected = new Asistencia();
+//		idSelected = null;
+//		empleadoDialog = null;
+//		tipoDialog = "";
+//		horaDialog = null;
 	}
 	
 	public void eliminarAsistencia() {
@@ -554,49 +555,38 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 	}
 
 	public void saveAsistencia() {
-		if (empleadoDialog == null) {
+		if (asistenciaSelected.getEmpleado() == null) {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar empleado."));
 			return;
 		}
-		if (tipoDialog.equals("")) {
+		if (asistenciaSelected.getTipo().equals("")) {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar tipo."));
 			return;
 		}
-		if (horaDialog == null) {
+		if (asistenciaSelected.getHora() == null) {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ingresar fecha."));
 			return;
 		}
 		
-		Asistencia crear = new Asistencia();
 		if(tituloDialog.equals("MODIFICAR ASISTENCIA")) {
-			crear.setUserModifica(navegacionBean.getUsuarioLogin());
-			crear.setFechaModifica(new Date());
+			asistenciaSelected.setUserModifica(navegacionBean.getUsuarioLogin());
+			asistenciaSelected.setFechaModifica(new Date());
 		}else{
-			crear.setUserCrea(navegacionBean.getUsuarioLogin());
-			crear.setFechaCrea(new Date());
+			asistenciaSelected.setUserCrea(navegacionBean.getUsuarioLogin());
+			asistenciaSelected.setFechaCrea(new Date());
 		}
-		crear.setId(idSelected);
-		crear.setEmpleado(empleadoDialog);
-		crear.setTipo(tipoDialog);
-		crear.setHora(horaDialog);
-		crear.setEstado(true);
 		
-		Asistencia asistencia = asistenciaService.save(crear);
+		Asistencia asistencia = asistenciaService.save(asistenciaSelected);
 
-		if (tituloDialog.equals("NUEVA ASISTENCIA")) {
-			newAsistencia();
-		}
-
+		
 		if (asistencia == null) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo guardar."));
+			addErrorMessage("No se pudo guardar.");
 		} else {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardó correctamente."));
-
+			addInfoMessage("Se guardó correctamente.");
+			PrimeFaces.current().executeScript("PF('asistenciaNewDialog').hide();"); 
 		}
 
 	}
@@ -1133,30 +1123,6 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 	}
 	public void setMostrarBoton(boolean mostrarBoton) {
 		this.mostrarBoton = mostrarBoton;
-	}
-	public Integer getIdSelected() {
-		return idSelected;
-	}
-	public void setIdSelected(Integer idSelected) {
-		this.idSelected = idSelected;
-	}
-	public Empleado getEmpleadoDialog() {
-		return empleadoDialog;
-	}
-	public void setEmpleadoDialog(Empleado empleadoDialog) {
-		this.empleadoDialog = empleadoDialog;
-	}
-	public String getTipoDialog() {
-		return tipoDialog;
-	}
-	public void setTipoDialog(String tipoDialog) {
-		this.tipoDialog = tipoDialog;
-	}
-	public Date getHoraDialog() {
-		return horaDialog;
-	}
-	public void setHoraDialog(Date horaDialog) {
-		this.horaDialog = horaDialog;
 	}
 	public Empleado getEmpleadoBusqueda() {
 		return empleadoBusqueda;
