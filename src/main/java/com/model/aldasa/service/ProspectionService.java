@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.Prospection;
+import com.model.aldasa.entity.Sucursal;
 
 public interface ProspectionService {
 	
@@ -17,9 +18,9 @@ public interface ProspectionService {
 	void delete(Prospection prospection);
 	List<Prospection> findByStatus(String status);
 	
-	Page<Prospection> findAllByPersonSupervisorSurnamesLikeAndPersonAssessorSurnamesLikeAndProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(String surnamesPersonSupervisor, String surnamesPersonAssessor, String surnamesProspect, String dniProspect, String originContact, String assessorSurname, String status, Pageable pageable);
-	Page<Prospection> findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(String surnamesProspect, String dniProspect, String originContact, String assessorSurname,Person personAssessor, String status, Pageable pageable);
-	Page<Prospection> findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(String surnamesProspect, String dniProspecto, String originContact, String assessorSurname,Person personSupervisor, String status, Pageable pageable);
+	Page<Prospection> findAllByPersonSupervisorSurnamesLikeAndPersonAssessorSurnamesLikeAndProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndStatusAndProjectSucursal(String surnamesPersonSupervisor, String surnamesPersonAssessor, String surnamesProspect, String dniProspect, String originContact, String assessorSurname, String status, Sucursal sucursal, Pageable pageable);
+	Page<Prospection> findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatusAndProjectSucursal(String surnamesProspect, String dniProspect, String originContact, String assessorSurname,Person personAssessor, String status, Sucursal sucursal, Pageable pageable);
+	Page<Prospection> findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatusAndProjectSucursal(String surnamesProspect, String dniProspecto, String originContact, String assessorSurname,Person personSupervisor, String status, Sucursal sucursal, Pageable pageable);
 	
 	Prospection findByProspectAndStatus(Prospect prospect,String status);
 	

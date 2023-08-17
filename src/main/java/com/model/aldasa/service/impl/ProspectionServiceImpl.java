@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.Prospection;
+import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.repository.ProspectionRepository;
 import com.model.aldasa.service.ProspectionService;
 
@@ -41,21 +42,21 @@ public class ProspectionServiceImpl implements ProspectionService {
 	}
 
 	@Override
-	public Page<Prospection> findAllByPersonSupervisorSurnamesLikeAndPersonAssessorSurnamesLikeAndProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(String surnamesPersonSupervisor, String surnamesPersonAssessor, String surnamesProspect, String dniProspect, String originContact, String assessorSurname, String status, Pageable pageable) {
-		return prospectionRepository.findAllByPersonSupervisorSurnamesLikeAndPersonAssessorSurnamesLikeAndProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(surnamesPersonSupervisor, surnamesPersonAssessor, surnamesProspect, dniProspect, originContact,assessorSurname, status, pageable);
+	public Page<Prospection> findAllByPersonSupervisorSurnamesLikeAndPersonAssessorSurnamesLikeAndProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndStatusAndProjectSucursal(String surnamesPersonSupervisor, String surnamesPersonAssessor, String surnamesProspect, String dniProspect, String originContact, String assessorSurname, String status, Sucursal sucursal, Pageable pageable) {
+		return prospectionRepository.findAllByPersonSupervisorSurnamesLikeAndPersonAssessorSurnamesLikeAndProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndStatusAndProjectSucursal(surnamesPersonSupervisor, surnamesPersonAssessor, surnamesProspect, dniProspect, originContact,assessorSurname, status, sucursal,  pageable);
 	}
 	
 	@Override
-	public Page<Prospection> findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(String surnamesProspect, String dniProspecto, String originContact, String assessorSurname, Person personAssessor, String status, Pageable pageable) {
+	public Page<Prospection> findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatusAndProjectSucursal(String surnamesProspect, String dniProspecto, String originContact, String assessorSurname, Person personAssessor, String status, Sucursal sucursal,  Pageable pageable) {
 		// TODO Auto-generated method stub
-		return prospectionRepository.findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(surnamesProspect, dniProspecto, originContact, assessorSurname, personAssessor, status, pageable);
+		return prospectionRepository.findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatusAndProjectSucursal(surnamesProspect, dniProspecto, originContact, assessorSurname, personAssessor, status, sucursal, pageable);
 	}
 
 	@Override
-	public Page<Prospection> findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(
-			String surnamesProspecto, String dniProspecto, String originContact, String assessorSurname, Person personSupervisor, String status, Pageable pageable) {
+	public Page<Prospection> findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatusAndProjectSucursal(
+			String surnamesProspecto, String dniProspecto, String originContact, String assessorSurname, Person personSupervisor, String status, Sucursal sucursal, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return prospectionRepository.findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(surnamesProspecto, dniProspecto, originContact, assessorSurname, personSupervisor, status, pageable);
+		return prospectionRepository.findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatusAndProjectSucursal(surnamesProspecto, dniProspecto, originContact, assessorSurname, personSupervisor, status, sucursal, pageable);
 	}
 	
 	@Override

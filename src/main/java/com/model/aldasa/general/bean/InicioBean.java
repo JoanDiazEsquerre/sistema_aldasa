@@ -78,7 +78,7 @@ public class InicioBean implements Serializable {
 			PrimeFaces current = PrimeFaces.current();
 			current.executeScript("PF('inicioDialog').show();");
 		}
-		if(usuarioLogin.getProfile().getId()== Perfiles.COBRANZA.getId()) {
+		if(usuarioLogin.getProfile().getId()== Perfiles.COBRANZA.getId() || usuarioLogin.getProfile().getId()== Perfiles.ASISTENTE_COBRANZA.getId()) {
 			PrimeFaces current = PrimeFaces.current();
 			current.executeScript("PF('inicioDialogCobranza').show();");
 		}

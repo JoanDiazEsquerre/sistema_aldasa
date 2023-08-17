@@ -40,12 +40,8 @@
 					<p:column width="25px">
 			                      #{row +1}
 			        </p:column>
-
-					<p:column headerText="Cliente(Razón social)" sortBy="#{documento.razonSocial}" filterBy="#{documento.razonSocial}" filterMatchMode="contains">
-						<h:outputText value="#{documento.razonSocial}" />
-					</p:column>
-
-					<p:column headerText="Tipo Comprobante" filterMatchMode="contains" style="margin:5px; width:150px">
+			        
+			        <p:column headerText="Tipo Comprobante" filterMatchMode="contains" style="margin:5px; width:150px">
 						<f:facet name="header">
 							Tipo Documento
 				        	<p:selectOneMenu value="#{documentoVentaBean.tipoDocumentoFilter}" converter="#{documentoVentaBean.conversorTipoDocumentoSunat}" style="margin:5px; width:130px" >
@@ -57,13 +53,21 @@
 						<h:outputText value="#{documento.tipoDocumento.descripcion}" />
 					</p:column>
 
+					<p:column headerText="Cliente(Razón social)" sortBy="#{documento.razonSocial}" filterBy="#{documento.razonSocial}" filterMatchMode="contains">
+						<h:outputText value="#{documento.razonSocial}" />
+					</p:column>
+					
+					<p:column headerText="RUC/DNI" sortBy="#{documento.ruc}" style="text-align:center;" filterBy="#{documento.ruc}" filterMatchMode="contains">
+						<h:outputText value="#{documento.ruc}" />
+					</p:column>
+
+					
+
 					<p:column headerText="Número" sortBy="#{documento.numero}" filterBy="#{documento.numero}" filterMatchMode="contains">
 						<h:outputText value="#{documento.serie}-#{documento.numero}" />
 					</p:column>
 
-					<p:column headerText="RUC/DNI" sortBy="#{documento.ruc}" style="text-align:center;" filterBy="#{documento.ruc}" filterMatchMode="contains">
-						<h:outputText value="#{documento.ruc}" />
-					</p:column>
+					
 
 					<p:column headerText="Dirección" filterMatchMode="contains">
 						<h:outputText value="#{documento.direccion}" />
@@ -174,7 +178,7 @@
 				<h:panelGrid columns="3">
 					<h:panelGrid id="gridImpCuota">
 						<p:commandButton id="movieBtn" style="font-size: 14px;" value="Importar Cuota" icon="pi pi-search" update=":form:tabView:tableCuota" />
-						<p:overlayPanel for="movieBtn" dynamic="true" style="width:1000px" widgetVar="moviePickerCuota">
+						<p:overlayPanel for="movieBtn" dynamic="true" style="width:1200px" widgetVar="moviePickerCuota">
 							<p:dataTable var="cuota" value="#{documentoVentaBean.lstCuotaLazy}" rows="6" paginator="true" selectionMode="single" rowIndexVar="row" 
 								paginatorPosition="bottom" selection="#{documentoVentaBean.cuotaSelected}" rowKey="#{cuota.id}" id="tableCuota"
 								emptyMessage="No se encontraron resultados" size="small">
@@ -187,6 +191,19 @@
 
 								<p:column headerText="Mz-Lt" style="text-align:center; width:60px">
 									<h:outputText value="#{cuota.contrato.lote.manzana.name} - #{cuota.contrato.lote.numberLote}" style="font-size: 14px;" />
+								</p:column>
+								
+								<p:column headerText="Proyecto" style="text-align:center; width:70px">
+									<f:facet name="header">
+										Proyecto
+							        	<p:selectOneMenu value="#{documentoVentaBean.projectFilter}" converter="#{documentoVentaBean.conversorProject}" style="margin:5px; width:130px" >
+											<f:selectItem itemLabel="[-TODOS-]" value="#{null}"/>
+											<f:selectItems value="#{documentoVentaBean.lstProject}" var="project" itemLabel="#{project.name}" itemValue="#{project}"/>
+											<p:ajax update=":form:tabView:tableCuota" />
+										</p:selectOneMenu>
+									</f:facet>
+									
+									<h:outputText value="#{cuota.contrato.lote.project.name}" style="font-size: 14px;" />
 								</p:column>
 								
 								<p:column headerText="DNI" sortBy="#{cuota.contrato.personVenta.dni}" filterBy="#{cuota.contrato.personVenta.dni}" style="text-align:center; width:120px">
@@ -375,127 +392,12 @@
 							
 							
 						</h:panelGrid>
+						<p:commandButton value="Guardar" actionListener="#{documentoVentaBean.validarFormularioDocumentoVenta()}" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('blockUIWidgetGeneral').unblock();" styleClass="mt-3 ui-button-outlined block"  style="margin-left:10px" icon="pi pi-save"  />
+						<p:commandButton value="Cancelar" oncomplete="PF('cancelarDocumento').show()"   style="margin-left:10px" icon="pi pi-times"  />
+								
 					</p:panel>
 						
-					<p:panel id="pnlCond" header="Condiciones de venta" toggleable="true" toggleSpeed="500" widgetVar="panelCondVen" style="width:100%; margin-top:10px;">
-						<h:panelGrid styleClass="companyHeaderGrid" columns="6">
-							<p:row>
-								<p:column>
-									<h:outputText value="Tipo Pago: " />
-									<h:selectOneMenu value="#{documentoVentaBean.tipoPago}" unselectable="false">
-										<f:selectItem itemLabel="Contado" itemValue="Contado" />
-									</h:selectOneMenu>
-								</p:column>
-
-								<p:column>
-									<h:outputText value="Moneda: " style="margin-left:10px" />
-									<h:selectOneMenu value="#{documentoVentaBean.moneda}" unselectable="false">
-										<f:selectItem itemLabel="Soles" itemValue="S" />
-									</h:selectOneMenu>
-
-								</p:column>
-
-								
-								<p:column colspan="3">
-									<span class="ui-float-label" style="margin-top: 25px;">
-       									<p:inputText id="txt_observacion" style="width:100%;" label="" value="#{documentoVentaBean.observacion}" maxlength="200" />
-						               	<p:outputLabel for="@previous" value="Observación" />
-						            </span>
-								</p:column>
-								
-								<p:commandButton value="Guardar" actionListener="#{documentoVentaBean.validarFormularioDocumentoVenta()}" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('blockUIWidgetGeneral').unblock();" styleClass="mt-3 ui-button-outlined block"  style="margin-left:10px" icon="pi pi-save"  />
-								<p:commandButton value="Cancelar" oncomplete="PF('cancelarDocumento').show()"   style="margin-left:10px" icon="pi pi-times"  />
-								
-								<p:commandButton icon="pi pi-minus" action="#{documentoVentaBean.menorarImagen}" update=":form:tabView:pnlCond" styleClass="rounded-button ui-button-success" style="margin:10px;" />
-								<p:commandButton icon="pi pi-plus" action="#{documentoVentaBean.aumentarImagen}" update=":form:tabView:pnlCond" styleClass="rounded-button ui-button-success" />
-								
-								<h:panelGrid columns="7" width="100%">
-									<p:fileUpload value="#{documentoVentaBean.file1}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
-									<h:outputLabel value="Fecha:"/>
-									<p:datePicker value="#{documentoVentaBean.fechaImag1}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-									<h:outputLabel  value="Monto: " />
-									<p:inputNumber  value="#{documentoVentaBean.montoImag1}" style="margin:5px; width:220px" />
-									<h:outputLabel value="Nro. de Operación:" />
-									<p:inputText  value="#{documentoVentaBean.nroOperImag1}" style="margin:5px; width:220px"   /> 
-							
-									<p:fileUpload value="#{documentoVentaBean.file2}" rendered="#{documentoVentaBean.numMuestraImagen ge 2}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
-									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 2}"/>
-									<p:datePicker value="#{documentoVentaBean.fechaImag2}" rendered="#{documentoVentaBean.numMuestraImagen ge 2}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-									<h:outputLabel  value="Monto: " rendered="#{documentoVentaBean.numMuestraImagen ge 2}" />
-									<p:inputNumber  value="#{documentoVentaBean.montoImag2}" rendered="#{documentoVentaBean.numMuestraImagen ge 2}" style="margin:5px; width:220px" />
-									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 2}"/>
-									<p:inputText  value="#{documentoVentaBean.nroOperImag2}" rendered="#{documentoVentaBean.numMuestraImagen ge 2}" style="margin:5px; width:220px"  decimalPlaces="0" /> 
-									
-									<p:fileUpload value="#{documentoVentaBean.file3}" rendered="#{documentoVentaBean.numMuestraImagen ge 3}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>							
-									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 3}"/>
-									<p:datePicker value="#{documentoVentaBean.fechaImag3}" rendered="#{documentoVentaBean.numMuestraImagen ge 3}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>								
-									<h:outputLabel  value="Monto: " rendered="#{documentoVentaBean.numMuestraImagen ge 3}"/>
-									<p:inputNumber  value="#{documentoVentaBean.montoImag3}" rendered="#{documentoVentaBean.numMuestraImagen ge 3}" style="margin:5px; width:220px" />
-									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 3}"/>
-									<p:inputText  value="#{documentoVentaBean.nroOperImag3}" rendered="#{documentoVentaBean.numMuestraImagen ge 3}" style="margin:5px; width:220px"  decimalPlaces="0" />
-									
-									<p:fileUpload value="#{documentoVentaBean.file4}" rendered="#{documentoVentaBean.numMuestraImagen ge 4}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
-									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 4}"/>
-									<p:datePicker value="#{documentoVentaBean.fechaImag4}" rendered="#{documentoVentaBean.numMuestraImagen ge 4}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-									<h:outputLabel  value="Monto: " rendered="#{documentoVentaBean.numMuestraImagen ge 4}"/>
-									<p:inputNumber  value="#{documentoVentaBean.montoImag4}" rendered="#{documentoVentaBean.numMuestraImagen ge 4}" style="margin:5px; width:220px" />
-									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 4}"/>
-									<p:inputText  value="#{documentoVentaBean.nroOperImag4}" rendered="#{documentoVentaBean.numMuestraImagen ge 4}" style="margin:5px; width:220px"  decimalPlaces="0" />		
-									
-									<p:fileUpload value="#{documentoVentaBean.file5}" rendered="#{documentoVentaBean.numMuestraImagen ge 5}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
-									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 5}"/>
-									<p:datePicker value="#{documentoVentaBean.fechaImag5}" rendered="#{documentoVentaBean.numMuestraImagen ge 5}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-									<h:outputLabel  value="Monto: " rendered="#{documentoVentaBean.numMuestraImagen ge 5}"/>
-									<p:inputNumber  value="#{documentoVentaBean.montoImag5}" rendered="#{documentoVentaBean.numMuestraImagen ge 5}" style="margin:5px; width:220px" />
-									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 5}"/>
-									<p:inputText  value="#{documentoVentaBean.nroOperImag5}" rendered="#{documentoVentaBean.numMuestraImagen ge 5}" style="margin:5px; width:220px"  decimalPlaces="0" />	
-									
-									<p:fileUpload value="#{documentoVentaBean.file6}" rendered="#{documentoVentaBean.numMuestraImagen ge 6}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
-									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 6}"/>
-									<p:datePicker value="#{documentoVentaBean.fechaImag6}" rendered="#{documentoVentaBean.numMuestraImagen ge 6}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-									<h:outputLabel  value="Monto: " rendered="#{documentoVentaBean.numMuestraImagen ge 6}" />
-									<p:inputNumber  value="#{documentoVentaBean.montoImag6}" rendered="#{documentoVentaBean.numMuestraImagen ge 6}" style="margin:5px; width:220px" />
-									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 6}" />
-									<p:inputText  value="#{documentoVentaBean.nroOperImag6}" rendered="#{documentoVentaBean.numMuestraImagen ge 6}" style="margin:5px; width:220px"  decimalPlaces="0" />			
-									
-									<p:fileUpload value="#{documentoVentaBean.file7}" rendered="#{documentoVentaBean.numMuestraImagen ge 7}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
-									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 7}"/>
-									<p:datePicker value="#{documentoVentaBean.fechaImag7}" rendered="#{documentoVentaBean.numMuestraImagen ge 7}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-									<h:outputLabel  value="Monto: " rendered="#{documentoVentaBean.numMuestraImagen ge 7}" />
-									<p:inputNumber  value="#{documentoVentaBean.montoImag7}" rendered="#{documentoVentaBean.numMuestraImagen ge 7}" style="margin:5px; width:220px" />
-									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 7}" />
-									<p:inputText  value="#{documentoVentaBean.nroOperImag7}" rendered="#{documentoVentaBean.numMuestraImagen ge 7}" style="margin:5px; width:220px"  decimalPlaces="0" />	  
-									
-									<p:fileUpload value="#{documentoVentaBean.file8}" rendered="#{documentoVentaBean.numMuestraImagen ge 8}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
-									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 8}"/>
-									<p:datePicker value="#{documentoVentaBean.fechaImag8}" rendered="#{documentoVentaBean.numMuestraImagen ge 8}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-									<h:outputLabel  value="Monto: " rendered="#{documentoVentaBean.numMuestraImagen ge 8}" />
-									<p:inputNumber  value="#{documentoVentaBean.montoImag8}" rendered="#{documentoVentaBean.numMuestraImagen ge 8}" style="margin:5px; width:220px" />
-									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 8}" />
-									<p:inputText  value="#{documentoVentaBean.nroOperImag8}" rendered="#{documentoVentaBean.numMuestraImagen ge 8}" style="margin:5px; width:220px"  decimalPlaces="0" />	
-									
-									<p:fileUpload value="#{documentoVentaBean.file9}" rendered="#{documentoVentaBean.numMuestraImagen ge 9}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
-									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 9}"/>
-									<p:datePicker value="#{documentoVentaBean.fechaImag9}" rendered="#{documentoVentaBean.numMuestraImagen ge 9}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-									<h:outputLabel  value="Monto: " rendered="#{documentoVentaBean.numMuestraImagen ge 9}" />
-									<p:inputNumber  value="#{documentoVentaBean.montoImag9}" rendered="#{documentoVentaBean.numMuestraImagen ge 9}" style="margin:5px; width:220px" />
-									<h:outputLabel value="Nro. de Operación:"  rendered="#{documentoVentaBean.numMuestraImagen ge 9}"/>
-									<p:inputText  value="#{documentoVentaBean.nroOperImag9}" rendered="#{documentoVentaBean.numMuestraImagen ge 9}" style="margin:5px; width:220px"  decimalPlaces="0" />	
-								
-									<p:fileUpload value="#{documentoVentaBean.file10}" rendered="#{documentoVentaBean.numMuestraImagen ge 10}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
-									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 10}"/>
-									<p:datePicker value="#{documentoVentaBean.fechaImag10}" rendered="#{documentoVentaBean.numMuestraImagen ge 10}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-									<h:outputLabel  value="Monto: "  rendered="#{documentoVentaBean.numMuestraImagen ge 10}"/>
-									<p:inputNumber  value="#{documentoVentaBean.montoImag10}" rendered="#{documentoVentaBean.numMuestraImagen ge 10}" style="margin:5px; width:220px" />
-									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 10}" />
-									<p:inputText  value="#{documentoVentaBean.nroOperImag10}" rendered="#{documentoVentaBean.numMuestraImagen ge 10}" style="margin:5px; width:220px"  decimalPlaces="0" />	
-								</h:panelGrid>
-								
-							</p:row>
-
-						</h:panelGrid>
 					
-					</p:panel>
 				
 				</h:panelGrid>
 
@@ -587,7 +489,7 @@
 			                        </h:outputText>
 			                    </f:facet>
 			                    <f:facet name="input">
-			                        <p:inputNumber value="#{detalle.amortizacion}" style="width:90%" label="Price" symbol=""> 
+			                        <p:inputNumber value="#{detalle.amortizacion}" style="width:90%" label="Price" symbol="" > 
 			                        	<p:ajax listener="#{documentoVentaBean.updateAmortizacion(detalle)}" update=":form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos" />
 			                    	</p:inputNumber> 
 			                    </f:facet>	
@@ -636,6 +538,124 @@
 						</p:column>
 				
 					</p:dataTable>
+					
+					<p:panel id="pnlCond" header="Condiciones de venta" toggleable="true" toggleSpeed="500" widgetVar="panelCondVen" style="width:100%; margin-top:10px;">
+						<h:panelGrid styleClass="companyHeaderGrid" columns="6">
+							<p:row>
+								<p:column>
+									<h:outputText value="Tipo Pago: " />
+									<h:selectOneMenu value="#{documentoVentaBean.tipoPago}" unselectable="false">
+										<f:selectItem itemLabel="Contado" itemValue="Contado" />
+									</h:selectOneMenu>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="Moneda: " style="margin-left:10px" />
+									<h:selectOneMenu value="#{documentoVentaBean.moneda}" unselectable="false">
+										<f:selectItem itemLabel="Soles" itemValue="S" />
+									</h:selectOneMenu>
+
+								</p:column>
+
+								
+								<p:column colspan="3">
+									<span class="ui-float-label" style="margin-top: 25px;">
+       									<p:inputText id="txt_observacion" style="width:100%;" label="" value="#{documentoVentaBean.observacion}" maxlength="200" />
+						               	<p:outputLabel for="@previous" value="Observación" />
+						            </span>
+								</p:column>
+								
+								
+								<p:commandButton icon="pi pi-minus" action="#{documentoVentaBean.menorarImagen}" update=":form:tabView:pnlCond" styleClass="rounded-button ui-button-success" style="margin:10px;" />
+								<p:commandButton icon="pi pi-plus" action="#{documentoVentaBean.aumentarImagen}" update=":form:tabView:pnlCond" styleClass="rounded-button ui-button-success" />
+								
+								<h:panelGrid columns="7" width="100%">
+									<p:fileUpload value="#{documentoVentaBean.file1}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
+									<h:outputLabel value="Fecha:"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag1}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+									<h:outputLabel  value="Monto: " />
+									<p:inputNumber  value="#{documentoVentaBean.montoImag1}" style="margin:5px; width:220px" />
+									<h:outputLabel value="Nro. de Operación:" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag1}" style="margin:5px; width:220px"   /> 
+							
+									<p:fileUpload value="#{documentoVentaBean.file2}" rendered="#{documentoVentaBean.numMuestraImagen ge 2}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
+									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 2}"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag2}" rendered="#{documentoVentaBean.numMuestraImagen ge 2}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+									<h:outputLabel  value="Monto: " rendered="#{documentoVentaBean.numMuestraImagen ge 2}" />
+									<p:inputNumber  value="#{documentoVentaBean.montoImag2}" rendered="#{documentoVentaBean.numMuestraImagen ge 2}" style="margin:5px; width:220px" />
+									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 2}"/>
+									<p:inputText  value="#{documentoVentaBean.nroOperImag2}" rendered="#{documentoVentaBean.numMuestraImagen ge 2}" style="margin:5px; width:220px"  decimalPlaces="0" /> 
+									
+									<p:fileUpload value="#{documentoVentaBean.file3}" rendered="#{documentoVentaBean.numMuestraImagen ge 3}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>							
+									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 3}"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag3}" rendered="#{documentoVentaBean.numMuestraImagen ge 3}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>								
+									<h:outputLabel  value="Monto: " rendered="#{documentoVentaBean.numMuestraImagen ge 3}"/>
+									<p:inputNumber  value="#{documentoVentaBean.montoImag3}" rendered="#{documentoVentaBean.numMuestraImagen ge 3}" style="margin:5px; width:220px" />
+									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 3}"/>
+									<p:inputText  value="#{documentoVentaBean.nroOperImag3}" rendered="#{documentoVentaBean.numMuestraImagen ge 3}" style="margin:5px; width:220px"  decimalPlaces="0" />
+									
+									<p:fileUpload value="#{documentoVentaBean.file4}" rendered="#{documentoVentaBean.numMuestraImagen ge 4}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 4}"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag4}" rendered="#{documentoVentaBean.numMuestraImagen ge 4}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+									<h:outputLabel  value="Monto: " rendered="#{documentoVentaBean.numMuestraImagen ge 4}"/>
+									<p:inputNumber  value="#{documentoVentaBean.montoImag4}" rendered="#{documentoVentaBean.numMuestraImagen ge 4}" style="margin:5px; width:220px" />
+									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 4}"/>
+									<p:inputText  value="#{documentoVentaBean.nroOperImag4}" rendered="#{documentoVentaBean.numMuestraImagen ge 4}" style="margin:5px; width:220px"  decimalPlaces="0" />		
+									
+									<p:fileUpload value="#{documentoVentaBean.file5}" rendered="#{documentoVentaBean.numMuestraImagen ge 5}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 5}"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag5}" rendered="#{documentoVentaBean.numMuestraImagen ge 5}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+									<h:outputLabel  value="Monto: " rendered="#{documentoVentaBean.numMuestraImagen ge 5}"/>
+									<p:inputNumber  value="#{documentoVentaBean.montoImag5}" rendered="#{documentoVentaBean.numMuestraImagen ge 5}" style="margin:5px; width:220px" />
+									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 5}"/>
+									<p:inputText  value="#{documentoVentaBean.nroOperImag5}" rendered="#{documentoVentaBean.numMuestraImagen ge 5}" style="margin:5px; width:220px"  decimalPlaces="0" />	
+									
+									<p:fileUpload value="#{documentoVentaBean.file6}" rendered="#{documentoVentaBean.numMuestraImagen ge 6}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 6}"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag6}" rendered="#{documentoVentaBean.numMuestraImagen ge 6}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+									<h:outputLabel  value="Monto: " rendered="#{documentoVentaBean.numMuestraImagen ge 6}" />
+									<p:inputNumber  value="#{documentoVentaBean.montoImag6}" rendered="#{documentoVentaBean.numMuestraImagen ge 6}" style="margin:5px; width:220px" />
+									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 6}" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag6}" rendered="#{documentoVentaBean.numMuestraImagen ge 6}" style="margin:5px; width:220px"  decimalPlaces="0" />			
+									
+									<p:fileUpload value="#{documentoVentaBean.file7}" rendered="#{documentoVentaBean.numMuestraImagen ge 7}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 7}"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag7}" rendered="#{documentoVentaBean.numMuestraImagen ge 7}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+									<h:outputLabel  value="Monto: " rendered="#{documentoVentaBean.numMuestraImagen ge 7}" />
+									<p:inputNumber  value="#{documentoVentaBean.montoImag7}" rendered="#{documentoVentaBean.numMuestraImagen ge 7}" style="margin:5px; width:220px" />
+									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 7}" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag7}" rendered="#{documentoVentaBean.numMuestraImagen ge 7}" style="margin:5px; width:220px"  decimalPlaces="0" />	  
+									
+									<p:fileUpload value="#{documentoVentaBean.file8}" rendered="#{documentoVentaBean.numMuestraImagen ge 8}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 8}"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag8}" rendered="#{documentoVentaBean.numMuestraImagen ge 8}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+									<h:outputLabel  value="Monto: " rendered="#{documentoVentaBean.numMuestraImagen ge 8}" />
+									<p:inputNumber  value="#{documentoVentaBean.montoImag8}" rendered="#{documentoVentaBean.numMuestraImagen ge 8}" style="margin:5px; width:220px" />
+									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 8}" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag8}" rendered="#{documentoVentaBean.numMuestraImagen ge 8}" style="margin:5px; width:220px"  decimalPlaces="0" />	
+									
+									<p:fileUpload value="#{documentoVentaBean.file9}" rendered="#{documentoVentaBean.numMuestraImagen ge 9}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 9}"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag9}" rendered="#{documentoVentaBean.numMuestraImagen ge 9}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+									<h:outputLabel  value="Monto: " rendered="#{documentoVentaBean.numMuestraImagen ge 9}" />
+									<p:inputNumber  value="#{documentoVentaBean.montoImag9}" rendered="#{documentoVentaBean.numMuestraImagen ge 9}" style="margin:5px; width:220px" />
+									<h:outputLabel value="Nro. de Operación:"  rendered="#{documentoVentaBean.numMuestraImagen ge 9}"/>
+									<p:inputText  value="#{documentoVentaBean.nroOperImag9}" rendered="#{documentoVentaBean.numMuestraImagen ge 9}" style="margin:5px; width:220px"  decimalPlaces="0" />	
+								
+									<p:fileUpload value="#{documentoVentaBean.file10}" rendered="#{documentoVentaBean.numMuestraImagen ge 10}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 10}"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag10}" rendered="#{documentoVentaBean.numMuestraImagen ge 10}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
+									<h:outputLabel  value="Monto: "  rendered="#{documentoVentaBean.numMuestraImagen ge 10}"/>
+									<p:inputNumber  value="#{documentoVentaBean.montoImag10}" rendered="#{documentoVentaBean.numMuestraImagen ge 10}" style="margin:5px; width:220px" />
+									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 10}" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag10}" rendered="#{documentoVentaBean.numMuestraImagen ge 10}" style="margin:5px; width:220px"  decimalPlaces="0" />	
+								</h:panelGrid>
+								
+							</p:row>
+
+						</h:panelGrid>
+					
+					</p:panel>
 				
 				</h:panelGrid>
 				
@@ -965,7 +985,7 @@
 			</h:panelGrid>
 			
 			<h:panelGrid columns="2" >
-				<p:commandButton value="Descargar"   icon="pi pi-file-pdf" onstart="PF('blockUIWidgetEnvioSunat').block();" oncomplete="PF('blockUIWidgetEnvioSunat').unblock();" action="#{documentoVentaBean.pdfDocumentoElectronico()}" ajax="false" />
+				<p:commandButton value="Descargar"   icon="pi pi-file-pdf" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('blockUIWidgetGeneral').unblock();" action="#{documentoVentaBean.pdfDocumentoElectronico()}" ajax="false" />
 				<p:commandButton value="Enviar a SUNAT" onstart="PF('blockUIWidgetEnvioSunat').block();" oncomplete="PF('blockUIWidgetEnvioSunat').unblock();" rendered="#{documentoVentaBean.documentoVentaSelected.envioSunat eq false}" update=":form:tabView:idTableListDoc formDocumentoVentaDialog" icon="pi pi-send" action="#{documentoVentaBean.enviarDocumentoSunat}" /> 
 			</h:panelGrid>  
 		

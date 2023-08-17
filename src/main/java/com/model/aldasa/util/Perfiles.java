@@ -6,6 +6,7 @@ public enum Perfiles {
 	ASESOR("Asesor",2), 
 	SUPERVISOR("Supervisor",3),
 	ASISTENTE_ADMINISTRATIVO("Asistente Administrativo",4),
+	ASISTENTE_COBRANZA("Asistente Cobranza",5),
 	RECURSOS_HUMANOS("Recursos Humanos",6),
 	CONTABILIDAD("Contabilidad", 7),
 	COBRANZA("Cobranza", 8),

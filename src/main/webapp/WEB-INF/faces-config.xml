@@ -788,6 +788,10 @@
 			<property-name>personService</property-name>
 			<value>#{personService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>projectService</property-name>
+			<value>#{projectService}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>

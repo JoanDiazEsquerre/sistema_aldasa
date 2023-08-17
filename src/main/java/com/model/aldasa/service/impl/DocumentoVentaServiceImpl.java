@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
 import com.model.aldasa.entity.Empresa;
@@ -71,11 +72,27 @@ public class DocumentoVentaServiceImpl implements DocumentoVentaService{
 			if(d.getCuota()!=null) {
 				if(!d.getProducto().getTipoProducto().equals(TipoProductoType.INTERES.getTipo())) {
 					BigDecimal cuota = d.getCuota().getCuotaTotal().subtract(d.getCuota().getAdelanto());
-					BigDecimal cuota2 = d.getImporteVenta().add(d.getCuota().getInteres());
+					BigDecimal cuota2 = BigDecimal.ZERO;
+					
+					Cuota cuotaselected = d.getCuota();
+					for(DetalleDocumentoVenta d2:lstDetalleDocumentoVenta) {
+						if(d2.getCuota()!=null) {
+							if(cuotaselected.getId().equals(d2.getCuota().getId())) {
+								if(d2.getProducto().getTipoProducto().equals(TipoProductoType.INICIAL.getTipo())) {
+									cuota2 = cuota2.add(d2.getAmortizacion()).subtract(d2.getAdelanto());
+								}else {
+									cuota2 = cuota2.add(d2.getAmortizacion()).add(d2.getInteres());
+								}
+								
+								
+							}
+						}
+					}
+					
 					if(cuota.compareTo(cuota2)==0 ) {
 						d.getCuota().setPagoTotal("S");
 					}else {
-						d.getCuota().setAdelanto(d.getImporteVenta());
+						d.getCuota().setAdelanto(cuota2);
 					}
 					
 					cuotaRepository.save(d.getCuota()); 

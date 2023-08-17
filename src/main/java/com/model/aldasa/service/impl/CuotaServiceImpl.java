@@ -58,10 +58,17 @@ public class CuotaServiceImpl implements CuotaService{
 	}
 
 	@Override
+	public Page<Cuota> findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectName(
+			String pagoTotal, boolean estado, String personSurnames, String personDni, String proyecto, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return cuotaRepository.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectName(pagoTotal, estado, personSurnames, personDni, proyecto,pageable);
+	}
+	
+	@Override
 	public Page<Cuota> findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLike(
 			String pagoTotal, boolean estado, String personSurnames, String personDni, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return cuotaRepository.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLike(pagoTotal, estado, personSurnames, personDni, pageable);
+		return cuotaRepository.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLike(pagoTotal, estado, personSurnames, personDni,pageable);
 	}
 
 	@Override

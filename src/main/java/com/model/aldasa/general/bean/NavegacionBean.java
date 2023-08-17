@@ -1,6 +1,7 @@
 package com.model.aldasa.general.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
@@ -29,7 +30,7 @@ public class NavegacionBean implements Serializable  {
 	@ManagedProperty(value = "#{usuarioService}")
 	private UsuarioService usuarioService;
 	
-	private String ruta;
+	private String ruta, rutaLogo;
 	private String username;                              
 	private Usuario usuarioLogin = new Usuario();
 	private Sucursal sucursalLogin;
@@ -117,6 +118,12 @@ public class NavegacionBean implements Serializable  {
 		permisoCliente= obtenerPermisosPorPerfil(26);
 		
 		permisoPantallas();
+		
+		if(sucursalLogin.getId().toString().equals("1")) {
+			rutaLogo = "/recursos/images/LOGO.png";
+		}else {
+			rutaLogo = "/recursos/images/LOGO_ABARCA.png";
+		}
 	}
 	
 	public int[] obtenerPermisosPorPerfil(int idModuloSistema) {
@@ -782,6 +789,14 @@ public class NavegacionBean implements Serializable  {
 	}
 	public void setPermisoCliente(int[] permisoCliente) {
 		this.permisoCliente = permisoCliente;
+	}
+
+	public String getRutaLogo() {
+		return rutaLogo;
+	}
+
+	public void setRutaLogo(String rutaLogo) {
+		this.rutaLogo = rutaLogo;
 	}
 	
 	

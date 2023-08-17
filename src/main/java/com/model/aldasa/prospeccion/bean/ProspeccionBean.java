@@ -264,7 +264,7 @@ public class ProspeccionBean  extends BaseBean{
 	}
 	
 	public void listarProject() {
-		lstProject=projectService.findByStatus(true);
+		lstProject=projectService.findByStatusAndSucursal(true, navegacionBean.getSucursalLogin());
 	}
 	
 	public void listarActions() {
@@ -513,11 +513,11 @@ public class ProspeccionBean  extends BaseBean{
 				
 				
 				if (usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
-					pageProspection= prospectionService.findAllByPersonSupervisorSurnamesLikeAndPersonAssessorSurnamesLikeAndProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndStatus(surnamesSupervisor, surnamesAsesor, surnamesProspecto, dniProspecto, originContact,assessor, status, pageable);
+					pageProspection= prospectionService.findAllByPersonSupervisorSurnamesLikeAndPersonAssessorSurnamesLikeAndProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndStatusAndProjectSucursal(surnamesSupervisor, surnamesAsesor, surnamesProspecto, dniProspecto, originContact,assessor, status, navegacionBean.getSucursalLogin(), pageable);
 				} else if (usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
-					pageProspection= prospectionService.findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatus(surnamesProspecto, dniProspecto, originContact,assessor,usuarioLogin.getPerson(), status, pageable);
+					pageProspection= prospectionService.findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonAssessorAndStatusAndProjectSucursal(surnamesProspecto, dniProspecto, originContact,assessor,usuarioLogin.getPerson(), status, navegacionBean.getSucursalLogin(), pageable);
 				} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
-					pageProspection= prospectionService.findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatus(surnamesProspecto, dniProspecto, originContact,assessor,usuarioLogin.getPerson(), status, pageable);
+					pageProspection= prospectionService.findAllByProspectPersonSurnamesLikeAndProspectPersonDniLikeAndOriginContactLikeAndPersonAssessorSurnamesLikeAndPersonSupervisorAndStatusAndProjectSucursal(surnamesProspecto, dniProspecto, originContact,assessor,usuarioLogin.getPerson(), status, navegacionBean.getSucursalLogin(),  pageable);
 				}
 				
 				setRowCount((int) pageProspection.getTotalElements());

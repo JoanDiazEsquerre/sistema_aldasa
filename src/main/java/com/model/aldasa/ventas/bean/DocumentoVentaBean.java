@@ -49,6 +49,7 @@ import com.model.aldasa.entity.Imagen;
 import com.model.aldasa.entity.MotivoNota;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Producto;
+import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.SerieDocumento;
@@ -69,6 +70,7 @@ import com.model.aldasa.service.ImagenService;
 import com.model.aldasa.service.MotivoNotaService;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProductoService;
+import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.SerieDocumentoService;
 import com.model.aldasa.service.TipoDocumentoService;
@@ -140,6 +142,9 @@ public class DocumentoVentaBean extends BaseBean {
 	@ManagedProperty(value = "#{personService}")
 	private PersonService personService;	
 	
+	@ManagedProperty(value = "#{projectService}")
+	private ProjectService projectService;	
+	
 	private boolean estado = true;
 	private Boolean estadoSunat;
 
@@ -169,6 +174,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private List<Identificador> lstIdentificador = new ArrayList<>();
 	private List<Person> lstPerson;
 	private List<Cliente> lstCliente;
+	private List<Project> lstProject;
 
 	
 	private DocumentoVenta documentoVentaSelected ;
@@ -186,12 +192,13 @@ public class DocumentoVentaBean extends BaseBean {
 	private TipoOperacion tipoOperacionSelected;
 	private Identificador identificadorSelected;
 	private Person personSelected;
+	private Project projectFilter;
 
 
 	private DocumentoVenta documentoVentaNew;
 	private DetalleDocumentoVenta detalleDocumentoVentaSelected;
 	private DetalleDocumentoVenta detalleDocumentoVenta;
-	private Producto productoCuota,productoAdelanto,productoInteres, productoVoucher,productoAmortizacion;
+	private Producto productoCuota,productoAdelanto,productoInteres, productoVoucher,productoAmortizacion, productoInicial;
 	private Person persona;
 	private Usuario usuarioLogin = new Usuario();
 	
@@ -209,7 +216,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private String incluirUltimaCuota = "No";
 	private Integer nuevoNroCuotas, numMuestraImagen;
 	private Date fechaVoucherDialog;
-	private BigDecimal montoVoucherDialog;
+	private BigDecimal montoVoucherDialog, sumaMontoVoucher;
 	private String nroOperacionVoucherDialog;
 	private String motivo="";
 	private String motivoSunat="";
@@ -300,12 +307,14 @@ public class DocumentoVentaBean extends BaseBean {
 		productoVoucher = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.SEPARACION.getTipo());
 		productoAmortizacion = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.AMORTIZACION.getTipo());
 		productoAdelanto = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.ADELANTO.getTipo());
+		productoInicial = productoService.findByEstadoAndTipoProducto(true, TipoProductoType.INICIAL.getTipo());
 		
 		lstTipoOperacion = tipoOperacionService.findByEstado(true);
 		lstIdentificador = identificadorService.findByEstado(true); 
 		numMuestraImagen=1;
 		fechaEnvioSunat= new Date();
 		lstPerson=personService.findByStatus(true);
+		lstProject= projectService.findByStatusAndSucursal(true, navegacionBean.getSucursalLogin());
 		
 	}
 	
@@ -1274,7 +1283,7 @@ public class DocumentoVentaBean extends BaseBean {
 			detalle.setImporteVenta(detalle.getInteres().add(detalle.getAmortizacion()));
 		}else {
 			detalle.setImporteVenta(detalle.getInteres().add(detalle.getAmortizacion()));
-			detalle.setProducto(productoAdelanto);
+//			detalle.setProducto(productoAdelanto);
 		}
 		
 		calcularTotales();
@@ -1487,7 +1496,7 @@ public class DocumentoVentaBean extends BaseBean {
 			}
 		}
 
-		BigDecimal sumaMontoVoucher = BigDecimal.ZERO;
+		sumaMontoVoucher = BigDecimal.ZERO;
 		
 		if(file1 == null) {
 			addErrorMessage("Seleccione una imagen (voucher)");
@@ -1590,7 +1599,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		DocumentoVenta documento = documentoVentaService.save(documentoVenta, lstDetalleDocumentoVenta, serieDocumentoSelected); 
 		if(documento != null) {
-			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
+//			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
 			
 			lstDetalleDocumentoVenta.clear();// claer es limpiar en ingles prueba
 			clienteSelected=null;
@@ -1605,8 +1614,8 @@ public class DocumentoVentaBean extends BaseBean {
 			email2Text = "";
 			email3Text = "";
 			
-			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
-			addInfoMessage("Se guardó el documento correctamente. "+addMensaje);
+//			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
+			addInfoMessage("Se guardó el documento correctamente. ");
 			
 		}else {
 			addErrorMessage("No se puede guardar el documento."); 
@@ -1899,7 +1908,7 @@ public class DocumentoVentaBean extends BaseBean {
 			DetalleDocumentoVenta detalle = new DetalleDocumentoVenta();
 			//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
 			detalle.setDocumentoVenta(null);
-			detalle.setProducto(productoCuota);
+			detalle.setProducto(productoInicial);
 			detalle.setDescripcion("PAGO DE INICIAL POR LA VENTA DE UN LOTE DE TERRENO CON N° "+ cuotaSelected.getContrato().getLote().getNumberLote() +" MZ - "+ cuotaSelected.getContrato().getLote().getManzana().getName() +" , UBICADO EN " + cuotaSelected.getContrato().getLote().getProject().getName());
 			detalle.setAmortizacion(cuotaSelected.getCuotaSI());
 			detalle.setInteres(BigDecimal.ZERO);
@@ -1910,34 +1919,53 @@ public class DocumentoVentaBean extends BaseBean {
 			detalle.setCuotaPrepago(null);
 			lstDetalleDocumentoVenta.add(detalle);
 		}else {
-			DetalleDocumentoVenta detalle = new DetalleDocumentoVenta();
-			//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
-			detalle.setDocumentoVenta(null);
-			detalle.setProducto(productoCuota);
-			detalle.setDescripcion("PAGO DE LA CUOTA N° "+ cuotaSelected.getNroCuota() +" POR LA VENTA DE UN LOTE DE TERRENO CON N° "+ cuotaSelected.getContrato().getLote().getNumberLote() +" MZ - "+ cuotaSelected.getContrato().getLote().getManzana().getName() +" , UBICADO EN " + cuotaSelected.getContrato().getLote().getProject().getName());
-			detalle.setAmortizacion(cuotaSelected.getCuotaSI());
-			detalle.setInteres(BigDecimal.ZERO);
-			detalle.setAdelanto(cuotaSelected.getAdelanto());		
-			detalle.setImporteVenta(cuotaSelected.getCuotaSI().subtract(cuotaSelected.getAdelanto()));
-			detalle.setCuota(cuotaSelected);
-			detalle.setVoucher(null);
-			detalle.setCuotaPrepago(null);
-			lstDetalleDocumentoVenta.add(detalle);
+			if(cuotaSelected.getAdelanto().compareTo(BigDecimal.ZERO) == 0) {
+				DetalleDocumentoVenta detalle = new DetalleDocumentoVenta();
+				//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
+				detalle.setDocumentoVenta(null);
+				detalle.setProducto(productoCuota);
+				detalle.setDescripcion("PAGO DE LA CUOTA N° "+ cuotaSelected.getNroCuota() +" POR LA VENTA DE UN LOTE DE TERRENO CON N° "+ cuotaSelected.getContrato().getLote().getNumberLote() +" MZ - "+ cuotaSelected.getContrato().getLote().getManzana().getName() +" , UBICADO EN " + cuotaSelected.getContrato().getLote().getProject().getName());
+				detalle.setAmortizacion(cuotaSelected.getCuotaSI());
+				detalle.setInteres(BigDecimal.ZERO);
+				detalle.setAdelanto(cuotaSelected.getAdelanto());		
+				detalle.setImporteVenta(cuotaSelected.getCuotaSI().subtract(cuotaSelected.getAdelanto()));
+				detalle.setCuota(cuotaSelected);
+				detalle.setVoucher(null);
+				detalle.setCuotaPrepago(null);
+				lstDetalleDocumentoVenta.add(detalle);
+				
+				
+				DetalleDocumentoVenta detalleInteres = new DetalleDocumentoVenta();
+				//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
+				detalleInteres.setDocumentoVenta(null);
+				detalleInteres.setProducto(productoInteres);
+				detalleInteres.setDescripcion("POR EL INTERES CORRESPONDIENTE A LA CUOTA N°" + cuotaSelected.getNroCuota());
+				detalleInteres.setAmortizacion(BigDecimal.ZERO);
+				detalleInteres.setInteres(cuotaSelected.getInteres());
+				detalleInteres.setAdelanto(BigDecimal.ZERO);
+				detalleInteres.setImporteVenta(cuotaSelected.getInteres());
+				detalleInteres.setCuota(cuotaSelected);
+				detalleInteres.setVoucher(null);
+				detalleInteres.setCuotaPrepago(null);
+				lstDetalleDocumentoVenta.add(detalleInteres);
+			}else {
+				DetalleDocumentoVenta detalle = new DetalleDocumentoVenta();
+				//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
+				detalle.setDocumentoVenta(null);
+				detalle.setProducto(productoCuota);
+				detalle.setDescripcion("PAGO DE LA CUOTA N° "+ cuotaSelected.getNroCuota() +" POR LA VENTA DE UN LOTE DE TERRENO CON N° "+ cuotaSelected.getContrato().getLote().getNumberLote() +" MZ - "+ cuotaSelected.getContrato().getLote().getManzana().getName() +" , UBICADO EN " + cuotaSelected.getContrato().getLote().getProject().getName());
+				detalle.setAmortizacion(cuotaSelected.getCuotaSI().add(cuotaSelected.getInteres()).subtract(cuotaSelected.getAdelanto()));
+				detalle.setInteres(BigDecimal.ZERO);
+				detalle.setAdelanto(cuotaSelected.getAdelanto());		
+				detalle.setImporteVenta(cuotaSelected.getCuotaSI().add(cuotaSelected.getInteres()).subtract(cuotaSelected.getAdelanto()));
+				detalle.setCuota(cuotaSelected);
+				detalle.setVoucher(null);
+				detalle.setCuotaPrepago(null);
+				lstDetalleDocumentoVenta.add(detalle);
+				
+			}
 			
 			
-			DetalleDocumentoVenta detalleInteres = new DetalleDocumentoVenta();
-			//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
-			detalleInteres.setDocumentoVenta(null);
-			detalleInteres.setProducto(productoInteres);
-			detalleInteres.setDescripcion("POR EL INTERES CORRESPONDIENTE A LA CUOTA N°" + cuotaSelected.getNroCuota());
-			detalleInteres.setAmortizacion(BigDecimal.ZERO);
-			detalleInteres.setInteres(cuotaSelected.getInteres());
-			detalleInteres.setAdelanto(BigDecimal.ZERO);
-			detalleInteres.setImporteVenta(cuotaSelected.getInteres());
-			detalleInteres.setCuota(cuotaSelected);
-			detalleInteres.setVoucher(null);
-			detalleInteres.setCuotaPrepago(null);
-			lstDetalleDocumentoVenta.add(detalleInteres);
 		}
 		
 		
@@ -2067,7 +2095,13 @@ public class DocumentoVentaBean extends BaseBean {
 //					anticipos = anticipos.add(d.getAmortizacion());
 //				}
 				if(d.getCuota()!=null) {
-					anticipos=anticipos.add(d.getCuota().getAdelanto());
+//					if(!d.getProducto().getTipoProducto().equals(TipoProductoType.INTERES.getTipo())) {
+						if(d.getProducto().getTipoProducto().equals(TipoProductoType.INICIAL.getTipo())) {
+							anticipos=anticipos.add(d.getCuota().getAdelanto());
+						}
+						
+//					}
+					
 				}
 			}
 		}
@@ -2254,7 +2288,6 @@ public class DocumentoVentaBean extends BaseBean {
 
 			@Override
 			public List<Cuota> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-               
 				String names = "%" + (filterBy.get("contrato.personVenta.surnames") != null ? filterBy.get("contrato.personVenta.surnames").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
 				String dni = "%" + (filterBy.get("contrato.personVenta.dni") != null ? filterBy.get("contrato.personVenta.dni").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
 				
@@ -2272,9 +2305,14 @@ public class DocumentoVentaBean extends BaseBean {
                 Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
                
                 Page<Cuota> pageCuota=null;
-               
+                if(projectFilter != null) {
+                    pageCuota= cuotaService.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectName("N", true, names, dni, projectFilter.getName(), pageable);
+
+				}else {
+                    pageCuota= cuotaService.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLike("N", true, names, dni, pageable);
+
+				}
                 
-                pageCuota= cuotaService.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLike("N", true, names, dni, pageable);
                 
                 setRowCount((int) pageCuota.getTotalElements());
                 return datasource = pageCuota.getContent();
@@ -2632,6 +2670,34 @@ public class DocumentoVentaBean extends BaseBean {
                     return "";
                 } else {
                     return ((TipoDocumento) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorProject() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Project c = null;
+                    for (Project si : lstProject) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Project) value).getId() + "";
                 }
             }
         };
@@ -3928,6 +3994,30 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setTipoDocumentoFilter(TipoDocumento tipoDocumentoFilter) {
 		this.tipoDocumentoFilter = tipoDocumentoFilter;
+	}
+	public ProjectService getProjectService() {
+		return projectService;
+	}
+	public void setProjectService(ProjectService projectService) {
+		this.projectService = projectService;
+	}
+	public List<Project> getLstProject() {
+		return lstProject;
+	}
+	public void setLstProject(List<Project> lstProject) {
+		this.lstProject = lstProject;
+	}
+	public Project getProjectFilter() {
+		return projectFilter;
+	}
+	public void setProjectFilter(Project projectFilter) {
+		this.projectFilter = projectFilter;
+	}
+	public BigDecimal getSumaMontoVoucher() {
+		return sumaMontoVoucher;
+	}
+	public void setSumaMontoVoucher(BigDecimal sumaMontoVoucher) {
+		this.sumaMontoVoucher = sumaMontoVoucher;
 	}
 	
 
