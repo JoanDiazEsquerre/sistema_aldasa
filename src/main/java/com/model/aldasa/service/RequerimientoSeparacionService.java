@@ -10,6 +10,7 @@ import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.RequerimientoSeparacion;
+import com.model.aldasa.entity.Sucursal;
 
 public interface RequerimientoSeparacionService {
 	
@@ -21,7 +22,7 @@ public interface RequerimientoSeparacionService {
 	
 	List<RequerimientoSeparacion> findByProspection(Prospection prostection);
 	
-	Page<RequerimientoSeparacion> findAllByEstado(String estado, Pageable pageable);
+	Page<RequerimientoSeparacion> findAllByEstadoAndProspectionProjectSucursal(String estado, Sucursal sucursal, Pageable pageable);
 
 
 	

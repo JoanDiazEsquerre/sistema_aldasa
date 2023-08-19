@@ -12,7 +12,7 @@ public interface ContratoRepository extends PagingAndSortingRepository<Contrato,
 	
 	Page<Contrato> findByEstado(boolean status, Pageable pageable);
 	Page<Contrato> findByEstadoAndLoteProjectSucursal(boolean status, Sucursal sucursal, Pageable pageable);
-	Page<Contrato> findByPersonVentaSurnamesLikeAndPersonVentaDniLikeAndEstadoAndCancelacionTotal(String personVenta, String dni, boolean estado, boolean cancelacionTotal, Pageable pageable);
+	Page<Contrato> findByPersonVentaSurnamesLikeAndPersonVentaDniLikeAndEstadoAndCancelacionTotalAndLoteProjectSucursal(String personVenta, String dni, boolean estado, boolean cancelacionTotal, Sucursal sucursal,Pageable pageable);
 
 
 }

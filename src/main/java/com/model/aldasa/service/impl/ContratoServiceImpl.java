@@ -54,10 +54,10 @@ public class ContratoServiceImpl implements ContratoService{
 	}
 
 	@Override
-	public Page<Contrato> findByPersonVentaSurnamesLikeAndPersonVentaDniLikeAndEstadoAndCancelacionTotal(
-			String personVenta, String dni, boolean estado, boolean cancelacionTotal, Pageable pageable) {
+	public Page<Contrato> findByPersonVentaSurnamesLikeAndPersonVentaDniLikeAndEstadoAndCancelacionTotalAndLoteProjectSucursal(
+			String personVenta, String dni, boolean estado, boolean cancelacionTotal, Sucursal sucursal,Pageable pageable) {
 		// TODO Auto-generated method stub
-		return contratoRepository.findByPersonVentaSurnamesLikeAndPersonVentaDniLikeAndEstadoAndCancelacionTotal(personVenta, dni, estado, cancelacionTotal, pageable);
+		return contratoRepository.findByPersonVentaSurnamesLikeAndPersonVentaDniLikeAndEstadoAndCancelacionTotalAndLoteProjectSucursal(personVenta, dni, estado, cancelacionTotal, sucursal, pageable);
 	}
 
 

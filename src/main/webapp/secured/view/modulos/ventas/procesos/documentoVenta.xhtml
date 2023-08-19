@@ -182,7 +182,7 @@
 							<p:dataTable var="cuota" value="#{documentoVentaBean.lstCuotaLazy}" rows="6" paginator="true" selectionMode="single" rowIndexVar="row" 
 								paginatorPosition="bottom" selection="#{documentoVentaBean.cuotaSelected}" rowKey="#{cuota.id}" id="tableCuota"
 								emptyMessage="No se encontraron resultados" size="small">
-								<p:ajax event="rowSelect" listener="#{documentoVentaBean.importarCuota}" oncomplete="PF('moviePickerCuota').hide()" 
+								<p:ajax event="rowSelect" listener="#{documentoVentaBean.importarCuota}" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('moviePickerCuota').hide();PF('blockUIWidgetGeneral').unblock();" 
 								update=":form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante" />
 
 								<p:column headerText="Nro Cuota" style="text-align:center; width:60px">
@@ -251,7 +251,7 @@
 								paginatorPosition="bottom" selection="#{documentoVentaBean.voucherSelected}" rowKey="#{voucher.id}" id="tableVoucher"
 								emptyMessage="No se encontraron resultados" size="small">
 								
-								<p:ajax event="rowSelect" listener="#{documentoVentaBean.importarVoucher()}" oncomplete="PF('moviePickerVoucher').hide()" 
+								<p:ajax event="rowSelect" listener="#{documentoVentaBean.importarVoucher()}" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('moviePickerVoucher').hide();PF('blockUIWidgetGeneral').unblock();" 
 								update=":form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante"/>
 
 								<p:column headerText="Cuenta Bancaria" style="text-align:center; width:60px">
@@ -295,7 +295,7 @@
 								paginatorPosition="bottom" selection="#{documentoVentaBean.prepagoSelected}" rowKey="#{cuota.id}" id="tablePrepago"
 								emptyMessage="No se encontraron resultados" size="small">
 								
-								<p:ajax event="rowSelect" listener="#{documentoVentaBean.importarPrepago()}" oncomplete="PF('moviePickerPrepago').hide()" 
+								<p:ajax event="rowSelect" listener="#{documentoVentaBean.importarPrepago()}" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('moviePickerPrepago').hide();PF('blockUIWidgetGeneral').unblock();" 
 								update=":form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante"/>
 								
 								<p:column headerText="Cliente"  style="text-align:center; width:120px">
@@ -685,6 +685,10 @@
 							<p:column headerText="Mz-Lote" style="text-align:center; width:60px">
 								<h:outputText value="#{contrato.lote.manzana.name}-#{contrato.lote.numberLote}" style="font-size: 14px;" />
 							</p:column>
+							
+							<p:column headerText="Proyecto" style="text-align:center; width:60px">
+								<h:outputText value="#{contrato.lote.project.name}" style="font-size: 14px;" />
+							</p:column>
 
 						</p:dataTable>
 					</p:overlayPanel>
@@ -835,7 +839,7 @@
 					</p:column>
 				
 					<p:column headerText="Cuota SI" filterMatchMode="contains" >
-						<h:outputText  value="#{cuotaContrato.nroCuota eq 0 ? cuotaContrato.cuotaSI : cuotaContrato.cuotaSI-cuotaContrato.adelanto}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
+						<h:outputText  value="#{cuotaContrato.nroCuota eq 0 ? cuotaContrato.cuotaSI : cuotaContrato.pagoTotal eq 'S'? cuotaContrato.cuotaSI : cuotaContrato.cuotaSI-cuotaContrato.adelanto}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
 							<f:convertNumber type="currency" currencySymbol=""/>
 						</h:outputText>
 					</p:column>
@@ -847,7 +851,7 @@
 					</p:column>
 					
 					<p:column headerText="Cuota Total" filterMatchMode="contains" >
-						<h:outputText value="#{cuotaContrato.nroCuota eq 0 ? cuotaContrato.cuotaSI : cuotaContrato.cuotaTotal-cuotaContrato.adelanto}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
+						<h:outputText value="#{cuotaContrato.nroCuota eq 0 ? cuotaContrato.cuotaTotal : cuotaContrato.pagoTotal eq 'S'? cuotaContrato.cuotaTotal : cuotaContrato.cuotaTotal-cuotaContrato.adelanto}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
 							<f:convertNumber type="currency" currencySymbol=""/>
 						</h:outputText>
 					</p:column>
@@ -1318,7 +1322,7 @@
     </pe:blockUI>
     <p:confirmDialog id="cancelarContrato" message="¿Está seguro de cancelar la simulación del prepago?" header="Confirmación" severity="alert" widgetVar="cancelarContrato" appendTo="@(body)">
         <h:form >
-            <p:commandButton value="SI" onstart="PF('blockUIWidgetCancelarContrato').block();" oncomplete="PF('blockUIWidgetCancelarContrato').unblock();PF('cancelarContrato').hide()"  action="#{documentoVentaBean.cancelarContrato()}" update=":form:tabView:tableContrato :form:tabView:pnlContrato"/>
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetCancelarContrato').block();" oncomplete="PF('blockUIWidgetCancelarContrato').unblock();PF('cancelarContrato').hide()"  action="#{documentoVentaBean.cancelarContrato()}" update=":form:tabView:tableContrato :form:tabView:pnlContrato :form:tabView:tableCuotaContrato"/>
             <p:commandButton value="NO" oncomplete="PF('cancelarContrato').hide()"/>
         </h:form>
     </p:confirmDialog>

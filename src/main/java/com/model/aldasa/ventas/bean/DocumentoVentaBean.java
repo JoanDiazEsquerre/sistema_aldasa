@@ -1103,21 +1103,21 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		
 		
-		Cliente cliente = clienteService.findByPersonAndEstado(contratoPendienteSelected.getPersonVenta(), true);
-		if(cliente == null){
-			 cliente = new Cliente();
-			 cliente.setPerson(contratoPendienteSelected.getPersonVenta());
-			 cliente.setRazonSocial(contratoPendienteSelected.getPersonVenta().getSurnames()+" "+contratoPendienteSelected.getPersonVenta().getNames());
-			 cliente.setNombreComercial(contratoPendienteSelected.getPersonVenta().getSurnames()+" "+contratoPendienteSelected.getPersonVenta().getNames());
-			 cliente.setRuc(contratoPendienteSelected.getPersonVenta().getDni());
-			 cliente.setDireccion(contratoPendienteSelected.getPersonVenta().getAddress());
-			 cliente.setPersonaNatural(true);
-			 cliente.setEstado(true);
-			 cliente.setFechaRegistro(new Date());
-			 cliente.setIdUsuarioRegistro(navegacionBean.getUsuarioLogin());
-			 cliente = clienteService.save(cliente);
-			 
-		}		
+//		Cliente cliente = clienteService.findByPersonAndEstado(contratoPendienteSelected.getPersonVenta(), true);
+//		if(cliente == null){
+//			 cliente = new Cliente();
+//			 cliente.setPerson(contratoPendienteSelected.getPersonVenta());
+//			 cliente.setRazonSocial(contratoPendienteSelected.getPersonVenta().getSurnames()+" "+contratoPendienteSelected.getPersonVenta().getNames());
+//			 cliente.setNombreComercial(contratoPendienteSelected.getPersonVenta().getSurnames()+" "+contratoPendienteSelected.getPersonVenta().getNames());
+//			 cliente.setRuc(contratoPendienteSelected.getPersonVenta().getDni());
+//			 cliente.setDireccion(contratoPendienteSelected.getPersonVenta().getAddress());
+//			 cliente.setPersonaNatural(true);
+//			 cliente.setEstado(true);
+//			 cliente.setFechaRegistro(new Date());
+//			 cliente.setIdUsuarioRegistro(navegacionBean.getUsuarioLogin());
+//			 cliente = clienteService.save(cliente);
+//			 
+//		}		
 		
 		addInfoMessage("Se guardo el prepago correctamente.");
 		lstCuotaPendientes.clear();
@@ -1136,7 +1136,7 @@ public class DocumentoVentaBean extends BaseBean {
 		for(Cuota c:lstCuotaPendientes) {
 			if(c.getNroCuota()!=0) {
 				BigDecimal a = c.getCuotaSI().subtract(c.getAdelanto());
-				BigDecimal b = c.getCuotaTotal().subtract(c.getAdelanto());
+				BigDecimal b = c.getCuotaTotal().subtract(c.getAdelanto()); 
 				deudaActualSinInteres = deudaActualSinInteres.add(a);	
 				deudaActualConInteres = deudaActualConInteres.add(b);	
 			}
@@ -1599,7 +1599,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		DocumentoVenta documento = documentoVentaService.save(documentoVenta, lstDetalleDocumentoVenta, serieDocumentoSelected); 
 		if(documento != null) {
-//			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
+			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
 			
 			lstDetalleDocumentoVenta.clear();// claer es limpiar en ingles prueba
 			clienteSelected=null;
@@ -1614,8 +1614,8 @@ public class DocumentoVentaBean extends BaseBean {
 			email2Text = "";
 			email3Text = "";
 			
-//			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
-			addInfoMessage("Se guardó el documento correctamente. ");
+			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
+			addInfoMessage("Se guardó el documento correctamente. "+addMensaje);
 			
 		}else {
 			addErrorMessage("No se puede guardar el documento."); 
@@ -2486,7 +2486,7 @@ public class DocumentoVentaBean extends BaseBean {
                 }        
                 Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
                
-                Page<Contrato> pageContrato= contratoService.findByPersonVentaSurnamesLikeAndPersonVentaDniLikeAndEstadoAndCancelacionTotal(names, dni, true, false, pageable);
+                Page<Contrato> pageContrato= contratoService.findByPersonVentaSurnamesLikeAndPersonVentaDniLikeAndEstadoAndCancelacionTotalAndLoteProjectSucursal(names, dni, true, false, navegacionBean.getSucursalLogin(), pageable);
                 
                 setRowCount((int) pageContrato.getTotalElements());
                 return datasource = pageContrato.getContent();

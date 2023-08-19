@@ -274,7 +274,7 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 				//Tu deberias preparar el metodo para cada filtro que tengas en la tabla
 				Page<RequerimientoSeparacion> pageReqSep=null;
 				
-				pageReqSep= requerimientoSeparacionService.findAllByEstado(estado, pageable);
+				pageReqSep= requerimientoSeparacionService.findAllByEstadoAndProspectionProjectSucursal(estado, navegacionBean.getSucursalLogin(), pageable);
 				
 				
 				setRowCount((int) pageReqSep.getTotalElements());

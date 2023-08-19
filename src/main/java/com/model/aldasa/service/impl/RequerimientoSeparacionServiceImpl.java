@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.RequerimientoSeparacion;
+import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.repository.RequerimientoSeparacionRepository;
 import com.model.aldasa.service.RequerimientoSeparacionService;
 
@@ -45,9 +46,9 @@ public class RequerimientoSeparacionServiceImpl implements RequerimientoSeparaci
 	}
 
 	@Override
-	public Page<RequerimientoSeparacion> findAllByEstado(String estado, Pageable pageable) {
+	public Page<RequerimientoSeparacion> findAllByEstadoAndProspectionProjectSucursal(String estado, Sucursal sucursal, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return requerimientoSeparacionRepository.findAllByEstado(estado, pageable);
+		return requerimientoSeparacionRepository.findAllByEstadoAndProspectionProjectSucursal(estado, sucursal, pageable);
 	}
 
 	@Override

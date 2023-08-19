@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.PrimeFaces;
 import org.primefaces.model.FilterMeta;
@@ -67,6 +68,8 @@ public class InicioBean implements Serializable {
 		texto2 = "adminístrelo a los otros,";
 		texto3 = "como buenos dispensadores de";
 		texto4 = "las diferentes gracias de Dios. (Pedro 4:10)";
+		
+		FacesContext.getCurrentInstance().getApplication().getNavigationHandler().handleNavigation(FacesContext.getCurrentInstance(), null, "refreshPage?faces-redirect=true");
 		
 	}
 	
