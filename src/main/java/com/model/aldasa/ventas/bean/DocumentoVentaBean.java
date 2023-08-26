@@ -1187,6 +1187,8 @@ public class DocumentoVentaBean extends BaseBean {
 	
 	
 	public void anularDocumento() {
+		//si es boleta y  anulo el mismo de la emision, mandar mensaje de espererar 24 horas
+		
 		if(!documentoVentaSelected.isEnvioSunat()) {
 			anulacionFinalDeDocumento();
 			return;
@@ -1318,7 +1320,7 @@ public class DocumentoVentaBean extends BaseBean {
 		return valor;
 	}
 	
-	public boolean validarDatosImagen(BigDecimal suma) {
+	public boolean validarDatosImagen() {
 		boolean valida=false;
 		if(file2!=null){
 			if(fechaImag2==null) {
@@ -1329,7 +1331,7 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
 			}else {
-				suma = suma.add(montoImag2);
+				sumaMontoVoucher = sumaMontoVoucher.add(montoImag2);
 			}
 			if(nroOperImag2.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -1346,7 +1348,7 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
 			}else {
-				suma = suma.add(montoImag3);
+				sumaMontoVoucher = sumaMontoVoucher.add(montoImag3);
 			}
 			if(nroOperImag3.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -1363,7 +1365,7 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
 			}else {
-				suma = suma.add(montoImag4);
+				sumaMontoVoucher = sumaMontoVoucher.add(montoImag4);
 			}
 			if(nroOperImag4.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -1380,7 +1382,7 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
 			}else {
-				suma = suma.add(montoImag5);
+				sumaMontoVoucher = sumaMontoVoucher.add(montoImag5);
 			}
 			if(nroOperImag5.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -1397,7 +1399,7 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
 			}else {
-				suma = suma.add(montoImag6);
+				sumaMontoVoucher = sumaMontoVoucher.add(montoImag6);
 			}
 			if(nroOperImag6.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -1414,7 +1416,7 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
 			}else {
-				suma = suma.add(montoImag7);
+				sumaMontoVoucher = sumaMontoVoucher.add(montoImag7);
 			}
 			if(nroOperImag7.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -1431,7 +1433,7 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
 			}else {
-				suma = suma.add(montoImag8);
+				sumaMontoVoucher = sumaMontoVoucher.add(montoImag8);
 			}
 			if(nroOperImag8.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -1448,7 +1450,7 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
 			}else {
-				suma = suma.add(montoImag9);
+				sumaMontoVoucher = sumaMontoVoucher.add(montoImag9);
 			}
 			if(nroOperImag9.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -1465,7 +1467,7 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Ingresar monto del segundo voucher");
 				return true;
 			}else {
-				suma = suma.add(montoImag10);
+				sumaMontoVoucher = sumaMontoVoucher.add(montoImag10);
 			}
 			if(nroOperImag10.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
@@ -1517,7 +1519,7 @@ public class DocumentoVentaBean extends BaseBean {
 				return;
 			}
 		}
-		boolean validaImagenes = validarDatosImagen(sumaMontoVoucher);
+		boolean validaImagenes = validarDatosImagen();
 		
 		if(validaImagenes) {
 			return;
@@ -1599,7 +1601,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		DocumentoVenta documento = documentoVentaService.save(documentoVenta, lstDetalleDocumentoVenta, serieDocumentoSelected); 
 		if(documento != null) {
-			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
+//			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
 			
 			lstDetalleDocumentoVenta.clear();// claer es limpiar en ingles prueba
 			clienteSelected=null;
@@ -1614,8 +1616,8 @@ public class DocumentoVentaBean extends BaseBean {
 			email2Text = "";
 			email3Text = "";
 			
-			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
-			addInfoMessage("Se guardó el documento correctamente. "+addMensaje);
+//			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
+			addInfoMessage("Se guardó el documento correctamente. ");
 			
 		}else {
 			addErrorMessage("No se puede guardar el documento."); 
@@ -1886,8 +1888,9 @@ public class DocumentoVentaBean extends BaseBean {
 						addErrorMessage("Ya seleccionó la cuota");			
 						return;
 					}
-					
-					if(cuotaSelected.getContrato().getPersonVenta().getId() != d.getCuota().getContrato().getPersonVenta().getId()) {
+					System.out.println("******"+cuotaSelected.getContrato().getPersonVenta().getId());
+					System.out.println("******"+d.getCuota().getContrato().getPersonVenta().getId());
+					if(!cuotaSelected.getContrato().getPersonVenta().getId().equals(d.getCuota().getContrato().getPersonVenta().getId()) ) {
 						addErrorMessage("La cuota debe ser de la misma persona.");
 						return;
 					}

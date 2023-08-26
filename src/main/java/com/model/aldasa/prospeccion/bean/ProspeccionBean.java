@@ -129,6 +129,9 @@ public class ProspeccionBean  extends BaseBean{
 	private Department departmentSelected;
 	private Province provinceSelected;
 	private District districtSelected;
+	private Prospect prospectoPlantilla;
+	private Project proyectoPlantilla;
+	private Lote lotePlantilla;
 
 	private String status = "En seguimiento";
 	private String rutaImagen;
@@ -1425,5 +1428,23 @@ public class ProspeccionBean  extends BaseBean{
 	public void setRutaImagen(String rutaImagen) {
 		this.rutaImagen = rutaImagen;
 	}
-
+	public Prospect getProspectoPlantilla() {
+		return prospectoPlantilla;
+	}
+	public void setProspectoPlantilla(Prospect prospectoPlantilla) {
+		this.prospectoPlantilla = prospectoPlantilla;
+	}
+	public Project getProyectoPlantilla() {
+		return proyectoPlantilla;
+	}
+	public void setProyectoPlantilla(Project proyectoPlantilla) {
+		this.proyectoPlantilla = proyectoPlantilla;
+	}
+	public Lote getLotePlantilla() {
+		return lotePlantilla;
+	}
+	public void setLotePlantilla(Lote lotePlantilla) {
+		this.lotePlantilla = lotePlantilla;
+	}
+	
 }

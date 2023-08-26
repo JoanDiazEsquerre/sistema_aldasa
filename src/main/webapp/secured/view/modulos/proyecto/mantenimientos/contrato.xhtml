@@ -34,6 +34,18 @@
 			                      #{row +1}
 			        </p:column>
 			        
+ 			        <p:column headerText="Proyecto" filterMatchMode="contains" sortBy="#{contrato.lote.project.name}">
+						<h:outputText value="#{contrato.lote.project.name}"/>
+					</p:column>
+					
+					<p:column headerText="Manzana" filterMatchMode="contains" style="text-align:center" sortBy="#{contrato.lote.manzana.name}">
+						<h:outputText value="#{contrato.lote.manzana.name}"/>
+					</p:column>
+					
+					<p:column headerText="Num. Lote" filterMatchMode="contains" style="text-align:center" sortBy="#{contrato.lote.numberLote}">
+						<h:outputText value="#{contrato.lote.numberLote}"/>
+					</p:column>
+			        
 			        <p:column headerText="Fecha Venta" filterMatchMode="contains" sortBy="#{contrato.fechaVenta}">
 						<h:outputText value="#{contrato.fechaVenta}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
@@ -115,15 +127,15 @@
 							selection="#{contratoBean.loteSelected}" rowKey="#{lote.id}" id="tableLote" emptyMessage="No se encontraron resultados" size="small">
 							<p:ajax event="rowSelect" listener="#{contratoBean.seleccionarLote()}" oncomplete="PF('moviePicker').hide()" update=":form:tabView:gridNomLote :form:tabView:grid  "/>
 	
-							<p:column headerText="Proyecto" >
+							<p:column headerText="Proyecto" filterBy="#{lote.project.name}" >
 								<h:outputText value="#{lote.project.name}" style="font-size: 14px;"/>
 							</p:column>
 	
-							<p:column headerText="Nro. Lote" style="text-align:center">
+							<p:column headerText="Nro. Lote" style="text-align:center" filterBy="#{lote.numberLote}">
 								<h:outputText value="#{lote.numberLote}" style="font-size: 14px;"/>
 							</p:column>
 	
-							<p:column headerText="Manza" style="text-align:center">
+							<p:column headerText="Manza" style="text-align:center" filterBy="#{lote.manzana.name}">
 								<h:outputText value="#{lote.manzana.name}" style="font-size: 14px;"/>
 							</p:column>
 							
@@ -250,8 +262,6 @@
 						<f:convertNumber type="currency" currencySymbol=""/>
 					</h:outputText>
 				</p:column>
-				
-				
 			</p:dataTable>
 		</h:form>
 	</p:dialog>
@@ -339,6 +349,10 @@
 					<p:column headerText="Estado de Pago" filterMatchMode="contains" >
 						<h:outputText value="#{cuotaContrato.prepago eq true ? 'PREPAGO' : cuotaContrato.pagoTotal eq 'S'?'PAGADO':'PENDIENTE'}"  style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':cuotaContrato.pagoTotal eq 'S'?'blue':cuotaContrato.pagoTotal eq 'N'?'red':'black'}"/>
 						
+					</p:column>
+					
+					<p:column headerText="PAGÓ?" style="text-align:center">
+						<p:commandButton update="formCronogramaPagoDialog" value="#{cuotaContrato.pagoTotal eq 'S'?'SI':'NO'}" action="#{contratoBean.cambiarPagoTotalCuota(cuotaContrato)}" styleClass="#{cuotaContrato.pagoTotal eq 'S'? 'ui-button-success' : 'ui-button-warning'}"/>
 					</p:column>
 	
 				</p:dataTable>

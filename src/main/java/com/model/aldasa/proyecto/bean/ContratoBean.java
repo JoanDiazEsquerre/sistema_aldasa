@@ -200,6 +200,20 @@ public class ContratoBean extends BaseBean implements Serializable{
 		}
 	}
 	
+	public void cambiarPagoTotalCuota(Cuota cuota) {
+		if(cuota.getPagoTotal().equals("S")) {
+			cuota.setPagoTotal("N");
+		}else {
+			cuota.setPagoTotal("S");
+		}
+		Cuota cambioFirma = cuotaService.save(cuota);
+		if(cambioFirma!=null) {
+			addInfoMessage("Se actualizó la cuota correctamente.");
+		}else {
+			addErrorMessage("No se pudo actualizar la cuota.");
+		}
+	}
+	
 	public void deleteObs() {
 		
 		obsSelected.setEstado(false);
