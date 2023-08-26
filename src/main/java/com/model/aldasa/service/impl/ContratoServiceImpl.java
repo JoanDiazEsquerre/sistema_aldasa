@@ -48,9 +48,9 @@ public class ContratoServiceImpl implements ContratoService{
 	}
 
 	@Override
-	public Page<Contrato> findByEstadoAndLoteProjectSucursal(boolean status, Sucursal sucursal, Pageable pageable) {
+	public Page<Contrato> findByEstadoAndLoteProjectSucursalAndLoteProjectNameLikeAndLoteManzanaNameLikeAndLoteNumberLoteLike(boolean status, Sucursal sucursal,String project, String manzana, String numeroLote, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return contratoRepository.findByEstadoAndLoteProjectSucursal(status, sucursal, pageable);
+		return contratoRepository.findByEstadoAndLoteProjectSucursalAndLoteProjectNameLikeAndLoteManzanaNameLikeAndLoteNumberLoteLike(status, sucursal, project, manzana, numeroLote, pageable);
 	}
 
 	@Override

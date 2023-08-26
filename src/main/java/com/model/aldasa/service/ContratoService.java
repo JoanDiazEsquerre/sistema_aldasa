@@ -21,7 +21,7 @@ public interface ContratoService {
 	List<Contrato> findAll();
 	
 	Page<Contrato> findByEstado(boolean status, Pageable pageable);
-	Page<Contrato> findByEstadoAndLoteProjectSucursal(boolean status, Sucursal sucursal, Pageable pageable);
+	Page<Contrato> findByEstadoAndLoteProjectSucursalAndLoteProjectNameLikeAndLoteManzanaNameLikeAndLoteNumberLoteLike(boolean status, Sucursal sucursal, String project, String manzana, String numLote, Pageable pageable);
 	Page<Contrato> findByPersonVentaSurnamesLikeAndPersonVentaDniLikeAndEstadoAndCancelacionTotalAndLoteProjectSucursal(String personVenta, String dni, boolean estado, boolean cancelacionTotal, Sucursal sucursal,Pageable pageable);
 
 

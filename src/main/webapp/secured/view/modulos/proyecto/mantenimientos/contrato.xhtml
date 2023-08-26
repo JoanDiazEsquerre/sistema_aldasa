@@ -34,15 +34,15 @@
 			                      #{row +1}
 			        </p:column>
 			        
- 			        <p:column headerText="Proyecto" filterMatchMode="contains" sortBy="#{contrato.lote.project.name}">
+ 			        <p:column headerText="Proyecto" filterMatchMode="contains" sortBy="#{contrato.lote.project.name}" filterBy="#{contrato.lote.project.name}">
 						<h:outputText value="#{contrato.lote.project.name}"/>
 					</p:column>
 					
-					<p:column headerText="Manzana" filterMatchMode="contains" style="text-align:center" sortBy="#{contrato.lote.manzana.name}">
+					<p:column headerText="Manzana" filterMatchMode="contains" style="text-align:center" sortBy="#{contrato.lote.manzana.name}" filterBy="#{contrato.lote.manzana.name}">
 						<h:outputText value="#{contrato.lote.manzana.name}"/>
 					</p:column>
 					
-					<p:column headerText="Num. Lote" filterMatchMode="contains" style="text-align:center" sortBy="#{contrato.lote.numberLote}">
+					<p:column headerText="Num. Lote" filterMatchMode="contains" style="text-align:center" sortBy="#{contrato.lote.numberLote}" filterBy="#{contrato.lote.numberLote}">
 						<h:outputText value="#{contrato.lote.numberLote}"/>
 					</p:column>
 			        
@@ -127,7 +127,7 @@
 							selection="#{contratoBean.loteSelected}" rowKey="#{lote.id}" id="tableLote" emptyMessage="No se encontraron resultados" size="small">
 							<p:ajax event="rowSelect" listener="#{contratoBean.seleccionarLote()}" oncomplete="PF('moviePicker').hide()" update=":form:tabView:gridNomLote :form:tabView:grid  "/>
 	
-							<p:column headerText="Proyecto" filterBy="#{lote.project.name}" >
+							<p:column headerText="Proyecto" filterBy="#{lote.project.name}">
 								<h:outputText value="#{lote.project.name}" style="font-size: 14px;"/>
 							</p:column>
 	
@@ -189,23 +189,63 @@
 					
 					<h:outputLabel value="Persona de venta 1: " />
 					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona1}" converter="#{contratoBean.conversorPersonSurnames}"  
-					completeMethod="#{contratoBean.completePersonSurnames}"  var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px"  />
+					completeMethod="#{contratoBean.completePersonSurnames}"  var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px"  > 
+						<p:column width="400px">
+								<h:outputLabel value="#{per.surnames} #{per.names}" />
+							</p:column>
+							<p:column width="400px">
+								<h:outputLabel value="#{per.dni}" />
+							</p:column>
+					
+					</p:autoComplete>
 		             
 					<h:outputLabel value="Persona de venta 2: " />
 					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona2}" converter="#{contratoBean.conversorPersonSurnames}"  
-					completeMethod="#{contratoBean.completePersonSurnames}"  var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px"  />
+					completeMethod="#{contratoBean.completePersonSurnames}"  var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px"  > 
+						<p:column width="400px">
+								<h:outputLabel value="#{per.surnames} #{per.names}" />
+							</p:column>
+							<p:column width="400px">
+								<h:outputLabel value="#{per.dni}" />
+							</p:column>
+					
+					</p:autoComplete>
 		                
 		            <h:outputLabel  value="Persona de venta 3: " />
 					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona3}" converter="#{contratoBean.conversorPersonSurnames}" 
-					completeMethod="#{contratoBean.completePersonSurnames}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px" />
+					completeMethod="#{contratoBean.completePersonSurnames}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px" > 
+						<p:column width="400px">
+								<h:outputLabel value="#{per.surnames} #{per.names}" />
+							</p:column>
+							<p:column width="400px">
+								<h:outputLabel value="#{per.dni}" />
+							</p:column>
+					
+					</p:autoComplete>
 		                
 					<h:outputLabel  value="Persona de venta 4: " />
 					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona4}" converter="#{contratoBean.conversorPersonSurnames}" 
-					completeMethod="#{contratoBean.completePersonSurnames}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px"  />
+					completeMethod="#{contratoBean.completePersonSurnames}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px"  > 
+						<p:column width="400px">
+								<h:outputLabel value="#{per.surnames} #{per.names}" />
+							</p:column>
+							<p:column width="400px">
+								<h:outputLabel value="#{per.dni}" />
+							</p:column>
+					
+					</p:autoComplete>
 					
 					<h:outputLabel  value="Persona de venta 5: " />
 					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{contratoBean.persona5}" converter="#{contratoBean.conversorPersonSurnames}" 
-					completeMethod="#{contratoBean.completePersonSurnames}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px"  />
+					completeMethod="#{contratoBean.completePersonSurnames}" var="per" itemLabel="#{per.surnames.concat(' ')}#{per.names}" itemValue="#{per}" forceSelection="true" style="margin:5px; width:220px"  > 
+						<p:column width="400px">
+								<h:outputLabel value="#{per.surnames} #{per.names}" />
+							</p:column>
+							<p:column width="400px">
+								<h:outputLabel value="#{per.dni}" />
+							</p:column>
+					
+					</p:autoComplete>
 
 
 					<p:commandButton value="Guardar" oncomplete="PF('saveContra').show()"  style="margin-right:10px"/> 

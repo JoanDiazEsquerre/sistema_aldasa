@@ -1815,8 +1815,12 @@ public class ContratoBean extends BaseBean implements Serializable{
 			@Override
 			public List<Contrato> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                
-//				String names = "%" + (filterBy.get("person.surnames") != null ? filterBy.get("person.surnames").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+				String proyecto = "%" + (filterBy.get("lote.project.name") != null ? filterBy.get("lote.project.name").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+				String manzana = "%" + (filterBy.get("lote.manzana.name") != null ? filterBy.get("lote.manzana.name").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+				String numLote = "%" + (filterBy.get("lote.numberLote") != null ? filterBy.get("lote.numberLote").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
 
+				
+				
                Sort sort=Sort.by("fechaVenta").ascending();
                 if(sortBy!=null) {
                 	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
@@ -1833,7 +1837,7 @@ public class ContratoBean extends BaseBean implements Serializable{
                 Page<Contrato> pageContrato=null;
                
                 
-                pageContrato= contratoService.findByEstadoAndLoteProjectSucursal(estado, navegacionBean.getSucursalLogin(), pageable);
+                pageContrato= contratoService.findByEstadoAndLoteProjectSucursalAndLoteProjectNameLikeAndLoteManzanaNameLikeAndLoteNumberLoteLike(estado, navegacionBean.getSucursalLogin(),proyecto, manzana, numLote, pageable);
                 
                 setRowCount((int) pageContrato.getTotalElements());
                 return datasource = pageContrato.getContent();
@@ -2611,7 +2615,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 	public List<Person> completePersonSurnames(String query) {
         List<Person> lista = new ArrayList<>();
         for (Person c : getLstPerson()) {
-            if (c.getSurnames().toUpperCase().contains(query.toUpperCase()) || c.getNames().toUpperCase().contains(query.toUpperCase())) {
+            if (c.getSurnames().toUpperCase().contains(query.toUpperCase()) || c.getNames().toUpperCase().contains(query.toUpperCase()) || c.getDni().toUpperCase().contains(query.toUpperCase())) {
                 lista.add(c);
             }
         }
