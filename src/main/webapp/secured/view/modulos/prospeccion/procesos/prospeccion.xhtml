@@ -7,7 +7,7 @@
 	xmlns:f="http://java.sun.com/jsf/core">
 
 	<h:form id="form">
-		<h2 style="color: #007d4c;">PROSPECCIÓN > PROSPECCIONES</h2>
+		<h2 style="color: #007d4c;">PROSPECCIÓN > PROSPECCIONES</h2>  
 		<p:tabView id="tabView">
 			<p:tab title="Lista de Prospecciones">
 				<p:selectOneButton value="#{prospeccionBean.status}" unselectable="false">
@@ -148,18 +148,18 @@
 			<p:tab title="Lista de Plantillas de Venta"> 
 			
 			</p:tab>
-			<p:tab title=" Nueva Plantilla de Venta"> 
-				<h:panelGrid columns="4">
+			<p:tab title=" Nueva Plantilla de Venta" id="idTab4"> 
+				<h:panelGrid columns="4" id="idPanelPlantilla" >
+				
 					<h:outputLabel value="Prospecto:" />
-					<p:autoComplete  scrollHeight="500" styleClass="ui-autocompV" value="#{prospeccionBean.prospectoPlantilla}" converter="#{prospeccionBean.conversorProspect}" completeMethod="#{prospeccionBean.completeProspect}"  
-					     var="pros" itemLabel="#{pros.person.surnames.concat(' ')}#{pros.person.names}" itemValue="#{pros}" forceSelection="true" style="margin:5px;" >
+					<p:autoComplete  scrollHeight="500" styleClass="ui-autocompV" value="#{prospeccionBean.plantillaVentaNew}" converter="#{prospeccionBean.conversorProspect}" completeMethod="#{prospeccionBean.completeProspect}"  
+					     var="pros" itemLabel="#{pros.person.surnames.concat(' ')}#{pros.person.names}" itemValue="#{pros}" forceSelection="true" style="margin:5px; width:220px" >
 					<p:column width="400px">
 					   	<h:outputLabel value="#{pros.person.surnames} #{pros.person.names}" /> 
 					   </p:column>
 					   <p:column width="400px">
 					   	<h:outputLabel value="#{pros.person.dni}" /> 
 					   </p:column> 
-					    
 					    <p:ajax event="blur" update=":formDialog" />
 					</p:autoComplete>
 					 
@@ -167,37 +167,46 @@
 					 <p:selectOneMenu value="#{prospeccionBean.proyectoPlantilla}" converter="#{prospeccionBean.conversorProject}" style="margin:5px; width:220px" > 
 						<f:selectItem itemLabel="[-Seleccionar-]" itemValue="#{null}"/> 
 						<f:selectItems value="#{prospeccionBean.lstProject}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro}"/> 
+						<p:ajax update="form:tabView:idPanelPlantilla" listener="#{prospeccionBean.listarManzanaPlantilla}"/>
+					</p:selectOneMenu>
+					
+					<h:outputLabel id="idManzanaPlantilla" for="manzana" value="Manzana: " />
+					<p:selectOneMenu style="margin:5px; width:205px" id="manzana" value="#{prospeccionBean.manzanaPlantilla}" converter="#{prospeccionBean.conversorManzanaPlantilla}" > 
+						<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+						<f:selectItems value="#{prospeccionBean.lstManzanaPlantilla}" var="manz" itemLabel="#{manz.name}" itemValue="#{manz}"/>
+						<p:ajax update="form:tabView:idPanelPlantilla" listener="#{prospeccionBean.listarLotesPlantilla}"/>
+					</p:selectOneMenu>
+					
+					<h:outputLabel id="idLotePlantilla" for="lote" value="Lote: " />
+					<p:selectOneMenu style="margin:5px; width:220px" id="lote" value="#{prospeccionBean.lotePlantilla}" converter="#{prospeccionBean.conversorLotePlantilla}" > 
+						<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
+						<f:selectItems value="#{prospeccionBean.lstLotePlantilla}" var="manz" itemLabel="#{manz.numberLote}" itemValue="#{manz}"/>
 					</p:selectOneMenu>
 					 
-					<h:outputLabel value="Lote:" />
-					<p:selectOneMenu value="#{prospeccionBean.proyectoPlantilla}" converter="#{prospeccionBean.conversorProject}" style="margin:5px; width:220px" > 
-						<f:selectItem itemLabel="[-Seleccionar-]" itemValue="#{null}"/> 
-						<f:selectItems value="#{prospeccionBean.lstProject}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro}"/> 
-					</p:selectOneMenu>
-					 
-					<h:outputLabel value="Manzana:" />
-					<p:selectOneMenu value="#{prospeccionBean.proyectoPlantilla}" converter="#{prospeccionBean.conversorProject}" style="margin:5px; width:220px" > 
-						<f:selectItem itemLabel="[-Seleccionar-]" itemValue="#{null}"/> 
-						<f:selectItems value="#{prospeccionBean.lstProject}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro}"/> 
-					</p:selectOneMenu>
-					 
+					
+				</h:panelGrid>
+				
+				<h:panelGrid columns="4" > 
+				
 					<h:outputLabel value="Tipo de Pago:" />
-					<p:selectOneMenu value="#{prospeccionBean.proyectoPlantilla}" converter="#{prospeccionBean.conversorProject}" style="margin:5px; width:220px" > 
-						<f:selectItem itemLabel="[-Seleccionar-]" itemValue="#{null}"/> 
-						<f:selectItems value="#{prospeccionBean.lstProject}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro}"/> 
+					<p:selectOneMenu value="#{prospeccionBean.plantillaVentaNew.tipoPago}" style="margin:5px; width:183px" > 
+						<f:selectItem itemLabel="[-Seleccionar-]" itemValue="#{null}"/>
+						<f:selectItem itemLabel="CRÉDITO" itemValue="CRÉDITO"/>
+						<f:selectItem itemLabel="CONTADO" itemValue="CONTADO"/> 
 					</p:selectOneMenu>
 					
 					<h:outputLabel value="Monto venta:" />
-					<p:inputText />
+					<p:inputNumber value="#{prospeccionBean.plantillaVentaNew.montoVenta}"/>
 					
 					<h:outputLabel value="Monto Inicial:" />
-					<p:inputText />
+					<p:inputNumber value="#{prospeccionBean.plantillaVentaNew.montoInicial}"/>
 					 
 					<h:outputLabel value="Plazo:" />
-					<p:inputText />
+					<p:inputText value="#{prospeccionBean.plantillaVentaNew.numeroCuota}"/>
 					 
 					<h:outputLabel value="Interés:" />
-					<p:inputText />
+					<p:inputNumber value="#{prospeccionBean.plantillaVentaNew.interes}"/>
+				
 				</h:panelGrid>
 				
 				<p:commandButton icon="pi pi-minus" action="#{documentoVentaBean.menorarImagen}" styleClass="rounded-button ui-button-success" style="margin:10px;" />

@@ -40,6 +40,7 @@ import com.model.aldasa.entity.District;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Manzana;
 import com.model.aldasa.entity.Person;
+import com.model.aldasa.entity.PlantillaVenta;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.Prospection;
@@ -129,9 +130,9 @@ public class ProspeccionBean  extends BaseBean{
 	private Department departmentSelected;
 	private Province provinceSelected;
 	private District districtSelected;
-	private Prospect prospectoPlantilla;
 	private Project proyectoPlantilla;
 	private Lote lotePlantilla;
+	private PlantillaVenta plantillaVentaNew;
 
 	private String status = "En seguimiento";
 	private String rutaImagen;
@@ -145,6 +146,7 @@ public class ProspeccionBean  extends BaseBean{
 	private List<Person> lstPersonAssessor;
 	private List<SelectItem> countriesGroup;
 	private List<Project> lstProject;
+	private List<Manzana> lstManzanaPlantilla;
 	private List<ProspectionDetail> lstProspectionDetail = new ArrayList<>();
 	private List<ProspectionDetail> lstProspectionDetailAgenda = new ArrayList<>();
 	private List<Action> lstActions;
@@ -154,13 +156,14 @@ public class ProspeccionBean  extends BaseBean{
 	private List<District> lstDistrict;
 	private List<Manzana> lstManzana = new ArrayList<>();
 	private List<Lote> lstLote = new ArrayList<>();
+	private List<Lote> lstLotePlantilla = new ArrayList<>();
 	private List<RequerimientoSeparacion> lstReqSepSelected;
 	
 	SimpleDateFormat sdfFull = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		
 	private Manzana manzanaSelected;
+	private Manzana manzanaPlantilla;
 	private Lote loteSelected;
-	
 	
 	@PostConstruct
 	public void init() {
@@ -192,6 +195,10 @@ public class ProspeccionBean  extends BaseBean{
         prospectionNew.setDateStart(new Date());
         newPerson();
             
+	}
+	
+	public void iniciarDatosPlantilla() {
+		plantillaVentaNew = new PlantillaVenta();
 	}
 	
 //	public byte[] obtenerImagen() throws IOException {
@@ -252,6 +259,24 @@ public class ProspeccionBean  extends BaseBean{
 			lstLote = loteService.findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(prospectionSelected.getProject(), manzanaSelected, "%%");
 		}else {
 			lstLote = new ArrayList<>();
+		}
+	}
+	
+	public void listarManzanaPlantilla() {
+		manzanaPlantilla=null;
+		lotePlantilla = null;
+		if(proyectoPlantilla != null) {
+			lstManzanaPlantilla = manzanaService.findByProject(proyectoPlantilla.getId());
+		}else {
+			lstManzanaPlantilla = new ArrayList<>();
+		}
+	}
+	
+	public void listarLotesPlantilla() {
+		if(manzanaPlantilla != null) {
+			lstLotePlantilla = loteService.findByProjectAndManzanaAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(proyectoPlantilla, manzanaPlantilla, "%%");
+		}else {
+			lstLotePlantilla = new ArrayList<>();
 		}
 	}
 	
@@ -871,6 +896,34 @@ public class ProspeccionBean  extends BaseBean{
         };
     }
 	
+	public Converter getConversorManzanaPlantilla() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Manzana c = null;
+                    for (Manzana si : lstManzanaPlantilla) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Manzana) value).getId() + "";
+                }
+            }
+        };
+    }
+	
 	public Converter getConversorLote() {
         return new Converter() {
             @Override
@@ -880,6 +933,34 @@ public class ProspeccionBean  extends BaseBean{
                 } else {
                 	Lote c = null;
                     for (Lote si : lstLote) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Lote) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorLotePlantilla() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Lote c = null;
+                    for (Lote si : lstLotePlantilla) {
                         if (si.getId().toString().equals(value)) {
                             c = si;
                         }
@@ -1428,12 +1509,6 @@ public class ProspeccionBean  extends BaseBean{
 	public void setRutaImagen(String rutaImagen) {
 		this.rutaImagen = rutaImagen;
 	}
-	public Prospect getProspectoPlantilla() {
-		return prospectoPlantilla;
-	}
-	public void setProspectoPlantilla(Prospect prospectoPlantilla) {
-		this.prospectoPlantilla = prospectoPlantilla;
-	}
 	public Project getProyectoPlantilla() {
 		return proyectoPlantilla;
 	}
@@ -1445,6 +1520,30 @@ public class ProspeccionBean  extends BaseBean{
 	}
 	public void setLotePlantilla(Lote lotePlantilla) {
 		this.lotePlantilla = lotePlantilla;
+	}
+	public List<Manzana> getLstManzanaPlantilla() {
+		return lstManzanaPlantilla;
+	}
+	public void setLstManzanaPlantilla(List<Manzana> lstManzanaPlantilla) {
+		this.lstManzanaPlantilla = lstManzanaPlantilla;
+	}
+	public Manzana getManzanaPlantilla() {
+		return manzanaPlantilla;
+	}
+	public void setManzanaPlantilla(Manzana manzanaPlantilla) {
+		this.manzanaPlantilla = manzanaPlantilla;
+	}
+	public List<Lote> getLstLotePlantilla() {
+		return lstLotePlantilla;
+	}
+	public void setLstLotePlantilla(List<Lote> lstLotePlantilla) {
+		this.lstLotePlantilla = lstLotePlantilla;
+	}
+	public PlantillaVenta getPlantillaVentaNew() {
+		return plantillaVentaNew;
+	}
+	public void setPlantillaVentaNew(PlantillaVenta plantillaVentaNew) {
+		this.plantillaVentaNew = plantillaVentaNew;
 	}
 	
 }
