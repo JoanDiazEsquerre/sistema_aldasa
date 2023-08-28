@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -131,15 +132,30 @@ public class ProspeccionBean  extends BaseBean{
 	private Province provinceSelected;
 	private District districtSelected;
 	private Project proyectoPlantilla;
-	private Lote lotePlantilla;
 	private PlantillaVenta plantillaVentaNew;
 
 	private String status = "En seguimiento";
 	private String rutaImagen;
 	private String titleDialog,statusSelected, resultSelected;
 	private boolean mostrarBotonCambioEstado;
+	private Integer numMuestraImagen;
+	private Date fechaImag1, fechaImag2, fechaImag3, fechaImag4, fechaImag5, fechaImag6, fechaImag7, fechaImag8, fechaImag9, fechaImag10, fechaEnvioSunat ;
+	private BigDecimal montoImag1, montoImag2, montoImag3, montoImag4, montoImag5, montoImag6, montoImag7, montoImag8, montoImag9, montoImag10;
+	private String nroOperImag1, nroOperImag2, nroOperImag3, nroOperImag4, nroOperImag5, nroOperImag6, nroOperImag7, nroOperImag8, nroOperImag9, nroOperImag10;
+	
 	
     private UploadedFile file;
+    
+    private UploadedFile file1;
+    private UploadedFile file2;
+    private UploadedFile file3;
+    private UploadedFile file4;
+    private UploadedFile file5;
+    private UploadedFile file6;
+    private UploadedFile file7;
+    private UploadedFile file8;
+    private UploadedFile file9;
+    private UploadedFile file10;
     
 	
 	private List<Prospect> lstProspect;
@@ -194,11 +210,59 @@ public class ProspeccionBean  extends BaseBean{
         prospectionNew = new Prospection();
         prospectionNew.setDateStart(new Date());
         newPerson();
-            
+        iniciarDatosPlantilla();    
+	}
+	
+	public void savePlantillaVenta() {
+		if(plantillaVentaNew.getProspecto()==null) {
+			addErrorMessage("Debes seleccionar Prospecto.");
+			return;
+		}
+		
+		if(proyectoPlantilla ==null) {
+			addErrorMessage("Debes seleccionar Proyecto.");
+			return;
+		}
+		if(manzanaPlantilla ==null) {
+			addErrorMessage("Debes seleccionar Manzana.");
+			return;
+		}
+		
+		if(plantillaVentaNew.getLote()==null) {
+			addErrorMessage("Debes seleccionar Lote.");
+			return;
+		}
+		
+		if(plantillaVentaNew.getTipoPago().equals("")) {
+			addErrorMessage("Debes seleccionar Tipo de Pago.");
+			return;
+		}
+		
+		if(plantillaVentaNew.getMontoVenta()==null) {
+			addErrorMessage("Debes seleccionar Lote.");
+			return;
+		}
+		
+		if(plantillaVentaNew.getMontoVenta()==null) {
+			addErrorMessage("Debes seleccionar Lote.");
+			return;
+		}
 	}
 	
 	public void iniciarDatosPlantilla() {
 		plantillaVentaNew = new PlantillaVenta();
+	}
+	
+	public void menorarImagen() {
+		if(numMuestraImagen !=1) {
+			numMuestraImagen--;
+		}
+	}
+	
+	public void aumentarImagen() {
+		if(numMuestraImagen !=10) {
+			numMuestraImagen++;
+		}
 	}
 	
 //	public byte[] obtenerImagen() throws IOException {
@@ -264,7 +328,7 @@ public class ProspeccionBean  extends BaseBean{
 	
 	public void listarManzanaPlantilla() {
 		manzanaPlantilla=null;
-		lotePlantilla = null;
+		plantillaVentaNew.setLote(null);
 		if(proyectoPlantilla != null) {
 			lstManzanaPlantilla = manzanaService.findByProject(proyectoPlantilla.getId());
 		}else {
@@ -1515,12 +1579,6 @@ public class ProspeccionBean  extends BaseBean{
 	public void setProyectoPlantilla(Project proyectoPlantilla) {
 		this.proyectoPlantilla = proyectoPlantilla;
 	}
-	public Lote getLotePlantilla() {
-		return lotePlantilla;
-	}
-	public void setLotePlantilla(Lote lotePlantilla) {
-		this.lotePlantilla = lotePlantilla;
-	}
 	public List<Manzana> getLstManzanaPlantilla() {
 		return lstManzanaPlantilla;
 	}
@@ -1544,6 +1602,258 @@ public class ProspeccionBean  extends BaseBean{
 	}
 	public void setPlantillaVentaNew(PlantillaVenta plantillaVentaNew) {
 		this.plantillaVentaNew = plantillaVentaNew;
+	}
+	public Integer getNumMuestraImagen() {
+		return numMuestraImagen;
+	}
+	public void setNumMuestraImagen(Integer numMuestraImagen) {
+		this.numMuestraImagen = numMuestraImagen;
+	}
+	public UploadedFile getFile1() {
+		return file1;
+	}
+	public void setFile1(UploadedFile file1) {
+		this.file1 = file1;
+	}
+	public UploadedFile getFile2() {
+		return file2;
+	}
+	public void setFile2(UploadedFile file2) {
+		this.file2 = file2;
+	}
+	public UploadedFile getFile3() {
+		return file3;
+	}
+	public void setFile3(UploadedFile file3) {
+		this.file3 = file3;
+	}
+	public UploadedFile getFile4() {
+		return file4;
+	}
+	public void setFile4(UploadedFile file4) {
+		this.file4 = file4;
+	}
+	public UploadedFile getFile5() {
+		return file5;
+	}
+	public void setFile5(UploadedFile file5) {
+		this.file5 = file5;
+	}
+	public UploadedFile getFile6() {
+		return file6;
+	}
+	public void setFile6(UploadedFile file6) {
+		this.file6 = file6;
+	}
+	public UploadedFile getFile7() {
+		return file7;
+	}
+	public void setFile7(UploadedFile file7) {
+		this.file7 = file7;
+	}
+	public UploadedFile getFile8() {
+		return file8;
+	}
+	public void setFile8(UploadedFile file8) {
+		this.file8 = file8;
+	}
+	public UploadedFile getFile9() {
+		return file9;
+	}
+	public void setFile9(UploadedFile file9) {
+		this.file9 = file9;
+	}
+	public UploadedFile getFile10() {
+		return file10;
+	}
+	public void setFile10(UploadedFile file10) {
+		this.file10 = file10;
+	}
+	public Date getFechaImag1() {
+		return fechaImag1;
+	}
+	public void setFechaImag1(Date fechaImag1) {
+		this.fechaImag1 = fechaImag1;
+	}
+	public Date getFechaImag2() {
+		return fechaImag2;
+	}
+	public void setFechaImag2(Date fechaImag2) {
+		this.fechaImag2 = fechaImag2;
+	}
+	public Date getFechaImag3() {
+		return fechaImag3;
+	}
+	public void setFechaImag3(Date fechaImag3) {
+		this.fechaImag3 = fechaImag3;
+	}
+	public Date getFechaImag4() {
+		return fechaImag4;
+	}
+	public void setFechaImag4(Date fechaImag4) {
+		this.fechaImag4 = fechaImag4;
+	}
+	public Date getFechaImag5() {
+		return fechaImag5;
+	}
+	public void setFechaImag5(Date fechaImag5) {
+		this.fechaImag5 = fechaImag5;
+	}
+	public Date getFechaImag6() {
+		return fechaImag6;
+	}
+	public void setFechaImag6(Date fechaImag6) {
+		this.fechaImag6 = fechaImag6;
+	}
+	public Date getFechaImag7() {
+		return fechaImag7;
+	}
+	public void setFechaImag7(Date fechaImag7) {
+		this.fechaImag7 = fechaImag7;
+	}
+	public Date getFechaImag8() {
+		return fechaImag8;
+	}
+	public void setFechaImag8(Date fechaImag8) {
+		this.fechaImag8 = fechaImag8;
+	}
+	public Date getFechaImag9() {
+		return fechaImag9;
+	}
+	public void setFechaImag9(Date fechaImag9) {
+		this.fechaImag9 = fechaImag9;
+	}
+	public Date getFechaImag10() {
+		return fechaImag10;
+	}
+	public void setFechaImag10(Date fechaImag10) {
+		this.fechaImag10 = fechaImag10;
+	}
+	public Date getFechaEnvioSunat() {
+		return fechaEnvioSunat;
+	}
+	public void setFechaEnvioSunat(Date fechaEnvioSunat) {
+		this.fechaEnvioSunat = fechaEnvioSunat;
+	}
+	public BigDecimal getMontoImag1() {
+		return montoImag1;
+	}
+	public void setMontoImag1(BigDecimal montoImag1) {
+		this.montoImag1 = montoImag1;
+	}
+	public BigDecimal getMontoImag2() {
+		return montoImag2;
+	}
+	public void setMontoImag2(BigDecimal montoImag2) {
+		this.montoImag2 = montoImag2;
+	}
+	public BigDecimal getMontoImag3() {
+		return montoImag3;
+	}
+	public void setMontoImag3(BigDecimal montoImag3) {
+		this.montoImag3 = montoImag3;
+	}
+	public BigDecimal getMontoImag4() {
+		return montoImag4;
+	}
+	public void setMontoImag4(BigDecimal montoImag4) {
+		this.montoImag4 = montoImag4;
+	}
+	public BigDecimal getMontoImag5() {
+		return montoImag5;
+	}
+	public void setMontoImag5(BigDecimal montoImag5) {
+		this.montoImag5 = montoImag5;
+	}
+	public BigDecimal getMontoImag6() {
+		return montoImag6;
+	}
+	public void setMontoImag6(BigDecimal montoImag6) {
+		this.montoImag6 = montoImag6;
+	}
+	public BigDecimal getMontoImag7() {
+		return montoImag7;
+	}
+	public void setMontoImag7(BigDecimal montoImag7) {
+		this.montoImag7 = montoImag7;
+	}
+	public BigDecimal getMontoImag8() {
+		return montoImag8;
+	}
+	public void setMontoImag8(BigDecimal montoImag8) {
+		this.montoImag8 = montoImag8;
+	}
+	public BigDecimal getMontoImag9() {
+		return montoImag9;
+	}
+	public void setMontoImag9(BigDecimal montoImag9) {
+		this.montoImag9 = montoImag9;
+	}
+	public BigDecimal getMontoImag10() {
+		return montoImag10;
+	}
+	public void setMontoImag10(BigDecimal montoImag10) {
+		this.montoImag10 = montoImag10;
+	}
+	public String getNroOperImag1() {
+		return nroOperImag1;
+	}
+	public void setNroOperImag1(String nroOperImag1) {
+		this.nroOperImag1 = nroOperImag1;
+	}
+	public String getNroOperImag2() {
+		return nroOperImag2;
+	}
+	public void setNroOperImag2(String nroOperImag2) {
+		this.nroOperImag2 = nroOperImag2;
+	}
+	public String getNroOperImag3() {
+		return nroOperImag3;
+	}
+	public void setNroOperImag3(String nroOperImag3) {
+		this.nroOperImag3 = nroOperImag3;
+	}
+	public String getNroOperImag4() {
+		return nroOperImag4;
+	}
+	public void setNroOperImag4(String nroOperImag4) {
+		this.nroOperImag4 = nroOperImag4;
+	}
+	public String getNroOperImag5() {
+		return nroOperImag5;
+	}
+	public void setNroOperImag5(String nroOperImag5) {
+		this.nroOperImag5 = nroOperImag5;
+	}
+	public String getNroOperImag6() {
+		return nroOperImag6;
+	}
+	public void setNroOperImag6(String nroOperImag6) {
+		this.nroOperImag6 = nroOperImag6;
+	}
+	public String getNroOperImag7() {
+		return nroOperImag7;
+	}
+	public void setNroOperImag7(String nroOperImag7) {
+		this.nroOperImag7 = nroOperImag7;
+	}
+	public String getNroOperImag8() {
+		return nroOperImag8;
+	}
+	public void setNroOperImag8(String nroOperImag8) {
+		this.nroOperImag8 = nroOperImag8;
+	}
+	public String getNroOperImag9() {
+		return nroOperImag9;
+	}
+	public void setNroOperImag9(String nroOperImag9) {
+		this.nroOperImag9 = nroOperImag9;
+	}
+	public String getNroOperImag10() {
+		return nroOperImag10;
+	}
+	public void setNroOperImag10(String nroOperImag10) {
+		this.nroOperImag10 = nroOperImag10;
 	}
 	
 }
