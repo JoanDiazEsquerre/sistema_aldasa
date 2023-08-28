@@ -21,12 +21,7 @@ public class ImagenPlantillaVenta {
 	private String nombre;
 	private String carpeta;
 	private boolean estado;
-	private Date fecha;
-	private BigDecimal monto;
-	
-	@Column(name="numerooperacion")
-	private String numeroOperacion;
-	
+
 	
 	
 	
@@ -54,23 +49,6 @@ public class ImagenPlantillaVenta {
 	public void setEstado(boolean estado) {
 		this.estado = estado;
 	}
-	public Date getFecha() {
-		return fecha;
-	}
-	public void setFecha(Date fecha) {
-		this.fecha = fecha;
-	}
-	public BigDecimal getMonto() {
-		return monto;
-	}
-	public void setMonto(BigDecimal monto) {
-		this.monto = monto;
-	}
-	public String getNumeroOperacion() {
-		return numeroOperacion;
-	}
-	public void setNumeroOperacion(String numeroOperacion) {
-		this.numeroOperacion = numeroOperacion;
-	}
+	
 	
 }
