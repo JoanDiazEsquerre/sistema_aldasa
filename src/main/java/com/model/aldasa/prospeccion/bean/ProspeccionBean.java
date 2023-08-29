@@ -38,6 +38,8 @@ import com.model.aldasa.entity.Action;
 import com.model.aldasa.entity.Country;
 import com.model.aldasa.entity.Department;
 import com.model.aldasa.entity.District;
+import com.model.aldasa.entity.Imagen;
+import com.model.aldasa.entity.ImagenPlantillaVenta;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Manzana;
 import com.model.aldasa.entity.Person;
@@ -54,9 +56,11 @@ import com.model.aldasa.service.ActionService;
 import com.model.aldasa.service.CountryService;
 import com.model.aldasa.service.DepartmentService;
 import com.model.aldasa.service.DistrictService;
+import com.model.aldasa.service.ImagenPlantillaVentaService;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.ManzanaService;
 import com.model.aldasa.service.PersonService;
+import com.model.aldasa.service.PlantillaVentaService;
 import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.ProspectionDetailService;
@@ -67,6 +71,7 @@ import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.EstadoLote;
 import com.model.aldasa.util.Perfiles;
+import com.model.aldasa.ventas.bean.LoadImageDocumentoBean;
 
 @ManagedBean
 @ViewScoped
@@ -117,7 +122,17 @@ public class ProspeccionBean  extends BaseBean{
 	@ManagedProperty(value = "#{requerimientoSeparacionService}")
 	private RequerimientoSeparacionService requerimientoSeparacionService;
 	
+	@ManagedProperty(value = "#{plantillaVentaService}")
+	private PlantillaVentaService plantillaVentaService;
+	
+	@ManagedProperty(value = "#{imagenPlantillaVentaService}")
+	private ImagenPlantillaVentaService imagenPlantillaVentaService;
+	
+	@ManagedProperty(value = "#{loadImagePlantillaBean}")
+	private LoadImagePlantillaBean loadImagePlantillaBean;
+	
 	private LazyDataModel<Prospection> lstProspectionLazy;
+	private LazyDataModel<PlantillaVenta> lstPlantillaLazy;
 	
 	private Prospection prospectionSelected;
 	private Prospection prospectionNew;
@@ -133,16 +148,14 @@ public class ProspeccionBean  extends BaseBean{
 	private District districtSelected;
 	private Project proyectoPlantilla;
 	private PlantillaVenta plantillaVentaNew;
+	private PlantillaVenta plantillaVentaSelected;
 
 	private String status = "En seguimiento";
+	private String estadoPlantillaFilter = "Pendiente";
 	private String rutaImagen;
 	private String titleDialog,statusSelected, resultSelected;
 	private boolean mostrarBotonCambioEstado;
-	private Integer numMuestraImagen;
-	private Date fechaImag1, fechaImag2, fechaImag3, fechaImag4, fechaImag5, fechaImag6, fechaImag7, fechaImag8, fechaImag9, fechaImag10, fechaEnvioSunat ;
-	private BigDecimal montoImag1, montoImag2, montoImag3, montoImag4, montoImag5, montoImag6, montoImag7, montoImag8, montoImag9, montoImag10;
-	private String nroOperImag1, nroOperImag2, nroOperImag3, nroOperImag4, nroOperImag5, nroOperImag6, nroOperImag7, nroOperImag8, nroOperImag9, nroOperImag10;
-	
+	private String imagen1, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8, imagen9, imagen10;
 	
     private UploadedFile file;
     
@@ -193,6 +206,9 @@ public class ProspeccionBean  extends BaseBean{
 		status = "En seguimiento";
 		
 		iniciarLazy();
+		
+		estadoPlantillaFilter = "Pendiente";
+		iniciarPlantillaLazy();
 		listarProject();
 		listarActions();
 		listarPais();
@@ -210,10 +226,67 @@ public class ProspeccionBean  extends BaseBean{
         prospectionNew = new Prospection();
         prospectionNew.setDateStart(new Date());
         newPerson();
-        iniciarDatosPlantilla();    
+        iniciarDatosPlantilla();   
+        
 	}
 	
-	public void savePlantillaVenta() {
+	
+	public void verVoucher() {
+		
+			loadImagePlantillaBean.setNombreArchivo("0.png");
+			imagen1 = "";
+			imagen2 = "";
+			imagen3 = "";
+			imagen4 = "";
+			imagen5 = "";
+			imagen6 = "";
+			imagen7 = "";
+			imagen8 = "";
+			imagen9 = "";
+			imagen10 = "";
+			
+			String nombreBusqueda = "%"+plantillaVentaSelected.getId() +"_%";
+			
+			List<ImagenPlantillaVenta> lstImagenPlantilla = imagenPlantillaVentaService.findByNombreLikeAndEstado(nombreBusqueda, true);
+			int contador = 1;
+			for(ImagenPlantillaVenta i:lstImagenPlantilla) {
+				if(contador==1) {
+					imagen1 = i.getNombre();
+				}
+				if(contador==2) {
+					imagen2 = i.getNombre();
+				}
+				if(contador==3) {
+					imagen3 = i.getNombre();
+				}
+				if(contador==4) {
+					imagen4 = i.getNombre();
+				}
+				if(contador==5) {
+					imagen5 = i.getNombre();
+				}
+				if(contador==6) {
+					imagen6 = i.getNombre();
+				}
+				if(contador==7) {
+					imagen7 = i.getNombre();
+				}
+				if(contador==8) {
+					imagen8 = i.getNombre();
+				}
+				if(contador==9) {
+					imagen9 = i.getNombre();
+				}
+				if(contador==10) {
+					imagen10 = i.getNombre();
+				}
+				contador ++;
+			}
+//			PrimeFaces.current().executeScript("PF('voucherDocumentoDialog').show();");
+	
+	}
+	
+	public void validaDatosPlantilla() {
 		if(plantillaVentaNew.getProspecto()==null) {
 			addErrorMessage("Debes seleccionar Prospecto.");
 			return;
@@ -231,45 +304,241 @@ public class ProspeccionBean  extends BaseBean{
 		if(plantillaVentaNew.getLote()==null) {
 			addErrorMessage("Debes seleccionar Lote.");
 			return;
-		}
-		
-		if(plantillaVentaNew.getTipoPago().equals("")) {
-			addErrorMessage("Debes seleccionar Tipo de Pago.");
-			return;
-		}
-		
-		if(plantillaVentaNew.getMontoVenta()==null) {
-			addErrorMessage("Debes seleccionar Lote.");
-			return;
+		}else {
+			Lote lote = loteService.findById(plantillaVentaNew.getLote().getId());
+			if(lote.getStatus().equals("Vendido")) {
+				addErrorMessage("El lote se encuentra vendido.");
+				return;
+			}
 		}
 		
 		if(plantillaVentaNew.getMontoVenta()==null) {
-			addErrorMessage("Debes seleccionar Lote.");
+			addErrorMessage("Debes ingresar monto de venta.");
 			return;
+		}
+		
+		if(plantillaVentaNew.getTipoPago().equals("CRÉDITO")) {
+			if(plantillaVentaNew.getMontoInicial()==null) {
+				addErrorMessage("Debes ingresar monto inicial.");
+				return;
+			}
+			
+			if(plantillaVentaNew.getNumeroCuota().equals("")) {
+				addErrorMessage("Debes ingresar el plazo a pagar.");
+				return;
+			}
+			
+			if(plantillaVentaNew.getInteres()==null) {
+				addErrorMessage("Debes ingresar interes.");
+				return;
+			}
+		}
+
+		if(file1 == null && file2 == null && file3 == null && file4 == null && file5 == null && file6 == null && file7 == null && file8 == null && file9 == null && file10 == null) {
+			addErrorMessage("Debes ingresar al menos una imagen.");
+			return;
+		}
+		
+		PrimeFaces.current().executeScript("PF('savePlantillaVenta').show();"); 
+	}
+	
+	public void savePlantillaVenta() {
+		
+		plantillaVentaNew.setEstado("Pendiente");
+		PlantillaVenta plantilla = plantillaVentaService.save(plantillaVentaNew);
+		
+		if(plantilla == null) {
+			addErrorMessage("No se pudo guardar.");
+			return;
+		}else {
+			subirImagenes(plantilla.getId() + "", plantilla);
+			addInfoMessage("Se guardo correctamente.");
+			iniciarDatosPlantilla();
+			
+		}
+		
+		PrimeFaces.current().executeScript("PF('savePlantillaVenta').hide();"); 
+		
+	}
+	
+	public void subirImagenes(String idPlantilla, PlantillaVenta plantilla) {
+		
+		if(file1 != null) {
+			String rename = idPlantilla +"_1" + "." + getExtension(file1.getFileName());
+			ImagenPlantillaVenta registroImagen = new ImagenPlantillaVenta();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-PLANTILLA-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setPlantillaVenta(plantilla);
+			imagenPlantillaVentaService.save(registroImagen);
+			
+            subirArchivo(rename, file1);
+		}
+		if(file2 != null) {
+			String rename = idPlantilla +"_2" + "." + getExtension(file2.getFileName());
+			ImagenPlantillaVenta registroImagen = new ImagenPlantillaVenta();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-PLANTILLA-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setPlantillaVenta(plantilla);
+			imagenPlantillaVentaService.save(registroImagen);
+			
+            subirArchivo(rename, file2);
+		}
+		if(file3 != null) {
+			String rename = idPlantilla +"_3" + "." + getExtension(file3.getFileName());
+			ImagenPlantillaVenta registroImagen = new ImagenPlantillaVenta();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-PLANTILLA-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setPlantillaVenta(plantilla);
+			imagenPlantillaVentaService.save(registroImagen);
+			
+            subirArchivo(rename, file3);
+		}
+		if(file4 != null) {
+			String rename = idPlantilla +"_4" + "." + getExtension(file4.getFileName());
+			ImagenPlantillaVenta registroImagen = new ImagenPlantillaVenta();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-PLANTILLA-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setPlantillaVenta(plantilla);
+			imagenPlantillaVentaService.save(registroImagen);
+			
+            subirArchivo(rename, file4);
+		}
+		if(file5 != null) {
+			String rename = idPlantilla +"_5" + "." + getExtension(file5.getFileName());
+			ImagenPlantillaVenta registroImagen = new ImagenPlantillaVenta();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-PLANTILLA-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setPlantillaVenta(plantilla);
+			imagenPlantillaVentaService.save(registroImagen);
+			
+            subirArchivo(rename, file5);
+		}
+		if(file6 != null) {
+			String rename = idPlantilla +"_6" + "." + getExtension(file6.getFileName());
+			ImagenPlantillaVenta registroImagen = new ImagenPlantillaVenta();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-PLANTILLA-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setPlantillaVenta(plantilla);
+			imagenPlantillaVentaService.save(registroImagen);
+			
+            subirArchivo(rename, file6);
+		}
+		if(file7 != null) {
+			String rename = idPlantilla +"_7" + "." + getExtension(file7.getFileName());
+			ImagenPlantillaVenta registroImagen = new ImagenPlantillaVenta();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-PLANTILLA-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setPlantillaVenta(plantilla);
+			imagenPlantillaVentaService.save(registroImagen);
+			
+            subirArchivo(rename, file7);
+		}
+		if(file8 != null) {
+			String rename = idPlantilla +"_8" + "." + getExtension(file8.getFileName());
+			ImagenPlantillaVenta registroImagen = new ImagenPlantillaVenta();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-PLANTILLA-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setPlantillaVenta(plantilla);
+			imagenPlantillaVentaService.save(registroImagen);
+			
+            subirArchivo(rename, file8);
+		}
+		if(file9 != null) {
+			String rename = idPlantilla +"_9" + "." + getExtension(file9.getFileName());
+			ImagenPlantillaVenta registroImagen = new ImagenPlantillaVenta();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-PLANTILLA-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setPlantillaVenta(plantilla);
+			imagenPlantillaVentaService.save(registroImagen);
+			
+            subirArchivo(rename, file9);
+		}
+		if(file10 != null) {
+			String rename = idPlantilla +"_10" + "." + getExtension(file10.getFileName());
+			ImagenPlantillaVenta registroImagen = new ImagenPlantillaVenta();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-PLANTILLA-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setPlantillaVenta(plantilla);
+			imagenPlantillaVentaService.save(registroImagen);
+			
+            subirArchivo(rename, file10);
 		}
 	}
+
+	public void subirArchivo(String nombre, UploadedFile file) {
+	//  File result = new File("/home/imagen/IMG-DOCUMENTO-VENTA/" + nombre);
+	//  File result = new File("C:\\IMG-DOCUMENTO-VENTA\\" + nombre);
+	  File result = new File(navegacionBean.getSucursalLogin().getEmpresa().getRutaPlantillaVenta() + nombre);
+	
+	  try {
+	
+	      FileOutputStream fileOutputStream = new FileOutputStream(result);
+	
+	      byte[] buffer = new byte[1024];
+	
+	      int bulk;
+	
+	      // Here you get uploaded picture bytes, while debugging you can see that 34818
+	      InputStream inputStream = file.getInputStream();
+	
+	      while (true) {
+	
+	          bulk = inputStream.read(buffer);
+	
+	          if (bulk < 0) {
+	
+	              break;
+	
+	          } //end of if
+	
+	          fileOutputStream.write(buffer, 0, bulk);
+	          fileOutputStream.flush();
+	
+	      } //end fo while(true)
+	
+	      fileOutputStream.close();
+	      inputStream.close();
+	
+	      FacesMessage msg = new FacesMessage("El archivo subió correctamente.");
+	      FacesContext.getCurrentInstance().addMessage(null, msg);
+	
+	  } catch (IOException e) {
+	      e.printStackTrace();
+	      FacesMessage error = new FacesMessage("The files were not uploaded!");
+	      FacesContext.getCurrentInstance().addMessage(null, error);
+	  }
+}
 	
 	public void iniciarDatosPlantilla() {
 		plantillaVentaNew = new PlantillaVenta();
+		proyectoPlantilla =null;
+		manzanaPlantilla = null;
+		file1=null;
+		file2=null;
+		file3=null;
+		file4=null;
+		file5=null;
+		file6=null;
+		file7=null;
+		file8=null;
+		file9=null;
+		file10=null;
 	}
-	
-	public void menorarImagen() {
-		if(numMuestraImagen !=1) {
-			numMuestraImagen--;
-		}
-	}
-	
-	public void aumentarImagen() {
-		if(numMuestraImagen !=10) {
-			numMuestraImagen++;
-		}
-	}
-	
+		
 //	public byte[] obtenerImagen() throws IOException {
 //		loadImageBean.setNombreArchivo(requerimientoSeparacionSelected.getNombreImagen());
 //		return loadImageBean.getImage();
 //	}
-	
 	
 	public String extension(String filename) {
 		String valor = "" ;
@@ -343,8 +612,7 @@ public class ProspeccionBean  extends BaseBean{
 			lstLotePlantilla = new ArrayList<>();
 		}
 	}
-	
-	
+		
 	public void listarProspect() {		
 		if (Perfiles.ADMINISTRADOR.getName().equals(usuarioLogin.getProfile().getName()) ) {
 			lstProspect = prospectService.findAll();
@@ -614,6 +882,81 @@ public class ProspeccionBean  extends BaseBean{
 				
 				setRowCount((int) pageProspection.getTotalElements());
 				return datasource = pageProspection.getContent();
+			}
+		};
+	}
+	
+	public void iniciarPlantillaLazy() {
+
+		lstPlantillaLazy = new LazyDataModel<PlantillaVenta>() {
+			private List<PlantillaVenta> datasource;
+
+            @Override
+            public void setRowIndex(int rowIndex) {
+                if (rowIndex == -1 || getPageSize() == 0) {
+                    super.setRowIndex(-1);
+                } else {
+                    super.setRowIndex(rowIndex % getPageSize());
+                }
+            }
+
+            @Override
+            public PlantillaVenta getRowData(String rowKey) {
+                int intRowKey = Integer.parseInt(rowKey);
+                for (PlantillaVenta plantillaVenta : datasource) {
+                    if (plantillaVenta.getId() == intRowKey) {
+                        return plantillaVenta;
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public String getRowKey(PlantillaVenta plantillaVenta) {
+                return String.valueOf(plantillaVenta.getId());
+            }
+
+			@Override
+			public List<PlantillaVenta> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+				//Aqui capturo cada filtro(Si en caso existe), le pongo % al principiio y al final y reemplazo los espacios por %, para hacer el LIKE
+				//Si debageas aqui te vas a dar cuenta como lo captura
+				
+				String prospect="%"+ (filterBy.get("prospecto.person.surnames")!=null?filterBy.get("prospecto.person.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String project="%"+ (filterBy.get("lote.project.name")!=null?filterBy.get("lote.project.name").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String manzana="%"+ (filterBy.get("lote.manzana.name")!=null?filterBy.get("lote.manzana.name").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String lote="%"+ (filterBy.get("lote.numberLote")!=null?filterBy.get("lote.numberLote").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				
+				
+				 Sort sort=Sort.by("id").descending();
+	                if(sortBy!=null) {
+	                	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
+	                	   if(entry.getValue().getOrder().isAscending()) {
+	                		   sort = Sort.by(entry.getKey()).descending();
+	                	   }else {
+	                		   sort = Sort.by(entry.getKey()).ascending();
+	                		   
+	                	   }
+	                	}
+	                }
+				
+				Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
+				//Aqui llamo al servicio que a  su vez llama al repositorio que contiene la sentencia LIKE, 
+				//Aqui tu tienes que completar la query, yo solo lo he hecho para dni y nombre a modo de ejemplo
+				//Tu deberias preparar el metodo para cada filtro que tengas en la tabla
+				Page<PlantillaVenta> pagePlantillaVenta=null;
+				
+				if(navegacionBean.getUsuarioLogin().getProfile().getId().equals(Perfiles.ASESOR.getId())) {
+					pagePlantillaVenta= plantillaVentaService.findByEstadoAndProspectoPersonSurnamesLikeAndLoteProjectNameLikeAndLoteManzanaNameLikeAndLoteNumberLoteLikeAndLoteProjectSucursalAndProspectoPersonAssessor(estadoPlantillaFilter, prospect, project, manzana, lote, navegacionBean.getSucursalLogin(), navegacionBean.getUsuarioLogin().getPerson(), pageable);
+				}else if(navegacionBean.getUsuarioLogin().getProfile().getId().equals(Perfiles.SUPERVISOR.getId())) {
+					pagePlantillaVenta= plantillaVentaService.findByEstadoAndProspectoPersonSurnamesLikeAndLoteProjectNameLikeAndLoteManzanaNameLikeAndLoteNumberLoteLikeAndLoteProjectSucursalAndProspectoPersonSupervisor(estadoPlantillaFilter, prospect, project, manzana, lote, navegacionBean.getSucursalLogin(), navegacionBean.getUsuarioLogin().getPerson(), pageable);
+				}else{
+					pagePlantillaVenta= plantillaVentaService.findByEstadoAndProspectoPersonSurnamesLikeAndLoteProjectNameLikeAndLoteManzanaNameLikeAndLoteNumberLoteLikeAndLoteProjectSucursal(estadoPlantillaFilter, prospect, project, manzana, lote, navegacionBean.getSucursalLogin(), pageable);
+	
+				}
+			
+				
+				setRowCount((int) pagePlantillaVenta.getTotalElements());
+				return datasource = pagePlantillaVenta.getContent();
 			}
 		};
 	}
@@ -902,7 +1245,6 @@ public class ProspeccionBean  extends BaseBean{
 		String a = sdfFull.format(hora);
 		return a;
 	}
-	
 	
 	public Converter getConversorProspect() {
         return new Converter() {
@@ -1259,8 +1601,10 @@ public class ProspeccionBean  extends BaseBean{
         }
         return lista;
     }
-	
 
+	
+	
+	
 	public LazyDataModel<Prospection> getLstProspectionLazy() {
 		return lstProspectionLazy;
 	}
@@ -1603,12 +1947,6 @@ public class ProspeccionBean  extends BaseBean{
 	public void setPlantillaVentaNew(PlantillaVenta plantillaVentaNew) {
 		this.plantillaVentaNew = plantillaVentaNew;
 	}
-	public Integer getNumMuestraImagen() {
-		return numMuestraImagen;
-	}
-	public void setNumMuestraImagen(Integer numMuestraImagen) {
-		this.numMuestraImagen = numMuestraImagen;
-	}
 	public UploadedFile getFile1() {
 		return file1;
 	}
@@ -1669,191 +2007,102 @@ public class ProspeccionBean  extends BaseBean{
 	public void setFile10(UploadedFile file10) {
 		this.file10 = file10;
 	}
-	public Date getFechaImag1() {
-		return fechaImag1;
+	public PlantillaVentaService getPlantillaVentaService() {
+		return plantillaVentaService;
 	}
-	public void setFechaImag1(Date fechaImag1) {
-		this.fechaImag1 = fechaImag1;
+	public void setPlantillaVentaService(PlantillaVentaService plantillaVentaService) {
+		this.plantillaVentaService = plantillaVentaService;
 	}
-	public Date getFechaImag2() {
-		return fechaImag2;
+	public LazyDataModel<PlantillaVenta> getLstPlantillaLazy() {
+		return lstPlantillaLazy;
 	}
-	public void setFechaImag2(Date fechaImag2) {
-		this.fechaImag2 = fechaImag2;
+	public void setLstPlantillaLazy(LazyDataModel<PlantillaVenta> lstPlantillaLazy) {
+		this.lstPlantillaLazy = lstPlantillaLazy;
 	}
-	public Date getFechaImag3() {
-		return fechaImag3;
+	public String getEstadoPlantillaFilter() {
+		return estadoPlantillaFilter;
 	}
-	public void setFechaImag3(Date fechaImag3) {
-		this.fechaImag3 = fechaImag3;
+	public void setEstadoPlantillaFilter(String estadoPlantillaFilter) {
+		this.estadoPlantillaFilter = estadoPlantillaFilter;
 	}
-	public Date getFechaImag4() {
-		return fechaImag4;
+	public PlantillaVenta getPlantillaVentaSelected() {
+		return plantillaVentaSelected;
 	}
-	public void setFechaImag4(Date fechaImag4) {
-		this.fechaImag4 = fechaImag4;
+	public void setPlantillaVentaSelected(PlantillaVenta plantillaVentaSelected) {
+		this.plantillaVentaSelected = plantillaVentaSelected;
 	}
-	public Date getFechaImag5() {
-		return fechaImag5;
+	public ImagenPlantillaVentaService getImagenPlantillaVentaService() {
+		return imagenPlantillaVentaService;
 	}
-	public void setFechaImag5(Date fechaImag5) {
-		this.fechaImag5 = fechaImag5;
+	public void setImagenPlantillaVentaService(ImagenPlantillaVentaService imagenPlantillaVentaService) {
+		this.imagenPlantillaVentaService = imagenPlantillaVentaService;
 	}
-	public Date getFechaImag6() {
-		return fechaImag6;
+	public String getImagen1() {
+		return imagen1;
 	}
-	public void setFechaImag6(Date fechaImag6) {
-		this.fechaImag6 = fechaImag6;
+	public void setImagen1(String imagen1) {
+		this.imagen1 = imagen1;
 	}
-	public Date getFechaImag7() {
-		return fechaImag7;
+	public String getImagen2() {
+		return imagen2;
 	}
-	public void setFechaImag7(Date fechaImag7) {
-		this.fechaImag7 = fechaImag7;
+	public void setImagen2(String imagen2) {
+		this.imagen2 = imagen2;
 	}
-	public Date getFechaImag8() {
-		return fechaImag8;
+	public String getImagen3() {
+		return imagen3;
 	}
-	public void setFechaImag8(Date fechaImag8) {
-		this.fechaImag8 = fechaImag8;
+	public void setImagen3(String imagen3) {
+		this.imagen3 = imagen3;
 	}
-	public Date getFechaImag9() {
-		return fechaImag9;
+	public String getImagen4() {
+		return imagen4;
 	}
-	public void setFechaImag9(Date fechaImag9) {
-		this.fechaImag9 = fechaImag9;
+	public void setImagen4(String imagen4) {
+		this.imagen4 = imagen4;
 	}
-	public Date getFechaImag10() {
-		return fechaImag10;
+	public String getImagen5() {
+		return imagen5;
 	}
-	public void setFechaImag10(Date fechaImag10) {
-		this.fechaImag10 = fechaImag10;
+	public void setImagen5(String imagen5) {
+		this.imagen5 = imagen5;
 	}
-	public Date getFechaEnvioSunat() {
-		return fechaEnvioSunat;
+	public String getImagen6() {
+		return imagen6;
 	}
-	public void setFechaEnvioSunat(Date fechaEnvioSunat) {
-		this.fechaEnvioSunat = fechaEnvioSunat;
+	public void setImagen6(String imagen6) {
+		this.imagen6 = imagen6;
 	}
-	public BigDecimal getMontoImag1() {
-		return montoImag1;
+	public String getImagen7() {
+		return imagen7;
 	}
-	public void setMontoImag1(BigDecimal montoImag1) {
-		this.montoImag1 = montoImag1;
+	public void setImagen7(String imagen7) {
+		this.imagen7 = imagen7;
 	}
-	public BigDecimal getMontoImag2() {
-		return montoImag2;
+	public String getImagen8() {
+		return imagen8;
 	}
-	public void setMontoImag2(BigDecimal montoImag2) {
-		this.montoImag2 = montoImag2;
+	public void setImagen8(String imagen8) {
+		this.imagen8 = imagen8;
 	}
-	public BigDecimal getMontoImag3() {
-		return montoImag3;
+	public String getImagen9() {
+		return imagen9;
 	}
-	public void setMontoImag3(BigDecimal montoImag3) {
-		this.montoImag3 = montoImag3;
+	public void setImagen9(String imagen9) {
+		this.imagen9 = imagen9;
 	}
-	public BigDecimal getMontoImag4() {
-		return montoImag4;
+	public String getImagen10() {
+		return imagen10;
 	}
-	public void setMontoImag4(BigDecimal montoImag4) {
-		this.montoImag4 = montoImag4;
+	public void setImagen10(String imagen10) {
+		this.imagen10 = imagen10;
 	}
-	public BigDecimal getMontoImag5() {
-		return montoImag5;
+	public LoadImagePlantillaBean getLoadImagePlantillaBean() {
+		return loadImagePlantillaBean;
 	}
-	public void setMontoImag5(BigDecimal montoImag5) {
-		this.montoImag5 = montoImag5;
+	public void setLoadImagePlantillaBean(LoadImagePlantillaBean loadImagePlantillaBean) {
+		this.loadImagePlantillaBean = loadImagePlantillaBean;
 	}
-	public BigDecimal getMontoImag6() {
-		return montoImag6;
-	}
-	public void setMontoImag6(BigDecimal montoImag6) {
-		this.montoImag6 = montoImag6;
-	}
-	public BigDecimal getMontoImag7() {
-		return montoImag7;
-	}
-	public void setMontoImag7(BigDecimal montoImag7) {
-		this.montoImag7 = montoImag7;
-	}
-	public BigDecimal getMontoImag8() {
-		return montoImag8;
-	}
-	public void setMontoImag8(BigDecimal montoImag8) {
-		this.montoImag8 = montoImag8;
-	}
-	public BigDecimal getMontoImag9() {
-		return montoImag9;
-	}
-	public void setMontoImag9(BigDecimal montoImag9) {
-		this.montoImag9 = montoImag9;
-	}
-	public BigDecimal getMontoImag10() {
-		return montoImag10;
-	}
-	public void setMontoImag10(BigDecimal montoImag10) {
-		this.montoImag10 = montoImag10;
-	}
-	public String getNroOperImag1() {
-		return nroOperImag1;
-	}
-	public void setNroOperImag1(String nroOperImag1) {
-		this.nroOperImag1 = nroOperImag1;
-	}
-	public String getNroOperImag2() {
-		return nroOperImag2;
-	}
-	public void setNroOperImag2(String nroOperImag2) {
-		this.nroOperImag2 = nroOperImag2;
-	}
-	public String getNroOperImag3() {
-		return nroOperImag3;
-	}
-	public void setNroOperImag3(String nroOperImag3) {
-		this.nroOperImag3 = nroOperImag3;
-	}
-	public String getNroOperImag4() {
-		return nroOperImag4;
-	}
-	public void setNroOperImag4(String nroOperImag4) {
-		this.nroOperImag4 = nroOperImag4;
-	}
-	public String getNroOperImag5() {
-		return nroOperImag5;
-	}
-	public void setNroOperImag5(String nroOperImag5) {
-		this.nroOperImag5 = nroOperImag5;
-	}
-	public String getNroOperImag6() {
-		return nroOperImag6;
-	}
-	public void setNroOperImag6(String nroOperImag6) {
-		this.nroOperImag6 = nroOperImag6;
-	}
-	public String getNroOperImag7() {
-		return nroOperImag7;
-	}
-	public void setNroOperImag7(String nroOperImag7) {
-		this.nroOperImag7 = nroOperImag7;
-	}
-	public String getNroOperImag8() {
-		return nroOperImag8;
-	}
-	public void setNroOperImag8(String nroOperImag8) {
-		this.nroOperImag8 = nroOperImag8;
-	}
-	public String getNroOperImag9() {
-		return nroOperImag9;
-	}
-	public void setNroOperImag9(String nroOperImag9) {
-		this.nroOperImag9 = nroOperImag9;
-	}
-	public String getNroOperImag10() {
-		return nroOperImag10;
-	}
-	public void setNroOperImag10(String nroOperImag10) {
-		this.nroOperImag10 = nroOperImag10;
-	}
+	
 	
 }

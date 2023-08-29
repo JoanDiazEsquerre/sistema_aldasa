@@ -1,5 +1,6 @@
 package com.model.aldasa.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,11 @@ public class ImagenPlantillaServiceImpl implements ImagenPlantillaVentaService{
 	public void delete(ImagenPlantillaVenta entity) {
 		// TODO Auto-generated method stub
 		imagenPlantillaVentaRepository.delete(entity);
+	}
+
+	@Override
+	public List<ImagenPlantillaVenta> findByNombreLikeAndEstado(String nombre, boolean estado) {
+		// TODO Auto-generated method stub
+		return imagenPlantillaVentaRepository.findByNombreLikeAndEstado(nombre, estado);
 	}
 }

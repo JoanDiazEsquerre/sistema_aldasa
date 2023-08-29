@@ -281,6 +281,18 @@
 			<property-name>requerimientoSeparacionService</property-name>
 			<value>#{requerimientoSeparacionService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>plantillaVentaService</property-name>
+			<value>#{plantillaVentaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>imagenPlantillaVentaService</property-name>
+			<value>#{imagenPlantillaVentaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>loadImagePlantillaBean</property-name>
+			<value>#{loadImagePlantillaBean}</value>
+		</managed-property>
 	</managed-bean>
 
 	<managed-bean>
@@ -860,6 +872,16 @@
 			<property-name>personService</property-name>
 			<value>#{personService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>loadImagePlantillaBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.prospeccion.bean.LoadImagePlantillaBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope> 
 		<managed-property>
 			<property-name>navegacionBean</property-name>
 			<value>#{navegacionBean}</value>

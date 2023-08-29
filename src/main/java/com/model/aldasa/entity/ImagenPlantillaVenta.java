@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -22,7 +24,9 @@ public class ImagenPlantillaVenta {
 	private String carpeta;
 	private boolean estado;
 
-	
+	@ManyToOne
+	@JoinColumn(name="idplantillaventa")
+	private PlantillaVenta plantillaVenta;
 	
 	
 	public Integer getId() {
@@ -48,6 +52,12 @@ public class ImagenPlantillaVenta {
 	}
 	public void setEstado(boolean estado) {
 		this.estado = estado;
+	}
+	public PlantillaVenta getPlantillaVenta() {
+		return plantillaVenta;
+	}
+	public void setPlantillaVenta(PlantillaVenta plantillaVenta) {
+		this.plantillaVenta = plantillaVenta;
 	}
 	
 	

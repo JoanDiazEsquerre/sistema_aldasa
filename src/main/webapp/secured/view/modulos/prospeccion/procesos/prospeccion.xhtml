@@ -6,8 +6,8 @@
 	locale="#{localeBean.usedLocale}"
 	xmlns:f="http://java.sun.com/jsf/core">
 
-	<h:form id="form">
-		<h2 style="color: #007d4c;">PROSPECCIÓN > PROSPECCIONES</h2>  
+	<h:form id="form" enctype="multipart/form-data">
+		<h2 style="color: #007d4c;">PROSPECCIÓN > PROSPECCIONES</h2>
 		<p:tabView id="tabView">
 			<p:tab title="Lista de Prospecciones">
 				<p:selectOneButton value="#{prospeccionBean.status}" unselectable="false">
@@ -147,6 +147,77 @@
 			
 			<p:tab title="Lista de Plantillas de Venta"> 
 			
+				<p:selectOneButton value="#{prospeccionBean.estadoPlantillaFilter}" unselectable="false">
+					<f:selectItem itemLabel="Pendiente" itemValue="Pendiente"/>
+					<f:selectItem itemLabel="Aceptado" itemValue="Terminado"/>
+					<f:selectItem itemLabel="Rechazado" itemValue="Rechazado"/>
+					
+					<p:ajax update=":form:tabView:idTablePlantillaVenta" />
+				</p:selectOneButton>
+				
+				<p:dataTable var="plantilla" id="idTablePlantillaVenta" value="#{prospeccionBean.lstPlantillaLazy}" widgetVar="plantillaTable" rowIndexVar="row" paginator="true" rows="15" size="small" 
+					emptyMessage="No se encontraron Plantillas de venta." paginatorPosition="bottom" rowKey="#{plantilla.id}" selection="#{prospeccionBean.plantillaVentaSelected}" selectionMode="single">
+					<f:facet name="header">
+						<div class="p-d-flex p-ai-center p-jc-between">
+							<span>Lista de Plantillas de Venta</span>
+						</div>
+					</f:facet>
+					<p:ajax event="rowSelect" listener="#{prospeccionBean.verVoucher()}"  update=":formPlantillaDialog" oncomplete="PF('plantillaNewDialog').show();" />
+
+					<p:column headerText="Nro." style="width:25px;">
+                            		#{row +1}
+                    </p:column>
+                       			
+					<p:column headerText="Prospecto" sortBy="#{plantilla.prospecto.person.surnames}"
+						filterBy="#{plantilla.prospecto.person.surnames}" filterMatchMode="contains">
+						<h:outputText value="#{plantilla.prospecto.person.surnames} #{plantilla.prospecto.person.names}" />
+					</p:column>
+					
+					<p:column headerText="Proyecto" sortBy="#{plantilla.lote.project.name}"
+						filterBy="#{plantilla.lote.project.name}" filterMatchMode="contains">
+						<h:outputText value="#{plantilla.lote.project.name}" />
+					</p:column>
+					
+					<p:column headerText="Manzana" sortBy="#{plantilla.lote.manzana.name}"
+						filterBy="#{plantilla.lote.manzana.name}" filterMatchMode="contains">
+						<h:outputText value="#{plantilla.lote.manzana.name}" />
+					</p:column>
+					
+					<p:column headerText="Lote" sortBy="#{plantilla.lote.numberLote}"
+						filterBy="#{plantilla.lote.numberLote}" filterMatchMode="contains">
+						<h:outputText value="#{plantilla.lote.numberLote}" />
+					</p:column>
+					
+					<p:column headerText="Tipo de Pago" sortBy="#{plantilla.tipoPago}" filterMatchMode="contains">
+						<h:outputText value="#{plantilla.tipoPago}" />
+					</p:column>
+					
+					<p:column headerText="Monto de Venta" sortBy="#{plantilla.montoVenta}" filterMatchMode="contains">
+						<h:outputText value="#{plantilla.montoVenta}" />
+					</p:column>
+					
+					<p:column headerText="Monto de Inicial" sortBy="#{plantilla.montoInicial}" filterMatchMode="contains">
+						<h:outputText value="#{plantilla.montoInicial}" />
+					</p:column>
+					
+					<p:column headerText="Interes" sortBy="#{plantilla.interes}" filterMatchMode="contains">
+						<h:outputText value="#{plantilla.interes}" />
+					</p:column>
+					
+					<p:column headerText="Plazo a pagar (Meses)" sortBy="#{plantilla.numeroCuota}" filterMatchMode="contains">
+						<h:outputText value="#{plantilla.numeroCuota}" />
+					</p:column>
+					
+					<p:column headerText="Asesor" sortBy="#{plantilla.prospecto.personAssessor.surnames} " filterMatchMode="contains">
+						<h:outputText value="#{plantilla.prospecto.personAssessor.surnames} #{plantilla.prospecto.personAssessor.names}" />
+					</p:column>
+					
+					<p:column headerText="Supervisor" sortBy="#{plantilla.prospecto.personSupervisor.surnames} " filterMatchMode="contains">
+						<h:outputText value="#{plantilla.prospecto.personSupervisor.surnames} #{plantilla.prospecto.personSupervisor.names}" />
+					</p:column>
+					
+				</p:dataTable>
+			
 			</p:tab>
 			<p:tab title=" Nueva Plantilla de Venta" id="idTab4"> 
 				<h:panelGrid columns="4" id="idPanelPlantilla" >
@@ -186,116 +257,45 @@
 					
 				</h:panelGrid>
 				
-				<h:panelGrid columns="4" > 
+				<h:panelGrid columns="4" id="panelPlantilla2"> 
 				
 					<h:outputLabel value="Tipo de Pago:" />
 					<p:selectOneMenu value="#{prospeccionBean.plantillaVentaNew.tipoPago}" style="margin:5px; width:183px" > 
-						<f:selectItem itemLabel="[-Seleccionar-]" itemValue="#{null}"/>
-						<f:selectItem itemLabel="CRÉDITO" itemValue="CRÉDITO"/>
 						<f:selectItem itemLabel="CONTADO" itemValue="CONTADO"/> 
+						<f:selectItem itemLabel="CRÉDITO" itemValue="CRÉDITO"/>
+						<p:ajax update="form:tabView:panelPlantilla2" />
 					</p:selectOneMenu>
 					
 					<h:outputLabel value="Monto venta:" />
 					<p:inputNumber value="#{prospeccionBean.plantillaVentaNew.montoVenta}"/>
 					
-					<h:outputLabel value="Monto Inicial:" />
-					<p:inputNumber value="#{prospeccionBean.plantillaVentaNew.montoInicial}"/>
+					<h:outputLabel value="Monto Inicial:" rendered="#{prospeccionBean.plantillaVentaNew.tipoPago eq 'CRÉDITO'}"/>
+					<p:inputNumber value="#{prospeccionBean.plantillaVentaNew.montoInicial}" rendered="#{prospeccionBean.plantillaVentaNew.tipoPago eq 'CRÉDITO'}" />
 					 
-					<h:outputLabel value="Plazo:" />
-					<p:inputText value="#{prospeccionBean.plantillaVentaNew.numeroCuota}"/>
+					<h:outputLabel value="Plazo:" rendered="#{prospeccionBean.plantillaVentaNew.tipoPago eq 'CRÉDITO'}"/>
+					<p:inputText value="#{prospeccionBean.plantillaVentaNew.numeroCuota}" rendered="#{prospeccionBean.plantillaVentaNew.tipoPago eq 'CRÉDITO'}"/>
 					 
-					<h:outputLabel value="Interés:" />
-					<p:inputNumber value="#{prospeccionBean.plantillaVentaNew.interes}"/>
+					<h:outputLabel value="Interés:" rendered="#{prospeccionBean.plantillaVentaNew.tipoPago eq 'CRÉDITO'}"/>
+					<p:inputNumber value="#{prospeccionBean.plantillaVentaNew.interes}" rendered="#{prospeccionBean.plantillaVentaNew.tipoPago eq 'CRÉDITO'}"/>
 				
 				</h:panelGrid>
 				
-				<p:commandButton icon="pi pi-minus" action="#{prospeccionBean.menorarImagen}" styleClass="rounded-button ui-button-success" style="margin:10px;" />
-				<p:commandButton icon="pi pi-plus" action="#{prospeccionBean.aumentarImagen}" styleClass="rounded-button ui-button-success" />
+				<p:commandButton value="Guardar" action="#{prospeccionBean.validaDatosPlantilla()}" />
 				
-				<h:panelGrid columns="7" width="100%">
+				<h:panelGrid columns="1" width="100%" id="pnlCond">
 					<p:fileUpload value="#{prospeccionBean.file1}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
-					<h:outputLabel value="Fecha:"/>
-					<p:datePicker value="#{prospeccionBean.fechaImag1}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-					<h:outputLabel  value="Monto: " />
-					<p:inputNumber  value="#{prospeccionBean.montoImag1}" style="margin:5px; width:220px" />
-					<h:outputLabel value="Nro. de Operación:" />
-					<p:inputText  value="#{prospeccionBean.nroOperImag1}" style="margin:5px; width:220px"   /> 
-			
-					<p:fileUpload value="#{prospeccionBean.file2}" rendered="#{prospeccionBean.numMuestraImagen ge 2}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
-					<h:outputLabel value="Fecha:" rendered="#{prospeccionBean.numMuestraImagen ge 2}"/>
-					<p:datePicker value="#{prospeccionBean.fechaImag2}" rendered="#{prospeccionBean.numMuestraImagen ge 2}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-					<h:outputLabel  value="Monto: " rendered="#{prospeccionBean.numMuestraImagen ge 2}" />
-					<p:inputNumber  value="#{prospeccionBean.montoImag2}" rendered="#{prospeccionBean.numMuestraImagen ge 2}" style="margin:5px; width:220px" />
-					<h:outputLabel value="Nro. de Operación:" rendered="#{prospeccionBean.numMuestraImagen ge 2}"/>
-					<p:inputText  value="#{prospeccionBean.nroOperImag2}" rendered="#{prospeccionBean.numMuestraImagen ge 2}" style="margin:5px; width:220px"  decimalPlaces="0" /> 
-					
-					<p:fileUpload value="#{prospeccionBean.file3}" rendered="#{prospeccionBean.numMuestraImagen ge 3}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>							
-					<h:outputLabel value="Fecha:" rendered="#{prospeccionBean.numMuestraImagen ge 3}"/>
-					<p:datePicker value="#{prospeccionBean.fechaImag3}" rendered="#{prospeccionBean.numMuestraImagen ge 3}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>								
-					<h:outputLabel  value="Monto: " rendered="#{prospeccionBean.numMuestraImagen ge 3}"/>
-					<p:inputNumber  value="#{prospeccionBean.montoImag3}" rendered="#{prospeccionBean.numMuestraImagen ge 3}" style="margin:5px; width:220px" />
-					<h:outputLabel value="Nro. de Operación:" rendered="#{prospeccionBean.numMuestraImagen ge 3}"/>
-					<p:inputText  value="#{prospeccionBean.nroOperImag3}" rendered="#{prospeccionBean.numMuestraImagen ge 3}" style="margin:5px; width:220px"  decimalPlaces="0" />
-					
-					<p:fileUpload value="#{prospeccionBean.file4}" rendered="#{prospeccionBean.numMuestraImagen ge 4}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
-					<h:outputLabel value="Fecha:" rendered="#{prospeccionBean.numMuestraImagen ge 4}"/>
-					<p:datePicker value="#{prospeccionBean.fechaImag4}" rendered="#{prospeccionBean.numMuestraImagen ge 4}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-					<h:outputLabel  value="Monto: " rendered="#{prospeccionBean.numMuestraImagen ge 4}"/>
-					<p:inputNumber  value="#{prospeccionBean.montoImag4}" rendered="#{prospeccionBean.numMuestraImagen ge 4}" style="margin:5px; width:220px" />
-					<h:outputLabel value="Nro. de Operación:" rendered="#{prospeccionBean.numMuestraImagen ge 4}"/>
-					<p:inputText  value="#{prospeccionBean.nroOperImag4}" rendered="#{prospeccionBean.numMuestraImagen ge 4}" style="margin:5px; width:220px"  decimalPlaces="0" />		
-					
-					<p:fileUpload value="#{prospeccionBean.file5}" rendered="#{prospeccionBean.numMuestraImagen ge 5}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
-					<h:outputLabel value="Fecha:" rendered="#{prospeccionBean.numMuestraImagen ge 5}"/>
-					<p:datePicker value="#{prospeccionBean.fechaImag5}" rendered="#{prospeccionBean.numMuestraImagen ge 5}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-					<h:outputLabel  value="Monto: " rendered="#{prospeccionBean.numMuestraImagen ge 5}"/>
-					<p:inputNumber  value="#{prospeccionBean.montoImag5}" rendered="#{prospeccionBean.numMuestraImagen ge 5}" style="margin:5px; width:220px" />
-					<h:outputLabel value="Nro. de Operación:" rendered="#{prospeccionBean.numMuestraImagen ge 5}"/>
-					<p:inputText  value="#{prospeccionBean.nroOperImag5}" rendered="#{prospeccionBean.numMuestraImagen ge 5}" style="margin:5px; width:220px"  decimalPlaces="0" />	
-					
-					<p:fileUpload value="#{prospeccionBean.file6}" rendered="#{prospeccionBean.numMuestraImagen ge 6}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
-					<h:outputLabel value="Fecha:" rendered="#{prospeccionBean.numMuestraImagen ge 6}"/>
-					<p:datePicker value="#{prospeccionBean.fechaImag6}" rendered="#{prospeccionBean.numMuestraImagen ge 6}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-					<h:outputLabel  value="Monto: " rendered="#{prospeccionBean.numMuestraImagen ge 6}" />
-					<p:inputNumber  value="#{prospeccionBean.montoImag6}" rendered="#{prospeccionBean.numMuestraImagen ge 6}" style="margin:5px; width:220px" />
-					<h:outputLabel value="Nro. de Operación:" rendered="#{prospeccionBean.numMuestraImagen ge 6}" />
-					<p:inputText  value="#{prospeccionBean.nroOperImag6}" rendered="#{prospeccionBean.numMuestraImagen ge 6}" style="margin:5px; width:220px"  decimalPlaces="0" />			
-					
-					<p:fileUpload value="#{prospeccionBean.file7}" rendered="#{prospeccionBean.numMuestraImagen ge 7}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
-					<h:outputLabel value="Fecha:" rendered="#{prospeccionBean.numMuestraImagen ge 7}"/>
-					<p:datePicker value="#{prospeccionBean.fechaImag7}" rendered="#{prospeccionBean.numMuestraImagen ge 7}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-					<h:outputLabel  value="Monto: " rendered="#{prospeccionBean.numMuestraImagen ge 7}" />
-					<p:inputNumber  value="#{prospeccionBean.montoImag7}" rendered="#{prospeccionBean.numMuestraImagen ge 7}" style="margin:5px; width:220px" />
-					<h:outputLabel value="Nro. de Operación:" rendered="#{prospeccionBean.numMuestraImagen ge 7}" />
-					<p:inputText  value="#{prospeccionBean.nroOperImag7}" rendered="#{prospeccionBean.numMuestraImagen ge 7}" style="margin:5px; width:220px"  decimalPlaces="0" />	  
-					
-					<p:fileUpload value="#{prospeccionBean.file8}" rendered="#{prospeccionBean.numMuestraImagen ge 8}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
-					<h:outputLabel value="Fecha:" rendered="#{prospeccionBean.numMuestraImagen ge 8}"/>
-					<p:datePicker value="#{prospeccionBean.fechaImag8}" rendered="#{prospeccionBean.numMuestraImagen ge 8}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-					<h:outputLabel  value="Monto: " rendered="#{prospeccionBean.numMuestraImagen ge 8}" />
-					<p:inputNumber  value="#{prospeccionBean.montoImag8}" rendered="#{prospeccionBean.numMuestraImagen ge 8}" style="margin:5px; width:220px" />
-					<h:outputLabel value="Nro. de Operación:" rendered="#{prospeccionBean.numMuestraImagen ge 8}" />
-					<p:inputText  value="#{prospeccionBean.nroOperImag8}" rendered="#{prospeccionBean.numMuestraImagen ge 8}" style="margin:5px; width:220px"  decimalPlaces="0" />	
-					
-					<p:fileUpload value="#{prospeccionBean.file9}" rendered="#{prospeccionBean.numMuestraImagen ge 9}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
-					<h:outputLabel value="Fecha:" rendered="#{prospeccionBean.numMuestraImagen ge 9}"/>
-					<p:datePicker value="#{prospeccionBean.fechaImag9}" rendered="#{prospeccionBean.numMuestraImagen ge 9}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-					<h:outputLabel  value="Monto: " rendered="#{prospeccionBean.numMuestraImagen ge 9}" />
-					<p:inputNumber  value="#{prospeccionBean.montoImag9}" rendered="#{prospeccionBean.numMuestraImagen ge 9}" style="margin:5px; width:220px" />
-					<h:outputLabel value="Nro. de Operación:"  rendered="#{prospeccionBean.numMuestraImagen ge 9}"/>
-					<p:inputText  value="#{prospeccionBean.nroOperImag9}" rendered="#{prospeccionBean.numMuestraImagen ge 9}" style="margin:5px; width:220px"  decimalPlaces="0" />	
-				
-					<p:fileUpload value="#{prospeccionBean.file10}" rendered="#{prospeccionBean.numMuestraImagen ge 10}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
-					<h:outputLabel value="Fecha:" rendered="#{prospeccionBean.numMuestraImagen ge 10}"/>
-					<p:datePicker value="#{prospeccionBean.fechaImag10}" rendered="#{prospeccionBean.numMuestraImagen ge 10}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm a" showTime="true"/>
-					<h:outputLabel  value="Monto: "  rendered="#{prospeccionBean.numMuestraImagen ge 10}"/>
-					<p:inputNumber  value="#{prospeccionBean.montoImag10}" rendered="#{prospeccionBean.numMuestraImagen ge 10}" style="margin:5px; width:220px" />
-					<h:outputLabel value="Nro. de Operación:" rendered="#{prospeccionBean.numMuestraImagen ge 10}" />
-					<p:inputText  value="#{prospeccionBean.nroOperImag10}" rendered="#{prospeccionBean.numMuestraImagen ge 10}" style="margin:5px; width:220px"  decimalPlaces="0" />	
+					<p:fileUpload value="#{prospeccionBean.file2}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
+					<p:fileUpload value="#{prospeccionBean.file3}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>							
+					<p:fileUpload value="#{prospeccionBean.file4}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+					<p:fileUpload value="#{prospeccionBean.file5}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+					<p:fileUpload value="#{prospeccionBean.file6}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+					<p:fileUpload value="#{prospeccionBean.file7}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+					<p:fileUpload value="#{prospeccionBean.file8}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+					<p:fileUpload value="#{prospeccionBean.file9}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+					<p:fileUpload value="#{prospeccionBean.file10}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
 				</h:panelGrid>
 				
-				<p:commandButton value="Guardar" action="#{prospeccionBean.savePlantillaVenta()}"/>
-			
+				
 			</p:tab>
 		</p:tabView>
 	</h:form>
@@ -653,6 +653,94 @@
 		</h:form>
 	</p:dialog>
 	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPlantilla" header="PLANTILLA DE VENTA" widgetVar="plantillaNewDialog" resizable="false" closable="true"
+		appendTo="@(body)" style="width:auto">
+		<h:form id="formPlantillaDialog">
+			<h:panelGrid id="idDatosPlantilla" columns="2" >  
+			
+				<h:outputLabel value="Prospecto: "/>
+				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.prospecto.person.surnames}"/> 
+				
+				<h:outputLabel value="Proyecto: "/>
+				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.lote.project.name}"/> 
+				
+				<h:outputLabel value="Manzana: "/>
+				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.lote.manzana.name}"/> 
+				
+				<h:outputLabel value="Lote: "/>
+				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.lote.numberLote}"/> 
+				
+				<h:outputLabel value="Tipo de Pago: "/>
+				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.tipoPago}"/> 
+			
+				<h:outputLabel value="Monto de Venta: "/>
+				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.montoVenta}"> 
+					<f:convertNumber type="currency" currencySymbol=""/>
+				</h:outputLabel>
+				
+				<h:outputLabel value="Monto de Inicial: "/>
+				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.montoInicial}"> 
+					<f:convertNumber type="currency" currencySymbol=""/>
+				</h:outputLabel>
+				
+				<h:outputLabel value="Interes: "/>
+				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.interes}"> 
+					<f:convertNumber type="currency" currencySymbol=""/>
+				</h:outputLabel>
+				
+				<h:outputLabel value="Plazo(numero de cuotas): "/>
+				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.numeroCuota}"/> 
+			
+			</h:panelGrid>
+			<h:panelGrid columns="5" > 
+			
+				<p:commandButton value="VOUCHER 1" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen1 eq ''}" >
+					<f:setPropertyActionListener value="#{prospeccionBean.imagen1}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
+				</p:commandButton>
+			
+				<p:commandButton value="VOUCHER 2" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{dprospeccionBean.imagen2 eq ''}">
+					<f:setPropertyActionListener value="#{prospeccionBean.imagen2}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
+				</p:commandButton>
+			
+				<p:commandButton value="VOUCHER 3" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen3 eq ''}">
+					<f:setPropertyActionListener value="#{prospeccionBean.imagen3}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
+				</p:commandButton>
+			
+				<p:commandButton value="VOUCHER 4" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen4 eq ''}">
+					<f:setPropertyActionListener value="#{prospeccionBean.imagen4}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 5" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen5 eq ''}">
+					<f:setPropertyActionListener value="#{prospeccionBean.imagen5}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 6" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen6 eq ''}">
+					<f:setPropertyActionListener value="#{prospeccionBean.imagen6}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 7" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen7 eq ''}">
+					<f:setPropertyActionListener value="#{prospeccionBean.imagen7}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 8" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen8 eq ''}">
+					<f:setPropertyActionListener value="#{prospeccionBean.imagen8}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 9" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen9 eq ''}">
+					<f:setPropertyActionListener value="#{prospeccionBean.imagen9}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 10" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen10 eq ''}">
+					<f:setPropertyActionListener value="#{prospeccionBean.imagen10}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
+				</p:commandButton>
+	
+			</h:panelGrid>
+			
+			<p:graphicImage width="400"  value="#{loadImagePlantillaBean.image}" id="imagenLoad" cache="false"/>
+			
+		</h:form>
+	</p:dialog>
+	
 	<pe:blockUI target="idDeleteProductDialog" widgetVar="blockUIWidgetDeleteProduct">
           <h:form style="background: white"> 
           <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
@@ -700,6 +788,19 @@
           <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
           </h:form>
     </pe:blockUI>
+    
+    <pe:blockUI target="savePlantillaVenta" widgetVar="blockUIWidgetSavePlantilla">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="savePlantillaVenta" message="¿Está seguro de guardar la plantilla de venta?" header="Confirmación" severity="alert" widgetVar="savePlantillaVenta" appendTo="@(body)">
+        <h:form >
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetSavePlantilla').block();" oncomplete="PF('blockUIWidgetSavePlantilla').unblock();PF('savePlantillaVenta').hide()"  action="#{prospeccionBean.savePlantillaVenta()}" 
+            update=":form:tabView:idTablePlantillaVenta :form:tabView:idPanelPlantilla :form:tabView:panelPlantilla2  :form:tabView:pnlCond"/>
+            <p:commandButton value="NO" oncomplete="PF('savePlantillaVenta').hide()"/>
+        </h:form>
+    </p:confirmDialog>
 	
 	<script>
     PrimeFaces.locales['es'] = {

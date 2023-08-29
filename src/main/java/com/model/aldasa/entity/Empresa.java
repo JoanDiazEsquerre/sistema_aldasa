@@ -24,6 +24,10 @@ public class Empresa {
 
 	@Column(name="rutadocumentoventa")
 	private String rutaDocumentoVenta;
+	
+	@Column(name="rutaplantillaventa")
+	private String rutaPlantillaVenta;
+
 
 	@Column(name="rutafe")
 	private String rutaFe;
@@ -73,6 +77,12 @@ public class Empresa {
 	}
 	public void setTokenFe(String tokenFe) {
 		this.tokenFe = tokenFe;
+	}
+	public String getRutaPlantillaVenta() {
+		return rutaPlantillaVenta;
+	}
+	public void setRutaPlantillaVenta(String rutaPlantillaVenta) {
+		this.rutaPlantillaVenta = rutaPlantillaVenta;
 	}
 	
 
