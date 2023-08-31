@@ -1,5 +1,6 @@
 package com.model.aldasa.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,12 @@ public class ProductoServiceImpl implements ProductoService{
 	public Producto findByEstadoAndTipoProducto(boolean estado, String tipoProducto) {
 		// TODO Auto-generated method stub
 		return productoRepository.findByEstadoAndTipoProducto(estado, tipoProducto);
+	}
+
+	@Override
+	public List<Producto> findByEstado(boolean estado) {
+		// TODO Auto-generated method stub
+		return productoRepository.findByEstado(estado);
 	}
 
 }

@@ -293,6 +293,14 @@
 			<property-name>loadImagePlantillaBean</property-name>
 			<value>#{loadImagePlantillaBean}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>cuentaBancariaService</property-name> 
+			<value>#{cuentaBancariaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>imagenService</property-name>
+			<value>#{imagenService}</value>
+		</managed-property>
 	</managed-bean>
 
 	<managed-bean>
@@ -803,6 +811,10 @@
 		<managed-property>
 			<property-name>projectService</property-name>
 			<value>#{projectService}</value>
+		</managed-property>
+		<managed-property> 
+			<property-name>cuentaBancariaService</property-name> 
+			<value>#{cuentaBancariaService}</value>
 		</managed-property>
 	</managed-bean>
 	

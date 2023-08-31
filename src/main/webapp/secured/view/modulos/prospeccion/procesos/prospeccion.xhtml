@@ -148,9 +148,9 @@
 			<p:tab title="Lista de Plantillas de Venta"> 
 			
 				<p:selectOneButton value="#{prospeccionBean.estadoPlantillaFilter}" unselectable="false">
-					<f:selectItem itemLabel="Pendiente" itemValue="Pendiente"/>
-					<f:selectItem itemLabel="Aceptado" itemValue="Terminado"/>
-					<f:selectItem itemLabel="Rechazado" itemValue="Rechazado"/>
+					<f:selectItem itemLabel="Pendientes" itemValue="Pendiente"/>
+					<f:selectItem itemLabel="Aprobados" itemValue="Aprobado"/>
+					<f:selectItem itemLabel="Rechazados" itemValue="Rechazado"/>
 					
 					<p:ajax update=":form:tabView:idTablePlantillaVenta" />
 				</p:selectOneButton>
@@ -654,89 +654,121 @@
 	</p:dialog>
 	
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPlantilla" header="PLANTILLA DE VENTA" widgetVar="plantillaNewDialog" resizable="false" closable="true"
-		appendTo="@(body)" style="width:auto">
+		appendTo="@(body)"  width="50%" height="500px">
 		<h:form id="formPlantillaDialog">
+			<p:commandButton value="APROBAR" actionListener="#{prospeccionBean.aprobarPlatilla}" rendered="#{prospeccionBean.plantillaVentaSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarPlantillaVenta}" process="@this" update="formPlantillaDialog" style="margin:10px" styleClass="ui-button-success"/>
+			<p:commandButton value="RECHAZAR" actionListener="#{prospeccionBean.rechazarPlantilla}" rendered="#{prospeccionBean.plantillaVentaSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarPlantillaVenta}" process="@this" update="formPlantillaDialog" styleClass="ui-button-warning"/>
+			
 			<h:panelGrid id="idDatosPlantilla" columns="2" >  
 			
-				<h:outputLabel value="Prospecto: "/>
+				<h:outputLabel value="Prospecto: " style="font-weight:bold"/>
 				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.prospecto.person.surnames}"/> 
 				
-				<h:outputLabel value="Proyecto: "/>
+				<h:outputLabel value="Proyecto: " style="font-weight:bold"/>
 				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.lote.project.name}"/> 
 				
-				<h:outputLabel value="Manzana: "/>
+				<h:outputLabel value="Manzana: " style="font-weight:bold"/>
 				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.lote.manzana.name}"/> 
 				
-				<h:outputLabel value="Lote: "/>
+				<h:outputLabel value="Lote: " style="font-weight:bold"/>
 				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.lote.numberLote}"/> 
 				
-				<h:outputLabel value="Tipo de Pago: "/>
+				<h:outputLabel value="Tipo de Pago: " style="font-weight:bold"/>
 				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.tipoPago}"/> 
 			
-				<h:outputLabel value="Monto de Venta: "/>
+				<h:outputLabel value="Monto de Venta: " style="font-weight:bold"/>
 				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.montoVenta}"> 
 					<f:convertNumber type="currency" currencySymbol=""/>
 				</h:outputLabel>
 				
-				<h:outputLabel value="Monto de Inicial: "/>
-				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.montoInicial}"> 
+				<h:outputLabel value="Monto de Inicial: " style="font-weight:bold" rendered="#{prospeccionBean.plantillaVentaSelected.tipoPago ne 'CONTADO'}"/>
+				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.montoInicial}" rendered="#{prospeccionBean.plantillaVentaSelected.tipoPago ne 'CONTADO'}"> 
 					<f:convertNumber type="currency" currencySymbol=""/>
 				</h:outputLabel>
 				
-				<h:outputLabel value="Interes: "/>
-				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.interes}"> 
+				<h:outputLabel value="Interes: " style="font-weight:bold" rendered="#{prospeccionBean.plantillaVentaSelected.tipoPago ne 'CONTADO'}"/>
+				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.interes}" rendered="#{prospeccionBean.plantillaVentaSelected.tipoPago ne 'CONTADO'}"> 
 					<f:convertNumber type="currency" currencySymbol=""/>
 				</h:outputLabel>
 				
-				<h:outputLabel value="Plazo(numero de cuotas): "/>
-				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.numeroCuota}"/> 
+				<h:outputLabel value="Plazo(numero de cuotas): " style="font-weight:bold" rendered="#{prospeccionBean.plantillaVentaSelected.tipoPago ne 'CONTADO'}"/>
+				<h:outputLabel value="#{prospeccionBean.plantillaVentaSelected.numeroCuota}" rendered="#{prospeccionBean.plantillaVentaSelected.tipoPago ne 'CONTADO'}"/> 
 			
 			</h:panelGrid>
 			<h:panelGrid columns="5" > 
 			
-				<p:commandButton value="VOUCHER 1" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen1 eq ''}" >
+				<p:commandButton value="IMAGEN 1" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen1 eq ''}" >
 					<f:setPropertyActionListener value="#{prospeccionBean.imagen1}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
 				</p:commandButton>
 			
-				<p:commandButton value="VOUCHER 2" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{dprospeccionBean.imagen2 eq ''}">
+				<p:commandButton value="IMAGEN 2" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen2 eq ''}">
 					<f:setPropertyActionListener value="#{prospeccionBean.imagen2}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
 				</p:commandButton>
 			
-				<p:commandButton value="VOUCHER 3" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen3 eq ''}">
+				<p:commandButton value="IMAGEN 3" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen3 eq ''}">
 					<f:setPropertyActionListener value="#{prospeccionBean.imagen3}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
 				</p:commandButton>
 			
-				<p:commandButton value="VOUCHER 4" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen4 eq ''}">
+				<p:commandButton value="IMAGEN 4" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen4 eq ''}">
 					<f:setPropertyActionListener value="#{prospeccionBean.imagen4}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
 				</p:commandButton>
 				
-				<p:commandButton value="VOUCHER 5" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen5 eq ''}">
+				<p:commandButton value="IMAGEN 5" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen5 eq ''}">
 					<f:setPropertyActionListener value="#{prospeccionBean.imagen5}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
 				</p:commandButton>
 				
-				<p:commandButton value="VOUCHER 6" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen6 eq ''}">
+				<p:commandButton value="IMAGEN 6" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen6 eq ''}">
 					<f:setPropertyActionListener value="#{prospeccionBean.imagen6}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
 				</p:commandButton>
 				
-				<p:commandButton value="VOUCHER 7" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen7 eq ''}">
+				<p:commandButton value="IMAGEN 7" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen7 eq ''}">
 					<f:setPropertyActionListener value="#{prospeccionBean.imagen7}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
 				</p:commandButton>
 				
-				<p:commandButton value="VOUCHER 8" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen8 eq ''}">
+				<p:commandButton value="IMAGEN 8" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen8 eq ''}">
 					<f:setPropertyActionListener value="#{prospeccionBean.imagen8}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
 				</p:commandButton>
 				
-				<p:commandButton value="VOUCHER 9" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen9 eq ''}">
+				<p:commandButton value="IMAGEN 9" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen9 eq ''}">
 					<f:setPropertyActionListener value="#{prospeccionBean.imagen9}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
 				</p:commandButton>
 				
-				<p:commandButton value="VOUCHER 10" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen10 eq ''}">
+				<p:commandButton value="IMAGEN 10" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{prospeccionBean.imagen10 eq ''}">
 					<f:setPropertyActionListener value="#{prospeccionBean.imagen10}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
 				</p:commandButton>
 	
 			</h:panelGrid>
 			
 			<p:graphicImage width="400"  value="#{loadImagePlantillaBean.image}" id="imagenLoad" cache="false"/>
+			
+			<h:panelGrid columns="4">
+				<h:outputLabel  value="Cuenta Bancaria:" />
+				<p:selectOneMenu value="#{prospeccionBean.cuentaBancariaSelected}" converter="#{prospeccionBean.conversorCuentaBancaria}" >
+                    <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
+                    <f:selectItems value="#{prospeccionBean.lstCuentaBancaria}" var="cb" itemLabel="#{cb.banco.abreviatura} : #{cb.numero}  (#{cb.moneda eq 'D'?'Dólares':'Soles'})" itemValue="#{cb}"/>
+                </p:selectOneMenu>
+				
+				<h:outputLabel value="Monto:" />
+				<p:inputNumber value="#{prospeccionBean.monto}" modifyValueOnWheel="false"/>
+				
+				<h:outputLabel value="Tipo de transacción: " />
+				<p:selectOneMenu id="tipo" value="#{prospeccionBean.tipoTransaccion}" >
+					<f:selectItem itemLabel="[- Seleccionar -]" itemValue=""/>
+					<f:selectItem itemLabel="DEPOSITO EN EFECTIVO" itemValue="DEPOSITO EN EFECTIVO"/>
+					<f:selectItem itemLabel="TRASFERENCIAS ENTRE TERCEROS" itemValue="TRASFERENCIAS ENTRE TERCEROS"/>
+					<f:selectItem itemLabel="TRASFERENCIA INTERBANCARIA" itemValue="TRASFERENCIA INTERBANCARIA"/>
+				</p:selectOneMenu>
+				
+				<h:outputLabel value="Nro. transacción:" />
+				<p:inputText value="#{prospeccionBean.numeroTransaccion}"/>
+				
+				<h:outputLabel value="Fecha Operación:" />
+				<p:datePicker value="#{prospeccionBean.fechaOperacion}"  showTime="true" style="margin:5px" pattern="dd/MM/yyyy hh:mm:ss a" readonlyInput="true"/> 
+			
+				<p:commandButton value="Validar" actionListener="#{prospeccionBean.validaVoucher}" />
+
+				
+			</h:panelGrid>
 			
 		</h:form>
 	</p:dialog>

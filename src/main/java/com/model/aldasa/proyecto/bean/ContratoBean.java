@@ -253,10 +253,52 @@ public class ContratoBean extends BaseBean implements Serializable{
 		
 	}
 	
+	public void editarFecha(Cuota cuota) {
+		if(cuota.getFechaPago()!=null) {
+			cuotaService.save(cuota);
+			
+            addInfoMessage("Se cambió la fecha correctamente.");
+		}
+		verCronogramaPago();
+	}
+	
+	public void editarInteres(Cuota cuota) {
+		if(cuota.getInteres()!=null) {
+			cuota.setCuotaTotal(cuota.getCuotaSI().add(cuota.getInteres()));
+			cuotaService.save(cuota);
+			
+            addInfoMessage("Se cambió el interés correctamente.");
+		}
+		verCronogramaPago();
+	}
+	
+	public void editarTotalCuota(Cuota cuota) {
+		if(cuota.getCuotaTotal()!=null) {
+			cuotaService.save(cuota);
+			
+            addInfoMessage("Se cambió el total correctamente.");
+		}
+		verCronogramaPago();
+	}
+	
+	public void editarAdelanto(Cuota cuota) {
+		if(cuota.getAdelanto()!=null) {
+			cuotaService.save(cuota);
+			
+            addInfoMessage("Se cambió el adelanto correctamente.");
+		}
+		verCronogramaPago();
+	}
+	
+	
+	
 	public void onCellEdit(CellEditEvent event) throws ParseException {
 		
 		Cuota cuota = lstCuotaVista.get(event.getRowIndex());
-		Cuota cuotasiguiente = lstCuotaVista.get(event.getRowIndex()+1);
+		Cuota cuotasiguiente = null;
+		if(event.getRowIndex()!= (lstCuotaVista.size()-1)) {
+			cuotasiguiente = lstCuotaVista.get(event.getRowIndex()+1);
+		}
 		Column column = (Column) event.getColumn();
 		
 		if (column.getId().equals("idCuotaSI")) {
@@ -286,34 +328,21 @@ public class ContratoBean extends BaseBean implements Serializable{
 			BigDecimal diferencia = BigDecimal.ZERO;   
 			if(monto.compareTo(montoOld)==-1) {
 				diferencia = montoOld.subtract(monto);
-				cuotasiguiente.setCuotaSI(cuotasiguiente.getCuotaSI().add(diferencia));
+				if(cuotasiguiente!=null)cuotasiguiente.setCuotaSI(cuotasiguiente.getCuotaSI().add(diferencia));
 			}else if(monto.compareTo(montoOld)==1){
 				diferencia = monto.subtract(montoOld);
-				cuotasiguiente.setCuotaSI(cuotasiguiente.getCuotaSI().subtract(diferencia));
+				if(cuotasiguiente!=null)cuotasiguiente.setCuotaSI(cuotasiguiente.getCuotaSI().subtract(diferencia));
 			}
 			
 			cuota.setCuotaTotal(cuota.getCuotaSI().add(cuota.getInteres()));
-			cuotasiguiente.setCuotaTotal(cuotasiguiente.getCuotaSI().add(cuotasiguiente.getInteres()));
+			if(cuotasiguiente!=null)cuotasiguiente.setCuotaTotal(cuotasiguiente.getCuotaSI().add(cuotasiguiente.getInteres()));
 			
 			cuotaService.save(cuota);
-			cuotaService.save(cuotasiguiente);
+			if(cuotasiguiente!=null)cuotaService.save(cuotasiguiente);
 			verCronogramaPago();
 			addInfoMessage("Se cambió correctamente el monto");
 		}
-		
-		if (column.getId().equals("idPeriodo")) {
 			
-	        Object oldValue = event.getOldValue();
-	        Object newValue = event.getNewValue();
-	      
-
-	        if (newValue != null && !newValue.equals(oldValue)) {
-//	        	Date fecha = sdf.parse(event.getNewValue().toString()+"");
-//	        	cuota.setFechaPago(fecha);
-	        	cuotaService.save(cuota);
-	            addInfoMessage("Se cambió la fecha correctamente.");
-	        }
-		}
     }
 
 	public void generarPdfCronograma() {
@@ -1621,20 +1650,23 @@ public class ContratoBean extends BaseBean implements Serializable{
 	public void seleccionarLote() {
 		nombreLoteSelected = loteSelected.getNumberLote()+" -  MZ "+loteSelected.getManzana().getName()+" / "+ loteSelected.getProject().getName();
 		
-		if(loteSelected.getTipoPago().equals("Crédito")) {
-			montoInicial = loteSelected.getMontoInicial();
-			nroCuotas = loteSelected.getNumeroCuota();
-			interes = loteSelected.getInteres();
-		}else {
-			montoInicial = BigDecimal.ZERO;
-			nroCuotas = 0 ;
-			interes = BigDecimal.ZERO;
+		if(loteSelected.getTipoPago()!=null) {
+			if(loteSelected.getTipoPago().equals("Crédito")) {
+				montoInicial = loteSelected.getMontoInicial();
+				nroCuotas = loteSelected.getNumeroCuota();
+				interes = loteSelected.getInteres();
+			}else {
+				montoInicial = BigDecimal.ZERO;
+				nroCuotas = 0 ;
+				interes = BigDecimal.ZERO;
+			}
 		}
+		
 			
-			fechaVenta = loteSelected.getFechaVendido();
-			montoVenta = loteSelected.getMontoVenta();
-			tipoPago = loteSelected.getTipoPago();
-			persona1 = loteSelected.getPersonVenta();
+		fechaVenta = loteSelected.getFechaVendido();
+		montoVenta = loteSelected.getMontoVenta();
+		tipoPago = loteSelected.getTipoPago();
+		persona1 = loteSelected.getPersonVenta();
 	
 		
 		

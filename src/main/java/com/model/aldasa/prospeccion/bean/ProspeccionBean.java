@@ -36,6 +36,7 @@ import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Action;
 import com.model.aldasa.entity.Country;
+import com.model.aldasa.entity.CuentaBancaria;
 import com.model.aldasa.entity.Department;
 import com.model.aldasa.entity.District;
 import com.model.aldasa.entity.Imagen;
@@ -54,9 +55,11 @@ import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.ActionService;
 import com.model.aldasa.service.CountryService;
+import com.model.aldasa.service.CuentaBancariaService;
 import com.model.aldasa.service.DepartmentService;
 import com.model.aldasa.service.DistrictService;
 import com.model.aldasa.service.ImagenPlantillaVentaService;
+import com.model.aldasa.service.ImagenService;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.ManzanaService;
 import com.model.aldasa.service.PersonService;
@@ -131,6 +134,12 @@ public class ProspeccionBean  extends BaseBean{
 	@ManagedProperty(value = "#{loadImagePlantillaBean}")
 	private LoadImagePlantillaBean loadImagePlantillaBean;
 	
+	@ManagedProperty(value = "#{cuentaBancariaService}")
+	private CuentaBancariaService cuentaBancariaService;
+	
+	@ManagedProperty(value = "#{imagenService}")
+	private ImagenService imagenService;
+	
 	private LazyDataModel<Prospection> lstProspectionLazy;
 	private LazyDataModel<PlantillaVenta> lstPlantillaLazy;
 	
@@ -149,6 +158,7 @@ public class ProspeccionBean  extends BaseBean{
 	private Project proyectoPlantilla;
 	private PlantillaVenta plantillaVentaNew;
 	private PlantillaVenta plantillaVentaSelected;
+	private CuentaBancaria cuentaBancariaSelected;
 
 	private String status = "En seguimiento";
 	private String estadoPlantillaFilter = "Pendiente";
@@ -159,17 +169,7 @@ public class ProspeccionBean  extends BaseBean{
 	
     private UploadedFile file;
     
-    private UploadedFile file1;
-    private UploadedFile file2;
-    private UploadedFile file3;
-    private UploadedFile file4;
-    private UploadedFile file5;
-    private UploadedFile file6;
-    private UploadedFile file7;
-    private UploadedFile file8;
-    private UploadedFile file9;
-    private UploadedFile file10;
-    
+    private UploadedFile file1,file2,file3,file4,file5,file6,file7,file8,file9,file10;
 	
 	private List<Prospect> lstProspect;
 	private List<Person> lstPersonAssessor;
@@ -187,12 +187,17 @@ public class ProspeccionBean  extends BaseBean{
 	private List<Lote> lstLote = new ArrayList<>();
 	private List<Lote> lstLotePlantilla = new ArrayList<>();
 	private List<RequerimientoSeparacion> lstReqSepSelected;
+	private List<CuentaBancaria> lstCuentaBancaria = new ArrayList<>();
 	
 	SimpleDateFormat sdfFull = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		
 	private Manzana manzanaSelected;
 	private Manzana manzanaPlantilla;
 	private Lote loteSelected;
+	
+	private BigDecimal monto;
+	private Date fechaOperacion = new Date() ;
+	private String tipoTransaccion, numeroTransaccion;
 	
 	@PostConstruct
 	public void init() {
@@ -227,61 +232,117 @@ public class ProspeccionBean  extends BaseBean{
         prospectionNew.setDateStart(new Date());
         newPerson();
         iniciarDatosPlantilla();   
+        lstCuentaBancaria=cuentaBancariaService.findByEstado(true);
         
+	}
+	
+	public void aprobarPlatilla() {
+		plantillaVentaSelected.setEstado("Aprobado");
+		plantillaVentaService.save(plantillaVentaSelected);
+		addInfoMessage("Se aprobó la plantilla de venta correctamente."); 
+		PrimeFaces.current().executeScript("PF('plantillaNewDialog').hide();"); 
+
+	}
+	
+	public void rechazarPlantilla() {
+		plantillaVentaSelected.setEstado("Rechazado");
+		plantillaVentaService.save(plantillaVentaSelected);
+		addInfoMessage("Se rechazó la plantilla de venta correctamente."); 
+		PrimeFaces.current().executeScript("PF('plantillaNewDialog').hide();"); 
+
+	}
+	
+	public void validaVoucher() {
+		if(cuentaBancariaSelected == null) {
+			addErrorMessage("Seleccionar una cuenta bancaria.");
+			return;
+		}
+		
+		if(monto == null) {
+			addErrorMessage("Ingresar un monto.");
+			return;
+		}
+		
+		if(tipoTransaccion.equals("")) {
+			addErrorMessage("Seleccionar un tipo de transacción.");
+			return;
+		}
+		
+		if(numeroTransaccion.equals("")) {
+			addErrorMessage("Seleccionar un numero de Operación.");
+			return;
+		}
+		
+		if(fechaOperacion == null) {
+			addErrorMessage("Ingresar una fecha de operación.");
+			return;
+		}
+		
+		List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaOperacion, monto, numeroTransaccion, cuentaBancariaSelected, tipoTransaccion);
+		if(!buscarImagen.isEmpty()) {
+			addErrorMessage("Ya existe el voucher.");
+		}else {
+			addInfoMessage("Voucher aceptable"); 
+		}
 	}
 	
 	
 	public void verVoucher() {
+		cuentaBancariaSelected = null;
+		monto = null;
+		tipoTransaccion = "";
+		numeroTransaccion = "";
+		fechaOperacion = new Date();
 		
-			loadImagePlantillaBean.setNombreArchivo("0.png");
-			imagen1 = "";
-			imagen2 = "";
-			imagen3 = "";
-			imagen4 = "";
-			imagen5 = "";
-			imagen6 = "";
-			imagen7 = "";
-			imagen8 = "";
-			imagen9 = "";
-			imagen10 = "";
-			
-			String nombreBusqueda = "%"+plantillaVentaSelected.getId() +"_%";
-			
-			List<ImagenPlantillaVenta> lstImagenPlantilla = imagenPlantillaVentaService.findByNombreLikeAndEstado(nombreBusqueda, true);
-			int contador = 1;
-			for(ImagenPlantillaVenta i:lstImagenPlantilla) {
-				if(contador==1) {
-					imagen1 = i.getNombre();
-				}
-				if(contador==2) {
-					imagen2 = i.getNombre();
-				}
-				if(contador==3) {
-					imagen3 = i.getNombre();
-				}
-				if(contador==4) {
-					imagen4 = i.getNombre();
-				}
-				if(contador==5) {
-					imagen5 = i.getNombre();
-				}
-				if(contador==6) {
-					imagen6 = i.getNombre();
-				}
-				if(contador==7) {
-					imagen7 = i.getNombre();
-				}
-				if(contador==8) {
-					imagen8 = i.getNombre();
-				}
-				if(contador==9) {
-					imagen9 = i.getNombre();
-				}
-				if(contador==10) {
-					imagen10 = i.getNombre();
-				}
-				contador ++;
+		loadImagePlantillaBean.setNombreArchivo("0.png");
+		imagen1 = "";
+		imagen2 = "";
+		imagen3 = "";
+		imagen4 = "";
+		imagen5 = "";
+		imagen6 = "";
+		imagen7 = "";
+		imagen8 = "";
+		imagen9 = "";
+		imagen10 = "";
+		
+		String nombreBusqueda = "%"+plantillaVentaSelected.getId() +"_%";
+		
+		List<ImagenPlantillaVenta> lstImagenPlantilla = imagenPlantillaVentaService.findByNombreLikeAndEstado(nombreBusqueda, true);
+		int contador = 1;
+		for(ImagenPlantillaVenta i:lstImagenPlantilla) {
+			if(contador==1) {
+				imagen1 = i.getNombre();
 			}
+			if(contador==2) {
+				imagen2 = i.getNombre();
+			}
+			if(contador==3) {
+				imagen3 = i.getNombre();
+			}
+			if(contador==4) {
+				imagen4 = i.getNombre();
+			}
+			if(contador==5) {
+				imagen5 = i.getNombre();
+			}
+			if(contador==6) {
+				imagen6 = i.getNombre();
+			}
+			if(contador==7) {
+				imagen7 = i.getNombre();
+			}
+			if(contador==8) {
+				imagen8 = i.getNombre();
+			}
+			if(contador==9) {
+				imagen9 = i.getNombre();
+			}
+			if(contador==10) {
+				imagen10 = i.getNombre();
+			}
+			contador ++;
+		}
 //			PrimeFaces.current().executeScript("PF('voucherDocumentoDialog').show();");
 	
 	}
@@ -1582,6 +1643,34 @@ public class ProspeccionBean  extends BaseBean{
         };
     }
 	
+	public Converter getConversorCuentaBancaria() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	CuentaBancaria c = null;
+                    for (CuentaBancaria si : lstCuentaBancaria) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((CuentaBancaria) value).getId() + "";
+                }
+            }
+        };
+    }
+	
 	public List<Prospect> completeProspect(String query) {
         List<Prospect> lista = new ArrayList<>();
         for (Prospect c : lstProspect) {
@@ -2103,6 +2192,53 @@ public class ProspeccionBean  extends BaseBean{
 	public void setLoadImagePlantillaBean(LoadImagePlantillaBean loadImagePlantillaBean) {
 		this.loadImagePlantillaBean = loadImagePlantillaBean;
 	}
-	
+	public CuentaBancaria getCuentaBancariaSelected() {
+		return cuentaBancariaSelected;
+	}
+	public void setCuentaBancariaSelected(CuentaBancaria cuentaBancariaSelected) {
+		this.cuentaBancariaSelected = cuentaBancariaSelected;
+	}
+	public BigDecimal getMonto() {
+		return monto;
+	}
+	public void setMonto(BigDecimal monto) {
+		this.monto = monto;
+	}
+	public Date getFechaOperacion() {
+		return fechaOperacion;
+	}
+	public void setFechaOperacion(Date fechaOperacion) {
+		this.fechaOperacion = fechaOperacion;
+	}
+	public CuentaBancariaService getCuentaBancariaService() {
+		return cuentaBancariaService;
+	}
+	public void setCuentaBancariaService(CuentaBancariaService cuentaBancariaService) {
+		this.cuentaBancariaService = cuentaBancariaService;
+	}
+	public List<CuentaBancaria> getLstCuentaBancaria() {
+		return lstCuentaBancaria;
+	}
+	public void setLstCuentaBancaria(List<CuentaBancaria> lstCuentaBancaria) {
+		this.lstCuentaBancaria = lstCuentaBancaria;
+	}
+	public String getTipoTransaccion() {
+		return tipoTransaccion;
+	}
+	public void setTipoTransaccion(String tipoTransaccion) {
+		this.tipoTransaccion = tipoTransaccion;
+	}
+	public String getNumeroTransaccion() {
+		return numeroTransaccion;
+	}
+	public void setNumeroTransaccion(String numeroTransaccion) {
+		this.numeroTransaccion = numeroTransaccion;
+	}
+	public ImagenService getImagenService() {
+		return imagenService;
+	}
+	public void setImagenService(ImagenService imagenService) {
+		this.imagenService = imagenService;
+	}
 	
 }

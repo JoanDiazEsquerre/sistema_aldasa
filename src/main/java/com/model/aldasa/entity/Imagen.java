@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -27,7 +29,12 @@ public class Imagen {
 	@Column(name="numerooperacion")
 	private String numeroOperacion;
 	
+	@ManyToOne
+	@JoinColumn(name="idcuentabancaria")
+	private CuentaBancaria cuentaBancaria;
 	
+	@Column(name="tipotransaccion")
+	private String tipoTransaccion;
 	
 	
 	public Integer getId() {
@@ -71,6 +78,18 @@ public class Imagen {
 	}
 	public void setNumeroOperacion(String numeroOperacion) {
 		this.numeroOperacion = numeroOperacion;
+	}
+	public CuentaBancaria getCuentaBancaria() {
+		return cuentaBancaria;
+	}
+	public void setCuentaBancaria(CuentaBancaria cuentaBancaria) {
+		this.cuentaBancaria = cuentaBancaria;
+	}
+	public String getTipoTransaccion() {
+		return tipoTransaccion;
+	}
+	public void setTipoTransaccion(String tipoTransaccion) {
+		this.tipoTransaccion = tipoTransaccion;
 	}
 	
 	

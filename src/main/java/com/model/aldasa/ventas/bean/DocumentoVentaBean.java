@@ -40,6 +40,7 @@ import org.springframework.data.domain.Sort;
 import com.lowagie.text.Image;
 import com.model.aldasa.entity.Cliente;
 import com.model.aldasa.entity.Contrato;
+import com.model.aldasa.entity.CuentaBancaria;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
@@ -62,6 +63,7 @@ import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.reporteBo.ReportGenBo;
 import com.model.aldasa.service.ClienteService;
 import com.model.aldasa.service.ContratoService;
+import com.model.aldasa.service.CuentaBancariaService;
 import com.model.aldasa.service.CuotaService;
 import com.model.aldasa.service.DetalleDocumentoVentaService;
 import com.model.aldasa.service.DocumentoVentaService;
@@ -145,6 +147,9 @@ public class DocumentoVentaBean extends BaseBean {
 	@ManagedProperty(value = "#{projectService}")
 	private ProjectService projectService;	
 	
+	@ManagedProperty(value = "#{cuentaBancariaService}")
+	private CuentaBancariaService cuentaBancariaService;
+	
 	private boolean estado = true;
 	private Boolean estadoSunat;
 
@@ -175,7 +180,8 @@ public class DocumentoVentaBean extends BaseBean {
 	private List<Person> lstPerson;
 	private List<Cliente> lstCliente;
 	private List<Project> lstProject;
-
+	private List<Producto> lstProducto;
+	private List<CuentaBancaria> lstCuentaBancaria = new ArrayList<>();
 	
 	private DocumentoVenta documentoVentaSelected ;
 	private SerieDocumento serieDocumentoSelected ;
@@ -201,6 +207,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private Producto productoCuota,productoAdelanto,productoInteres, productoVoucher,productoAmortizacion, productoInicial;
 	private Person persona;
 	private Usuario usuarioLogin = new Usuario();
+	private CuentaBancaria ctaBanc1, ctaBanc2, ctaBanc3, ctaBanc4, ctaBanc5, ctaBanc6, ctaBanc7, ctaBanc8, ctaBanc9, ctaBanc10;
 	
 
 	
@@ -248,6 +255,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private BigDecimal sumaCuotaSI, sumaInteres, sumaCuotaTotal;
 	
 	private String imagen1, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8, imagen9, imagen10;
+	private String tipoTransaccion1, tipoTransaccion2, tipoTransaccion3, tipoTransaccion4, tipoTransaccion5, tipoTransaccion6, tipoTransaccion7, tipoTransaccion8, tipoTransaccion9, tipoTransaccion10;
 
 	private NumeroALetra numeroALetra = new  NumeroALetra();
 	
@@ -315,8 +323,11 @@ public class DocumentoVentaBean extends BaseBean {
 		fechaEnvioSunat= new Date();
 		lstPerson=personService.findByStatus(true);
 		lstProject= projectService.findByStatusAndSucursal(true, navegacionBean.getSucursalLogin());
-		
+		lstProducto = productoService.findByEstado(true);
+		lstCuentaBancaria=cuentaBancariaService.findByEstado(true);
 	}
+	
+	
 	
 	private void crearFiltroTipoVenta() {
         cdoTipoVenta = new SelectItem[4];
@@ -325,6 +336,17 @@ public class DocumentoVentaBean extends BaseBean {
         cdoTipoVenta[2] = new SelectItem("S", "Servicio");
         cdoTipoVenta[3] = new SelectItem("M", "Muestra");
     }
+	
+	public void agregarDetalle() {
+		DetalleDocumentoVenta det = new DetalleDocumentoVenta();
+		det.setProducto(lstProducto.get(0));
+		det.setAmortizacion(BigDecimal.ZERO);
+		det.setInteres(BigDecimal.ZERO);
+		det.setAdelanto(BigDecimal.ZERO);
+		det.setImporteVenta(BigDecimal.ZERO);
+		det.setEstado(true); 
+		lstDetalleDocumentoVenta.add(det);
+	}
 	
 	public void onChangePerson() {
 		if(personSelected!=null) {
@@ -1170,8 +1192,8 @@ public class DocumentoVentaBean extends BaseBean {
 	
 		for(DetalleDocumentoVenta d:lstDetalleDocumentoVentaSelected) {
 			// estte recorrido	AQUI HACERLO CON CONSULTA NATIVA
-			d.setEstado(false); 
-			detalleDocumentoVentaService.save(d);
+//			d.setEstado(false); 
+//			detalleDocumentoVentaService.save(d);
 			
 			if(d.getVoucher()!=null) {
 				d.getVoucher().setGeneraDocumento(false);
@@ -1182,12 +1204,28 @@ public class DocumentoVentaBean extends BaseBean {
 				cuotaService.save(d.getCuota());
 			}
 		}
+		
+		// aqui anulamos las imagenes
+		String nombreBusqueda = "%"+documentoVentaSelected.getId() +"_%";
+		List<Imagen> lstImagen = imagenService.findByNombreLikeAndEstado(nombreBusqueda, true);
+		for(Imagen i:lstImagen) {
+			i.setEstado(false);
+			imagenService.save(i);
+		}
 		addInfoMessage("Documento de venta anulado.");	
 	}
 	
 	
 	public void anularDocumento() {
 		//si es boleta y  anulo el mismo de la emision, mandar mensaje de espererar 24 horas
+		if(documentoVentaSelected.getTipoDocumento().getAbreviatura().equals("B")) {
+			String fechaEmi = sdf.format(documentoVentaSelected.getFechaEmision());
+			String fechaactual = sdf.format(new Date());
+			if(fechaEmi.equals(fechaactual)) {
+				addWarnMessage("Debe esperar 24 horas para poder anular el comprobante."); 
+			}
+			
+		}
 		
 		if(!documentoVentaSelected.isEnvioSunat()) {
 			anulacionFinalDeDocumento();
@@ -1337,6 +1375,12 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
 				return true;
 			}
+			
+			List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaImag2, montoImag2, nroOperImag2, ctaBanc2, tipoTransaccion2);
+			if(!buscarImagen.isEmpty()) {
+				addErrorMessage("Ya existe el voucher numero 2.");
+				return true;
+			}
 		}
 		
 		if(file3!=null){
@@ -1352,6 +1396,12 @@ public class DocumentoVentaBean extends BaseBean {
 			}
 			if(nroOperImag3.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
+				return true;
+			}
+			
+			List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaImag3, montoImag3, nroOperImag3, ctaBanc3, tipoTransaccion3);
+			if(!buscarImagen.isEmpty()) {
+				addErrorMessage("Ya existe el voucher numero 3.");
 				return true;
 			}
 		}
@@ -1371,6 +1421,11 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
 				return true;
 			}
+			List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaImag4, montoImag4, nroOperImag4, ctaBanc4, tipoTransaccion4);
+			if(!buscarImagen.isEmpty()) {
+				addErrorMessage("Ya existe el voucher numero 4.");
+				return true;
+			}
 		}
 		
 		if(file5!=null){
@@ -1386,6 +1441,11 @@ public class DocumentoVentaBean extends BaseBean {
 			}
 			if(nroOperImag5.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
+				return true;
+			}
+			List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaImag5, montoImag5, nroOperImag5, ctaBanc5, tipoTransaccion5);
+			if(!buscarImagen.isEmpty()) {
+				addErrorMessage("Ya existe el voucher numero 5.");
 				return true;
 			}
 		}
@@ -1405,6 +1465,11 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
 				return true;
 			}
+			List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaImag6, montoImag6, nroOperImag6, ctaBanc6, tipoTransaccion6);
+			if(!buscarImagen.isEmpty()) {
+				addErrorMessage("Ya existe el voucher numero 6.");
+				return true;
+			}
 		}
 		
 		if(file7!=null){
@@ -1420,6 +1485,11 @@ public class DocumentoVentaBean extends BaseBean {
 			}
 			if(nroOperImag7.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
+				return true;
+			}
+			List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaImag7, montoImag7, nroOperImag7, ctaBanc7, tipoTransaccion7);
+			if(!buscarImagen.isEmpty()) {
+				addErrorMessage("Ya existe el voucher numero 7.");
 				return true;
 			}
 		}
@@ -1439,6 +1509,11 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
 				return true;
 			}
+			List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaImag8, montoImag8, nroOperImag8, ctaBanc8, tipoTransaccion8);
+			if(!buscarImagen.isEmpty()) {
+				addErrorMessage("Ya existe el voucher numero 8.");
+				return true;
+			}
 		}
 		
 		if(file9!=null){
@@ -1456,6 +1531,11 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
 				return true;
 			}
+			List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaImag9, montoImag9, nroOperImag9, ctaBanc9, tipoTransaccion9);
+			if(!buscarImagen.isEmpty()) {
+				addErrorMessage("Ya existe el voucher numero 9.");
+				return true;
+			}
 		}
 		
 		if(file10!=null){
@@ -1471,6 +1551,11 @@ public class DocumentoVentaBean extends BaseBean {
 			}
 			if(nroOperImag10.equals("")) {
 				addErrorMessage("Ingresar número de operación del segundo voucher");
+				return true;
+			}
+			List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaImag10, montoImag10, nroOperImag10, ctaBanc10, tipoTransaccion10);
+			if(!buscarImagen.isEmpty()) {
+				addErrorMessage("Ya existe el voucher numero 10.");
 				return true;
 			}
 		}
@@ -1518,6 +1603,14 @@ public class DocumentoVentaBean extends BaseBean {
 				addErrorMessage("Ingresar número de operación del primer voucher");
 				return;
 			}
+			
+			List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaImag1, montoImag1, nroOperImag1, ctaBanc1, tipoTransaccion1);
+		
+			if(!buscarImagen.isEmpty()) {
+				addErrorMessage("Ya existe el voucher numero 1.");
+				return;
+			}
+			
 		}
 		boolean validaImagenes = validarDatosImagen();
 		
@@ -1645,6 +1738,8 @@ public class DocumentoVentaBean extends BaseBean {
 			registroImagen.setFecha(fechaImag1);
 			registroImagen.setMonto(montoImag1);
 			registroImagen.setNumeroOperacion(nroOperImag1);
+			registroImagen.setCuentaBancaria(ctaBanc1);
+			registroImagen.setTipoTransaccion(tipoTransaccion1);
 			imagenService.save(registroImagen);
 			
             subirArchivo(rename, file1);
@@ -1658,6 +1753,8 @@ public class DocumentoVentaBean extends BaseBean {
 			registroImagen.setFecha(fechaImag2);
 			registroImagen.setMonto(montoImag2);
 			registroImagen.setNumeroOperacion(nroOperImag2);
+			registroImagen.setCuentaBancaria(ctaBanc2);
+			registroImagen.setTipoTransaccion(tipoTransaccion2);
 			imagenService.save(registroImagen);
 			
             subirArchivo(rename, file2);
@@ -1671,6 +1768,8 @@ public class DocumentoVentaBean extends BaseBean {
 			registroImagen.setFecha(fechaImag3);
 			registroImagen.setMonto(montoImag3);
 			registroImagen.setNumeroOperacion(nroOperImag3);
+			registroImagen.setCuentaBancaria(ctaBanc3);
+			registroImagen.setTipoTransaccion(tipoTransaccion3);
 			imagenService.save(registroImagen);
 			
             subirArchivo(rename, file3);
@@ -1684,6 +1783,8 @@ public class DocumentoVentaBean extends BaseBean {
 			registroImagen.setFecha(fechaImag4);
 			registroImagen.setMonto(montoImag4);
 			registroImagen.setNumeroOperacion(nroOperImag4);
+			registroImagen.setCuentaBancaria(ctaBanc4);
+			registroImagen.setTipoTransaccion(tipoTransaccion4);
 			imagenService.save(registroImagen);
 			
             subirArchivo(rename, file4);
@@ -1697,6 +1798,8 @@ public class DocumentoVentaBean extends BaseBean {
 			registroImagen.setFecha(fechaImag5);
 			registroImagen.setMonto(montoImag5);
 			registroImagen.setNumeroOperacion(nroOperImag5);
+			registroImagen.setCuentaBancaria(ctaBanc5);
+			registroImagen.setTipoTransaccion(tipoTransaccion5);
 			imagenService.save(registroImagen);
 			
             subirArchivo(rename, file5);
@@ -1710,6 +1813,8 @@ public class DocumentoVentaBean extends BaseBean {
 			registroImagen.setFecha(fechaImag6);
 			registroImagen.setMonto(montoImag6);
 			registroImagen.setNumeroOperacion(nroOperImag6);
+			registroImagen.setCuentaBancaria(ctaBanc6);
+			registroImagen.setTipoTransaccion(tipoTransaccion6);
 			imagenService.save(registroImagen);
 			
             subirArchivo(rename, file6);
@@ -1723,6 +1828,8 @@ public class DocumentoVentaBean extends BaseBean {
 			registroImagen.setFecha(fechaImag7);
 			registroImagen.setMonto(montoImag7);
 			registroImagen.setNumeroOperacion(nroOperImag7);
+			registroImagen.setCuentaBancaria(ctaBanc7);
+			registroImagen.setTipoTransaccion(tipoTransaccion7);
 			imagenService.save(registroImagen);
 			
             subirArchivo(rename, file7);
@@ -1736,6 +1843,8 @@ public class DocumentoVentaBean extends BaseBean {
 			registroImagen.setFecha(fechaImag8);
 			registroImagen.setMonto(montoImag8);
 			registroImagen.setNumeroOperacion(nroOperImag8);
+			registroImagen.setCuentaBancaria(ctaBanc8);
+			registroImagen.setTipoTransaccion(tipoTransaccion8);
 			imagenService.save(registroImagen);
 			
             subirArchivo(rename, file8);
@@ -1749,6 +1858,8 @@ public class DocumentoVentaBean extends BaseBean {
 			registroImagen.setFecha(fechaImag9);
 			registroImagen.setMonto(montoImag9);
 			registroImagen.setNumeroOperacion(nroOperImag9);
+			registroImagen.setCuentaBancaria(ctaBanc9);
+			registroImagen.setTipoTransaccion(tipoTransaccion9);
 			imagenService.save(registroImagen);
 			
             subirArchivo(rename, file9);
@@ -1762,6 +1873,8 @@ public class DocumentoVentaBean extends BaseBean {
 			registroImagen.setFecha(fechaImag10);
 			registroImagen.setMonto(montoImag10);
 			registroImagen.setNumeroOperacion(nroOperImag10);
+			registroImagen.setCuentaBancaria(ctaBanc10);
+			registroImagen.setTipoTransaccion(tipoTransaccion10);
 			imagenService.save(registroImagen);
 			
             subirArchivo(rename, file10);
@@ -2678,6 +2791,34 @@ public class DocumentoVentaBean extends BaseBean {
         };
     }
 	
+	public Converter getConversorProducto() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Producto c = null;
+                    for (Producto si : lstProducto) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Producto) value).getId() + "";
+                }
+            }
+        };
+    }
+	
 	public Converter getConversorProject() {
         return new Converter() {
             @Override
@@ -2888,6 +3029,34 @@ public class DocumentoVentaBean extends BaseBean {
                     return "";
                 } else {
                     return ((Cliente) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorCuentaBancaria() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	CuentaBancaria c = null;
+                    for (CuentaBancaria si : lstCuentaBancaria) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((CuentaBancaria) value).getId() + "";
                 }
             }
         };
@@ -4021,6 +4190,150 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setSumaMontoVoucher(BigDecimal sumaMontoVoucher) {
 		this.sumaMontoVoucher = sumaMontoVoucher;
+	}
+	public List<Producto> getLstProducto() {
+		return lstProducto;
+	}
+	public void setLstProducto(List<Producto> lstProducto) {
+		this.lstProducto = lstProducto;
+	}
+	public Producto getProductoInicial() {
+		return productoInicial;
+	}
+	public void setProductoInicial(Producto productoInicial) {
+		this.productoInicial = productoInicial;
+	}
+	public CuentaBancaria getCtaBanc1() {
+		return ctaBanc1;
+	}
+	public void setCtaBanc1(CuentaBancaria ctaBanc1) {
+		this.ctaBanc1 = ctaBanc1;
+	}
+	public CuentaBancaria getCtaBanc2() {
+		return ctaBanc2;
+	}
+	public void setCtaBanc2(CuentaBancaria ctaBanc2) {
+		this.ctaBanc2 = ctaBanc2;
+	}
+	public CuentaBancaria getCtaBanc3() {
+		return ctaBanc3;
+	}
+	public void setCtaBanc3(CuentaBancaria ctaBanc3) {
+		this.ctaBanc3 = ctaBanc3;
+	}
+	public CuentaBancaria getCtaBanc4() {
+		return ctaBanc4;
+	}
+	public void setCtaBanc4(CuentaBancaria ctaBanc4) {
+		this.ctaBanc4 = ctaBanc4;
+	}
+	public CuentaBancaria getCtaBanc5() {
+		return ctaBanc5;
+	}
+	public void setCtaBanc5(CuentaBancaria ctaBanc5) {
+		this.ctaBanc5 = ctaBanc5;
+	}
+	public CuentaBancaria getCtaBanc6() {
+		return ctaBanc6;
+	}
+	public void setCtaBanc6(CuentaBancaria ctaBanc6) {
+		this.ctaBanc6 = ctaBanc6;
+	}
+	public CuentaBancaria getCtaBanc7() {
+		return ctaBanc7;
+	}
+	public void setCtaBanc7(CuentaBancaria ctaBanc7) {
+		this.ctaBanc7 = ctaBanc7;
+	}
+	public CuentaBancaria getCtaBanc8() {
+		return ctaBanc8;
+	}
+	public void setCtaBanc8(CuentaBancaria ctaBanc8) {
+		this.ctaBanc8 = ctaBanc8;
+	}
+	public CuentaBancaria getCtaBanc9() {
+		return ctaBanc9;
+	}
+	public void setCtaBanc9(CuentaBancaria ctaBanc9) {
+		this.ctaBanc9 = ctaBanc9;
+	}
+	public CuentaBancaria getCtaBanc10() {
+		return ctaBanc10;
+	}
+	public void setCtaBanc10(CuentaBancaria ctaBanc10) {
+		this.ctaBanc10 = ctaBanc10;
+	}
+	public CuentaBancariaService getCuentaBancariaService() {
+		return cuentaBancariaService;
+	}
+	public void setCuentaBancariaService(CuentaBancariaService cuentaBancariaService) {
+		this.cuentaBancariaService = cuentaBancariaService;
+	}
+	public List<CuentaBancaria> getLstCuentaBancaria() {
+		return lstCuentaBancaria;
+	}
+	public void setLstCuentaBancaria(List<CuentaBancaria> lstCuentaBancaria) {
+		this.lstCuentaBancaria = lstCuentaBancaria;
+	}
+	public String getTipoTransaccion1() {
+		return tipoTransaccion1;
+	}
+	public void setTipoTransaccion1(String tipoTransaccion1) {
+		this.tipoTransaccion1 = tipoTransaccion1;
+	}
+	public String getTipoTransaccion2() {
+		return tipoTransaccion2;
+	}
+	public void setTipoTransaccion2(String tipoTransaccion2) {
+		this.tipoTransaccion2 = tipoTransaccion2;
+	}
+	public String getTipoTransaccion3() {
+		return tipoTransaccion3;
+	}
+	public void setTipoTransaccion3(String tipoTransaccion3) {
+		this.tipoTransaccion3 = tipoTransaccion3;
+	}
+	public String getTipoTransaccion4() {
+		return tipoTransaccion4;
+	}
+	public void setTipoTransaccion4(String tipoTransaccion4) {
+		this.tipoTransaccion4 = tipoTransaccion4;
+	}
+	public String getTipoTransaccion5() {
+		return tipoTransaccion5;
+	}
+	public void setTipoTransaccion5(String tipoTransaccion5) {
+		this.tipoTransaccion5 = tipoTransaccion5;
+	}
+	public String getTipoTransaccion6() {
+		return tipoTransaccion6;
+	}
+	public void setTipoTransaccion6(String tipoTransaccion6) {
+		this.tipoTransaccion6 = tipoTransaccion6;
+	}
+	public String getTipoTransaccion7() {
+		return tipoTransaccion7;
+	}
+	public void setTipoTransaccion7(String tipoTransaccion7) {
+		this.tipoTransaccion7 = tipoTransaccion7;
+	}
+	public String getTipoTransaccion8() {
+		return tipoTransaccion8;
+	}
+	public void setTipoTransaccion8(String tipoTransaccion8) {
+		this.tipoTransaccion8 = tipoTransaccion8;
+	}
+	public String getTipoTransaccion9() {
+		return tipoTransaccion9;
+	}
+	public void setTipoTransaccion9(String tipoTransaccion9) {
+		this.tipoTransaccion9 = tipoTransaccion9;
+	}
+	public String getTipoTransaccion10() {
+		return tipoTransaccion10;
+	}
+	public void setTipoTransaccion10(String tipoTransaccion10) {
+		this.tipoTransaccion10 = tipoTransaccion10;
 	}
 	
 

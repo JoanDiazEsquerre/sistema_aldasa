@@ -36,7 +36,8 @@ public class Usuario {
 	@Column(name="modificarcronograma")
 	private boolean modificarCronograma;
 	
-	
+	@Column(name="aprobarplantillaventa")
+	private boolean aprobarPlantillaVenta;
 	
 	
 	public Integer getId() {
@@ -86,6 +87,12 @@ public class Usuario {
 	}
 	public void setModificarCronograma(boolean modificarCronograma) {
 		this.modificarCronograma = modificarCronograma;
+	}
+	public boolean isAprobarPlantillaVenta() {
+		return aprobarPlantillaVenta;
+	}
+	public void setAprobarPlantillaVenta(boolean aprobarPlantillaVenta) {
+		this.aprobarPlantillaVenta = aprobarPlantillaVenta;
 	}	
 	
 }

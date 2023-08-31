@@ -332,11 +332,11 @@
 	
 			<pe:remoteCommand update="tableCuotaContrato" name="updateTableCuotaContrato" />
 	
-			<p:dataTable var="cuotaContrato" value="#{contratoBean.lstCuotaVista}" rows="24" paginator="true" selectionMode="single" rowIndexVar="row"  
+			<p:dataTable var="cuotaContrato" value="#{contratoBean.lstCuotaVista}" rows="24" paginator="true" rowIndexVar="row"  
 					paginatorPosition="bottom"  rowKey="#{cuotaContrato.id}" id="tableCuotaContrato" editable="true" editMode="cell"
 					emptyMessage="No se encontraron cronograma de deudas." size="small">
 					
-					<p:ajax event="cellEdit" listener="#{contratoBean.onCellEdit}" oncomplete="updateTableCuotaContrato()"/>
+					<p:ajax event="cellEdit" listener="#{contratoBean.onCellEdit}" oncomplete="updateTableCuotaContrato()" update=":formCronogramaPagoDialog:tableCuotaContrato:input"/>
 
 					<f:facet name="header">
 						<div class="p-d-flex p-ai-center p-jc-between">
@@ -352,11 +352,13 @@
 		                <p:cellEditor>
 		                    <f:facet name="output">
 		                       	<h:outputText value="#{cuotaContrato.fechaPago}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
-		        			<f:convertDateTime pattern="dd/MM/yyyy" />
-		        		</h:outputText>
+				        			<f:convertDateTime pattern="dd/MM/yyyy" />
+				        		</h:outputText>
 		                    </f:facet>
 		                    <f:facet name="input">
-		                        <p:datePicker value="#{cuotaContrato.fechaPago}" rendered="#{navegacionBean.usuarioLogin.modificarCronograma eq true}"/>
+		                        <p:datePicker id="dateFecha" value="#{cuotaContrato.fechaPago}" rendered="#{navegacionBean.usuarioLogin.modificarCronograma eq true}"> 
+		                        	<p:ajax event="dateSelect" listener="#{contratoBean.editarFecha(cuotaContrato)}" update=":formCronogramaPagoDialog:tableCuotaContrato"/>
+		                        </p:datePicker>
 		                    </f:facet>
 		                </p:cellEditor>
 	                </p:column>
@@ -374,21 +376,53 @@
 		                </p:cellEditor>
 					</p:column>
 					
-					<p:column headerText="Interés" filterMatchMode="contains" >
-						<h:outputText  value="#{cuotaContrato.interes}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
-							<f:convertNumber type="currency" currencySymbol=""/>
-						</h:outputText>
+					<p:column headerText="Interés" id="idInteres" filterMatchMode="contains" >
+						<p:cellEditor>
+		                    <f:facet name="output">
+		                       	<h:outputText  value="#{cuotaContrato.interes}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
+									<f:convertNumber type="currency" currencySymbol=""/>
+								</h:outputText>
+		                    </f:facet>
+		                    <f:facet name="input">
+		                        <p:inputNumber id="intCuota" value="#{cuotaContrato.interes}" modifyValueOnWheel="false" rendered="#{navegacionBean.usuarioLogin.modificarCronograma eq true}"> 
+		                        	<p:ajax listener="#{contratoBean.editarInteres(cuotaContrato)}" update=":formCronogramaPagoDialog:tableCuotaContrato:intCuota"/>
+		                        </p:inputNumber>
+		                    </f:facet>
+		                </p:cellEditor>
 					</p:column>
 					
-					<p:column headerText="Cuota Total" filterMatchMode="contains" >
-						<h:outputText value="#{cuotaContrato.cuotaTotal}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
-							<f:convertNumber type="currency" currencySymbol=""/>
-						</h:outputText>
+					<p:column headerText="Adelanto" id="idAdelanto" filterMatchMode="contains" >
+						<p:cellEditor>
+		                    <f:facet name="output">
+		                       	<h:outputText  value="#{cuotaContrato.adelanto}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
+									<f:convertNumber type="currency" currencySymbol=""/>
+								</h:outputText>
+		                    </f:facet>
+		                    <f:facet name="input">
+		                        <p:inputNumber id="adeCuota" value="#{cuotaContrato.adelanto}" modifyValueOnWheel="false" rendered="#{navegacionBean.usuarioLogin.modificarCronograma eq true}"> 
+		                        	<p:ajax listener="#{contratoBean.editarAdelanto(cuotaContrato)}" update=":formCronogramaPagoDialog:tableCuotaContrato:adeCuota"/>
+		                        </p:inputNumber>
+		                    </f:facet>
+		                </p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Cuota Total" id="idCuotaTotal" filterMatchMode="contains" >
+						<p:cellEditor>
+		                    <f:facet name="output">
+		                       	<h:outputText value="#{cuotaContrato.cuotaTotal}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
+									<f:convertNumber type="currency" currencySymbol=""/>
+								</h:outputText>
+		                    </f:facet>
+		                    <f:facet name="input">
+		                        <p:inputNumber id="totCuota" value="#{cuotaContrato.cuotaTotal}" modifyValueOnWheel="false" rendered="#{navegacionBean.usuarioLogin.modificarCronograma eq true}"> 
+		                        	<p:ajax listener="#{contratoBean.editarTotalCuota(cuotaContrato)}" update=":formCronogramaPagoDialog:tableCuotaContrato:totCuota"/>
+		                        </p:inputNumber>
+		                    </f:facet>
+		                </p:cellEditor>
 					</p:column>
 					
 					<p:column headerText="Estado de Pago" filterMatchMode="contains" >
 						<h:outputText value="#{cuotaContrato.prepago eq true ? 'PREPAGO' : cuotaContrato.pagoTotal eq 'S'?'PAGADO':'PENDIENTE'}"  style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':cuotaContrato.pagoTotal eq 'S'?'blue':cuotaContrato.pagoTotal eq 'N'?'red':'black'}"/>
-						
 					</p:column>
 					
 					<p:column headerText="PAGÓ?" style="text-align:center">
