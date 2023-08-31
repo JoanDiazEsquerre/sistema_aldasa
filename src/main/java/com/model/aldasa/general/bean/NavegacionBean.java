@@ -48,7 +48,7 @@ public class NavegacionBean implements Serializable  {
 	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas, menuAlmacen;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
 					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato, subMenuDocumentoVentas, 
-					subMenuDocumentoVenta, subMenuInventario, subMenuCliente;
+					subMenuDocumentoVenta, subMenuInventario, subMenuCliente, subMenuCuentaBancaria;
 	
 	private int[] permisoProspectos;
 	private int[] permisoProspeccion;
@@ -76,6 +76,8 @@ public class NavegacionBean implements Serializable  {
 	private int[] permisoDocumentoVenta;
 	private int[] permisoInventario;
 	private int[] permisoCliente;
+	private int[] permisoCuentaBancaria;
+
 
 	@PostConstruct
 	public void init() {
@@ -116,6 +118,7 @@ public class NavegacionBean implements Serializable  {
 		permisoAsistencia= obtenerPermisosPorPerfil(24);
 		permisoInventario= obtenerPermisosPorPerfil(25);
 		permisoCliente= obtenerPermisosPorPerfil(26);
+		permisoCuentaBancaria= obtenerPermisosPorPerfil(27);
 		
 		permisoPantallas();
 		
@@ -199,8 +202,9 @@ public class NavegacionBean implements Serializable  {
 		subMenuCliente= validaPermiso(permisoCliente);
 		subMenuComision= validaPermiso(permisoComision);
 		subMenuCambiarContrasenia= validaPermiso(permisoCambiarConstrasenia);
+		subMenuCuentaBancaria= validaPermiso(permisoCuentaBancaria);
 		
-		if(subMenuPersonas || subMenuUsuarios || subMenuPerfiles || subMenuEquipos || subMenuEmpleado || subMenuCliente || subMenuComision || subMenuCambiarContrasenia) {
+		if(subMenuPersonas || subMenuUsuarios || subMenuPerfiles || subMenuEquipos || subMenuEmpleado || subMenuCliente || subMenuComision || subMenuCambiarContrasenia || subMenuCuentaBancaria) {
 			menuMantenimiento=true;
 		}
 		
@@ -319,6 +323,10 @@ public class NavegacionBean implements Serializable  {
 
 	public void getMantenimientoPasswordchangePage() {
 		ruta = "modulos/general/mantenimientos/passwordchange.xhtml";
+	}
+	
+	public void getMantenimientoCuentaBancariaPage() {
+		ruta = "modulos/general/mantenimientos/cuentaBancaria.xhtml";
 	}
 
 	public void getAsistenciaAsistenciaPage() {
@@ -790,13 +798,23 @@ public class NavegacionBean implements Serializable  {
 	public void setPermisoCliente(int[] permisoCliente) {
 		this.permisoCliente = permisoCliente;
 	}
-
 	public String getRutaLogo() {
 		return rutaLogo;
 	}
-
 	public void setRutaLogo(String rutaLogo) {
 		this.rutaLogo = rutaLogo;
+	}
+	public boolean isSubMenuCuentaBancaria() {
+		return subMenuCuentaBancaria;
+	}
+	public void setSubMenuCuentaBancaria(boolean subMenuCuentaBancaria) {
+		this.subMenuCuentaBancaria = subMenuCuentaBancaria;
+	}
+	public int[] getPermisoCuentaBancaria() {
+		return permisoCuentaBancaria;
+	}
+	public void setPermisoCuentaBancaria(int[] permisoCuentaBancaria) {
+		this.permisoCuentaBancaria = permisoCuentaBancaria;
 	}
 	
 	
