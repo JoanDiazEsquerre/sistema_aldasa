@@ -324,7 +324,7 @@ public class DocumentoVentaBean extends BaseBean {
 		lstPerson=personService.findByStatus(true);
 		lstProject= projectService.findByStatusAndSucursal(true, navegacionBean.getSucursalLogin());
 		lstProducto = productoService.findByEstado(true);
-		lstCuentaBancaria=cuentaBancariaService.findByEstado(true);
+		lstCuentaBancaria=cuentaBancariaService.findByEstadoAndSucursal(true, navegacionBean.getSucursalLogin());
 	}
 	
 	
@@ -1694,7 +1694,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		DocumentoVenta documento = documentoVentaService.save(documentoVenta, lstDetalleDocumentoVenta, serieDocumentoSelected); 
 		if(documento != null) {
-//			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
+			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
 			
 			lstDetalleDocumentoVenta.clear();// claer es limpiar en ingles prueba
 			clienteSelected=null;
@@ -1709,8 +1709,8 @@ public class DocumentoVentaBean extends BaseBean {
 			email2Text = "";
 			email3Text = "";
 			
-//			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
-			addInfoMessage("Se guardó el documento correctamente. ");
+			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
+			addInfoMessage("Se guardó el documento correctamente. "+ addMensaje);
 			
 		}else {
 			addErrorMessage("No se puede guardar el documento."); 

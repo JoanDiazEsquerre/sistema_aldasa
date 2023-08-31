@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.CuentaBancaria;
+import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.repository.CuentaBancariaRepository;
 import com.model.aldasa.service.CuentaBancariaService;
 
@@ -35,9 +36,9 @@ public class CuentaBancariaServiceImpl  implements CuentaBancariaService {
 	}
 
 	@Override
-	public List<CuentaBancaria> findByEstado(boolean estado){
+	public List<CuentaBancaria> findByEstadoAndSucursal(boolean estado, Sucursal sucursal){
 		// TODO Auto-generated method stub
-		return cuentaBancariaRepository.findByEstado(estado);
+		return cuentaBancariaRepository.findByEstadoAndSucursal(estado, sucursal);
 	}
 
 

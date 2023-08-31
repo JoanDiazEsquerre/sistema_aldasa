@@ -28,6 +28,9 @@ public class CuentaBancaria {
 
 	private String cci;
 
+	@ManyToOne
+	@JoinColumn(name="idsucursal")
+	private Sucursal sucursal;
 	
 	
 	
@@ -67,9 +70,12 @@ public class CuentaBancaria {
 	public void setCci(String cci) {
 		this.cci = cci;
 	}
-	
-	
-	
+	public Sucursal getSucursal() {
+		return sucursal;
+	}
+	public void setSucursal(Sucursal sucursal) {
+		this.sucursal = sucursal;
+	}
 	@Override
     public boolean equals(Object other) {
         return (other instanceof CuentaBancaria) && (id != null)

@@ -195,14 +195,7 @@ public class ProspectoBean extends BaseBean implements Serializable {
 				
 				Page<Prospect> pagePerson = null; 
 				
-				if(usuarioLogin.getProfile().getName().equals(Perfiles.ADMINISTRADOR.getName())) {
-					// si es Administrador
-					if(!dni.equals("")) {
-						pagePerson= prospectService.findByPersonSurnamesLikeAndPersonDniLikeAndSucursal(surnamesPerson,dni,navegacionBean.getSucursalLogin(),pageable);
-					}else {
-						pagePerson= prospectService.findByPersonSurnamesLikeAndSucursal(surnamesPerson,navegacionBean.getSucursalLogin(),pageable);
-					}
-				}else if(usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
+				if(usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {
 					// si es asesor
 					if(!dni.equals("")) {
 						pagePerson= prospectService.findByPersonDniLikeAndPersonSurnamesLikeAndPersonAssessorAndSucursal(dni, surnamesPerson, usuarioLogin.getPerson(), navegacionBean.getSucursalLogin(), pageable); 
@@ -216,6 +209,13 @@ public class ProspectoBean extends BaseBean implements Serializable {
 						pagePerson= prospectService.findByPersonDniLikeAndPersonSurnamesLikeAndPersonSupervisorAndSucursal(dni, surnamesPerson, usuarioLogin.getPerson(), navegacionBean.getSucursalLogin(), pageable); 
 					}else {
 						pagePerson= prospectService.findByPersonSurnamesLikeAndPersonSupervisorAndSucursal(surnamesPerson, usuarioLogin.getPerson(), navegacionBean.getSucursalLogin(), pageable); 
+					}
+				}else {
+					// si es Administrador
+					if(!dni.equals("")) {
+						pagePerson= prospectService.findByPersonSurnamesLikeAndPersonDniLikeAndSucursal(surnamesPerson,dni,navegacionBean.getSucursalLogin(),pageable);
+					}else {
+						pagePerson= prospectService.findByPersonSurnamesLikeAndSucursal(surnamesPerson,navegacionBean.getSucursalLogin(),pageable);
 					}
 				}
 				

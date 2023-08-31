@@ -232,7 +232,7 @@ public class ProspeccionBean  extends BaseBean{
         prospectionNew.setDateStart(new Date());
         newPerson();
         iniciarDatosPlantilla();   
-        lstCuentaBancaria=cuentaBancariaService.findByEstado(true);
+        lstCuentaBancaria=cuentaBancariaService.findByEstadoAndSucursal(true, navegacionBean.getSucursalLogin());
         
 	}
 	
@@ -675,12 +675,12 @@ public class ProspeccionBean  extends BaseBean{
 	}
 		
 	public void listarProspect() {		
-		if (Perfiles.ADMINISTRADOR.getName().equals(usuarioLogin.getProfile().getName()) ) {
-			lstProspect = prospectService.findAll();
-		}else if(Perfiles.ASESOR.getName().equals(usuarioLogin.getProfile().getName())) {	
+		if(Perfiles.ASESOR.getName().equals(usuarioLogin.getProfile().getName())) {	
 			lstProspect = prospectService.findByPersonAssessor(usuarioLogin.getPerson());
 		} else if (Perfiles.SUPERVISOR.getName().equals(usuarioLogin.getProfile().getName())) {
 			lstProspect = prospectService.findByPersonSupervisor(usuarioLogin.getPerson());
+		}else {
+			lstProspect = prospectService.findAll();
 		}
 	}
 	
