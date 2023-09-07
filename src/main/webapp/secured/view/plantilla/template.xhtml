@@ -75,6 +75,8 @@
 							<p:menuitem value="Clientes" ajax="false" icon="pi pi-sitemap" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoClientePage()}" rendered="#{navegacionBean.subMenuCliente}"/>
 							<p:menuitem value="Comisión" icon="pi pi-dollar" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoComisionPage()}" rendered="#{navegacionBean.subMenuComision}"/>
 							<p:menuitem value="Cambiar Contraseña" ajax="false" icon="pi pi-lock" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPasswordchangePage()}" rendered="#{navegacionBean.subMenuCambiarContrasenia}" />
+							
+							<p:menuitem value="Cuenta Bancaria" ajax="false" icon="pi pi-wallet" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoCuentaBancariaPage()}" rendered="#{navegacionBean.subMenuCuentaBancaria}" />
 						</p:submenu>
 						
 						<p:submenu label="Asistencia" rendered="#{navegacionBean.menuAsistencia}">
