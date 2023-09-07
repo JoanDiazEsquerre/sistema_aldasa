@@ -47,46 +47,12 @@ public class NavegacionBean implements Serializable  {
 	
 	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas, menuAlmacen;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
-<<<<<<< HEAD
 					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato, subMenuDocumentoVentas, subMenuPlantillaVenta, 
 					subMenuDocumentoVenta, subMenuInventario, subMenuCliente;
 	
 	private int[] permisoProspectos,permisoProspeccion,permisoAgenda,permisoSimulador,permisoPersonas,permisoUsuarios,permisoPerfiles,permisoProyectos,permisoEquipos, permisoCambiarConstrasenia,
 					permisoReporteAcciones,permisoManzanas,permisoLotes,permisoComisiones,permisoComision,permisoEmpleado,permisoReporteLotes,permisoAsistencia,permisoReporteAsistencia,permisoRequerimientoSeparacion,
 					permisoRankingVentas,permisoContrato,permisoReporteDocumentoVentas,permisoDocumentoVenta,permisoInventario,permisoCliente, permisoPlantillaVenta;
-=======
-					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato, subMenuDocumentoVentas, 
-					subMenuDocumentoVenta, subMenuInventario, subMenuCliente, subMenuCuentaBancaria;
-	
-	private int[] permisoProspectos;
-	private int[] permisoProspeccion;
-	private int[] permisoAgenda;
-	private int[] permisoSimulador;
-	private int[] permisoPersonas;
-	private int[] permisoUsuarios;
-	private int[] permisoPerfiles;
-	private int[] permisoProyectos;
-	private int[] permisoEquipos;
-	private int[] permisoCambiarConstrasenia;
-	private int[] permisoReporteAcciones;
-	private int[] permisoManzanas;
-	private int[] permisoLotes;
-	private int[] permisoComisiones;
-	private int[] permisoComision;
-	private int[] permisoEmpleado;
-	private int[] permisoReporteLotes;
-	private int[] permisoAsistencia;
-	private int[] permisoReporteAsistencia;
-	private int[] permisoRequerimientoSeparacion;
-	private int[] permisoRankingVentas;
-	private int[] permisoContrato;
-	private int[] permisoReporteDocumentoVentas;
-	private int[] permisoDocumentoVenta;
-	private int[] permisoInventario;
-	private int[] permisoCliente;
-	private int[] permisoCuentaBancaria;
-
->>>>>>> ec9eb7174dc23fef018cb480e4e0213b4ea7edf3
 
 	@PostConstruct
 	public void init() {
@@ -127,11 +93,7 @@ public class NavegacionBean implements Serializable  {
 		permisoAsistencia= obtenerPermisosPorPerfil(24);
 		permisoInventario= obtenerPermisosPorPerfil(25);
 		permisoCliente= obtenerPermisosPorPerfil(26);
-<<<<<<< HEAD
 		permisoPlantillaVenta=obtenerPermisosPorPerfil(27);
-=======
-		permisoCuentaBancaria= obtenerPermisosPorPerfil(27);
->>>>>>> ec9eb7174dc23fef018cb480e4e0213b4ea7edf3
 		
 		permisoPantallas();
 		
@@ -215,9 +177,8 @@ public class NavegacionBean implements Serializable  {
 		subMenuCliente= validaPermiso(permisoCliente);
 		subMenuComision= validaPermiso(permisoComision);
 		subMenuCambiarContrasenia= validaPermiso(permisoCambiarConstrasenia);
-		subMenuCuentaBancaria= validaPermiso(permisoCuentaBancaria);
 		
-		if(subMenuPersonas || subMenuUsuarios || subMenuPerfiles || subMenuEquipos || subMenuEmpleado || subMenuCliente || subMenuComision || subMenuCambiarContrasenia || subMenuCuentaBancaria) {
+		if(subMenuPersonas || subMenuUsuarios || subMenuPerfiles || subMenuEquipos || subMenuEmpleado || subMenuCliente || subMenuComision || subMenuCambiarContrasenia) {
 			menuMantenimiento=true;
 		}
 		
@@ -336,10 +297,6 @@ public class NavegacionBean implements Serializable  {
 
 	public void getMantenimientoPasswordchangePage() {
 		ruta = "modulos/general/mantenimientos/passwordchange.xhtml";
-	}
-	
-	public void getMantenimientoCuentaBancariaPage() {
-		ruta = "modulos/general/mantenimientos/cuentaBancaria.xhtml";
 	}
 
 	public void getAsistenciaAsistenciaPage() {
@@ -818,7 +775,6 @@ public class NavegacionBean implements Serializable  {
 	public void setRutaLogo(String rutaLogo) {
 		this.rutaLogo = rutaLogo;
 	}
-<<<<<<< HEAD
 	public boolean isSubMenuPlantillaVenta() {
 		return subMenuPlantillaVenta;
 	}
@@ -830,19 +786,6 @@ public class NavegacionBean implements Serializable  {
 	}
 	public void setPermisoPlantillaVenta(int[] permisoPlantillaVenta) {
 		this.permisoPlantillaVenta = permisoPlantillaVenta;
-=======
-	public boolean isSubMenuCuentaBancaria() {
-		return subMenuCuentaBancaria;
-	}
-	public void setSubMenuCuentaBancaria(boolean subMenuCuentaBancaria) {
-		this.subMenuCuentaBancaria = subMenuCuentaBancaria;
-	}
-	public int[] getPermisoCuentaBancaria() {
-		return permisoCuentaBancaria;
-	}
-	public void setPermisoCuentaBancaria(int[] permisoCuentaBancaria) {
-		this.permisoCuentaBancaria = permisoCuentaBancaria;
->>>>>>> ec9eb7174dc23fef018cb480e4e0213b4ea7edf3
 	}
 	
 	
