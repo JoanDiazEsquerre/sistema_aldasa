@@ -68,6 +68,15 @@
 				filterMatchMode="contains">
 				<h:outputText value="#{empleado.area.nombre}" />
 			</p:column>
+			<p:column headerText="Externo" sortBy="#{empleado.externo}" filterMatchMode="contains">
+				<h:outputText value="#{empleado.externo? 'SI': 'NO'}" />
+			</p:column>
+			<p:column headerText="Equipo" sortBy="#{empleado.team.name}" filterMatchMode="contains">
+				<h:outputText value="#{empleado.team.name}" />
+			</p:column>
+			<p:column headerText="Planilla" sortBy="#{empleado.planilla}" filterMatchMode="contains">
+				<h:outputText value="#{empleado.planilla? 'SI':'NO'}" />
+			</p:column>
 		</p:dataTable>
 	
 	</h:form>
@@ -106,6 +115,24 @@
 				<p:datePicker value="#{empleadoBean.empleadoSelected.fechaSalida}" readonlyInput="true" style="margin:10px"> 
 					<p:ajax event="keyup"  />
 				</p:datePicker>
+				
+				<h:outputLabel for="optionTeam" value="Equipo:" />
+                <p:selectOneMenu id="optionTeam" value="#{empleadoBean.empleadoSelected.team}" converter="#{empleadoBean.conversorTeam}" style="margin:10px" >
+             	   <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
+                   <f:selectItems value="#{empleadoBean.lstTeam}" var="prof" itemLabel="#{prof.name} / #{prof.personSupervisor.surnames} #{prof.personSupervisor.names}" itemValue="#{prof}"/>
+                </p:selectOneMenu>
+				
+				<h:outputLabel value="Externo:" />
+				<p:selectOneMenu value="#{empleadoBean.empleadoSelected.externo}" style="margin:10px">
+					<f:selectItem itemLabel="NO" itemValue="#{false}" />
+					<f:selectItem itemLabel="SI" itemValue="#{true}" />
+				</p:selectOneMenu>	
+				
+				<h:outputLabel value="Planilla:" />
+				<p:selectOneMenu value="#{empleadoBean.empleadoSelected.planilla}" style="margin:10px">
+					<f:selectItem itemLabel="NO" itemValue="#{false}" />
+					<f:selectItem itemLabel="SI" itemValue="#{true}" />
+				</p:selectOneMenu>	
 				
 				<h:outputLabel for="option" value="Estado:" />
 				<p:selectOneMenu id="option" value="#{empleadoBean.empleadoSelected.estado}" style="margin:10px">

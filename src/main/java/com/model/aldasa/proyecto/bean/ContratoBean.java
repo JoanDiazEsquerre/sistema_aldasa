@@ -72,6 +72,7 @@ import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.ObservacionContrato;
 import com.model.aldasa.entity.Person;
+import com.model.aldasa.entity.PlantillaVenta;
 import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.Simulador;
 import com.model.aldasa.entity.Voucher;
@@ -85,6 +86,7 @@ import com.model.aldasa.service.DetalleDocumentoVentaService;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.ObservacionContratoService;
 import com.model.aldasa.service.PersonService;
+import com.model.aldasa.service.PlantillaVentaService;
 import com.model.aldasa.service.RequerimientoSeparacionService;
 import com.model.aldasa.service.VoucherService;
 import com.model.aldasa.util.BaseBean;
@@ -130,6 +132,9 @@ public class ContratoBean extends BaseBean implements Serializable{
 	
 	@ManagedProperty(value = "#{observacionContratoService}")
 	private ObservacionContratoService observacionContratoService;
+	
+	@ManagedProperty(value = "#{plantillaVentaService}")
+	private PlantillaVentaService plantillaVentaService;
 	
 	
 	private String meses[]= {"ENERO","FEBRERO","MARZO","ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE","DICIEMBRE"};
@@ -1802,6 +1807,15 @@ public class ContratoBean extends BaseBean implements Serializable{
 				cuotaService.save(cuota);
 			}
 			
+			
+			List<PlantillaVenta> lstPlantilla = plantillaVentaService.findByEstadoAndLote("Aprobado", contratoSave.getLote());
+			if(!lstPlantilla.isEmpty()) {
+				PlantillaVenta p = lstPlantilla.get(lstPlantilla.size()-1);
+				p.setRealizoContrato(true);
+				plantillaVentaService.save(p);
+			}
+			
+			
 		}
 		
 		loteSelected.setRealizoContrato("S"); 
@@ -2992,6 +3006,12 @@ public class ContratoBean extends BaseBean implements Serializable{
 	}
 	public void setObsSelected(ObservacionContrato obsSelected) {
 		this.obsSelected = obsSelected;
+	}
+	public PlantillaVentaService getPlantillaVentaService() {
+		return plantillaVentaService;
+	}
+	public void setPlantillaVentaService(PlantillaVentaService plantillaVentaService) {
+		this.plantillaVentaService = plantillaVentaService;
 	}
 		
 	

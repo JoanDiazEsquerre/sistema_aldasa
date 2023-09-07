@@ -229,7 +229,7 @@
 			<property-name>prospectionService</property-name>
 			<value>#{prospectionService}</value>
 		</managed-property>
-		<managed-property>
+		<managed-property> 
 			<property-name>personService</property-name>
 			<value>#{personService}</value>
 		</managed-property>
@@ -282,24 +282,12 @@
 			<value>#{requerimientoSeparacionService}</value>
 		</managed-property>
 		<managed-property>
-			<property-name>plantillaVentaService</property-name>
-			<value>#{plantillaVentaService}</value>
+			<property-name>empleadoService</property-name>
+			<value>#{empleadoService}</value>
 		</managed-property>
 		<managed-property>
-			<property-name>imagenPlantillaVentaService</property-name>
-			<value>#{imagenPlantillaVentaService}</value>
-		</managed-property>
-		<managed-property>
-			<property-name>loadImagePlantillaBean</property-name>
-			<value>#{loadImagePlantillaBean}</value>
-		</managed-property>
-		<managed-property>
-			<property-name>cuentaBancariaService</property-name> 
-			<value>#{cuentaBancariaService}</value>
-		</managed-property>
-		<managed-property>
-			<property-name>imagenService</property-name>
-			<value>#{imagenService}</value>
+			<property-name>teamService</property-name>
+			<value>#{teamService}</value>
 		</managed-property>
 	</managed-bean>
 
@@ -439,6 +427,10 @@
 			<property-name>metaSupervisorService</property-name>
 			<value>#{metaSupervisorService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>empleadoService</property-name>
+			<value>#{empleadoService}</value>
+		</managed-property>
 	</managed-bean>
 	   
 	<managed-bean>
@@ -517,7 +509,12 @@
 			<property-name>navegacionBean</property-name>
 			<value>#{navegacionBean}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>teamService</property-name>
+			<value>#{teamService}</value>
+		</managed-property>
 	</managed-bean>
+	
 	<managed-bean>
 		<managed-bean-name>reporteLotesBean</managed-bean-name>
 		<managed-bean-class>com.model.aldasa.proyecto.bean.ReporteLotesBean</managed-bean-class>
@@ -730,6 +727,10 @@
 			<property-name>observacionContratoService</property-name>
 			<value>#{observacionContratoService}</value>
 		</managed-property>
+		<managed-property> 
+			<property-name>plantillaVentaService</property-name>
+			<value>#{plantillaVentaService}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>
@@ -900,4 +901,57 @@
 		</managed-property>
 	</managed-bean>
 		
+	<managed-bean>
+		<managed-bean-name>plantillaVentaBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.ventas.bean.PlantillaVentaBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>plantillaVentaService</property-name>
+			<value>#{plantillaVentaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>loadImagePlantillaBean</property-name>
+			<value>#{loadImagePlantillaBean}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>imagenPlantillaVentaService</property-name>
+			<value>#{imagenPlantillaVentaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>projectService</property-name> 
+			<value>#{projectService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>manzanaService</property-name> 
+			<value>#{manzanaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>loteService</property-name>
+			<value>#{loteService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>imagenService</property-name>
+			<value>#{imagenService}</value>
+		</managed-property> 
+		<managed-property>
+			<property-name>cuentaBancariaService</property-name>
+			<value>#{cuentaBancariaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>personService</property-name>
+			<value>#{personService}</value> 
+		</managed-property>
+		<managed-property>
+			<property-name>teamService</property-name>
+			<value>#{teamService}</value> 
+		</managed-property>
+		<managed-property>
+			<property-name>empleadoService</property-name>
+			<value>#{empleadoService}</value> 
+		</managed-property>
+	</managed-bean>
 </faces-config>

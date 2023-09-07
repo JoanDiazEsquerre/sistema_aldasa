@@ -34,8 +34,6 @@
 							 <h:outputText value="#{navegacionBean.usuarioLogin.profile.name}: #{navegacionBean.usuarioLogin.person.surnames} #{navegacionBean.usuarioLogin.person.names}" style="font-weight: bold; font-size: 18px;  color: #666666;margin-right:10px;text-transform: uppercase; margin-top: 5px  " /> 
 
 						</div>
-						
-						
 					</div>
 				</pe:layoutPane>
 				<pe:layoutPane position="center">
@@ -65,6 +63,7 @@
 			            <p:submenu label="Ventas" rendered="#{navegacionBean.menuVentas}">
 			            	<p:menuitem value="Ranking de Ventas" ajax="false" icon="pi pi-chart-line" update=":contenedor" actionListener="#{navegacionBean.getVentasRankingVentasPage()}" rendered="#{navegacionBean.subMenuRankingVentas}"/>
 			            	<p:menuitem value="Documento de Ventas" ajax="false" icon="pi pi-file" update=":contenedor" actionListener="#{navegacionBean.getVentasDocumentoVentasPage()}" rendered="#{navegacionBean.subMenuDocumentoVentas}"/>			            
+							 <p:menuitem value="Plantilla de Ventas" ajax="false" icon="pi pi-file" update=":contenedor" actionListener="#{navegacionBean.getVentasPlantillaVentaPage()}" rendered="#{navegacionBean.subMenuPlantillaVenta}"/>			            
 			            </p:submenu>
 			            
 						<p:submenu label="Mantenimientos" rendered="#{navegacionBean.menuMantenimiento}">

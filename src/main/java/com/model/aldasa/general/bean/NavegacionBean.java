@@ -47,35 +47,12 @@ public class NavegacionBean implements Serializable  {
 	
 	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas, menuAlmacen;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
-					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato, subMenuDocumentoVentas, 
+					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato, subMenuDocumentoVentas, subMenuPlantillaVenta, 
 					subMenuDocumentoVenta, subMenuInventario, subMenuCliente;
 	
-	private int[] permisoProspectos;
-	private int[] permisoProspeccion;
-	private int[] permisoAgenda;
-	private int[] permisoSimulador;
-	private int[] permisoPersonas;
-	private int[] permisoUsuarios;
-	private int[] permisoPerfiles;
-	private int[] permisoProyectos;
-	private int[] permisoEquipos;
-	private int[] permisoCambiarConstrasenia;
-	private int[] permisoReporteAcciones;
-	private int[] permisoManzanas;
-	private int[] permisoLotes;
-	private int[] permisoComisiones;
-	private int[] permisoComision;
-	private int[] permisoEmpleado;
-	private int[] permisoReporteLotes;
-	private int[] permisoAsistencia;
-	private int[] permisoReporteAsistencia;
-	private int[] permisoRequerimientoSeparacion;
-	private int[] permisoRankingVentas;
-	private int[] permisoContrato;
-	private int[] permisoReporteDocumentoVentas;
-	private int[] permisoDocumentoVenta;
-	private int[] permisoInventario;
-	private int[] permisoCliente;
+	private int[] permisoProspectos,permisoProspeccion,permisoAgenda,permisoSimulador,permisoPersonas,permisoUsuarios,permisoPerfiles,permisoProyectos,permisoEquipos, permisoCambiarConstrasenia,
+					permisoReporteAcciones,permisoManzanas,permisoLotes,permisoComisiones,permisoComision,permisoEmpleado,permisoReporteLotes,permisoAsistencia,permisoReporteAsistencia,permisoRequerimientoSeparacion,
+					permisoRankingVentas,permisoContrato,permisoReporteDocumentoVentas,permisoDocumentoVenta,permisoInventario,permisoCliente, permisoPlantillaVenta;
 
 	@PostConstruct
 	public void init() {
@@ -116,6 +93,7 @@ public class NavegacionBean implements Serializable  {
 		permisoAsistencia= obtenerPermisosPorPerfil(24);
 		permisoInventario= obtenerPermisosPorPerfil(25);
 		permisoCliente= obtenerPermisosPorPerfil(26);
+		permisoPlantillaVenta=obtenerPermisosPorPerfil(27);
 		
 		permisoPantallas();
 		
@@ -159,8 +137,7 @@ public class NavegacionBean implements Serializable  {
 
 	
 	public void permisoPantallas() {
-		menuProspeccion=false; menuProyecto=false; menuMantenimiento=false; menuReporte=false; menuAsistencia=false;
-		
+		menuProspeccion=false; menuProyecto=false; menuMantenimiento=false; menuReporte=false; menuAsistencia=false;menuVentas=false; menuAlmacen=false;
 		//*******************************************************************************
 		subMenuProspectos = validaPermiso(permisoProspectos);
 		subMenuProspeccion= validaPermiso(permisoProspeccion);
@@ -185,8 +162,9 @@ public class NavegacionBean implements Serializable  {
 		//******************************************************************************
 		subMenuRankingVentas= validaPermiso(permisoRankingVentas);
 		subMenuDocumentoVentas=validaPermiso(permisoDocumentoVenta);
+		subMenuPlantillaVenta = validaPermiso(permisoPlantillaVenta);
 				
-		if(subMenuRankingVentas || subMenuDocumentoVentas){
+		if(subMenuRankingVentas || subMenuDocumentoVentas || subMenuPlantillaVenta){
 			menuVentas=true;
 		}
 		
@@ -335,6 +313,10 @@ public class NavegacionBean implements Serializable  {
 	
 	public void getVentasDocumentoVentasPage() {
 		ruta = "modulos/ventas/procesos/documentoVenta.xhtml";
+	}
+	
+	public void getVentasPlantillaVentaPage() {
+		ruta = "modulos/ventas/procesos/plantillaVenta.xhtml";
 	}
 	
 	public void getVentasReporteDocumentoVentaPage() {
@@ -732,18 +714,15 @@ public class NavegacionBean implements Serializable  {
 	public void setPermisoContrato(int[] permisoContrato) {
 		this.permisoContrato = permisoContrato;
 	}
-	
 	public boolean isSubMenuDocumentoVentas() {
 		return subMenuDocumentoVentas;
 	}
 	public void setSubMenuDocumentoVentas(boolean subMenuDocumentoVentas) {
 		this.subMenuDocumentoVentas = subMenuDocumentoVentas;
 	}
-	
 	public int[] getPermisoReporteDocumentoVentas() {
 		return permisoReporteDocumentoVentas;
 	}
-
 	public void setPermisoReporteDocumentoVentas(int[] permisoReporteDocumentoVentas) {
 		this.permisoReporteDocumentoVentas = permisoReporteDocumentoVentas;
 	}
@@ -790,13 +769,23 @@ public class NavegacionBean implements Serializable  {
 	public void setPermisoCliente(int[] permisoCliente) {
 		this.permisoCliente = permisoCliente;
 	}
-
 	public String getRutaLogo() {
 		return rutaLogo;
 	}
-
 	public void setRutaLogo(String rutaLogo) {
 		this.rutaLogo = rutaLogo;
+	}
+	public boolean isSubMenuPlantillaVenta() {
+		return subMenuPlantillaVenta;
+	}
+	public void setSubMenuPlantillaVenta(boolean subMenuPlantillaVenta) {
+		this.subMenuPlantillaVenta = subMenuPlantillaVenta;
+	}
+	public int[] getPermisoPlantillaVenta() {
+		return permisoPlantillaVenta;
+	}
+	public void setPermisoPlantillaVenta(int[] permisoPlantillaVenta) {
+		this.permisoPlantillaVenta = permisoPlantillaVenta;
 	}
 	
 	

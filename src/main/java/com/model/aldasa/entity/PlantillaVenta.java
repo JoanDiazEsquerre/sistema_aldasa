@@ -1,6 +1,7 @@
 package com.model.aldasa.entity;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,8 +25,16 @@ public class PlantillaVenta {
     private Lote lote;
 	
 	@ManyToOne
-    @JoinColumn(name="idprospecto")
-    private Prospect prospecto;
+    @JoinColumn(name="idperson")
+    private Person person;
+	
+	@ManyToOne
+    @JoinColumn(name="idpersonasesor")
+    private Person personAsesor;
+	
+	@ManyToOne
+    @JoinColumn(name="idpersonsupervisor")
+    private Person personSupervisor;
 	
 	private String estado;
 	
@@ -39,12 +48,32 @@ public class PlantillaVenta {
 	private BigDecimal montoInicial;
 	
 	@Column(name="numerocuota")
-	private String numeroCuota;
+	private Integer numeroCuota;
 
 	private BigDecimal interes;
 
+	@ManyToOne
+    @JoinColumn(name="idusuario")
+    private Usuario usuario;
 	
+	private Date fecha;
 	
+	@Column(name="realizocontrato")
+	private boolean realizoContrato;
+	
+	@ManyToOne
+    @JoinColumn(name="idusuarioaprueba")
+    private Usuario usuarioAprueba;
+	
+	@Column(name="fechaaprueba")
+	private Date fechaAprueba;
+	
+	@ManyToOne
+    @JoinColumn(name="idusuariorechaza")
+    private Usuario usuarioRechaza;
+	
+	@Column(name="fecharechaza")
+	private Date fechaRechaza;
 	
 	
 	public Integer getId() {
@@ -58,12 +87,6 @@ public class PlantillaVenta {
 	}
 	public void setLote(Lote lote) {
 		this.lote = lote;
-	}
-	public Prospect getProspecto() {
-		return prospecto;
-	}
-	public void setProspecto(Prospect prospecto) {
-		this.prospecto = prospecto;
 	}
 	public String getEstado() {
 		return estado;
@@ -89,10 +112,10 @@ public class PlantillaVenta {
 	public void setMontoInicial(BigDecimal montoInicial) {
 		this.montoInicial = montoInicial;
 	}
-	public String getNumeroCuota() {
+	public Integer getNumeroCuota() {
 		return numeroCuota;
 	}
-	public void setNumeroCuota(String numeroCuota) {
+	public void setNumeroCuota(Integer numeroCuota) {
 		this.numeroCuota = numeroCuota;
 	}
 	public BigDecimal getInteres() {
@@ -100,6 +123,66 @@ public class PlantillaVenta {
 	}
 	public void setInteres(BigDecimal interes) {
 		this.interes = interes;
+	}
+	public Person getPerson() {
+		return person;
+	}
+	public void setPerson(Person person) {
+		this.person = person;
+	}
+	public Person getPersonAsesor() {
+		return personAsesor;
+	}
+	public void setPersonAsesor(Person personAsesor) {
+		this.personAsesor = personAsesor;
+	}
+	public Person getPersonSupervisor() {
+		return personSupervisor;
+	}
+	public void setPersonSupervisor(Person personSupervisor) {
+		this.personSupervisor = personSupervisor;
+	}
+	public Usuario getUsuario() {
+		return usuario;
+	}
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+	public Date getFecha() {
+		return fecha;
+	}
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+	public boolean isRealizoContrato() {
+		return realizoContrato;
+	}
+	public void setRealizoContrato(boolean realizoContrato) {
+		this.realizoContrato = realizoContrato;
+	}
+	public Usuario getUsuarioAprueba() {
+		return usuarioAprueba;
+	}
+	public void setUsuarioAprueba(Usuario usuarioAprueba) {
+		this.usuarioAprueba = usuarioAprueba;
+	}
+	public Date getFechaAprueba() {
+		return fechaAprueba;
+	}
+	public void setFechaAprueba(Date fechaAprueba) {
+		this.fechaAprueba = fechaAprueba;
+	}
+	public Usuario getUsuarioRechaza() {
+		return usuarioRechaza;
+	}
+	public void setUsuarioRechaza(Usuario usuarioRechaza) {
+		this.usuarioRechaza = usuarioRechaza;
+	}
+	public Date getFechaRechaza() {
+		return fechaRechaza;
+	}
+	public void setFechaRechaza(Date fechaRechaza) {
+		this.fechaRechaza = fechaRechaza;
 	}
 	
 	

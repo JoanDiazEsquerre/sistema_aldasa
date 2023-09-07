@@ -27,9 +27,11 @@ import com.model.aldasa.entity.Area;
 import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Profile;
+import com.model.aldasa.entity.Team;
 import com.model.aldasa.service.AreaService;
 import com.model.aldasa.service.EmpleadoService;
 import com.model.aldasa.service.PersonService;
+import com.model.aldasa.service.TeamService;
 import com.model.aldasa.util.BaseBean;
 
 @ManagedBean
@@ -49,12 +51,15 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 	
 	@ManagedProperty(value = "#{navegacionBean}")
 	private NavegacionBean navegacionBean;
+	
+	@ManagedProperty(value = "#{teamService}")
+	private TeamService teamService; 
 		
 	private LazyDataModel<Empleado> lstEmpleadoLazy;
 	
 	private List<Person> lstPerson;
 	private List<Area> lstArea;
-
+	private List<Team> lstTeam;
 	
 	private Empleado empleadoSelected;
 	private boolean estado = true;
@@ -66,11 +71,14 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 		iniciarLazy();
 		listarPersonas();
 		lstArea=areaService.findByEstado(true);
+		lstTeam=teamService.findByStatus(true);
 	}
 	public void newEmpleado() {
 		tituloDialog="NUEVO EMPLEADO";
 		empleadoSelected = new Empleado();
 		empleadoSelected.setEstado(true);
+		empleadoSelected.setExterno(false);
+		empleadoSelected.setPlanilla(false); 
 		empleadoSelected.setSucursal(navegacionBean.getSucursalLogin());
 
 	}
@@ -253,6 +261,34 @@ public class EmpleadoBean extends BaseBean implements Serializable {
         };
     }
 	
+	public Converter getConversorTeam() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                    Team c = null;
+                    for (Team si : lstTeam) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Team) value).getId() + "";
+                }
+            }
+        };
+    }
+	
 	public Empleado getEmpleadoSelected() {
 		return empleadoSelected;
 	}
@@ -312,6 +348,18 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 	}
 	public void setNavegacionBean(NavegacionBean navegacionBean) {
 		this.navegacionBean = navegacionBean;
+	}
+	public TeamService getTeamService() {
+		return teamService;
+	}
+	public void setTeamService(TeamService teamService) {
+		this.teamService = teamService;
+	}
+	public List<Team> getLstTeam() {
+		return lstTeam;
+	}
+	public void setLstTeam(List<Team> lstTeam) {
+		this.lstTeam = lstTeam;
 	}
 	
 	

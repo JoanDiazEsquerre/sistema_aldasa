@@ -13,6 +13,7 @@ import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Empresa;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Sucursal;
+import com.model.aldasa.entity.Team;
 import com.model.aldasa.repository.EmpleadoRepository;
 import com.model.aldasa.service.EmpleadoService;
 
@@ -61,16 +62,16 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 
 
 	@Override
-	public Empleado findByPersonDni(String dniPerson) {
+	public Empleado findByPersonDniAndEstadoAndExterno(String dniPerson, boolean estado, boolean externo) {
 		// TODO Auto-generated method stub
-		return empleadoRepository.findByPersonDni(dniPerson);
+		return empleadoRepository.findByPersonDniAndEstadoAndExterno(dniPerson, estado, externo);
 	}
 
 
 	@Override
-	public List<Empleado> findByEstadoOrderByPersonSurnamesAsc(boolean estado) {
+	public List<Empleado> findByEstadoAndExternoOrderByPersonSurnamesAsc(boolean estado, boolean externo) {
 		// TODO Auto-generated method stub
-		return empleadoRepository.findByEstadoOrderByPersonSurnamesAsc(estado);
+		return empleadoRepository.findByEstadoAndExternoOrderByPersonSurnamesAsc(estado, externo);
 	}
 
 	@Override
@@ -129,6 +130,13 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 			Empresa empresa, Pageable pageable) {
 		// TODO Auto-generated method stub
 		return empleadoRepository.findByPersonAndEstadoAndAreaAndSucursalEmpresa(person, status, area, empresa, pageable);
+	}
+
+
+	@Override
+	public List<Empleado> findByEstadoAndTeam(boolean status, Team team) {
+		// TODO Auto-generated method stub
+		return empleadoRepository.findByEstadoAndTeam(status, team);
 	}
 
 

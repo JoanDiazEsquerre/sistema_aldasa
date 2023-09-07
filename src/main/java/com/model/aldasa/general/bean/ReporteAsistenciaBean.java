@@ -115,7 +115,7 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		obtenerSemanaActual();
-		lstEmpleado = empleadoService.findByEstadoOrderByPersonSurnamesAsc(true);
+		lstEmpleado = empleadoService.findByEstadoAndExternoOrderByPersonSurnamesAsc(true, false);
 		fechaIni = new Date();
 		fechaFin = new Date();
 		tipo = "";
@@ -636,7 +636,7 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 					Empleado emp = empleadoService.findByPerson(empleadoSelected.getPerson());
 					lstempleados.add(emp);
 				} else {
-					lstempleados = empleadoService.findByEstadoOrderByPersonSurnamesAsc(true);
+					lstempleados = empleadoService.findByEstadoAndExternoOrderByPersonSurnamesAsc(true, false);
 				}
 
 				if (!lstempleados.isEmpty()) {

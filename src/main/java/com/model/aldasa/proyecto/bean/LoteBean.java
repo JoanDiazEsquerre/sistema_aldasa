@@ -77,6 +77,7 @@ import com.model.aldasa.entity.Banco;
 import com.model.aldasa.entity.Comision;
 import com.model.aldasa.entity.Comisiones;
 import com.model.aldasa.entity.CuentaBancaria;
+import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Manzana;
 import com.model.aldasa.entity.MetaSupervisor;
@@ -90,6 +91,7 @@ import com.model.aldasa.service.BancoService;
 import com.model.aldasa.service.ComisionService;
 import com.model.aldasa.service.ComisionesService;
 import com.model.aldasa.service.CuentaBancariaService;
+import com.model.aldasa.service.EmpleadoService;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.ManzanaService;
 import com.model.aldasa.service.MetaSupervisorService;
@@ -138,9 +140,13 @@ public class LoteBean extends BaseBean implements Serializable{
 	@ManagedProperty(value = "#{metaSupervisorService}")
 	private MetaSupervisorService metaSupervisorService;
 	
+	@ManagedProperty(value = "#{empleadoService}")
+	private EmpleadoService empleadoService;
+	
 	
 	private List<Lote> lstLotes;
 	private List<Person> lstPerson;
+	private List<Empleado> lstEmpleado;
 	
 	private StreamedContent fileImg;
 		
@@ -747,15 +753,16 @@ public class LoteBean extends BaseBean implements Serializable{
 	
 	public void cargarAsesorPorEquipo() {
 		lstPersonAsesor = new ArrayList<>();
-		List<Usuario> lstUsuarios = new ArrayList<>();
+//		List<Usuario> lstUsuarios = new ArrayList<>();
 		
 		loteSelected.setPersonAssessor(null);
 		if(teamSelected!= null) {
-			lstUsuarios = usuarioService.findByTeam(teamSelected);
+//			lstUsuarios = usuarioService.findByTeam(teamSelected);
+			lstEmpleado = empleadoService.findByEstadoAndTeam(true, teamSelected);
 		}
 		
-		if(!lstUsuarios.isEmpty()){
-			for(Usuario user : lstUsuarios) {
+		if(!lstEmpleado.isEmpty()){
+			for(Empleado user : lstEmpleado) {
 				lstPersonAsesor.add(user.getPerson());
 			}
 		}
@@ -1004,6 +1011,18 @@ public class LoteBean extends BaseBean implements Serializable{
 	}
 	public void setFileImg(StreamedContent fileImg) {
 		this.fileImg = fileImg;
+	}
+	public List<Empleado> getLstEmpleado() {
+		return lstEmpleado;
+	}
+	public void setLstEmpleado(List<Empleado> lstEmpleado) {
+		this.lstEmpleado = lstEmpleado;
+	}
+	public EmpleadoService getEmpleadoService() {
+		return empleadoService;
+	}
+	public void setEmpleadoService(EmpleadoService empleadoService) {
+		this.empleadoService = empleadoService;
 	}
 
 	

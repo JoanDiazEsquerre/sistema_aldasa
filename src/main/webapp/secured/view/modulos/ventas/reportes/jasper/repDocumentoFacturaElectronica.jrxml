@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="repDocumentoFacturaElectronica" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="511" leftMargin="42" rightMargin="42" topMargin="42" bottomMargin="42" uuid="f7cc8725-31db-46d6-9e69-d3629a2409fe">
 	<property name="ireport.zoom" value="1.9965000000000666"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="345"/>
+	<property name="ireport.y" value="643"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#999999"/>
@@ -120,7 +120,7 @@
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="49535069-54af-4ee1-b889-a9f442a54939" x="272" y="16" width="231" height="30"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="18" isBold="true"/>
+					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["R.U.C. N°: "+$P{RUCEMPRESA}]]></textFieldExpression>
 			</textField>

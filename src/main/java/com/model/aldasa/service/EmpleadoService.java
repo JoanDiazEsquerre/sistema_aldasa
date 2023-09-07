@@ -12,6 +12,7 @@ import com.model.aldasa.entity.Empresa;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Profile;
 import com.model.aldasa.entity.Sucursal;
+import com.model.aldasa.entity.Team;
 
 public interface EmpleadoService {
 	
@@ -21,8 +22,8 @@ public interface EmpleadoService {
 	
 	Empleado findByPerson (Person person);
 	Empleado findByPersonIdException(int idPerson, int idEmpleado);
-	Empleado findByPersonDni(String dniPerson);
-	List<Empleado> findByEstadoOrderByPersonSurnamesAsc(boolean estado);
+	Empleado findByPersonDniAndEstadoAndExterno(String dniPerson, boolean estado, boolean externo);
+	List<Empleado> findByEstadoAndExternoOrderByPersonSurnamesAsc(boolean estado, boolean externo);
 
 	Page<Empleado> findByPersonSurnamesLikeAndEstado(String person, boolean status, Pageable pageable);
 	
@@ -36,7 +37,7 @@ public interface EmpleadoService {
 	List<Empleado> findByPersonAndEstado(Person person, boolean status);
 	List<Empleado> findByEstadoAndArea(boolean estado, Area area);
 	List<Empleado> findByPersonAndEstadoAndArea(Person person, boolean status, Area area);
-	
+	List<Empleado> findByEstadoAndTeam(boolean status, Team team);
 
 	
 

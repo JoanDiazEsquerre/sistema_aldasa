@@ -80,7 +80,7 @@ public class AsistenciaBean implements Serializable {
 	}
 	
 	public void aceptar() {
-		Empleado empleado = empleadoService.findByPersonDni(textoIngresado);
+		Empleado empleado = empleadoService.findByPersonDniAndEstadoAndExterno(textoIngresado, true, false);
 		if(empleado == null) {
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "DNI incorrecto");
 			PrimeFaces.current().dialog().showMessageDynamic(message);

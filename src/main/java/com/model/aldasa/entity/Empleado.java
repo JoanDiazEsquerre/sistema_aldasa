@@ -43,10 +43,17 @@ public class Empleado {
 	
 	private String cargo;
 	
+	private boolean planilla;
+	
 	@ManyToOne
 	@JoinColumn(name="idsucursal")
 	private Sucursal sucursal;
 	
+	private boolean externo;
+	
+	@ManyToOne
+	@JoinColumn(name="idteam")
+	private Team team;
 	
 	public Integer getId() {
 		return id;
@@ -102,6 +109,24 @@ public class Empleado {
 	}
 	public void setSucursal(Sucursal sucursal) {
 		this.sucursal = sucursal;
+	}
+	public boolean isExterno() {
+		return externo;
+	}
+	public void setExterno(boolean externo) {
+		this.externo = externo;
+	}
+	public Team getTeam() {
+		return team;
+	}
+	public void setTeam(Team team) {
+		this.team = team;
+	}
+	public boolean isPlanilla() {
+		return planilla;
+	}
+	public void setPlanilla(boolean planilla) {
+		this.planilla = planilla;
 	}
 	
 	

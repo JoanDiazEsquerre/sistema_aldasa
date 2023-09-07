@@ -13,14 +13,14 @@ import com.model.aldasa.entity.Empresa;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Profile;
 import com.model.aldasa.entity.Sucursal;
+import com.model.aldasa.entity.Team;
 
 public interface EmpleadoRepository extends JpaRepository<Empleado, Integer> {
 	
 	Page<Empleado> findByPersonSurnamesLikeAndEstado(String person, boolean status, Pageable pageable);
 	Empleado findByPerson (Person person);
-	Empleado findByPersonDni(String dniPerson);
-	List<Empleado> findByEstadoOrderByPersonSurnamesAsc(boolean estado);
-
+	Empleado findByPersonDniAndEstadoAndExterno(String dniPerson, boolean estado, boolean externo);
+	List<Empleado> findByEstadoAndExternoOrderByPersonSurnamesAsc(boolean estado, boolean externo);
 
 	@Query(nativeQuery = true,value = "SELECT * FROM empleado WHERE idPerson=:idPerson AND id<>:idEmpleado ")
 	Empleado findByPersonIdException(int idPerson, int idEmpleado);
@@ -34,5 +34,6 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, Integer> {
 	List<Empleado> findByPersonAndEstado(Person person, boolean status);
 	List<Empleado> findByEstadoAndArea(boolean estado, Area area);
 	List<Empleado> findByPersonAndEstadoAndArea(Person person, boolean status, Area area);
+	List<Empleado> findByEstadoAndTeam(boolean status, Team team);
 
 }

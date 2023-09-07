@@ -1694,7 +1694,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		DocumentoVenta documento = documentoVentaService.save(documentoVenta, lstDetalleDocumentoVenta, serieDocumentoSelected); 
 		if(documento != null) {
-			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
+//			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
 			
 			lstDetalleDocumentoVenta.clear();// claer es limpiar en ingles prueba
 			clienteSelected=null;
@@ -1709,8 +1709,8 @@ public class DocumentoVentaBean extends BaseBean {
 			email2Text = "";
 			email3Text = "";
 			
-			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
-			addInfoMessage("Se guardó el documento correctamente. "+ addMensaje);
+//			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
+			addInfoMessage("Se guardó el documento correctamente. ");
 			
 		}else {
 			addErrorMessage("No se puede guardar el documento."); 
