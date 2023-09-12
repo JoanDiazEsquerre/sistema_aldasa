@@ -277,7 +277,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 		verCronogramaPago();
 	}
 	
-	public void editarTotalCuota(Cuota cuota) {
+							public void editarTotalCuota(Cuota cuota) {
 		if(cuota.getCuotaTotal()!=null) {
 			cuotaService.save(cuota);
 			
@@ -294,8 +294,6 @@ public class ContratoBean extends BaseBean implements Serializable{
 		}
 		verCronogramaPago();
 	}
-	
-	
 	
 	public void onCellEdit(CellEditEvent event) throws ParseException {
 		
@@ -687,11 +685,806 @@ public class ContratoBean extends BaseBean implements Serializable{
 	}
 	
 	public void generarExcel() throws IOException, XmlException {
-		if(contratoSelected.getLote().getTipoPago().equals("Crédito")) {
-			formatoCredito();
+		if(contratoSelected.getTipoPago().equals("Crédito")) {
+			if(contratoSelected.getLote().getProject().getId() ==1) { 
+				formatoCredito();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==2) { 
+				formatoCredito();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==3) { 
+				formatoCredito();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==4) { 
+				
+			}
+			if(contratoSelected.getLote().getProject().getId() ==5) { 
+				formatoCredito();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==6) { 
+				formatoCredito();		
+			}
+			if(contratoSelected.getLote().getProject().getId() ==7) { 
+				formatoCredito();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==8) { 
+				formatoCredito();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==9) { 
+				formatoCredito();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==10) { 
+				formatoCredito();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==11) { 
+				formatoCredito();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==12) { 
+				formatoCredito();		
+			}
+			if(contratoSelected.getLote().getProject().getId() ==13) { 
+				formatoCredito();
+			}
+			
+			
 		}else {
-			formatoContado();
+			if(contratoSelected.getLote().getProject().getId() ==1) { 
+				formatoContado();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==2) { 
+				formatoContado();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==3) { 
+				formatoContado();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==4) { 
+				formatoContado();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==5) { 
+				formatoContado();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==6) { 
+				formatoContado();			
+			}
+			if(contratoSelected.getLote().getProject().getId() ==7) { 
+				formatoContado();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==8) { 
+				formatoContado();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==9) { 
+				formatoContado();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==10) { 
+				formatoContado_ASR_IV();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==11) { 
+				formatoContado();
+			}
+			if(contratoSelected.getLote().getProject().getId() ==12) { 
+				formatoContado();			
+			}
+			if(contratoSelected.getLote().getProject().getId() ==13) { 
+				formatoContado();
+			}
+			
 		}
+	}
+	
+	public void formatoContado_ASR_IV() throws XmlException {
+		// initialize a blank document
+			XWPFDocument document = new XWPFDocument();
+			// create a new file
+			// create a new paragraph paragraph
+			XWPFParagraph paragraph = document.createParagraph();
+			paragraph.setAlignment(ParagraphAlignment.CENTER);
+			
+			XWPFRun runTitle = paragraph.createRun();
+			runTitle.setText("CONTRATO DE COMPRA VENTA DE BIEN INMUEBLE AL CONTADO");
+			runTitle.setBold(true);
+			runTitle.setFontFamily("Century Gothic");
+			runTitle.setFontSize(12);
+
+			
+			XWPFParagraph paragraph2 = document.createParagraph();
+			paragraph2.setAlignment(ParagraphAlignment.BOTH);
+			
+			XWPFRun run = paragraph2.createRun();
+			run.setText("POR INTERMEDIO DEL PRESENTE DOCUMENTO QUE CELEBRAN DE UNA PARTE, " );estiloNormalTexto(run);
+			
+			run = paragraph2.createRun();run.setText("ABARCA BIENES RAÍCES E.I.R.L.");estiloNegritaTexto(run);
+			run = paragraph2.createRun();run.setText(", CON RUC Nº 20609173093, REPRESENTADA POR SU ");estiloNormalTexto(run);
+					
+			run = paragraph2.createRun();run.setText("TITULAR GERENTE GENERAL ALAN CRUZADO BALCÁZAR, ");estiloNegritaTexto(run);
+			run = paragraph2.createRun();run.setText("IDENTIFICADO CON DNI. N° 44922055, DEBIDAMENTE INSCRITO EN LA ");estiloNormalTexto(run);
+			run = paragraph2.createRun();run.setText("PARTIDA ELECTRÓNICA Nº 11389528 "); estiloNegritaTexto(run);
+			run = paragraph2.createRun();run.setText("DEL REGISTRO DE PERSONAS JURÍDICAS DE LA ZONA REGISTRAL Nº II - SEDE - CHICLAYO, CON DOMICILIO FICAL EN AV. SANTA VICTORIA 719 URB. SANTA VICTORIA, DISTRITO Y PROVINCIA DE CHICLAYO, DEPARTAMENTO DE LAMBAYEQUE, A QUIEN SE LE DENOMINARÁ EN LO SUCESIVO ");estiloNormalTexto(run);
+			run = paragraph2.createRun();run.setText("LA PARTE VENDEDORA; ");estiloNegritaTexto(run); 
+			run = paragraph2.createRun();run.setText("A FAVOR DE EL (LA) (LOS) SR. (A.) (ES.) ");run.setFontFamily("Century Gothic");run.setFontSize(9);
+			
+			List<Person> lstPersonas = new ArrayList<>();
+			if(contratoSelected.getPersonVenta()!=null) {
+				lstPersonas.add(contratoSelected.getPersonVenta());
+			}
+			if(contratoSelected.getPersonVenta2()!=null) {
+				lstPersonas.add(contratoSelected.getPersonVenta2());
+			}
+			if(contratoSelected.getPersonVenta3()!=null) {
+				lstPersonas.add(contratoSelected.getPersonVenta3());
+			}
+			if(contratoSelected.getPersonVenta4()!=null) {
+				lstPersonas.add(contratoSelected.getPersonVenta4());
+			}
+			if(contratoSelected.getPersonVenta5()!=null) {
+				lstPersonas.add(contratoSelected.getPersonVenta5());
+			}
+				
+			int contador = 1;
+			for(Person p: lstPersonas) {
+				run = paragraph2.createRun();run.setText(p.getNames().toUpperCase()+" "+p.getSurnames().toUpperCase());estiloNegritaTexto(run);
+				run = paragraph2.createRun();run.setText(", DE OCUPACION ");estiloNormalTexto(run);
+				run = paragraph2.createRun();run.setText(p.getOccupation().toUpperCase());estiloNegritaTexto(run);
+				run = paragraph2.createRun();run.setText(", ESTADO CIVIL ");estiloNormalTexto(run);
+				run = paragraph2.createRun();run.setText(p.getCivilStatus().toUpperCase());estiloNegritaTexto(run);
+				run = paragraph2.createRun();run.setText(", IDENTIFICADO(A) CON DNI N° ");estiloNormalTexto(run);
+				run = paragraph2.createRun();run.setText(p.getDni());estiloNegritaTexto(run);
+				run = paragraph2.createRun();run.setText(", CELULAR ");estiloNormalTexto(run);
+				run = paragraph2.createRun();run.setText(", CORREO ELECTRONICO ");estiloNormalTexto(run);
+				run = paragraph2.createRun();run.setText(p.getEmail().toUpperCase());estiloNegritaTexto(run); 
+				run = paragraph2.createRun();run.setText(p.getCellphone());estiloNegritaTexto(run);
+				run = paragraph2.createRun();run.setText(", CON DOMICILIO EN ");estiloNormalTexto(run);
+				run = paragraph2.createRun();run.setText(p.getAddress().toUpperCase());estiloNegritaTexto(run);
+				run = paragraph2.createRun();run.setText(", DISTRITO DE ");estiloNormalTexto(run);
+				run = paragraph2.createRun();run.setText(p.getDistrict().getName().toUpperCase());estiloNegritaTexto(run);
+				run = paragraph2.createRun();run.setText(", PROVINCIA DE ");estiloNormalTexto(run);
+				run = paragraph2.createRun();run.setText(p.getDistrict().getProvince().getName().toUpperCase());estiloNegritaTexto(run);
+				run = paragraph2.createRun();run.setText(", DEPARTAMENTO DE ");estiloNormalTexto(run);
+				run = paragraph2.createRun();run.setText(p.getDistrict().getProvince().getDepartment().getName().toUpperCase());estiloNegritaTexto(run);
+				
+				
+				
+				
+				if(lstPersonas.size()==contador){
+					run = paragraph2.createRun();run.setText(", PARA ESTE ACTO, ");estiloNormalTexto(run);
+				}else {
+					run = paragraph2.createRun();run.setText(", PARA ESTE ACTO Y ");estiloNormalTexto(run);
+				}
+				contador++;
+			}
+			run = paragraph2.createRun();run.setText("A QUIEN(ES) EN LO SUCESIVO SE LE(S) DENOMINARÁ");estiloNormalTexto(run);
+			run = paragraph2.createRun();run.setText(" LA PARTE COMPRADORA, ");estiloNegritaTexto(run);
+			run = paragraph2.createRun();run.setText("CON INTERVENCIÓN DE EL SR. ");estiloNormalTexto(run);
+			run = paragraph2.createRun();run.setText("ALAN CRUZADO BALCÁZAR, ");estiloNegritaTexto(run);
+			run = paragraph2.createRun();run.setText("DE NACIONALIDAD PERUANA, IDENTIFICADO CON DNI. N°44922055, DE OCUPACION EMPRESARIO, DE ESTADO CIVIL CASADO, BAJO RÉGIMEN DE SEPARACIÓN DE PATRIMONIOS INSCRITO EN LA P.E. Nº 11385293 DEL REGISTRO PERSONAL DE LA OR DE CHICLAYO, CON DOMICILIO EN CALLE INDUSTRIAL 681 URB. SAN LORENZO, DISTRITO DE JOSÉ LEONARDO ORTIZ, PROVINCIA DE CHICLAYO, DEPARTAMENTO DE LAMBAYEQUE; CON EL RESPALDO COMERCIAL DE ");estiloNormalTexto(run);
+			run = paragraph2.createRun();run.setText("ALDASA INMOBILIARIA S.A.C., ");estiloNegritaTexto(run);
+			run = paragraph2.createRun();run.setText("CON RUC Nº 20607274526, REPRESENTADA POR SU");estiloNormalTexto(run);
+			run = paragraph2.createRun();run.setText("GERENTE GENERAL ALAN CRUZADO BALCÁZAR, ");estiloNegritaTexto(run);
+			run = paragraph2.createRun();run.setText("IDENTIFICADO CON DNI. N°44922055, DEBIDAMENTE INSCRITO EN LA ");estiloNormalTexto(run);
+			run = paragraph2.createRun();run.setText("PARTIDA ELECTRÓNICA Nº 11352661 ");estiloNegritaTexto(run);
+			run = paragraph2.createRun();run.setText("DEL REGISTRO DE PERSONAS JURÍDICAS DE LA ZONA REGISTRAL Nº II - SEDE - CHICLAYO, CON DOMICILIO EN AV. SANTA VICTORIA 719 URB. SANTA VICTORIA, DISTRITO Y PROVINCIA DE CHICLAYO, DEPARTAMENTO DE LAMBAYEQUE; EL CONTRATO SE CELEBRA CON ARREGLO A LAS SIGUIENTES CONSIDERACIONES:");estiloNormalTexto(run);
+			
+//			run = paragraph2.createRun();run.setText("");estiloNormalTexto(run);
+//			run = paragraph2.createRun();run.setText("");estiloNegritaTexto(run);
+				
+			XWPFParagraph paragraphPrimero = document.createParagraph();
+			paragraphPrimero.setAlignment(ParagraphAlignment.LEFT);
+			
+			XWPFRun runPrimero = paragraphPrimero.createRun();
+			runPrimero.addBreak();runPrimero.addBreak();
+			runPrimero.setText("PRIMERO.");estiloNegritaTexto(runPrimero);
+			runPrimero.setUnderline(UnderlinePatterns.SINGLE);
+			
+			String cTAbstractNumBulletXML = "<w:abstractNum xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" w:abstractNumId=\"0\">"
+					+ "<w:multiLevelType w:val=\"hybridMultilevel\"/>"
+					+ "<w:lvl w:ilvl=\"0\"><w:start w:val=\"1\"/><w:numFmt w:val=\"bullet\"/><w:lvlText w:val=\"\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"720\" w:hanging=\"360\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Symbol\" w:hAnsi=\"Symbol\" w:hint=\"default\"/></w:rPr></w:lvl>"
+					+ "<w:lvl w:ilvl=\"1\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"bullet\"/><w:lvlText w:val=\"o\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"1440\" w:hanging=\"360\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Courier New\" w:hAnsi=\"Courier New\" w:cs=\"Courier New\" w:hint=\"default\"/></w:rPr></w:lvl>"
+					+ "<w:lvl w:ilvl=\"2\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"bullet\"/><w:lvlText w:val=\"\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"2160\" w:hanging=\"360\"/></w:pPr><w:rPr><w:rFonts w:ascii=\"Wingdings\" w:hAnsi=\"Wingdings\" w:hint=\"default\"/></w:rPr></w:lvl>"
+					+ "</w:abstractNum>";
+
+			String cTAbstractNumDecimalXML = "<w:abstractNum xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" w:abstractNumId=\"0\">"
+					+ "<w:multiLevelType w:val=\"hybridMultilevel\"/>"
+					+ "<w:lvl w:ilvl=\"0\"><w:start w:val=\"1\"/><w:numFmt w:val=\"decimal\"/><w:lvlText w:val=\"%1\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"720\" w:hanging=\"360\"/></w:pPr></w:lvl>"
+					+ "<w:lvl w:ilvl=\"1\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"decimal\"/><w:lvlText w:val=\"%1.%2\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"1440\" w:hanging=\"360\"/></w:pPr></w:lvl>"
+					+ "<w:lvl w:ilvl=\"2\" w:tentative=\"1\"><w:start w:val=\"1\"/><w:numFmt w:val=\"decimal\"/><w:lvlText w:val=\"%1.%2.%3\"/><w:lvlJc w:val=\"left\"/><w:pPr><w:ind w:left=\"2160\" w:hanging=\"360\"/></w:pPr></w:lvl>"
+					+ "</w:abstractNum>";
+
+					
+			CTNumbering cTNumbering = CTNumbering.Factory.parse(cTAbstractNumBulletXML);
+//			CTNumbering cTNumbering = CTNumbering.Factory.parse(cTAbstractNumDecimalXML);
+			CTAbstractNum cTAbstractNum = cTNumbering.getAbstractNumArray(0);
+			XWPFAbstractNum abstractNum = new XWPFAbstractNum(cTAbstractNum);
+			XWPFNumbering numbering = document.createNumbering();
+			BigInteger abstractNumID = numbering.addAbstractNum(abstractNum);
+			BigInteger numID = numbering.addNum(abstractNumID);
+
+			XWPFParagraph paragrapha = document.createParagraph();
+			paragrapha.setNumID(numID);
+			run = paragrapha.createRun();
+			run.setText("ANTEDEDENTES");estiloNegritaTexto(run);
+
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();run.setText("LA PARTE VENDEDORA ");estiloNegritaTexto(run); 
+			run = paragrapha.createRun();run.setText("ES PROPIETARIO DE LOS BIENES INMUEBLES IDENTIFICADOS COMO: ");estiloNormalTexto(run);
+			
+
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			paragrapha.setIndentationLeft(500);
+			run = paragrapha.createRun();
+			run.setText("1. ");
+			run.setBold(true);
+			run = paragrapha.createRun();
+			run.setText("1.	UBIC, RUR. VALLE DE CHANCAY / SECTOR YENCALA BOGGIANO / PREDIO YENCALA BOGGIANO– COD. PREDIO. 7_6159260_67034, ÁREA HA. "
+					+ "4.1730 U.C. 67034, DISTRITO DE LAMBAYEQUE, PROVINCIA DE LAMBAYEQUE, DEPARTAMENTO DE LAMBAYEQUE, EN LO SUCESIVO DENOMINADO EL "
+					+ "BIEN. LOS LINDEROS, MEDIDAS PERIMÉTRICAS, DESCRIPCIÓN Y DOMINIO DEL BIEN CORREN INSCRITOS EN LA ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("PARTIDA ELECTRÓNICA N°11072174, ");estiloNegritaTexto(run); 
+			run = paragrapha.createRun();run.setText("DEL REGISTRO DE PREDIOS DE LA ZONA REGISTRAL N°II- SEDE CHICLAYO.");estiloNormalTexto(run);
+			
+
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			paragrapha.setIndentationLeft(500);
+			run = paragrapha.createRun();
+			run.setText("2. ");
+			run.setBold(true);
+			run = paragrapha.createRun();
+			run.setText("QUE CON FECHA 18 DE MARZO DE 2023 SE SUSCRIBIÓ UN CONTRATO DE COMPRA VENTA CON ARRAS CONFIRMATORIAS ENTRE ALAN CRUZADO "
+					+ "BALCAZAR Y ABARCA BIENES RAÍCES EIRL, MEDIANTE EL CUAL SE ADQUIRIO LA PROPIEDAD DESCRTITA EN LA CLAUSULA 1.1 PARA EL DESARROLLO "
+					+ "DEL PROYECTO DE LOTIZACION MATERIA DEL PRESENTE CONTRATO.");estiloNormalTexto(run);
+					
+			
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			paragrapha.setIndentationLeft(500);
+			run = paragrapha.createRun();
+			run.setText("3. ");
+			run.setBold(true);
+			run = paragrapha.createRun();
+			run.setText("LOS PREDIOS SEÑALADOS EN LOS PÁRRAFOS QUE PRECEDEN, FORMAN UN SOLO PREDIO EN TERRENO Y UBICACIÓN FÍSICA, EN EL CUAL SE "
+					+ "DESARROLLARÁ EL PROYECTO DE LOTIZACIÓN LOS ALTOS DE SAN ROQUE IV Y EL CUAL ES MATERIA DE VENTA A TRAVÉS DEL PRESENTE CONTRATO. ");estiloNormalTexto(run);
+			
+			
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();
+			run.addBreak();run.addBreak();
+			run.setText("SEGUNDO.");estiloNegritaTexto(run); 
+			run.setUnderline(UnderlinePatterns.SINGLE);
+			
+			paragrapha = document.createParagraph();
+			paragrapha.setNumID(numID);
+			run = paragrapha.createRun();
+			run.setText("OBJETO");estiloNegritaTexto(run);
+			
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("POR EL PRESENTE CONTRATO, ");estiloNormalTexto(run); 
+			run = paragrapha.createRun();run.setText("LA PARTE VENDEDORA ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("VENDE A LA ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("PARTE COMPRADORA EL (LOS) LOTE(S) ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("DE TERRENO(S) POR INDEPENDIZAR DEL BIEN DE MAYOR EXTENSIÓN ESPECIFICADO EN LA CLÁUSULA PRIMERA "
+					+ "DE ESTE CONTRATO, EL (LOS) CUAL(ES) TIENE(N) LAS SIGUIENTES CARACTERÍSTICAS:");estiloNormalTexto(run); 
+			
+
+			paragrapha = document.createParagraph();
+			paragrapha.setIndentationLeft(500);
+			run = paragrapha.createRun();
+			run.setText("1. MANZANA "+contratoSelected.getLote().getManzana().getName()+" LOTE "+contratoSelected.getLote().getNumberLote()+" (ÁREA TOTAL "+String.format("%,.2f",contratoSelected.getLote().getArea()) +" M2)");estiloNegritaTexto(run);
+			
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();
+			run.setText("EL ÁREA DE EL LOTE, MATERIA DE ESTE CONTRATO, SE ENCUENTRA DENTRO DE LA MANZANA "+contratoSelected.getLote().getManzana().getName()+" LOTE "+contratoSelected.getLote().getNumberLote()+" "
+					+ "EN LA CUAL CONSTA UN ÁREA DE "+String.format("%,.2f",contratoSelected.getLote().getArea())+" M2 Y QUE FORMA PARTE DEL PROYECTO DE LOTIZACIÓN DEL BIEN DE MAYOR "
+					+ "EXTENSIÓN ESPECIFICADO EN LA CLÁUSULA PRIMERA DE ESTE CONTRATO ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("PARTIDA ELECTRÓNICA:"+contratoSelected.getLote().getProject().getNumPartidaElectronica());estiloNegritaTexto(run);
+			
+			
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();
+			run.setUnderline(UnderlinePatterns.SINGLE); 
+			run.setText("LINDEROS Y MEDIDAS PERIMÉTRICAS:");estiloNegritaTexto(run);
+			
+
+			paragrapha = document.createParagraph();
+			paragrapha.setIndentationLeft(500);
+			run = paragrapha.createRun();
+			run.setText("Área del lote: "+String.format("%,.2f",contratoSelected.getLote().getArea())+" m2");estiloNormalTexto(run);
+			run.addBreak();
+			run.setText("Perímetro del lote: "+String.format("%,.2f",contratoSelected.getLote().getPerimetro())+" ml ");estiloNormalTexto(run);
+			run.addBreak();
+			run.setText("Frente         : "+contratoSelected.getLote().getLimiteFrontal());
+			run.addBreak();
+			run.setText("Fondo         : "+contratoSelected.getLote().getLimiteFondo());
+			run.addBreak();
+			run.setText("Derecha     : "+contratoSelected.getLote().getLimiteDerecha());
+			run.addBreak();
+			run.setText("Izquierda    : "+contratoSelected.getLote().getLimiteIzquierda());
+			run.addBreak();run.addBreak();
+
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("SIENDO ASI, ");estiloNormalTexto(run); 
+			run = paragrapha.createRun();run.setText("LA PARTE VENDEDORA Y LA PARTE COMPRADORA ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("ACUERDAN DE FORMA EXPRESA E IRREVOCABLE QUE LAS MEDIDAS Y/O AREA DE EL (LOS) LOTE(S) "
+					+ "PORPORCIONADAS MEDIANTE EL PRESENTE CONTRATO PODRIAN TOLERAR VARIACIONES MÍNIMAS CONFORME AL ARTICULO 1577° DEL CODIGO CIVIL.");estiloNormalTexto(run);
+				
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();
+			run.addBreak();run.addBreak();
+			run.setText("TERCERO.");estiloNegritaTexto(run);
+			run.setUnderline(UnderlinePatterns.SINGLE);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			paragrapha.setNumID(numID);
+			run = paragrapha.createRun();
+			run.setText("PRECIO DE COMPRA - VENTA.");estiloNegritaTexto(run);
+				
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();run.setText("EL PRECIO PACTADO POR LA VENTA DE ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("EL (LOS) LOTE(S) ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("DESCRITO EN LA CLÁUSULA SEGUNDA ES DE ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("S./"+String.format("%,.2f",contratoSelected.getMontoVenta())+" ("+numeroAletra.Convertir(contratoSelected.getMontoVenta()+"", true, "")+" SOLES), ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("EL CUAL SE PAGÓ AL CONTADO CON DEPÓSITO(S) EN CUENTA(S) DEL ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("BANCO INTERBANK, ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("CON NÚMERO DE CUENTA EN SOLES ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("7003004825505, ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("CCI ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("003-700-00300482550520, ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("EN DÓLARES ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("7003004825512, ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("CCI ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("003-700-00300482551226, ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("Y/O EN CUENTA(S) DE CAJA PIURA EN SOLES ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("210-01-6851216, ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("CCI ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("80104521001685121664, ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("A FAVOR DE LA PARTE VENDEDORA, EL MEDIO DE PAGO SE PRESENTA A LA FIRMA DEL PRESENTE CONTRATO.");estiloNormalTexto(run);
+				
+			
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();
+			run.addBreak();run.addBreak();
+			run.setText("CUARTO.");estiloNegritaTexto(run);
+			run.setUnderline(UnderlinePatterns.SINGLE);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setNumID(numID);
+			run = paragrapha.createRun();
+			run.setText("TÉRMINOS DEL CONTRATO");estiloNegritaTexto(run);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("LA PARTE COMPRADORA ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("SOLICITARÁ A ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("LA PARTE VENDEDORA, ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("LA FORMALIZACIÓN DE LA MINUTA, PARA QUE PUEDA(N) REALIZAR LOS DIFERENTES PROCEDIMIENTOS "
+					+ "ADMINISTRATIVOS, MUNICIPALES, NOTARIALES Y REGISTRALES EN PRO DE SU INSCRIPCIÓN DE INDEPENDIZACIÓN, "
+					+ "PARA LO CUAL ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("LA PARTE COMPRADORA ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("CORRERÁ CON LOS GASTOS Y TRÁMITES QUE EL PROCESO ADMINISTRATIVO, MUNICIPAL, NOTARIAL Y REGISTRAL IMPLICA. ");estiloNormalTexto(run);
+		
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setNumID(numID);
+			run = paragrapha.createRun();
+			run.setText("ALCANCES DE LA COMPRAVENTA DEFINITIVA");estiloNegritaTexto(run);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("LA VENTA DE ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("(LOS) LOTE(S), ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("COMPRENDERÁ TODO CUANTO DE HECHO Y POR DERECHO CORRESPONDE A ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("EL (LOS) LOTE(S), ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("SIN RESERVA NI LIMITACIÓN ALGUNA, INCLUYENDO EL SUELO, SUBSUELO, SOBRESUELO, LAS CONSTRUCCIONES Y DERECHOS SOBRE ÉL, "
+					+ "LOS AIRES, ENTRADAS, SALIDAS Y CUALQUIER DERECHO QUE LE CORRESPONDA A ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("EL (LOS) LOTE(S).");estiloNegritaTexto(run);
+				
+				
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setNumID(numID);
+			run = paragrapha.createRun();
+			run.setText("ENTREGA DE “LOS LOTES”:");estiloNegritaTexto(run);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("LAS PARTES PRECISAN, QUE LA ENTREGA DE LA POSESIÓN DE ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("EL (LOS) LOTE(S), ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("SE REALIZARÁ A LA CANCELACIÓN DEL SALDO POR PARTE DE ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("LA PARTE COMPRADORA ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("CON LA VERIFICACIÓN DE LOS DEPÓSITOS REALIZADOS EN LA CUENTA DE ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("LA PARTE VENDEDORA. ");estiloNegritaTexto(run);
+				
+			
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("LA ENTREGA FÍSICA DE LOS LOTES SE REALIZARÁ UNA VEZ QUE SE COMPLETE EL PROYECTO INMOBILIARIO "
+					+ "QUE PUEDE ESTAR SUJETO A MODIFICACIONES PREVIA COMUNICACIÓN A ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("LA PARTE COMPRADORA, ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("PERO QUE SE HARÁ EFECTIVA LA TRANSFERENCIA DE DERECHOS Y POSESIÓN EN EL MOMENTO QUE SE CULMINE "
+					+ "EL PROYECTO INMOBILIARIO.");estiloNormalTexto(run);
+					
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("EN TAL SENTIDO, LA PARTE COMPRADORA, DE MANERA INCONDICIONAL E IRREVOCABLE, RECONOCE QUE EL "
+					+ "(LOS) LOTE(S) SI EXISTE(N) A LA FECHA DE SUSCRIPCION DEL PRESENTE CONTRATO, SINO QUE SERA ENTREGADO DENTRO DEL PLAZO MAXIMO "
+					+ "DEL PROYECTO.");estiloNormalTexto(run);	
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setNumID(numID);
+			run = paragrapha.createRun();
+			run.setText("CONMUTATIVIDAD DE PRESTACIONES.");estiloNegritaTexto(run);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("LAS PARTES DECLARAN QUE ENTRE EL PRECIO Y ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("EL (LOS) LOTE(S) ");estiloNegritaTexto(run); 
+			run = paragrapha.createRun();run.setText("QUE SE ENAJENA(N), EXISTE LA MÁS JUSTA Y PERFECTA EQUIVALENCIA Y QUE SI HUBIERE ALGUNA DIFERENCIA "
+					+ "DE MÁS O DE MENOS, SE HACEN MUTUAS Y RECÍPROCA DONACIÓN, RENUNCIANDO, EN CONSECUENCIA, A CUALQUIER ACCIÓN POSTERIOR QUE TIENDA "
+					+ "A INVALIDAR EL PRESENTE CONTRATO Y A LOS PLAZOS PARA INTERPONERLA.");estiloNormalTexto(run);
+				
+					
+						
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();
+			run.addBreak();run.addBreak();	
+			run.setText("QUINTO.");estiloNegritaTexto(run); 
+			run.setUnderline(UnderlinePatterns.SINGLE);
+			
+			paragrapha = document.createParagraph();
+			paragrapha.setNumID(numID);
+			run = paragrapha.createRun();
+			run.setText("LIBRE DISPONIBILIDAD DE DOMINIO.");estiloNegritaTexto(run);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("LA PARTE VENDEDORA ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("DECLARA QUE TRANSFIERE A ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("LA PARTE COMPRADORA EL (LOS) LOTE(S) ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("OBJETO DE ESTE CONTRATO, LIBRE DE TODA DERECHO REAL DE GARANTÍA, PROCEDIMIENTO Y/O PROCESO "
+					+ "JUDICIAL DE PRESCRIPCIÓN ADQUISITIVA DE DOMINIO, REIVINDICACIÓN, TÍTULOS SUPLETORIO, LABORAL, PROCESO ADMINISTRATIVO, EMBARGO, "
+					+ "MEDIDA INCOATIVA, Y/O CUALQUIER MEDIDA CAUTELAR, ACCIÓN JUDICIAL O EXTRAJUDICIAL Y, EN GENERAL, DE TODO ACTO JURÍDICO, "
+					+ "PROCESAL Y/O ADMINISTRATIVO, HECHO O CIRCUNSTANCIA QUE CUESTIONE, IMPIDA, PRIVE O LIMITE LA PROPIEDAD Y LIBRE DISPOSICIÓN DE ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("EL (LOS) LOTE(S) ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("MATERIA DEL PRESENTE CONTRATO, POSESIÓN O USO ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("EL (LOS) LOTE(S).");estiloNegritaTexto(run);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("LAS PARTES DECLARAN CONOCER LA SITUACIÓN ACTUAL, FÍSICA, LEGAL Y ADMINISTRATIVA DEL INMUEBLE. "
+					+ "SIN EMBARGO, EL VENDEDOR SE OBLIGA AL SANEAMIENTO DE LEY SOBRE LAS CARGAS QUE PESARAN EN EL INMUEBLE MATERIA DE TRANSFERENCIA.");estiloNormalTexto(run);
+			
+				
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("QUE, SIN PERJUICIO DE LO SEÑALADO EN EL PÁRRAFO ANTERIOR, CON RELACIÓN A ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("EL (LOS)LOTE(S), ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("NO EXISTE NINGUNA ACCIÓN O LITIGIO JUDICIAL, ARBITRAL, ADMINISTRATIVO, NI DE CUALQUIER OTRA ÍNDOLE, "
+					+ "IMPULSADO POR ALGÚN PRECARIO Y/O COPROPIETARIO NO REGISTRADO, Y/O CUALQUIER TERCERO QUE ALEGUE, RECLAME Y/O INVOQUE DERECHO REAL, "
+					+ "PERSONAL Y/O DE CRÉDITO ALGUNO, Y EN GENERAL CUALQUIER DERECHO SUBJETIVO Y/O CONSTITUCIONAL.");estiloNormalTexto(run);
+				
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("QUE, ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("EL (LOS)LOTE(S) ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("NO SE ENCUENTRA(N) EN SUPERPOSICIÓN O DUPLICIDAD REGISTRAL, CON OTRO(S) BIEN(ES) INMUEBLE(S) "
+					+ "INSCRITO(S), EXTENDIÉNDOSE ESTA AFIRMACIÓN A CUALQUIER OTRO(S) BIEN(ES) INMUEBLE(S) NO INSCRITO(S), Y QUE NO SE ENCUENTRA "
+					+ "AFECTADO POR TRAZO DE VÍA(S) ALGUNA(S), NI UBICADO EN “ZONA DE RIESGO” QUE IMPIDA O DIFICULTE EL DESARROLLO DE CUALQUIER "
+					+ "CONSTRUCCIÓN Y/O PROYECTO INMOBILIARIO.");estiloNormalTexto(run);
+			
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("QUE, ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("EL (LOS)LOTE(S) ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("NO SE ENCUENTRA(N) EN ZONA MONUMENTAL O ZONA ARQUEOLÓGICA QUE IMPIDA O DIFICULTE EL DESARROLLO DE CUALQUIER PROYECTO INMOBILIARIO. ");estiloNormalTexto(run);
+						
+				
+				
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();
+			run.addBreak();run.addBreak();
+			run.setText("SEXTO");estiloNegritaTexto(run); 
+			run.setUnderline(UnderlinePatterns.SINGLE);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setNumID(numID);
+			run = paragrapha.createRun();
+			run.setText("OBLIGACIONES DE LA PARTE COMPRADORA.");estiloNegritaTexto(run); 
+				
+			run.addBreak();
+			run.setText("LA PARTE COMPRADORA SE OBLIGA A:"); 
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			paragrapha.setIndentationLeft(500);
+			run = paragrapha.createRun();
+			run.setText("A) ");
+			run.setBold(true);
+			run = paragrapha.createRun();run.setText("UNA VEZ ENTREGADA LA MINUTA FIRMADA POR LA PARTE VENDEDORA A");estiloNormalTexto(run); 
+			run = paragrapha.createRun();run.setText("LA PARTE COMPRADORA, ");estiloNegritaTexto(run); 
+			run = paragrapha.createRun();run.setText("ES DE SU CARGO REALIZAR LA INDEPENDIZACIÓN DE SU(S) LOTE(S) ANTE LA MUNICIPALIDAD DISTRITAL ASI "
+					+ "COMO LA OFICINA DEL REGISTRO PUBLICO CORRESPONDIENTE ASI COMO A REALIZAR EL MISMO PROCEDIMIENTO ANTE LA OFICINA DE REGISTROS PUBLICOS.");estiloNormalTexto(run); 
+
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			paragrapha.setIndentationLeft(500);
+			run = paragrapha.createRun();
+			run.setText("B) ");
+			run.setBold(true);
+			run = paragrapha.createRun();run.setText("DECLARAR LA COMPRA DE ");estiloNormalTexto(run); 
+			run = paragrapha.createRun();run.setText("EL (LOS) LOTE(S) ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("QUE ADQUIERE(N) EN VIRTUD DEL PRESENTE DOCUMENTO ANTE LA MUNICIPALIDAD DISTRITAL CORRESPONDIENTE Y "
+					+ "ANTE LAS OFICINAS DEL SERVICIO DE ADMINISTRACIÓN TRIBUTARIA.");estiloNormalTexto(run); 
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			paragrapha.setIndentationLeft(500);
+			run = paragrapha.createRun();
+			run.setText("C) ");
+			run.setBold(true);
+			run = paragrapha.createRun();run.setText("PAGAR EL IMPUESTO A LA ALCABALA EN CASO CORRESPONDA.");estiloNormalTexto(run);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			paragrapha.setIndentationLeft(500);
+			run = paragrapha.createRun();
+			run.setText("D) ");
+			run.setBold(true);
+			run = paragrapha.createRun();run.setText("PAGAR EL IMPUESTO PREDIAL Y ARBITRIOS, UNA VEZ ADQUIRIDO(S) ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("EL (LOS) LOTE(S) ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("Y DECLARADO(S) ANTE LA MUNICIPALIDAD DISTRITAL RESPECTIVA.");estiloNormalTexto(run);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			paragrapha.setIndentationLeft(500);
+			run = paragrapha.createRun();
+			run.setText("E) ");
+			run.setBold(true);
+			run = paragrapha.createRun();run.setText("SUSCRIBIR TODA DOCUMENTACIÓN LEGAL (MINUTAS ACLARATORIAS, ESCRITURAS PÚBLICAS QUE "
+					+ "ESTAS GENEREN, ENTRE OTRAS) Y ADMINISTRATIVA NECESARIA PARA LOGRAR LA PUESTA EN PRÁCTICA DEL PRESENTE CONTRATO Y SU "
+					+ "INSCRIPCIÓN EN LOS REGISTROS PÚBLICOS. ");estiloNormalTexto(run);
+					
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			paragrapha.setIndentationLeft(500);
+			run = paragrapha.createRun();
+			run.setText("F) ");
+			run.setBold(true);
+			run = paragrapha.createRun();run.setText("EL COMPRADOR REALIZA TODAS LAS GESTIONES NECESARIAS Y SUSCRIBIR TODOS LOS DOCUMENTOS QUE "
+					+ "CORRESPONDAN ANTE LAS ENTIDADES PRESTADORAS DE SERVICIOS PÚBLICOS PARA OBTENER EL SUMINISTRO ELÉCTRICO Y/O SANITARIO "
+					+ "INDEPENDIENTE DE EL (LOS) LOTE(S), ASI COMO PAGAR LOS DERECHOS CORRESPONDIENTES. ");estiloNormalTexto(run);
+
+				
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();
+			run.addBreak();run.addBreak();
+			run.setText("SÉPTIMO.");estiloNegritaTexto(run); 
+			run.setUnderline(UnderlinePatterns.SINGLE);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setNumID(numID);
+			run = paragrapha.createRun();
+			run.setText("OBLIGACIONES DE LA PARTE VENDEDORA.");
+			run.setBold(true);
+			run.setFontFamily("Century Gothic");
+			run.setFontSize(9);
+				
+			run.addBreak();
+			run.setText("LA PARTE VENDEDORA SE OBLIGA A:"); 
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			paragrapha.setIndentationLeft(500);
+			run = paragrapha.createRun();
+			run.setText("A) ");
+			run.setBold(true);
+			run = paragrapha.createRun();run.setText("INSTALACIÓN DE LUZ Y AGUA EN EL PROYECTO INMOBILIARIO, CON REDES TRONCALES, MAS NO EN ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("EL (LOS) LOTE(S) ");estiloNegritaTexto(run);
+				run = paragrapha.createRun();run.setText("MATERIA DE VENTA DEL CONTRATO.");estiloNormalTexto(run);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			paragrapha.setIndentationLeft(500);
+			run = paragrapha.createRun();
+			run.setText("B) ");
+			run.setBold(true);
+			run = paragrapha.createRun();run.setText("CONSTRUCCIÓN E INSTALACIÓN DE PÓRTICO DE ENTRADA Y PARQUES HABILITADOS, AFIRMAMENTO DE CALLES "
+					+ "PRINCIPALES, AVENIDAS Y AEAS VERDES.");estiloNormalTexto(run);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			paragrapha.setIndentationLeft(500);
+			run = paragrapha.createRun();
+			run.setText("C) ");
+			run.setBold(true);
+			run = paragrapha.createRun();run.setText("OTORGAMIENTO DE MINUTA, PARA LOS RESPECTIVOS TRÁMITES QUE TENGAN QUE REALIZAR ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("LA PARTE COMPRADORA.");estiloNegritaTexto(run); 
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			paragrapha.setIndentationLeft(500);
+			run = paragrapha.createRun();
+			run.setText("D) ");
+			run.setBold(true);
+			run = paragrapha.createRun();run.setText("SUSCRIBIR TODOS LOS DOCUMENTOS QUE SEAN NECESARIOS, A FIN DE QUE SE FORMALICE LA TRANSFERENCIA DE PROPIEDAD DE EL INMUEBLE A FAVOR DE ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("LA PARTE COMPRADORA ");estiloNegritaTexto(run); 
+			run = paragrapha.createRun();run.setText("DESPUÉS DE CULMINADO EL PROYECTO INMOBILIARIO.  ");estiloNormalTexto(run);
+
+				
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();
+			run.addBreak();run.addBreak();
+			run.setText("OCTAVO.");estiloNegritaTexto(run); 
+			run.setUnderline(UnderlinePatterns.SINGLE);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setNumID(numID);
+			run = paragrapha.createRun(); 
+			run.setText("PAGO DE TRIBUTOS Y OTRAS IMPOSICIONES.");estiloNegritaTexto(run);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("LA PARTE VENDEDORA ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("SE SOLIDARIZA FRENTE AL FISCO RESPECTO DE CUALQUIER IMPUESTO, CONTRIBUCIÓN O DERECHOS DE SERVICIO DE "
+					+ "AGUA POTABLE O ENERGÍA ELÉCTRICA, ASÍ COMO EL IMPUESTO PREDIAL, ARBITRIOS MUNICIPALES Y CONTRIBUCIÓN DE MEJORAS, QUE PUDIERA "
+					+ "AFECTAR EL (LOS) LOTE(S) QUE SE VENDEN Y QUE SE ENCUENTREN PENDIENTES DE PAGO HASTA LA FIRMA DE LA MINUTA, FECHA A PARTIR DE LA "
+					+ "CUAL SERÁN DE CARGO DE ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("LA PARTE COMPRADORA.");estiloNegritaTexto(run);
+				
+				
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();
+			run.addBreak();run.addBreak();
+			run.setText("NOVENO.");estiloNegritaTexto(run);
+			run.setUnderline(UnderlinePatterns.SINGLE);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setNumID(numID);
+			run = paragrapha.createRun();
+			run.setText("TRIBUTOS QUE AFECTAN AL CONTRATO.");estiloNegritaTexto(run);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("ES DE CARGO DE ");estiloNormalTexto(run);
+			run = paragrapha.createRun();run.setText("LA PARTE COMPRADORA ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("EL PAGO DEL IMPUESTO DE ALCABALA A QUE HUBIERE LUGAR.");estiloNormalTexto(run);
+				
+				
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();
+			run.addBreak();run.addBreak();
+			run.setText("DÉCIMO.");estiloNegritaTexto(run);
+			run.setUnderline(UnderlinePatterns.SINGLE);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("LA PARTE COMPRADORA ");estiloNegritaTexto(run);
+			run = paragrapha.createRun();run.setText("SE HARÁN CARGO DE LOS GASTOS NOTARIALES QUE GENERE LA MINUTA DE COMPRAVENTA DEFINITIVA.");estiloNormalTexto(run);
+				
+				
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();
+			run.addBreak();run.addBreak();
+			run.setText("DÉCIMO PRIMERO.");estiloNegritaTexto(run);
+			run.setUnderline(UnderlinePatterns.SINGLE);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setNumID(numID);
+			run = paragrapha.createRun();
+			run.setText("CLAUSULA DE CESION DE POSICION CONTRACTUAL");estiloNegritaTexto(run);
+			
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();
+			run.setText("POR LA PRESENTE CLÁUSULA, AMBAS PARTES DAN CONSENTIMIENTO PREVIO, EXPRESO E IRREVOCABLE DE CONFORMIDAD CON EL "
+					+ "ARTÍCULO N°1435 Y SIGUIENTES DEL CÓDIGO CIVIL, A QUE EL VENDEDOR PUEDA CEDER SU POSICIÓN CONTRACTUAL, A FAVOR DE "
+					+ "ALGÚN TERCERO. DE ESTE MODO, EL VENDEDOR PODRÁ APARTARSE TOTALMENTE DE LA RELACIÓN JURÍDICA PRIMIGENIA Y AMBAS "
+					+ "PARTES (VENDEDOR Y COMPRADOR) RECONOCEN QUE EL TERCERO AL QUE SE LE PODRÍA CEDER LA POSICIÓN DE VENDEDOR, SERÍA "
+					+ "EL ÚNICO RESPONSABLE DE TODAS LAS OBLIGACIONES Y DERECHOS COMPRENDIDO EN EL PRESENTE CONTRATO, SIN MÁS RESTRICCIÓN "
+					+ "QUE HACER DE CONOCIMIENTO CON UNA ANTICIPACIÓN DE 05 DÍAS A EL COMPRADOR A TRAVÉS DE CARTA SIMPLE, NOTARIAL O CORREO "
+					+ "ELECTRÓNICO;  LA SUSCRIPCIÓN DE LA PRESENTE ES PLENA SEÑAL DE CONSENTIMIENTO Y CONFORMIDAD DE AMBAS PARTES.");estiloNormalTexto(run);
+				
+				
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();
+			run.addBreak();run.addBreak();
+			run.setText("DÉCIMO SEGUNDO.");estiloNegritaTexto(run);
+			run.setUnderline(UnderlinePatterns.SINGLE);
+			
+			paragrapha = document.createParagraph();
+			paragrapha.setNumID(numID);
+			run = paragrapha.createRun();
+			run.setText("COMPETENCIA JURISDICCIONAL");estiloNegritaTexto(run);
+			
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();
+			run.setText("PARA TODO LO RELACIONADO CON EL FIEL CUMPLIMIENTO DE LAS CLÁUSULAS DE ESTE CONTRATO, LAS PARTES ACUERDAN, SOMETERSE "
+					+ "A LA JURISDICCIÓN DE LOS JUECES Y TRIBUNALES DE CHICLAYO, RENUNCIANDO AL FUERO DE SUS DOMICILIOS Y SEÑALANDO COMO TALES, "
+					+ "LOS CONSIGNADOS EN LA INTRODUCCIÓN DEL PRESENTE DOCUMENTO.");estiloNormalTexto(run);
+				
+				
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();
+			run.addBreak();run.addBreak();
+			run.setText("DÉCIMO TERCERO.");estiloNegritaTexto(run);
+			run.setUnderline(UnderlinePatterns.SINGLE);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setNumID(numID);
+			run = paragrapha.createRun();
+			run.setText("DOMICILIO");estiloNegritaTexto(run);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("LAS PARTES SEÑALAN COMO SUS DOMICILIOS LOS INDICADOS EN LA INTRODUCCIÓN DEL PRESENTE DOCUMENTO, "
+					+ "LUGARES A LOS QUE SERÁN DIRIGIDAS TODAS LAS COMUNICACIONES O NOTIFICACIONES A QUE HUBIERA LUGAR.");estiloNormalTexto(run);
+			
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("CUALQUIER CAMBIO DE DOMICILIO, PARA SER VÁLIDO, DEBERÁ SER COMUNICADO A LA OTRA PARTE CONFORME "
+					+ "AL ARTICULO 40° DEL CODIGO CIVIL, QUE SERA NOTIFICADA MEDIANTE CARTA CURSADA POR CONDUCTO NOTARIAL CON UNA ANTICIPACIÓN NO "
+					+ "MENOR DE 5 (CINCO) DÍAS, ESTABLECIÉNDOSE QUE LOS CAMBIOS NO COMUNICADOS EN LA FORMA PREVISTA EN ESTA CLÁUSULA SE TENDRÁN POR "
+					+ "NO HECHOS Y SERÁN VALIDAS LAS COMUNICACIONES CURSADAS AL ÚLTIMO DOMICILIO CONSTITUIDO SEGÚN LA PRESENTE CLÁUSULA.");estiloNormalTexto(run);
+				
+				
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();
+			run.addBreak();run.addBreak();
+			run.setText("DÉCIMO CUARTO.");estiloNegritaTexto(run);
+			run.setUnderline(UnderlinePatterns.SINGLE);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setNumID(numID);
+			run = paragrapha.createRun();
+			run.setText("APLICACION SUPLETORIA DE LA LEY.");estiloNegritaTexto(run);
+			
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("EN LO NO PREVISTO POR LAS PARTES EN EL PRESENTE CONTRATO, AMBAS SE SOMETEN A LO ESTABLECIDO "
+					+ "POR LAS NORMAS DEL CÓDIGO CIVIL Y DEMÁS DEL SISTEMA JURÍDICO NACIONAL QUE RESULTEN APLICABLES.");estiloNormalTexto(run);
+				
+			paragrapha = document.createParagraph();
+			paragrapha.setAlignment(ParagraphAlignment.BOTH);
+			run = paragrapha.createRun();run.setText("EN SEÑAL DE CONFORMIDAD LAS PARTES SUSCRIBEN ESTE DOCUMENTO EN LA CIUDAD DE CHICLAYO A LOS "+numeroAletra.convertirSoloNumero(sdfDay.format(contratoSelected.getFechaVenta())).toUpperCase()+" ("+sdfDay.format(contratoSelected.getFechaVenta())+") "
+					+ "DÍAS DEL MES DE "+meses[Integer.parseInt(sdfM.format(contratoSelected.getFechaVenta()))-1]+" DE "+sdfY.format(contratoSelected.getFechaVenta())+" ("+numeroAletra.convertirSoloNumero(sdfY.format(contratoSelected.getFechaVenta())).toUpperCase()+").");estiloNormalTexto(run);
+				
+			paragrapha = document.createParagraph();
+			run = paragrapha.createRun();
+			run.addBreak();run.addBreak();run.addBreak();run.addBreak();run.addBreak();run.addBreak();run.addBreak();run.addBreak();
+			run.setText("___________________________________");estiloNormalTexto(run);
+			run.addBreak();
+			run = paragrapha.createRun();run.setText("      ALAN CRUZADO BALCÁZAR");estiloNormalTexto(run);
+			run.addBreak();
+			run = paragrapha.createRun();run.setText("                  DNI: 44922055");estiloNormalTexto(run);
+		     
+				
+				
+				try {			
+					 ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+			            String filePath = scontext.getRealPath("/WEB-INF/fileAttachments/"+nombreArchivo);
+			            File file = new File(filePath);
+			            FileOutputStream out = new FileOutputStream(file);
+			            document.write(out);
+			            out.close();
+			            fileDes=null;
+			            fileDes = DefaultStreamedContent.builder()
+			                    .name(nombreArchivo)
+			                    .contentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+			                    .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/fileAttachments/"+nombreArchivo))
+			                    .build();
+		            
+		    		 
+		      
+		        } catch (FileNotFoundException e) {
+		            e.printStackTrace();
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+		
 	}
 	
 	public void formatoCredito() throws IOException, XmlException {

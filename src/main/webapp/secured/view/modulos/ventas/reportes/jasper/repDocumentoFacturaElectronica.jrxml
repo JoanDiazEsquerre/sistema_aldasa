@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="repDocumentoFacturaElectronica" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="511" leftMargin="42" rightMargin="42" topMargin="42" bottomMargin="42" uuid="f7cc8725-31db-46d6-9e69-d3629a2409fe">
 	<property name="ireport.zoom" value="1.9965000000000666"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="643"/>
+	<property name="ireport.y" value="0"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#999999"/>
@@ -165,13 +165,6 @@
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[FECHA EMISIÓN:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="ccd0144e-f9b7-497f-9553-fc5a7d6042cf" x="0" y="50" width="121" height="17"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="13" isBold="true"/>
-				</textElement>
-				<text><![CDATA[ALDASA]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="93e06e52-bb97-4b50-8b03-7c37246e2043" x="3" y="128" width="58" height="15"/>

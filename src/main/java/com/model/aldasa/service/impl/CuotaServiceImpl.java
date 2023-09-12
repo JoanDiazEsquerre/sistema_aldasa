@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.Person;
+import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.repository.CuotaRepository;
 import com.model.aldasa.service.CuotaService;
 
@@ -58,17 +59,17 @@ public class CuotaServiceImpl implements CuotaService{
 	}
 
 	@Override
-	public Page<Cuota> findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectName(
-			String pagoTotal, boolean estado, String personSurnames, String personDni, String proyecto, Pageable pageable) {
+	public Page<Cuota> findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectNameAndContratoLoteProjectSucursal(
+			String pagoTotal, boolean estado, String personSurnames, String personDni, String proyecto, Sucursal sucursal, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return cuotaRepository.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectName(pagoTotal, estado, personSurnames, personDni, proyecto,pageable);
+		return cuotaRepository.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectNameAndContratoLoteProjectSucursal(pagoTotal, estado, personSurnames, personDni, proyecto, sucursal,pageable);
 	}
 	
 	@Override
-	public Page<Cuota> findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLike(
-			String pagoTotal, boolean estado, String personSurnames, String personDni, Pageable pageable) {
+	public Page<Cuota> findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectSucursal(
+			String pagoTotal, boolean estado, String personSurnames, String personDni, Sucursal sucursal, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return cuotaRepository.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLike(pagoTotal, estado, personSurnames, personDni,pageable);
+		return cuotaRepository.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectSucursal(pagoTotal, estado, personSurnames, personDni, sucursal, pageable);
 	}
 
 	@Override

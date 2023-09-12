@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.ImagenPlantillaVenta;
+import com.model.aldasa.entity.PlantillaVenta;
 import com.model.aldasa.repository.ImagenPlantillaVentaRepository;
 import com.model.aldasa.service.ImagenPlantillaVentaService;
 
@@ -35,8 +36,8 @@ public class ImagenPlantillaServiceImpl implements ImagenPlantillaVentaService{
 	}
 
 	@Override
-	public List<ImagenPlantillaVenta> findByNombreLikeAndEstado(String nombre, boolean estado) {
+	public List<ImagenPlantillaVenta> findByPlantillaVentaAndEstado(PlantillaVenta plantillaVenta, boolean estado) {
 		// TODO Auto-generated method stub
-		return imagenPlantillaVentaRepository.findByNombreLikeAndEstado(nombre, estado);
+		return imagenPlantillaVentaRepository.findByPlantillaVentaAndEstado(plantillaVenta, estado);
 	}
 }

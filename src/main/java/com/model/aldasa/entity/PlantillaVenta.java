@@ -75,6 +75,9 @@ public class PlantillaVenta {
 	@Column(name="fecharechaza")
 	private Date fechaRechaza;
 	
+	@Column(name="realizoboletainicial")
+	private boolean realizoBoletaInicial;
+	
 	
 	public Integer getId() {
 		return id;
@@ -183,6 +186,12 @@ public class PlantillaVenta {
 	}
 	public void setFechaRechaza(Date fechaRechaza) {
 		this.fechaRechaza = fechaRechaza;
+	}
+	public boolean isRealizoBoletaInicial() {
+		return realizoBoletaInicial;
+	}
+	public void setRealizoBoletaInicial(boolean realizoBoletaInicial) {
+		this.realizoBoletaInicial = realizoBoletaInicial;
 	}
 	
 	

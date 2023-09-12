@@ -224,7 +224,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private Integer nuevoNroCuotas, numMuestraImagen;
 	private Date fechaVoucherDialog;
 	private BigDecimal montoVoucherDialog, sumaMontoVoucher;
-	private String nroOperacionVoucherDialog;
+	private String nroOperacionVoucherDialog, tipoTransaccionDialog, ctaBancDialog;
 	private String motivo="";
 	private String motivoSunat="";
 	private String razonSocialText, direccionText, email1Text, email2Text, email3Text;
@@ -719,6 +719,11 @@ public class DocumentoVentaBean extends BaseBean {
 			fechaVoucherDialog=imagen.getFecha();
 			montoVoucherDialog = imagen.getMonto();
 			nroOperacionVoucherDialog = imagen.getNumeroOperacion();
+			tipoTransaccionDialog = imagen.getTipoTransaccion();
+			if(imagen.getCuentaBancaria()!=null) {
+				ctaBancDialog = imagen.getCuentaBancaria().getBanco().getAbreviatura()+" "+ imagen.getCuentaBancaria().getNumero();
+			}
+			
 		}
 	}
 	
@@ -728,6 +733,8 @@ public class DocumentoVentaBean extends BaseBean {
 			fechaVoucherDialog = null;
 			montoVoucherDialog=null;
 			nroOperacionVoucherDialog="";
+			tipoTransaccionDialog="";
+			ctaBancDialog="";
 			
 			loadImageDocumentoBean.setNombreArchivo("0.png");
 			imagen1 = "";
@@ -1358,6 +1365,29 @@ public class DocumentoVentaBean extends BaseBean {
 		return valor;
 	}
 	
+	public void editarCorreoCliente() {
+		if(documentoVentaSelected.getCliente().getEmail1Fe() != null) {
+			if(documentoVentaSelected.getCliente().getEmail1Fe().equals("")) {
+				documentoVentaSelected.getCliente().setEmail1Fe(null);
+			}
+		}
+		
+		if(documentoVentaSelected.getCliente().getEmail2Fe() != null) {
+			if(documentoVentaSelected.getCliente().getEmail2Fe().equals("")) {
+				documentoVentaSelected.getCliente().setEmail2Fe(null);
+			}
+		}
+		
+		if(documentoVentaSelected.getCliente().getEmail3Fe() != null) {
+			if(documentoVentaSelected.getCliente().getEmail3Fe().equals("")) {
+				documentoVentaSelected.getCliente().setEmail3Fe(null);
+			}
+		}
+		
+		clienteService.save(documentoVentaSelected.getCliente());
+		addInfoMessage("Se actualizó el correo correctamente");
+	}
+	
 	public boolean validarDatosImagen() {
 		boolean valida=false;
 		if(file2!=null){
@@ -1694,7 +1724,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		DocumentoVenta documento = documentoVentaService.save(documentoVenta, lstDetalleDocumentoVenta, serieDocumentoSelected); 
 		if(documento != null) {
-//			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
+			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
 			
 			lstDetalleDocumentoVenta.clear();// claer es limpiar en ingles prueba
 			clienteSelected=null;
@@ -1709,8 +1739,8 @@ public class DocumentoVentaBean extends BaseBean {
 			email2Text = "";
 			email3Text = "";
 			
-//			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
-			addInfoMessage("Se guardó el documento correctamente. ");
+			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
+			addInfoMessage("Se guardó el documento correctamente. "+ addMensaje);
 			
 		}else {
 			addErrorMessage("No se puede guardar el documento."); 
@@ -2422,10 +2452,10 @@ public class DocumentoVentaBean extends BaseBean {
                
                 Page<Cuota> pageCuota=null;
                 if(projectFilter != null) {
-                    pageCuota= cuotaService.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectName("N", true, names, dni, projectFilter.getName(), pageable);
+                    pageCuota= cuotaService.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectNameAndContratoLoteProjectSucursal("N", true, names, dni, projectFilter.getName(), navegacionBean.getSucursalLogin(),pageable);
 
 				}else {
-                    pageCuota= cuotaService.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLike("N", true, names, dni, pageable);
+                    pageCuota= cuotaService.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectSucursal("N", true, names, dni,navegacionBean.getSucursalLogin(), pageable);
 
 				}
                 
@@ -2724,7 +2754,7 @@ public class DocumentoVentaBean extends BaseBean {
             parametros.put("BARCODESTRING", bar);
             parametros.put("RUCEMPRESA", navegacionBean.getSucursalLogin().getRuc());
             
-            parametros.put("RUTAIMAGEN", getRutaGrafico("/recursos/images/LOGO.png"));
+            parametros.put("RUTAIMAGEN", getRutaGrafico(navegacionBean.getSucursalLogin().getId() == 1?"/recursos/images/LOGO.png":"/recursos/images/LOGO_ABARCA.png"));
             
             String path = "secured/view/modulos/ventas/reportes/jasper/repDocumentoFacturaElectronica.jasper"; 
             reportGenBo.exportByFormatNotConnectDb(dt, path, "pdf", parametros, "DOCUMENTO " , "hh");
@@ -4334,6 +4364,18 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setTipoTransaccion10(String tipoTransaccion10) {
 		this.tipoTransaccion10 = tipoTransaccion10;
+	}
+	public String getTipoTransaccionDialog() {
+		return tipoTransaccionDialog;
+	}
+	public void setTipoTransaccionDialog(String tipoTransaccionDialog) {
+		this.tipoTransaccionDialog = tipoTransaccionDialog;
+	}
+	public String getCtaBancDialog() {
+		return ctaBancDialog;
+	}
+	public void setCtaBancDialog(String ctaBancDialog) {
+		this.ctaBancDialog = ctaBancDialog;
 	}
 	
 

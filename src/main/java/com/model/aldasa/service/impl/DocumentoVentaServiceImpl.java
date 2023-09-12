@@ -15,6 +15,7 @@ import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
 import com.model.aldasa.entity.Empresa;
+import com.model.aldasa.entity.PlantillaVenta;
 import com.model.aldasa.entity.SerieDocumento;
 import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.entity.TipoDocumento;
@@ -22,6 +23,7 @@ import com.model.aldasa.repository.ContratoRepository;
 import com.model.aldasa.repository.CuotaRepository;
 import com.model.aldasa.repository.DetalleDocumentoVentaRepository;
 import com.model.aldasa.repository.DocumentoVentaRepository;
+import com.model.aldasa.repository.PlantillaVentaRepository;
 import com.model.aldasa.repository.SerieDocumentoRepository;
 import com.model.aldasa.repository.VoucherRepository;
 import com.model.aldasa.service.DocumentoVentaService;
@@ -48,6 +50,9 @@ public class DocumentoVentaServiceImpl implements DocumentoVentaService{
 	@Autowired
 	private VoucherRepository voucherRepository;
 	
+	@Autowired
+	private PlantillaVentaRepository plantillaVentaRepository;
+	
 	@Override
 	public Optional<DocumentoVenta> findById(Integer id) {
 		// TODO Auto-generated method stub
@@ -70,6 +75,18 @@ public class DocumentoVentaServiceImpl implements DocumentoVentaService{
 			detalleDocumentoVentaRepository.save(d);
 			
 			if(d.getCuota()!=null) {
+				// ESTO ES PARA ACTUALIZAR PLANTILLA DE VENTA-------
+				if(d.getProducto().getTipoProducto().equals(TipoProductoType.INICIAL.getTipo())) {
+					List<PlantillaVenta> lstPlantilla = plantillaVentaRepository.findByEstadoAndLote("Aprobado", d.getCuota().getContrato().getLote());
+					if(!lstPlantilla.isEmpty()) {
+						for(PlantillaVenta p: lstPlantilla) {
+							p.setRealizoBoletaInicial(true);
+							plantillaVentaRepository.save(p);
+						}
+					}
+				}
+				//-----------------------------------FIN
+				
 				if(!d.getProducto().getTipoProducto().equals(TipoProductoType.INTERES.getTipo())) {
 					BigDecimal cuota = d.getCuota().getCuotaTotal().subtract(d.getCuota().getAdelanto());
 					BigDecimal cuota2 = BigDecimal.ZERO;
@@ -117,6 +134,8 @@ public class DocumentoVentaServiceImpl implements DocumentoVentaService{
 		
 		serie.setNumero(aumento+"");
 		serieDocumentoRepository.save(serie);
+		
+		
 
 		return entity;
 

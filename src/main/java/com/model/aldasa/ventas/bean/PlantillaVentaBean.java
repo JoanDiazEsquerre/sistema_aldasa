@@ -177,6 +177,16 @@ public class PlantillaVentaBean extends BaseBean {
 		lstTeam=teamService.findByStatus(true);
 	}
 	
+	public void anularPlantilla() {
+		if(plantillaVentaSelected.getEstado().equals("Aprobado")) {
+			addWarnMessage("No se puede anular porque la plantilla ya se aprobó.");
+			return;
+		}
+		plantillaVentaSelected.setEstado("Anulado");
+		plantillaVentaService.save(plantillaVentaSelected);
+		addInfoMessage("Plantilla anulado correctamente.");	
+	}
+	
 	public void listarAsesores() {
 		personAsesor = null;
 		lstPersonAsesor = new ArrayList<>();
@@ -453,6 +463,18 @@ public class PlantillaVentaBean extends BaseBean {
 	}
 	
 	public void savePlantillaVenta() {
+		List<PlantillaVenta> lstPlantillaPen = plantillaVentaService.findByEstadoAndLote("Pendiente", lotePlantilla);
+		if(!lstPlantillaPen.isEmpty()) {
+			addErrorMessage("Ya existe una plantilla PENDIENTE con el lote seleccionado");
+			return;
+		}
+		
+		List<PlantillaVenta> lstPlantillaAprob = plantillaVentaService.findByEstadoAndLote("Aprobado", lotePlantilla);
+		if(!lstPlantillaAprob.isEmpty()) {
+			addErrorMessage("Ya existe una plantilla APROBADA con el lote seleccionado");
+			return;
+		}
+		
 		PlantillaVenta plantillaVentaNew = new PlantillaVenta();
 		plantillaVentaNew.setPerson(personCliente);
 		if(team.getPersonSupervisor()!=null)plantillaVentaNew.setPersonSupervisor(team.getPersonSupervisor());
@@ -583,9 +605,9 @@ public class PlantillaVentaBean extends BaseBean {
 		imagen9 = "";
 		imagen10 = "";
 		
-		String nombreBusqueda = "%"+plantillaVentaSelected.getId() +"_%";
+//		String nombreBusqueda = "%"+plantillaVentaSelected.getId() +"_%";
 		
-		List<ImagenPlantillaVenta> lstImagenPlantilla = imagenPlantillaVentaService.findByNombreLikeAndEstado(nombreBusqueda, true);
+		List<ImagenPlantillaVenta> lstImagenPlantilla = imagenPlantillaVentaService.findByPlantillaVentaAndEstado(plantillaVentaSelected, true);
 		int contador = 1;
 		for(ImagenPlantillaVenta i:lstImagenPlantilla) {
 			if(contador==1) {

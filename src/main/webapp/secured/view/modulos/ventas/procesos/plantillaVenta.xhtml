@@ -14,7 +14,7 @@
 					<f:selectItem itemLabel="Pendientes" itemValue="Pendiente"/>
 					<f:selectItem itemLabel="Aprobados" itemValue="Aprobado"/>
 					<f:selectItem itemLabel="Rechazados" itemValue="Rechazado"/>
-					
+					<f:selectItem itemLabel="Anulados" itemValue="Anulado"/>
 					<p:ajax update=":form:tabView:idTablePlantillaVenta" />
 				</p:selectOneButton>
 				
@@ -109,11 +109,18 @@
 						</h:outputText>
 					</p:column>
 					
-					<p:column headerText="Realizó Contrato" sortBy="#{plantilla.realizoContrato} " filterMatchMode="contains">
-						<h:outputText value="#{plantilla.realizoContrato ? 'SI':'NO'}" />
+					<p:column headerText="Realizó Contrato?" sortBy="#{plantilla.realizoContrato} " filterMatchMode="contains">
+						<h:outputText value="#{plantilla.realizoContrato ? 'SI':'NO'}" style="font-weight:bold;color:#{plantilla.realizoContrato ? 'blue':'black'}"/>
 					</p:column>
 					
+					<p:column headerText="Realizó boleta inicial?" sortBy="#{plantilla.realizoBoletaInicial} " filterMatchMode="contains">
+						<h:outputText value="#{plantilla.realizoBoletaInicial ? 'SI':'NO'}" style="font-weight:bold;color:#{plantilla.realizoContrato ? 'blue':'black'}" />
+					</p:column>
 				</p:dataTable>
+				<p:contextMenu id="menuTableReq" for="idTablePlantillaVenta" >
+		            <p:menuitem value="Anular" icon="pi pi-trash" oncomplete="PF('anulaPlantilla').show()"  />		        
+		        
+		        </p:contextMenu>
 			
 			</p:tab>
 			<p:tab title=" Nueva Plantilla de Venta" id="idTab4"> 
@@ -223,7 +230,7 @@
 			<h:panelGrid id="idDatosPlantilla" columns="2" >  
 			
 				<h:outputLabel value="Cliente: " style="font-weight:bold"/>
-				<h:outputLabel value="#{plantillaVentaBean.plantillaVentaSelected.person.surnames}"/> 
+				<h:outputLabel value="#{plantillaVentaBean.plantillaVentaSelected.person.surnames} #{plantillaVentaBean.plantillaVentaSelected.person.names} / DNI: #{plantillaVentaBean.plantillaVentaSelected.person.dni}"/> 
 				
 				<h:outputLabel value="Proyecto: " style="font-weight:bold"/>
 				<h:outputLabel value="#{plantillaVentaBean.plantillaVentaSelected.lote.project.name}"/> 
@@ -356,6 +363,19 @@
             <p:commandButton value="SI" onstart="PF('blockUIWidgetSavePlantilla').block();" oncomplete="PF('blockUIWidgetSavePlantilla').unblock();PF('savePlantillaVenta').hide()"  action="#{plantillaVentaBean.savePlantillaVenta()}" 
             update=":form:tabView:idTablePlantillaVenta :form:tabView:idPanelPlantilla :form:tabView:panelPlantilla2  :form:tabView:pnlCond"/>
             <p:commandButton value="NO" oncomplete="PF('savePlantillaVenta').hide()"/>
+        </h:form>
+    </p:confirmDialog>
+    
+    <pe:blockUI target="anulaPlantilla" widgetVar="blockUIWidgetAnularPlantilla">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+	<p:confirmDialog id="anulaPlantilla" message="¿Está seguro de anular la Plantilla" header="Confirmación"
+                      severity="alert" widgetVar="anulaPlantilla" appendTo="@(body)">
+        <h:form >
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetAnularPlantilla').block();" oncomplete="PF('blockUIWidgetAnularPlantilla').unblock();PF('anulaPlantilla').hide()"  action="#{plantillaVentaBean.anularPlantilla}" update=":form:tabView:idTablePlantillaVenta"/>
+            <p:commandButton value="NO" oncomplete="PF('anulaPlantilla').hide()"/>
         </h:form>
     </p:confirmDialog>
 	

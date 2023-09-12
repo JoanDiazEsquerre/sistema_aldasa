@@ -15,7 +15,7 @@
 				<p:selectOneButton value="#{documentoVentaBean.estado}"
 					unselectable="false">
 					<f:selectItem itemLabel="Activos" itemValue="#{true}" />
-					<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
+					<f:selectItem itemLabel="Anulados" itemValue="#{false}" />
 					<p:ajax update=":form:tabView:idTableListDoc" listener="#{documentoVentaBean.iniciarLazy()}" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('blockUIWidgetGeneral').unblock();"/>
 				</p:selectOneButton>
 				
@@ -185,7 +185,7 @@
 								<p:ajax event="rowSelect" listener="#{documentoVentaBean.importarCuota}" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('moviePickerCuota').hide();PF('blockUIWidgetGeneral').unblock();" 
 								update=":form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante" />
 
-								<p:column headerText="Nro Cuota" style="text-align:center; width:60px">
+								<p:column headerText="Nro Cuota" sortBy="#{cuota.nroCuota}" style="text-align:center; width:60px">
 									<h:outputText value="#{cuota.nroCuota}" style="font-size: 14px;" />
 								</p:column>
 
@@ -1013,11 +1013,11 @@
 
 			<h:panelGrid width="100%" columns="2" styleClass="companyHeaderGrid"> 
 			
-				<p:graphicImage  value="/recursos/images/LOGO.png"  library="demo" style="width:150px"/>	
+				<p:graphicImage  value="#{navegacionBean.sucursalLogin.id eq 1?'/recursos/images/LOGO.png':'/recursos/images/LOGO_ABARCA.png'}"  library="demo" style="width:150px"/>	
 
 	        	<h:panelGrid columns="1" style="float:right" >	
 	        		<h:panelGrid columns="1" >	
-	        			<h:outputText value="#{documentoVentaBean.documentoVentaSelected.tipoDocumento.abreviatura eq 'B'?'BOLETA':'FACTURA'} DE VENTA N° #{documentoVentaBean.documentoVentaSelected.serie}-#{documentoVentaBean.documentoVentaSelected.numero}" style="width : 100px;color:#337CFF;font-size: 20px;"/>				
+	        			<h:outputText value="#{documentoVentaBean.documentoVentaSelected.tipoDocumento.abreviatura eq 'B'?'BOLETA': documentoVentaBean.documentoVentaSelected.tipoDocumento.abreviatura eq 'F'?'FACTURA': documentoVentaBean.documentoVentaSelected.tipoDocumento.abreviatura eq 'C'?'NOTA DE CRÉDITO': 'NOTA DE DÉBITO'} N° #{documentoVentaBean.documentoVentaSelected.serie}-#{documentoVentaBean.documentoVentaSelected.numero}" style="width : 100px;color:#337CFF;font-size: 20px;"/>				
 					</h:panelGrid>
 					<h:panelGrid columns="2" >	
 						<h:outputText value="Fecha Emisión:" style="float:right"/>
@@ -1048,6 +1048,27 @@
 	        	
 	        	<h:outputText value="Observación:" />
 	        	<h:outputText value="#{documentoVentaBean.documentoVentaSelected.observacion}"  />
+	        	
+	        	<h:outputText value="Correo 1:" />
+	        	<p:inplace>
+		            <p:inputText value="#{documentoVentaBean.documentoVentaSelected.cliente.email1Fe}" id="textoEditado">
+			            <p:ajax event="blur" listener="#{documentoVentaBean.editarCorreoCliente}" update="formDocumentoVentaDialog" />
+			        </p:inputText>
+		        </p:inplace>
+		        
+		        <h:outputText value="Correo 2:" />
+		        <p:inplace>
+		            <p:inputText value="#{documentoVentaBean.documentoVentaSelected.cliente.email2Fe}" id="textoEditado2">
+			            <p:ajax event="blur" listener="#{documentoVentaBean.editarCorreoCliente}" update="formDocumentoVentaDialog" />
+			        </p:inputText>
+		        </p:inplace>
+		        
+		        <h:outputText value="Correo 3:" />
+		        <p:inplace>
+		            <p:inputText value="#{documentoVentaBean.documentoVentaSelected.cliente.email3Fe}" id="textoEditado3">
+			            <p:ajax event="blur" listener="#{documentoVentaBean.editarCorreoCliente}" update="formDocumentoVentaDialog" />
+			        </p:inputText>
+		        </p:inplace>
 	
 			</h:panelGrid>   
 				
@@ -1239,7 +1260,7 @@
 			
 				<h:outputLabel value="Fecha:"/> 
 				<h:outputLabel value="#{documentoVentaBean.fechaVoucherDialog}" > 
-					<f:convertDateTime pattern="dd/MM/yyyy" />
+					<f:convertDateTime pattern="dd/MM/yyyy hh:mm:ss a" />
 				</h:outputLabel>
 				
 				<h:outputLabel value="Monto:"/>
@@ -1249,6 +1270,12 @@
 				
 				<h:outputLabel value="Nro Operación:"/>
 				<h:outputLabel value="#{documentoVentaBean.nroOperacionVoucherDialog}"/> 
+				
+				<h:outputLabel value="Tipo transacción:"/>
+				<h:outputLabel value="#{documentoVentaBean.tipoTransaccionDialog}"/> 
+				
+				<h:outputLabel value="Cuenta Bancaria:"/>
+				<h:outputLabel value="#{documentoVentaBean.ctaBancDialog}"/> 
 			
 			</h:panelGrid>
 			
