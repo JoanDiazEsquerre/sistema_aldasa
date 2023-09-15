@@ -59,17 +59,17 @@ public class CuotaServiceImpl implements CuotaService{
 	}
 
 	@Override
-	public Page<Cuota> findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectNameAndContratoLoteProjectSucursal(
-			String pagoTotal, boolean estado, String personSurnames, String personDni, String proyecto, Sucursal sucursal, Pageable pageable) {
+	public Page<Cuota> findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectNameAndContratoLoteProjectSucursalAndContratoLoteNumberLoteLikeAndContratoLoteManzanaNameLike(
+			String pagoTotal, boolean estado, String personSurnames, String personDni, String proyecto, Sucursal sucursal,String numLote, String manzana, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return cuotaRepository.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectNameAndContratoLoteProjectSucursal(pagoTotal, estado, personSurnames, personDni, proyecto, sucursal,pageable);
+		return cuotaRepository.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectNameAndContratoLoteProjectSucursalAndContratoLoteNumberLoteLikeAndContratoLoteManzanaNameLike(pagoTotal, estado, personSurnames, personDni, proyecto, sucursal,numLote,manzana,pageable);
 	}
 	
 	@Override
-	public Page<Cuota> findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectSucursal(
-			String pagoTotal, boolean estado, String personSurnames, String personDni, Sucursal sucursal, Pageable pageable) {
+	public Page<Cuota> findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectSucursalAndContratoLoteNumberLoteLikeAndContratoLoteManzanaNameLike(
+			String pagoTotal, boolean estado, String personSurnames, String personDni, Sucursal sucursal, String numLote, String manzana,Pageable pageable) {
 		// TODO Auto-generated method stub
-		return cuotaRepository.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectSucursal(pagoTotal, estado, personSurnames, personDni, sucursal, pageable);
+		return cuotaRepository.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectSucursalAndContratoLoteNumberLoteLikeAndContratoLoteManzanaNameLike(pagoTotal, estado, personSurnames, personDni, sucursal,numLote,manzana, pageable);
 	}
 
 	@Override

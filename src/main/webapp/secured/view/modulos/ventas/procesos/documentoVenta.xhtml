@@ -189,8 +189,12 @@
 									<h:outputText value="#{cuota.nroCuota}" style="font-size: 14px;" />
 								</p:column>
 
-								<p:column headerText="Mz-Lt" style="text-align:center; width:60px">
-									<h:outputText value="#{cuota.contrato.lote.manzana.name} - #{cuota.contrato.lote.numberLote}" style="font-size: 14px;" />
+								<p:column headerText="Mz" filterBy="#{cuota.contrato.lote.manzana.name}" style="text-align:center; width:60px">
+									<h:outputText value="#{cuota.contrato.lote.manzana.name}" style="font-size: 14px;" />
+								</p:column>
+								
+								<p:column headerText="Lt" filterBy="#{cuota.contrato.lote.numberLote}" style="text-align:center; width:60px">
+									<h:outputText value="#{cuota.contrato.lote.numberLote}" style="font-size: 14px;" />
 								</p:column>
 								
 								<p:column headerText="Proyecto" style="text-align:center; width:70px">

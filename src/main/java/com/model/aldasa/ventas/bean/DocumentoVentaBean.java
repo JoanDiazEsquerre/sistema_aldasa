@@ -2031,8 +2031,6 @@ public class DocumentoVentaBean extends BaseBean {
 						addErrorMessage("Ya seleccionó la cuota");			
 						return;
 					}
-					System.out.println("******"+cuotaSelected.getContrato().getPersonVenta().getId());
-					System.out.println("******"+d.getCuota().getContrato().getPersonVenta().getId());
 					if(!cuotaSelected.getContrato().getPersonVenta().getId().equals(d.getCuota().getContrato().getPersonVenta().getId()) ) {
 						addErrorMessage("La cuota debe ser de la misma persona.");
 						return;
@@ -2080,34 +2078,69 @@ public class DocumentoVentaBean extends BaseBean {
 				detalle.setCuotaPrepago(null);
 				lstDetalleDocumentoVenta.add(detalle);
 				
+				if(cuotaSelected.getInteres().compareTo(BigDecimal.ZERO)!=0) {
+					DetalleDocumentoVenta detalleInteres = new DetalleDocumentoVenta();
+					//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
+					detalleInteres.setDocumentoVenta(null);
+					detalleInteres.setProducto(productoInteres);
+					detalleInteres.setDescripcion("POR EL INTERES CORRESPONDIENTE A LA CUOTA N°" + cuotaSelected.getNroCuota());
+					detalleInteres.setAmortizacion(BigDecimal.ZERO);
+					detalleInteres.setInteres(cuotaSelected.getInteres());
+					detalleInteres.setAdelanto(BigDecimal.ZERO);
+					detalleInteres.setImporteVenta(cuotaSelected.getInteres());
+					detalleInteres.setCuota(cuotaSelected);
+					detalleInteres.setVoucher(null);
+					detalleInteres.setCuotaPrepago(null);
+					lstDetalleDocumentoVenta.add(detalleInteres);
+				}
 				
-				DetalleDocumentoVenta detalleInteres = new DetalleDocumentoVenta();
-				//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
-				detalleInteres.setDocumentoVenta(null);
-				detalleInteres.setProducto(productoInteres);
-				detalleInteres.setDescripcion("POR EL INTERES CORRESPONDIENTE A LA CUOTA N°" + cuotaSelected.getNroCuota());
-				detalleInteres.setAmortizacion(BigDecimal.ZERO);
-				detalleInteres.setInteres(cuotaSelected.getInteres());
-				detalleInteres.setAdelanto(BigDecimal.ZERO);
-				detalleInteres.setImporteVenta(cuotaSelected.getInteres());
-				detalleInteres.setCuota(cuotaSelected);
-				detalleInteres.setVoucher(null);
-				detalleInteres.setCuotaPrepago(null);
-				lstDetalleDocumentoVenta.add(detalleInteres);
 			}else {
-				DetalleDocumentoVenta detalle = new DetalleDocumentoVenta();
-				//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
-				detalle.setDocumentoVenta(null);
-				detalle.setProducto(productoCuota);
-				detalle.setDescripcion("PAGO DE LA CUOTA N° "+ cuotaSelected.getNroCuota() +" POR LA VENTA DE UN LOTE DE TERRENO CON N° "+ cuotaSelected.getContrato().getLote().getNumberLote() +" MZ - "+ cuotaSelected.getContrato().getLote().getManzana().getName() +" , UBICADO EN " + cuotaSelected.getContrato().getLote().getProject().getName());
-				detalle.setAmortizacion(cuotaSelected.getCuotaSI().add(cuotaSelected.getInteres()).subtract(cuotaSelected.getAdelanto()));
-				detalle.setInteres(BigDecimal.ZERO);
-				detalle.setAdelanto(cuotaSelected.getAdelanto());		
-				detalle.setImporteVenta(cuotaSelected.getCuotaSI().add(cuotaSelected.getInteres()).subtract(cuotaSelected.getAdelanto()));
-				detalle.setCuota(cuotaSelected);
-				detalle.setVoucher(null);
-				detalle.setCuotaPrepago(null);
-				lstDetalleDocumentoVenta.add(detalle);
+				if(cuotaSelected.getAdelanto().compareTo(cuotaSelected.getInteres()) < 0) {
+					DetalleDocumentoVenta detalle = new DetalleDocumentoVenta();
+					//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
+					detalle.setDocumentoVenta(null);
+					detalle.setProducto(productoCuota);
+					detalle.setDescripcion("PAGO DE LA CUOTA N° "+ cuotaSelected.getNroCuota() +" POR LA VENTA DE UN LOTE DE TERRENO CON N° "+ cuotaSelected.getContrato().getLote().getNumberLote() +" MZ - "+ cuotaSelected.getContrato().getLote().getManzana().getName() +" , UBICADO EN " + cuotaSelected.getContrato().getLote().getProject().getName());
+					detalle.setAmortizacion(cuotaSelected.getCuotaSI().subtract(cuotaSelected.getAdelanto()));
+					detalle.setInteres(BigDecimal.ZERO);
+					detalle.setAdelanto(cuotaSelected.getAdelanto());		
+					detalle.setImporteVenta(cuotaSelected.getCuotaSI().add(cuotaSelected.getInteres()).subtract(cuotaSelected.getAdelanto()));
+					detalle.setCuota(cuotaSelected);
+					detalle.setVoucher(null);
+					detalle.setCuotaPrepago(null);
+					lstDetalleDocumentoVenta.add(detalle);
+					
+					DetalleDocumentoVenta detalleInteres = new DetalleDocumentoVenta();
+					//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
+					detalleInteres.setDocumentoVenta(null);
+					detalleInteres.setProducto(productoInteres);
+					detalleInteres.setDescripcion("POR EL INTERES CORRESPONDIENTE A LA CUOTA N°" + cuotaSelected.getNroCuota());
+					detalleInteres.setAmortizacion(BigDecimal.ZERO);
+					detalleInteres.setInteres(cuotaSelected.getInteres());
+					detalleInteres.setAdelanto(BigDecimal.ZERO);
+					detalleInteres.setImporteVenta(cuotaSelected.getInteres());
+					detalleInteres.setCuota(cuotaSelected);
+					detalleInteres.setVoucher(null);
+					detalleInteres.setCuotaPrepago(null);
+					lstDetalleDocumentoVenta.add(detalleInteres);
+					
+				}else {
+
+					DetalleDocumentoVenta detalle = new DetalleDocumentoVenta();
+					//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
+					detalle.setDocumentoVenta(null);
+					detalle.setProducto(productoCuota);
+					detalle.setDescripcion("PAGO DE LA CUOTA N° "+ cuotaSelected.getNroCuota() +" POR LA VENTA DE UN LOTE DE TERRENO CON N° "+ cuotaSelected.getContrato().getLote().getNumberLote() +" MZ - "+ cuotaSelected.getContrato().getLote().getManzana().getName() +" , UBICADO EN " + cuotaSelected.getContrato().getLote().getProject().getName());
+					detalle.setAmortizacion(cuotaSelected.getCuotaSI().add(cuotaSelected.getInteres()).subtract(cuotaSelected.getAdelanto()));
+					detalle.setInteres(BigDecimal.ZERO);
+					detalle.setAdelanto(cuotaSelected.getAdelanto());		
+					detalle.setImporteVenta(cuotaSelected.getCuotaSI().add(cuotaSelected.getInteres()).subtract(cuotaSelected.getAdelanto()));
+					detalle.setCuota(cuotaSelected);
+					detalle.setVoucher(null);
+					detalle.setCuotaPrepago(null);
+					lstDetalleDocumentoVenta.add(detalle);
+				}
+				
 				
 			}
 			
@@ -2436,6 +2469,9 @@ public class DocumentoVentaBean extends BaseBean {
 			public List<Cuota> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
 				String names = "%" + (filterBy.get("contrato.personVenta.surnames") != null ? filterBy.get("contrato.personVenta.surnames").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
 				String dni = "%" + (filterBy.get("contrato.personVenta.dni") != null ? filterBy.get("contrato.personVenta.dni").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+				String numLote = "%" + (filterBy.get("contrato.lote.numberLote") != null ? filterBy.get("contrato.lote.numberLote").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+				String manzana = "%" + (filterBy.get("contrato.lote.manzana.name") != null ? filterBy.get("contrato.lote.manzana.name").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+				
 				
                 Sort sort=Sort.by("fechaPago").ascending();
                 if(sortBy!=null) {
@@ -2452,10 +2488,10 @@ public class DocumentoVentaBean extends BaseBean {
                
                 Page<Cuota> pageCuota=null;
                 if(projectFilter != null) {
-                    pageCuota= cuotaService.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectNameAndContratoLoteProjectSucursal("N", true, names, dni, projectFilter.getName(), navegacionBean.getSucursalLogin(),pageable);
+                    pageCuota= cuotaService.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectNameAndContratoLoteProjectSucursalAndContratoLoteNumberLoteLikeAndContratoLoteManzanaNameLike("N", true, names, dni, projectFilter.getName(), navegacionBean.getSucursalLogin(),numLote,manzana,pageable);
 
 				}else {
-                    pageCuota= cuotaService.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectSucursal("N", true, names, dni,navegacionBean.getSucursalLogin(), pageable);
+                    pageCuota= cuotaService.findByPagoTotalAndEstadoAndContratoPersonVentaSurnamesLikeAndContratoPersonVentaDniLikeAndContratoLoteProjectSucursalAndContratoLoteNumberLoteLikeAndContratoLoteManzanaNameLike("N", true, names, dni,navegacionBean.getSucursalLogin(),numLote,manzana, pageable);
 
 				}
                 
