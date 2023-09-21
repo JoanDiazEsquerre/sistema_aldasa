@@ -22,7 +22,7 @@
                 </p:commandButton>
 				
 				<p:dataTable var="contrato" id="idTableContrato" value="#{contratoBean.lstContratoLazy}" widgetVar="contratoTable" rowIndexVar="row" paginator="true" rows="15" size="small"
-				emptyMessage="No se encontraron contratos."	paginatorPosition="bottom" rowKey="#{contrato.id}"  selectionMode="single" selection="#{contratoBean.contratoSelected}">
+				emptyMessage="No se encontraron contratos." style="width: 150%"	paginatorPosition="bottom" rowKey="#{contrato.id}"  selectionMode="single" selection="#{contratoBean.contratoSelected}">
 				
 					<f:facet name="header">
 						<div class="p-d-flex p-ai-center p-jc-between">
@@ -34,80 +34,87 @@
 			                      #{row +1}
 			        </p:column>
 			        
- 			        <p:column headerText="Proyecto" filterMatchMode="contains" sortBy="#{contrato.lote.project.name}" filterBy="#{contrato.lote.project.name}">
+ 			        <p:column headerText="Proyecto" filterMatchMode="contains" width="200px" sortBy="#{contrato.lote.project.name}" filterBy="#{contrato.lote.project.name}">
 						<h:outputText value="#{contrato.lote.project.name}"/>
 					</p:column>
 					
-					<p:column headerText="Manzana" filterMatchMode="contains" style="text-align:center" sortBy="#{contrato.lote.manzana.name}" filterBy="#{contrato.lote.manzana.name}">
+					<p:column headerText="Manzana" filterMatchMode="contains" width="70px" style="text-align:center" sortBy="#{contrato.lote.manzana.name}" filterBy="#{contrato.lote.manzana.name}">
 						<h:outputText value="#{contrato.lote.manzana.name}"/>
 					</p:column>
 					
-					<p:column headerText="Num. Lote" filterMatchMode="contains" style="text-align:center" sortBy="#{contrato.lote.numberLote}" filterBy="#{contrato.lote.numberLote}">
+					<p:column headerText="Num. Lote" filterMatchMode="contains" width="70px" style="text-align:center" sortBy="#{contrato.lote.numberLote}" filterBy="#{contrato.lote.numberLote}">
 						<h:outputText value="#{contrato.lote.numberLote}"/>
 					</p:column>
 			        
-			        <p:column headerText="Fecha Venta" filterMatchMode="contains" sortBy="#{contrato.fechaVenta}">
+			        <p:column headerText="Fecha Venta" filterMatchMode="contains" sortBy="#{contrato.fechaVenta}" width="100px">
 						<h:outputText value="#{contrato.fechaVenta}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
 			        
-					<p:column headerText="Monto Venta" filterMatchMode="contains">
+					<p:column headerText="Monto Venta" filterMatchMode="contains" width="90px">
 						<h:outputText value="#{contrato.montoVenta}"> 
 							<f:convertNumber type="currency" currencySymbol="S/"/>
 						</h:outputText>
 					</p:column>
 					
-					<p:column headerText="Tipo Pago" filterMatchMode="contains">
+					<p:column headerText="Tipo Pago" filterMatchMode="contains" width="70px">
 						<h:outputText value="#{contrato.tipoPago}"/>
 					</p:column>
 					
-					<p:column headerText="Monto Inicial" filterMatchMode="contains">
+					<p:column headerText="Monto Inicial" filterMatchMode="contains" width="90px">
 						<h:outputText value="#{contrato.montoInicial}"> 
 							<f:convertNumber type="currency" currencySymbol="S/"/>
 						</h:outputText>
 					</p:column>
 					
-					<p:column headerText="Número Cuotas" filterMatchMode="contains">
+					<p:column headerText="Número Cuotas" filterMatchMode="contains" width="70px">
 						<h:outputText value="#{contrato.numeroCuota}"/>
 					</p:column>
 					
-					<p:column headerText="Interés" filterMatchMode="contains">
+					<p:column headerText="Interés" filterMatchMode="contains" width="70px">
 						<h:outputText value="#{contrato.interes}#{contrato.interes eq null?'':'%'}">  
 							<f:convertNumber type="currency" currencySymbol=""/>
 						</h:outputText>
 					</p:column>
 					
-					<p:column headerText="Fecha 1ra Cuota" filterMatchMode="contains">
+					<p:column headerText="Fecha 1ra Cuota" filterMatchMode="contains" width="70px">
 						<h:outputText value="#{contrato.fechaPrimeraCuota}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
 					
-					<p:column headerText="Persona Venta 1" filterMatchMode="contains">
+					<p:column headerText="Persona Venta 1" filterMatchMode="contains" width="200px">
 						<h:outputText value="#{contrato.personVenta.surnames} #{contrato.personVenta.names}"/>
 					</p:column>
 					
-					<p:column headerText="Persona Venta 2" filterMatchMode="contains">
+					<p:column headerText="Persona Venta 2" filterMatchMode="contains" width="200px">
 						<h:outputText  value="#{contrato.personVenta2.surnames} #{contrato.personVenta2.names}"/>
 					</p:column>
 					
-					<p:column headerText="Persona Venta 3" filterMatchMode="contains">
+					<p:column headerText="Persona Venta 3" filterMatchMode="contains" width="200px">
 						<h:outputText  value="#{contrato.personVenta3.surnames} #{contrato.personVenta3.names}"/>
 					</p:column>
 					
-					<p:column headerText="Persona Venta 4" filterMatchMode="contains">
+					<p:column headerText="Persona Venta 4" filterMatchMode="contains" width="200px">
 						<h:outputText  value="#{contrato.personVenta4.surnames} #{contrato.personVenta4.names}"/>
 					</p:column>
 					
-					<p:column headerText="Persona Venta 5" filterMatchMode="contains">
+					<p:column headerText="Persona Venta 5" filterMatchMode="contains" width="200px">
 						<h:outputText  value="#{contrato.personVenta5.surnames} #{contrato.personVenta5.names}"/>
 					</p:column>
 					
-					<p:column width="10%" headerText="Firma" sortBy="#{contrato.firma}" filterMatchMode="contains">
-						<p:commandButton id="botonFirma" update=":form:tabView:idTableContrato:botonFirma" value="#{contrato.firma eq true?'FIRMADO':'NO FIRMADO'}" action="#{contratoBean.cambiarEstadoFirma(contrato)}" styleClass="#{contrato.firma eq true? 'ui-button-success' : 'ui-button-warning'}"/>
+					<p:column width="100px" headerText="Firma" sortBy="#{contrato.firma}" filterMatchMode="contains">
+						<p:commandButton id="botonFirma" value="#{contrato.firma eq true?'FIRMADO':'NO FIRMADO'}" onclick="PF('saveConfirmaFirma').show()"  styleClass="#{contrato.firma eq true? 'ui-button-success' : 'ui-button-warning'}"> 
+							<f:setPropertyActionListener value="#{contrato}" target="#{contratoBean.contratoSelected}"  />
+						</p:commandButton>
 					</p:column>
 					
+					<p:column width="70px" headerText="Pagó Independización?" sortBy="#{contrato.firma}" filterMatchMode="contains">
+						<p:commandButton id="botonInd" value="#{contrato.pagoIndependizacion eq true?'SI':'NO'}" onclick="PF('saveConfirmaPago').show()" styleClass="#{contrato.pagoIndependizacion eq true? 'ui-button-success' : 'ui-button-warning'}"> 
+							<f:setPropertyActionListener value="#{contrato}" target="#{contratoBean.contratoSelected}"  />
+						</p:commandButton>
+					</p:column>
 				</p:dataTable>
 				
 				<p:contextMenu id="menuTableReq" for="idTableContrato" >
@@ -512,6 +519,32 @@
         <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('deleteObsDialog').hide()" />
     </p:confirmDialog>
 	
+	<pe:blockUI target="saveConfirmaFirma" widgetVar="blockUIWidgetFirma">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="saveConfirmaFirma" message="¿Está seguro que firmó el cotrato?" header="Confirmación"
+                      severity="alert" widgetVar="saveConfirmaFirma" appendTo="@(body)">
+        <h:form >
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetFirma').block();" oncomplete="PF('blockUIWidgetFirma').unblock();PF('saveConfirmaFirma').hide()" actionListener="#{contratoBean.cambiarEstadoFirma(contratoBean.contratoSelected)}" update=":form:tabView:idTableContrato" />
+            <p:commandButton value="NO" oncomplete="PF('saveConfirmaFirma').hide()"/>
+        </h:form>
+    </p:confirmDialog>
+    
+    
+    <pe:blockUI target="saveConfirmaPago" widgetVar="blockUIWidgetPago">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="saveConfirmaPago" message="¿Está seguro que pagó independización?" header="Confirmación"
+                      severity="alert" widgetVar="saveConfirmaPago" appendTo="@(body)">
+        <h:form >
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetPago').block();" oncomplete="PF('blockUIWidgetPago').unblock();PF('saveConfirmaPago').hide()" actionListener="#{contratoBean.cambiarEstadoPagoIndependizacion(contratoBean.contratoSelected)}" update=":form:tabView:idTableContrato" />
+            <p:commandButton value="NO" oncomplete="PF('saveConfirmaPago').hide()"/>
+        </h:form>
+    </p:confirmDialog>
 	
 	<script type="text/javascript">
         

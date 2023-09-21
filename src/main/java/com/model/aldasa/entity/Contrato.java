@@ -70,6 +70,12 @@ public class Contrato {
 	
 	private boolean firma;
 	
+	@Column(name="pagoindependizacion")
+	private boolean pagoIndependizacion;
+	
+	@ManyToOne
+	@JoinColumn(name="idcomisiones")
+	private Comisiones comisiones;
 	
 	public Integer getId() {
 		return id;
@@ -173,6 +179,18 @@ public class Contrato {
 	}
 	public void setFirma(boolean firma) {
 		this.firma = firma;
+	}
+	public boolean isPagoIndependizacion() {
+		return pagoIndependizacion;
+	}
+	public void setPagoIndependizacion(boolean pagoIndependizacion) {
+		this.pagoIndependizacion = pagoIndependizacion;
+	}
+	public Comisiones getComisiones() {
+		return comisiones;
+	}
+	public void setComisiones(Comisiones comisiones) {
+		this.comisiones = comisiones;
 	}
 	
 	

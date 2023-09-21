@@ -60,9 +60,9 @@
 				 <f:convertNumber currencySymbol="" type="currency"  />
 				 </h:outputText>
 			</p:column>
-			<p:column headerText="Cargo" sortBy="#{empleado.cargo}"
+			<p:column headerText="Cargo" sortBy="#{empleado.cargo.descripcion}"
 				filterMatchMode="contains">
-				<h:outputText value="#{empleado.cargo}" />
+				<h:outputText value="#{empleado.cargo.descripcion}" />
 			</p:column>
 			<p:column headerText="Área" sortBy="#{empleado.area.nombre}"
 				filterMatchMode="contains">
@@ -85,7 +85,7 @@
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formEmpleadoDialog">
 		  
-			<h:panelGrid id="grid" columns="2"> 
+			<h:panelGrid id="grid" columns="2">
 			
 				<h:outputLabel for="optionPerson" value="Persona:" />
 				<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{empleadoBean.empleadoSelected.person}" 
@@ -103,7 +103,10 @@
                 </p:selectOneMenu>
                 
                 <h:outputLabel value="Cargo: " for="cargo" />
-				<p:inputText value="#{empleadoBean.empleadoSelected.cargo}" id="cargo" style="margin:10px" />
+				<p:selectOneMenu id="cargo" value="#{empleadoBean.empleadoSelected.cargo}" converter="#{empleadoBean.conversorCargo}" style="margin:10px" >
+                    <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
+                    <f:selectItems value="#{empleadoBean.lstCargo}" var="cargo" itemLabel="#{cargo.descripcion}" itemValue="#{cargo}"/>
+                </p:selectOneMenu>
 				
 				
 				<h:outputLabel value="Fecha de ingreso:" style="text-align:right" />

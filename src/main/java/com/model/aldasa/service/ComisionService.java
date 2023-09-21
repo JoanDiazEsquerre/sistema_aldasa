@@ -14,7 +14,7 @@ public interface ComisionService {
 	Comision save(Comision entity);
 	void delete(Comision entity);
 	
-	List<Comision> findByEstado(Boolean estado);
+	List<Comision> findByEstadoOrderByCodigoDesc(Boolean estado);
 	
 	Comision findByEstadoAndCodigo(Boolean estado, String codigo);
 	Comision findByCodigoAndIdException(String codigo, int idComision);

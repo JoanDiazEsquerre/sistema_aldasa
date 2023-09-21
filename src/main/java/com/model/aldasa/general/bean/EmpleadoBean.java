@@ -24,11 +24,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Area;
+import com.model.aldasa.entity.Cargo;
 import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Profile;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.service.AreaService;
+import com.model.aldasa.service.CargoService;
 import com.model.aldasa.service.EmpleadoService;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.TeamService;
@@ -54,12 +56,16 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 	
 	@ManagedProperty(value = "#{teamService}")
 	private TeamService teamService; 
+	
+	@ManagedProperty(value = "#{cargoService}")
+	private CargoService cargoService; 
 		
 	private LazyDataModel<Empleado> lstEmpleadoLazy;
 	
 	private List<Person> lstPerson;
 	private List<Area> lstArea;
 	private List<Team> lstTeam;
+	private List<Cargo> lstCargo;
 	
 	private Empleado empleadoSelected;
 	private boolean estado = true;
@@ -72,6 +78,7 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 		listarPersonas();
 		lstArea=areaService.findByEstado(true);
 		lstTeam=teamService.findByStatus(true);
+		lstCargo=cargoService.findByEstadoOrderByDescripcionAsc(true);
 	}
 	public void newEmpleado() {
 		tituloDialog="NUEVO EMPLEADO";
@@ -261,6 +268,34 @@ public class EmpleadoBean extends BaseBean implements Serializable {
         };
     }
 	
+	public Converter getConversorCargo() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Cargo c = null;
+                    for (Cargo si : lstCargo) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Cargo) value).getId() + "";
+                }
+            }
+        };
+    }
+	
 	public Converter getConversorTeam() {
         return new Converter() {
             @Override
@@ -361,8 +396,16 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 	public void setLstTeam(List<Team> lstTeam) {
 		this.lstTeam = lstTeam;
 	}
-	
-	
-
-
+	public CargoService getCargoService() {
+		return cargoService;
+	}
+	public void setCargoService(CargoService cargoService) {
+		this.cargoService = cargoService;
+	}
+	public List<Cargo> getLstCargo() {
+		return lstCargo;
+	}
+	public void setLstCargo(List<Cargo> lstCargo) {
+		this.lstCargo = lstCargo;
+	}
 }

@@ -40,9 +40,7 @@ public class Empleado {
 	
 	@Column(name="fechasalida")
 	private Date fechaSalida;
-	
-	private String cargo;
-	
+		
 	private boolean planilla;
 	
 	@ManyToOne
@@ -54,6 +52,10 @@ public class Empleado {
 	@ManyToOne
 	@JoinColumn(name="idteam")
 	private Team team;
+	
+	@ManyToOne
+	@JoinColumn(name="idcargo")
+	private Cargo cargo;
 	
 	public Integer getId() {
 		return id;
@@ -98,12 +100,6 @@ public class Empleado {
 	public void setFechaSalida(Date fechaSalida) {
 		this.fechaSalida = fechaSalida;
 	}
-	public String getCargo() {
-		return cargo;
-	}
-	public void setCargo(String cargo) {
-		this.cargo = cargo;
-	}
 	public Sucursal getSucursal() {
 		return sucursal;
 	}
@@ -128,6 +124,12 @@ public class Empleado {
 	public void setPlanilla(boolean planilla) {
 		this.planilla = planilla;
 	}
-	
+	public Cargo getCargo() {
+		return cargo;
+	}
+	public void setCargo(Cargo cargo) {
+		this.cargo = cargo;
+	}
+
 	
 }

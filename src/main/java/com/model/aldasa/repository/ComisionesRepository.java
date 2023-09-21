@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.model.aldasa.entity.Comision;
 import com.model.aldasa.entity.Comisiones;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
@@ -19,6 +20,10 @@ public interface ComisionesRepository extends JpaRepository<Comisiones, Integer>
 	Page<Comisiones> findByEstadoAndLoteStatusAndLotePersonAssessorDniLikeAndLoteFechaVendidoBetween(boolean estado, String Status,String dniAsesor, Date fechaIni, Date fechaFin, Pageable pageable);
 	Page<Comisiones> findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(boolean estado, String Status,String tipoEmnpleado, Date fechaIni, Date fechaFin, Pageable pageable);
 
-	List<Comisiones> findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(boolean estado, String Status,String tipoEmnpleado, Date fechaIni, Date fechaFin);
+	Page<Comisiones> findByEstadoAndComision(boolean estado, Comision comision, Pageable pageable);
+	Page<Comisiones> findByEstadoAndComisionAndPersonSupervisor(boolean estado, Comision comision, Person personSupervisor, Pageable pageable);
 
+	
+	List<Comisiones> findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(boolean estado, String Status,String tipoEmnpleado, Date fechaIni, Date fechaFin);
+	List<Comisiones> findByEstadoAndComision(boolean estado, Comision comision);
 }

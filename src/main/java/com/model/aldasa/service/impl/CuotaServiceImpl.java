@@ -112,6 +112,12 @@ public class CuotaServiceImpl implements CuotaService{
 		return cuotaRepository.findByPagoTotalAndEstadoAndPrepago(pagoTotal, estado, prepago, pageable);
 	}
 
+	@Override
+	public List<Cuota> findByContrato(Contrato contrato) {
+		// TODO Auto-generated method stub
+		return cuotaRepository.findByContrato(contrato);
+	}
+
 	
 
 

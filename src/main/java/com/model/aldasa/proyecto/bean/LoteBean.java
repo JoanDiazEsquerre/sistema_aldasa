@@ -463,7 +463,7 @@ public class LoteBean extends BaseBean implements Serializable{
 			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProject(loteSelected.getNumberLote(), loteSelected.getManzana(), loteSelected.getProject());
 			if (validarExistencia == null) {
 				Lote lote = loteService.save(loteSelected);
-				generarComision(lote);
+//				generarComision(lote);
 				newLote();
 				
 				if(lote.getStatus().equals(EstadoLote.VENDIDO.getName())) {
@@ -480,7 +480,7 @@ public class LoteBean extends BaseBean implements Serializable{
 			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProjectException(loteSelected.getNumberLote(), loteSelected.getManzana().getId(), loteSelected.getProject().getId(), loteSelected.getId());
 			if (validarExistencia == null) {
 				Lote lote = loteService.save(loteSelected);
-				generarComision(lote);
+//				generarComision(lote);
 				
 				if(lote.getStatus().equals(EstadoLote.VENDIDO.getName())) {
 					loteVendido=true;

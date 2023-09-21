@@ -52,6 +52,12 @@ public class DetalleDocumentoVenta{
 	
 	private boolean estado;
 	
+	@Column(name="importeventasinigv")
+	private BigDecimal importeVentaSinIgv;
+	
+	@Column(name="preciosinigv")
+	private BigDecimal precioSinIgv;
+	
 	private transient BigDecimal totalTemp;
 		
 	
@@ -123,7 +129,6 @@ public class DetalleDocumentoVenta{
 	public void setAdelanto(BigDecimal adelanto) {
 		this.adelanto = adelanto;
 	}
-
 	public BigDecimal getTotalTemp() {
 		return totalTemp;
 	}
@@ -136,7 +141,19 @@ public class DetalleDocumentoVenta{
 	public void setCuotaPrepago(Cuota cuotaPrepago) {
 		this.cuotaPrepago = cuotaPrepago;
 	}
-
+	public BigDecimal getImporteVentaSinIgv() {
+		return importeVentaSinIgv;
+	}
+	public void setImporteVentaSinIgv(BigDecimal importeVentaSinIgv) {
+		this.importeVentaSinIgv = importeVentaSinIgv;
+	}
+	public BigDecimal getPrecioSinIgv() {
+		return precioSinIgv;
+	}
+	public void setPrecioSinIgv(BigDecimal precioSinIgv) {
+		this.precioSinIgv = precioSinIgv;
+	}
+	
 	
 	
 }

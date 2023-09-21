@@ -205,6 +205,20 @@ public class ContratoBean extends BaseBean implements Serializable{
 		}
 	}
 	
+	public void cambiarEstadoPagoIndependizacion(Contrato contrato) {
+		if(contrato.isPagoIndependizacion()) {
+			contrato.setPagoIndependizacion(false);
+		}else {
+			contrato.setPagoIndependizacion(true);
+		}
+		Contrato cambioFirma = contratoService.save(contrato);
+		if(cambioFirma!=null) {
+			addInfoMessage("Se actualizó el pago de Independización correctamente.");
+		}else {
+			addErrorMessage("No se pudo actualizar la firma del contrato.");
+		}
+	}
+	
 	public void cambiarPagoTotalCuota(Cuota cuota) {
 		if(cuota.getPagoTotal().equals("S")) {
 			cuota.setPagoTotal("N");
@@ -663,12 +677,30 @@ public class ContratoBean extends BaseBean implements Serializable{
 	}
 	
 	public void anularContrato() {
+		List<Cuota> lstCuotas = cuotaService.findByContrato(contratoSelected);
+		for(Cuota c:lstCuotas) {
+			if(c.isPrepago()) {
+				List<DetalleDocumentoVenta> lstD = detalleDocumentoVentaService.findByDocumentoVentaEstadoAndCuotaPrepago(true, c);
+				if(!lstD.isEmpty()) {
+					addErrorMessage("No se puede anular el contrato porque existe boletas/facturas de Pre-pago Activas.");
+					return;
+				}
+			}else {
+				List<DetalleDocumentoVenta> lstD = detalleDocumentoVentaService.findByDocumentoVentaEstadoAndCuota(true, c);
+				if(!lstD.isEmpty()) {
+					addErrorMessage("No se puede anular el contrato porque existen boletas/facturas de Cuotas Activas.");
+					return;
+				}
+			}
+			
+		}
+		
+		
 		contratoSelected.setEstado(false);
 		contratoService.save(contratoSelected);
 		contratoSelected.getLote().setRealizoContrato("N");
 		loteService.save(contratoSelected.getLote());
-		addInfoMessage("Contrato Anulado Correctamente.");
-
+		
 		
 		if(contratoSelected.getTipoPago().equals("Crédito")) {
 			List<Cuota> lstcuota = cuotaService.findByContratoAndEstado(contratoSelected, true);
@@ -677,7 +709,17 @@ public class ContratoBean extends BaseBean implements Serializable{
 				c.setOriginal(false);
 				cuotaService.save(c);
 			}
-		}	
+		}
+		
+		List<PlantillaVenta> lstPlantilla = plantillaVentaService.findByEstadoAndLote("Aprobado", contratoSelected.getLote());
+		if(!lstPlantilla.isEmpty()) {
+			for(PlantillaVenta p : lstPlantilla) {
+				p.setRealizoContrato(false);
+				plantillaVentaService.save(p);
+			}
+		}
+		
+		addInfoMessage("Contrato Anulado Correctamente.");
 	}
 	
 	public void listarPersonas() {
@@ -8755,7 +8797,6 @@ public class ContratoBean extends BaseBean implements Serializable{
 			contrato.setMontoInicial(null);
 			contrato.setNumeroCuota(null); 
 			contrato.setInteres(null);
-
 		}else {
 			contrato.setMontoInicial(montoInicial);
 			contrato.setNumeroCuota(nroCuotas); 
@@ -8766,8 +8807,10 @@ public class ContratoBean extends BaseBean implements Serializable{
 		contrato.setPersonVenta(persona1);
 		contrato.setPersonVenta2(persona2);
 		contrato.setPersonVenta3(persona3);
-		contrato.setPersonVenta4(persona4);      
+		contrato.setPersonVenta4(persona4);
 		contrato.setPersonVenta5(persona5);
+		contrato.setFirma(false);
+		contrato.setPagoIndependizacion(false);
 		
 		Contrato contratoSave = contratoService.save(contrato);
 		

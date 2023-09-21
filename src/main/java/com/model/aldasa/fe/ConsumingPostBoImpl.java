@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -127,8 +128,8 @@ public class ConsumingPostBoImpl {
             objetoCabecera.put("descuento_global", "");
             objetoCabecera.put("total_descuento", "");
             objetoCabecera.put("total_anticipo", "");
-            objetoCabecera.put("total_gravada", "");
-            objetoCabecera.put("total_inafecta", documentoVenta.getSubTotal());
+            objetoCabecera.put("total_gravada", documentoVenta.getOpGravada());
+            objetoCabecera.put("total_inafecta", documentoVenta.getOpInafecta());
             objetoCabecera.put("total_exonerada", "");
             objetoCabecera.put("total_igv", documentoVenta.getIgv());
             objetoCabecera.put("total_gratuita", "");
@@ -183,31 +184,59 @@ public class ConsumingPostBoImpl {
 
             JSONArray lista = new JSONArray();
 
-            for (DetalleDocumentoVenta ddv : listDetalleDocumentoVenta) {
-                JSONObject detalle_linea_1 = new JSONObject();
+            for (DetalleDocumentoVenta ddv : listDetalleDocumentoVenta) { 
+                JSONObject detalle_linea_1 = new JSONObject();               
+                 if (documentoVenta.getIgv().compareTo(BigDecimal.ZERO)==1) {
+                	BigDecimal subtotalItem = ddv.getImporteVentaSinIgv();
+                    BigDecimal igvItem = ddv.getImporteVentaSinIgv().multiply(new BigDecimal(0.18)).setScale(2, RoundingMode.HALF_UP);
+                    BigDecimal totalItem = subtotalItem.add(igvItem);
 
-                BigDecimal subtotalItem = ddv.getImporteVenta();
-                BigDecimal igvItem = BigDecimal.ZERO;
-                BigDecimal totalItem = ddv.getImporteVenta();
+                    BigDecimal valorUnitario = ddv.getPrecioSinIgv();
+                    BigDecimal precioUnitario = ddv.getPrecioSinIgv().multiply(new BigDecimal(1.18)).setScale(3, RoundingMode.HALF_UP);
 
-                BigDecimal valorUnitario = ddv.getImporteVenta();
-                BigDecimal precioUnitario = ddv.getImporteVenta();
+                    detalle_linea_1.put("unidad_de_medida", "NIU");
+                    detalle_linea_1.put("codigo", ddv.getProducto().getId());
+                    detalle_linea_1.put("descripcion", ddv.getDescripcion());
+                    detalle_linea_1.put("cantidad", 1);
+                    detalle_linea_1.put("valor_unitario", valorUnitario);
+                    detalle_linea_1.put("precio_unitario", precioUnitario);
+                    detalle_linea_1.put("descuento", "");
+                    detalle_linea_1.put("subtotal", subtotalItem);
+                    detalle_linea_1.put("tipo_de_igv", "1");
+                    detalle_linea_1.put("igv", igvItem);
+                    detalle_linea_1.put("total", totalItem);
+                    detalle_linea_1.put("anticipo_regularizacion", "false");
+                    detalle_linea_1.put("anticipo_serie", "");
+                    detalle_linea_1.put("anticipo_documento_numero", "");
+                    lista.add(detalle_linea_1);
+                }else {
+                	BigDecimal subtotalItem = ddv.getImporteVenta();
+                    BigDecimal igvItem = BigDecimal.ZERO;
+                    BigDecimal totalItem = ddv.getImporteVenta();
 
-                detalle_linea_1.put("unidad_de_medida", "NIU"); //ZZ servicio  NIU producto
-                detalle_linea_1.put("codigo", ddv.getProducto().getId());
-                detalle_linea_1.put("descripcion", ddv.getDescripcion());
-                detalle_linea_1.put("cantidad", 1);
-                detalle_linea_1.put("valor_unitario", valorUnitario);
-                detalle_linea_1.put("precio_unitario", precioUnitario);
-                detalle_linea_1.put("descuento", "");
-                detalle_linea_1.put("subtotal", subtotalItem);
-                detalle_linea_1.put("tipo_de_igv", "9"); //inafecto
-                detalle_linea_1.put("igv", igvItem);
-                detalle_linea_1.put("total", totalItem);
-                detalle_linea_1.put("anticipo_regularizacion", "false");
-                detalle_linea_1.put("anticipo_serie", "");
-                detalle_linea_1.put("anticipo_documento_numero", "");
-                lista.add(detalle_linea_1);
+                    BigDecimal valorUnitario = ddv.getImporteVenta();
+                    BigDecimal precioUnitario = ddv.getImporteVenta();
+
+                    detalle_linea_1.put("unidad_de_medida", "NIU"); //ZZ servicio  NIU producto
+                    detalle_linea_1.put("codigo", ddv.getProducto().getId());
+                    detalle_linea_1.put("descripcion", ddv.getDescripcion());
+                    detalle_linea_1.put("cantidad", 1);
+                    detalle_linea_1.put("valor_unitario", valorUnitario);
+                    detalle_linea_1.put("precio_unitario", precioUnitario);
+                    detalle_linea_1.put("descuento", "");
+                    detalle_linea_1.put("subtotal", subtotalItem);
+                    detalle_linea_1.put("tipo_de_igv", "9"); //inafecto
+                    detalle_linea_1.put("igv", igvItem);
+                    detalle_linea_1.put("total", totalItem);
+                    detalle_linea_1.put("anticipo_regularizacion", "false");
+                    detalle_linea_1.put("anticipo_serie", "");
+                    detalle_linea_1.put("anticipo_documento_numero", "");
+                    lista.add(detalle_linea_1);
+                    
+                }
+                
+                
+                
             }
 
             objetoCabecera.put("items", lista);

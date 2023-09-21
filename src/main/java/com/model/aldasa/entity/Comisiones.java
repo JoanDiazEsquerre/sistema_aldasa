@@ -23,6 +23,14 @@ public class Comisiones {
     @JoinColumn(name="idlote")
     private Lote lote;
 	
+	@ManyToOne
+    @JoinColumn(name="idpersonasesor")
+    private Person personAsesor;
+	
+	@ManyToOne
+    @JoinColumn(name="idpersonsupervisor")
+    private Person personSupervisor;
+	
 	@Column(name="comisionasesor")
 	private BigDecimal comisionAsesor;
 	
@@ -37,6 +45,9 @@ public class Comisiones {
 	@Column(name="tipoempleado")
 	private String tipoEmpleado;
 	
+	@ManyToOne
+    @JoinColumn(name="idcomision")
+    private Comision comision;
 	
 	public Integer getId() {
 		return id;
@@ -80,7 +91,22 @@ public class Comisiones {
 	public void setTipoEmpleado(String tipoEmpleado) {
 		this.tipoEmpleado = tipoEmpleado;
 	}
-	
-	
-
+	public Comision getComision() {
+		return comision;
+	}
+	public void setComision(Comision comision) {
+		this.comision = comision;
+	}
+	public Person getPersonAsesor() {
+		return personAsesor;
+	}
+	public void setPersonAsesor(Person personAsesor) {
+		this.personAsesor = personAsesor;
+	}
+	public Person getPersonSupervisor() {
+		return personSupervisor;
+	}
+	public void setPersonSupervisor(Person personSupervisor) {
+		this.personSupervisor = personSupervisor;
+	}
 }

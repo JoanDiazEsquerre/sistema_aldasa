@@ -18,6 +18,7 @@ public interface CuotaRepository  extends JpaRepository<Cuota, Integer> {
 	List<Cuota> findByContratoAndEstado(Contrato contrato, boolean estado);
 	List<Cuota> findByContratoAndOriginal(Contrato contrato, boolean original);
 	List<Cuota> findByPagoTotalAndEstadoAndContratoOrderById(String pagoTotal, boolean estado, Contrato contrato);
+	List<Cuota> findByContrato(Contrato contrato);
 	
 	Page<Cuota> findByPagoTotalAndEstado(String pagoTotal, boolean estado, Pageable pageable);
 	Page<Cuota> findByPagoTotalAndEstadoAndContratoPersonVenta(String pagoTotal, boolean estado,Person contratoPersonVenta, Pageable pageable);

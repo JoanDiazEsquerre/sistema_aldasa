@@ -13,7 +13,7 @@ import com.model.aldasa.entity.Empleado;
 
 public interface ComisionRepository  extends JpaRepository<Comision, Integer>{
 	
-	List<Comision> findByEstado(Boolean estado);
+	List<Comision> findByEstadoOrderByCodigoDesc(Boolean estado);
 	Comision findByEstadoAndCodigo(Boolean estado, String codigo);
 	Comision findByFechaIniLessThanEqualAndFechaCierreGreaterThanEqual(Date fechaIni, Date fechaCierre);
 	

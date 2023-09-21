@@ -38,9 +38,9 @@ public class ComisionServiceImpl  implements ComisionService {
 	}
 	
 	@Override
-	public List<Comision> findByEstado(Boolean estado){
+	public List<Comision> findByEstadoOrderByCodigoDesc(Boolean estado){
 		// TODO Auto-generated method stub
-		return comisionRepository.findByEstado(estado);
+		return comisionRepository.findByEstadoOrderByCodigoDesc(estado);
 	}
 
 	@Override

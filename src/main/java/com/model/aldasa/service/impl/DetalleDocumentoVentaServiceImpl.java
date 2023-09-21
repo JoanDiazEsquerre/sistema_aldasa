@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
 import com.model.aldasa.entity.Voucher;
@@ -46,6 +47,18 @@ public class DetalleDocumentoVentaServiceImpl implements DetalleDocumentoVentaSe
 	public List<DetalleDocumentoVenta> findByVoucherIdAndEstado(int voucher, boolean estado) {
 		// TODO Auto-generated method stub
 		return detalleDocumentoVentaRepository.findByVoucherIdAndEstado(voucher, estado);
+	}
+
+	@Override
+	public List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndCuota(boolean estado, Cuota cuota) {
+		// TODO Auto-generated method stub
+		return detalleDocumentoVentaRepository.findByDocumentoVentaEstadoAndCuota(estado, cuota);
+	}
+
+	@Override
+	public List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndCuotaPrepago(boolean estado, Cuota cuotaPrepago) {
+		// TODO Auto-generated method stub
+		return detalleDocumentoVentaRepository.findByDocumentoVentaEstadoAndCuotaPrepago(estado, cuotaPrepago); 
 	}
 
 	

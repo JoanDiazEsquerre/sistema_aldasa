@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.model.aldasa.entity.Comision;
 import com.model.aldasa.entity.Comisiones;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
@@ -73,6 +74,25 @@ public class ComisionesServiceImpl implements ComisionesService  {
 			String Status, String tipoEmnpleado, Date fechaIni, Date fechaFin) {
 		// TODO Auto-generated method stub
 		return comisionesRepository.findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(estado, Status, tipoEmnpleado, fechaIni, fechaFin);
+	}
+
+	@Override
+	public Page<Comisiones> findByEstadoAndComision(boolean estado, Comision comision, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return comisionesRepository.findByEstadoAndComision(estado, comision, pageable); 
+	}
+
+	@Override
+	public List<Comisiones> findByEstadoAndComision(boolean estado, Comision comision) {
+		// TODO Auto-generated method stub
+		return comisionesRepository.findByEstadoAndComision(estado, comision); 
+	}
+
+	@Override
+	public Page<Comisiones> findByEstadoAndComisionAndPersonSupervisor(boolean estado, Comision comision,
+			Person personSupervisor, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return comisionesRepository.findByEstadoAndComisionAndPersonSupervisor(estado, comision, personSupervisor, pageable);
 	}
 
 	

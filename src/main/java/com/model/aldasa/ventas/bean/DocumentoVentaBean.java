@@ -233,6 +233,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private boolean habilitarBoton = true;
 	private boolean habilitarMontoPrepago = false;
 	private boolean personaNaturalCliente = true;
+	private boolean incluirIgv = false;
 
 
 	private String moneda = "S";
@@ -327,7 +328,36 @@ public class DocumentoVentaBean extends BaseBean {
 		lstCuentaBancaria=cuentaBancariaService.findByEstadoAndSucursal(true, navegacionBean.getSucursalLogin());
 	}
 	
-	
+	public void cambioIgv() {
+		if(importeTotal.compareTo(BigDecimal.ZERO)>0) {
+			if(incluirIgv) {
+				BigDecimal opGrav = importeTotal.divide(new BigDecimal(1.18), 2, RoundingMode.HALF_UP);
+				BigDecimal igv = opGrav.multiply(new BigDecimal(0.18));
+				igv = igv.setScale(2, RoundingMode.HALF_UP);
+				
+				opInafecta = BigDecimal.ZERO;
+				opGravada = opGrav;
+				IGV = igv;
+				
+				for(DetalleDocumentoVenta d:lstDetalleDocumentoVenta) {
+					BigDecimal sinIGV = d.getImporteVenta().divide(new BigDecimal(1.18), 2, RoundingMode.HALF_UP);
+					
+					d.setImporteVentaSinIgv(sinIGV); 
+					d.setPrecioSinIgv(sinIGV);
+				}
+				
+			}else {
+				opInafecta = importeTotal;
+				opGravada = BigDecimal.ZERO;
+				IGV = BigDecimal.ZERO;
+				
+				for(DetalleDocumentoVenta d:lstDetalleDocumentoVenta) {
+					d.setImporteVentaSinIgv(BigDecimal.ZERO); 
+					d.setPrecioSinIgv(BigDecimal.ZERO);
+				}
+			}
+		}
+	}
 	
 	private void crearFiltroTipoVenta() {
         cdoTipoVenta = new SelectItem[4];
@@ -345,6 +375,8 @@ public class DocumentoVentaBean extends BaseBean {
 		det.setAdelanto(BigDecimal.ZERO);
 		det.setImporteVenta(BigDecimal.ZERO);
 		det.setEstado(true); 
+		det.setImporteVentaSinIgv(BigDecimal.ZERO);
+		det.setPrecioSinIgv(BigDecimal.ZERO); 
 		lstDetalleDocumentoVenta.add(det);
 	}
 	
@@ -1706,7 +1738,11 @@ public class DocumentoVentaBean extends BaseBean {
 		documentoVenta.setTipoMoneda(moneda);
 		documentoVenta.setObservacion(observacion);
 		documentoVenta.setTipoPago(tipoPago);
-		documentoVenta.setSubTotal(importeTotal);
+		if(incluirIgv) {
+			documentoVenta.setSubTotal(opGravada);
+		}else {
+			documentoVenta.setSubTotal(importeTotal);
+		}
 		documentoVenta.setIgv(IGV);
 		documentoVenta.setTotal(importeTotal);
 		documentoVenta.setFechaRegistro(new Date());
@@ -1738,9 +1774,10 @@ public class DocumentoVentaBean extends BaseBean {
 			email1Text = "";
 			email2Text = "";
 			email3Text = "";
+			incluirIgv=false;
 			
 			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
-			addInfoMessage("Se guardó el documento correctamente. "+ addMensaje);
+			addInfoMessage("Se guardó el documento correctamente. "+addMensaje);
 			
 		}else {
 			addErrorMessage("No se puede guardar el documento."); 
@@ -2061,6 +2098,8 @@ public class DocumentoVentaBean extends BaseBean {
 			detalle.setCuota(cuotaSelected);
 			detalle.setVoucher(null);
 			detalle.setCuotaPrepago(null);
+			detalle.setImporteVentaSinIgv(BigDecimal.ZERO);
+			detalle.setPrecioSinIgv(BigDecimal.ZERO);
 			lstDetalleDocumentoVenta.add(detalle);
 		}else {
 			if(cuotaSelected.getAdelanto().compareTo(BigDecimal.ZERO) == 0) {
@@ -2076,6 +2115,8 @@ public class DocumentoVentaBean extends BaseBean {
 				detalle.setCuota(cuotaSelected);
 				detalle.setVoucher(null);
 				detalle.setCuotaPrepago(null);
+				detalle.setImporteVentaSinIgv(BigDecimal.ZERO);
+				detalle.setPrecioSinIgv(BigDecimal.ZERO);
 				lstDetalleDocumentoVenta.add(detalle);
 				
 				if(cuotaSelected.getInteres().compareTo(BigDecimal.ZERO)!=0) {
@@ -2091,11 +2132,16 @@ public class DocumentoVentaBean extends BaseBean {
 					detalleInteres.setCuota(cuotaSelected);
 					detalleInteres.setVoucher(null);
 					detalleInteres.setCuotaPrepago(null);
+					detalleInteres.setImporteVentaSinIgv(BigDecimal.ZERO);
+					detalleInteres.setPrecioSinIgv(BigDecimal.ZERO);
 					lstDetalleDocumentoVenta.add(detalleInteres);
 				}
 				
 			}else {
-				if(cuotaSelected.getAdelanto().compareTo(cuotaSelected.getInteres()) < 0) {
+				BigDecimal diferencia = cuotaSelected.getCuotaTotal().subtract(cuotaSelected.getAdelanto());
+				if(diferencia.compareTo(cuotaSelected.getInteres()) ==1) {
+					
+				
 					DetalleDocumentoVenta detalle = new DetalleDocumentoVenta();
 					//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
 					detalle.setDocumentoVenta(null);
@@ -2103,11 +2149,13 @@ public class DocumentoVentaBean extends BaseBean {
 					detalle.setDescripcion("PAGO DE LA CUOTA N° "+ cuotaSelected.getNroCuota() +" POR LA VENTA DE UN LOTE DE TERRENO CON N° "+ cuotaSelected.getContrato().getLote().getNumberLote() +" MZ - "+ cuotaSelected.getContrato().getLote().getManzana().getName() +" , UBICADO EN " + cuotaSelected.getContrato().getLote().getProject().getName());
 					detalle.setAmortizacion(cuotaSelected.getCuotaSI().subtract(cuotaSelected.getAdelanto()));
 					detalle.setInteres(BigDecimal.ZERO);
-					detalle.setAdelanto(cuotaSelected.getAdelanto());		
-					detalle.setImporteVenta(cuotaSelected.getCuotaSI().add(cuotaSelected.getInteres()).subtract(cuotaSelected.getAdelanto()));
+					detalle.setAdelanto(cuotaSelected.getAdelanto());
+					detalle.setImporteVenta(cuotaSelected.getCuotaSI().subtract(cuotaSelected.getAdelanto()));
 					detalle.setCuota(cuotaSelected);
 					detalle.setVoucher(null);
 					detalle.setCuotaPrepago(null);
+					detalle.setImporteVentaSinIgv(BigDecimal.ZERO);
+					detalle.setPrecioSinIgv(BigDecimal.ZERO);
 					lstDetalleDocumentoVenta.add(detalle);
 					
 					DetalleDocumentoVenta detalleInteres = new DetalleDocumentoVenta();
@@ -2122,6 +2170,8 @@ public class DocumentoVentaBean extends BaseBean {
 					detalleInteres.setCuota(cuotaSelected);
 					detalleInteres.setVoucher(null);
 					detalleInteres.setCuotaPrepago(null);
+					detalleInteres.setImporteVentaSinIgv(BigDecimal.ZERO);
+					detalleInteres.setPrecioSinIgv(BigDecimal.ZERO);
 					lstDetalleDocumentoVenta.add(detalleInteres);
 					
 				}else {
@@ -2138,6 +2188,8 @@ public class DocumentoVentaBean extends BaseBean {
 					detalle.setCuota(cuotaSelected);
 					detalle.setVoucher(null);
 					detalle.setCuotaPrepago(null);
+					detalle.setImporteVentaSinIgv(BigDecimal.ZERO);
+					detalle.setPrecioSinIgv(BigDecimal.ZERO);
 					lstDetalleDocumentoVenta.add(detalle);
 				}
 				
@@ -2200,6 +2252,8 @@ public class DocumentoVentaBean extends BaseBean {
 		detalle.setVoucher(voucherSelected);
 		detalle.setCuotaPrepago(null);
 		detalle.setEstado(true);
+		detalle.setImporteVentaSinIgv(BigDecimal.ZERO);
+		detalle.setPrecioSinIgv(BigDecimal.ZERO);
 		lstDetalleDocumentoVenta.add(detalle);
 		
 		calcularTotales();
@@ -2252,20 +2306,22 @@ public class DocumentoVentaBean extends BaseBean {
 		detalle.setVoucher(null);
 		detalle.setCuotaPrepago(prepagoSelected);
 		detalle.setEstado(true);
+		detalle.setImporteVentaSinIgv(BigDecimal.ZERO);
+		detalle.setPrecioSinIgv(BigDecimal.ZERO);
 		lstDetalleDocumentoVenta.add(detalle);
 		
 		calcularTotales();
 		persona = prepagoSelected.getContrato().getPersonVenta(); 
 		addInfoMessage("Prepago importado correctamente."); 
-		
-		
-		
+				
 	}
 	
 	public void calcularTotales() {
 		anticipos = BigDecimal.ZERO;
 		opInafecta=BigDecimal.ZERO;
 		importeTotal=BigDecimal.ZERO;
+		opGravada=BigDecimal.ZERO;
+		IGV = BigDecimal.ZERO;
 		if(!lstDetalleDocumentoVenta.isEmpty()) {
 			for(DetalleDocumentoVenta d:lstDetalleDocumentoVenta) {
 				opInafecta= opInafecta.add(d.getImporteVenta());
@@ -4413,6 +4469,13 @@ public class DocumentoVentaBean extends BaseBean {
 	public void setCtaBancDialog(String ctaBancDialog) {
 		this.ctaBancDialog = ctaBancDialog;
 	}
+	public boolean isIncluirIgv() {
+		return incluirIgv;
+	}
+	public void setIncluirIgv(boolean incluirIgv) {
+		this.incluirIgv = incluirIgv;
+	}
+	
 	
 
 }
