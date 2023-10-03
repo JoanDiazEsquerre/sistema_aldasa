@@ -24,7 +24,7 @@ public class UtilXls {
 		}
 
 		if (tipo == 'A') {
-			fontRow.setFontHeightInPoints((short) 13);
+			fontRow.setFontHeightInPoints((short) 11);
 			cellStyleDefault.setAlignment(CellStyle.ALIGN_CENTER);
 			cellStyleDefault.setVerticalAlignment(CellStyle.ALIGN_CENTER);
 			cellStyleDefault.setWrapText(true);

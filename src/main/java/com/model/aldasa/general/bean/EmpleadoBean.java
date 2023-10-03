@@ -68,6 +68,8 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 	private List<Cargo> lstCargo;
 	
 	private Empleado empleadoSelected;
+	private Cargo cargoFilter;
+	private Area areaFilter;
 	private boolean estado = true;
 	
 	private String tituloDialog;
@@ -76,7 +78,7 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 	public void init() {
 		iniciarLazy();
 		listarPersonas();
-		lstArea=areaService.findByEstado(true);
+		lstArea=areaService.findByEstadoOrderByNombreAsc(true);
 		lstTeam=teamService.findByStatus(true);
 		lstCargo=cargoService.findByEstadoOrderByDescripcionAsc(true);
 	}
@@ -188,13 +190,25 @@ public class EmpleadoBean extends BaseBean implements Serializable {
                 		   
                 	   }
                 	}
-                }        
+                }
+                
+                String cargo = "%%";
+                String area = "%%";
+                
+                if(cargoFilter!=null) {
+                	cargo = "%"+cargoFilter.getDescripcion()+"%";
+                }
+                
+                if(areaFilter!=null) {
+                	area = "%"+areaFilter.getNombre()+"%";
+                }
+                
                 Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
                
                 Page<Empleado> pageEmpleado=null;
                
                 
-                pageEmpleado= empleadoService.findByPersonSurnamesLikeAndEstado(names, estado, pageable);
+                pageEmpleado= empleadoService.findByPersonSurnamesLikeAndEstadoAndCargoDescripcionLikeAndAreaNombreLike(names, estado, cargo, area, pageable);
                 
                 setRowCount((int) pageEmpleado.getTotalElements());
                 return datasource = pageEmpleado.getContent();
@@ -408,4 +422,20 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 	public void setLstCargo(List<Cargo> lstCargo) {
 		this.lstCargo = lstCargo;
 	}
+	public Cargo getCargoFilter() {
+		return cargoFilter;
+	}
+	public void setCargoFilter(Cargo cargoFilter) {
+		this.cargoFilter = cargoFilter;
+	}
+	public Area getAreaFilter() {
+		return areaFilter;
+	}
+	public void setAreaFilter(Area areaFilter) {
+		this.areaFilter = areaFilter;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
 }

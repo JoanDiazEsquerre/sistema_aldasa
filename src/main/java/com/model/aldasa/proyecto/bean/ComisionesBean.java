@@ -1,8 +1,13 @@
 package com.model.aldasa.proyecto.bean;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,21 +15,34 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.servlet.ServletContext;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.primefaces.PrimeFaces;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
+import org.primefaces.model.StreamedContent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.model.aldasa.entity.Area;
+import com.model.aldasa.entity.Asistencia;
+import com.model.aldasa.entity.Cargo;
 import com.model.aldasa.entity.Comision;
 import com.model.aldasa.entity.Comisiones;
 import com.model.aldasa.entity.Empleado;
@@ -34,6 +52,8 @@ import com.model.aldasa.entity.MetaSupervisor;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
+import com.model.aldasa.service.AreaService;
+import com.model.aldasa.service.CargoService;
 import com.model.aldasa.service.ComisionService;
 import com.model.aldasa.service.ComisionesService;
 import com.model.aldasa.service.EmpleadoService;
@@ -45,6 +65,7 @@ import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.EstadoLote;
 import com.model.aldasa.util.Perfiles;
+import com.model.aldasa.util.UtilXls;
 
 @ManagedBean
 @ViewScoped
@@ -76,6 +97,12 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	@ManagedProperty(value = "#{metaSupervisorService}")
 	private MetaSupervisorService metaSupervisorService;
 	
+	@ManagedProperty(value = "#{cargoService}")
+	private CargoService cargoService; 
+	
+	@ManagedProperty(value = "#{areaService}")
+	private AreaService areaService; 
+	
 	private LazyDataModel<Comisiones> lstComisionesLazy;
 	private LazyDataModel<Usuario> lstUsuarioLazy;
 	private LazyDataModel<Empleado> lstEmpleadoLazy;
@@ -85,11 +112,19 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	private Comision comisionSelected;
 	private Comisiones comisionesSelected;
 	private Lote loteSelected;
-	private Person personSupervisorSelected, personsupervisorMovimiento;
+	private Person personSupervisorSelected;
+	private Cargo cargoFilter;
+	private Area areaFilter;
+	private Team teamFilter;
+	private Comision comision1, comision2, comision3;
+	
+	private String fecha1, fecha2, fecha3;
+	private String nombreArchivo = "Reporte de Comisiones.xlsx";
 
 	private Date fechaIni,fechaFin;
 	private Integer comisionContado=8;
 	private Integer comisionCredito=4;
+	private int index=0;
 		
 	private BigDecimal totalSolesContado = BigDecimal.ZERO;
 	private BigDecimal totalSolesInicial = BigDecimal.ZERO;
@@ -101,22 +136,203 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	private List<Lote> lstLotesVendidos;
 	private List<Meta> lstMeta;
 	private List<MetaSupervisor> lstMetaSupervisor;
-	private List<Person> lstPersonSupervisor, lstPersonSupervisorMovimiento;
+	private List<Person> lstPersonSupervisor;
+	private List<Cargo> lstCargo;
+	private List<Area> lstArea;
+	private List<Team> lstTeam;
 	
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");  
 	SimpleDateFormat sdfM = new SimpleDateFormat("MM");  
 	SimpleDateFormat sdfY = new SimpleDateFormat("yyyy");  
 	SimpleDateFormat sdfY2 = new SimpleDateFormat("yy"); 
+	SimpleDateFormat sdfMesAnio = new SimpleDateFormat("MMM/yyyy"); 
+	
+	private StreamedContent fileDes;
 	
 	@PostConstruct
 	public void init() {
 //		comisionSelected = comisionService.findByEstadoAndCodigo(true, sdfM.format(new Date())+sdfY2.format(new Date()));
-		
+		lstCargo=cargoService.findByEstadoOrderByDescripcionAsc(true);
+		lstArea=areaService.findByEstadoOrderByNombreAsc(true);
+		lstTeam=teamService.findByStatus(true);
 		lstComision = comisionService.findByEstadoOrderByCodigoDesc(true);
 		comisionSelected = lstComision.get(0);
 		cambiarComision();
 		iniciarLazyComisiones();
 		iniciarLazyEmpleados();
+		verMesSiguiente();
+	}
+	
+	public void procesarExcel() {
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet sheet = workbook.createSheet("Comisiones");
+
+		CellStyle styleBorder = UtilXls.styleCell(workbook, 'B');
+		CellStyle styleTitulo = UtilXls.styleCell(workbook, 'A');
+// 		CellStyle styleSumaTotal = UtilsXls.styleCell(workbook,'Z');
+
+//	        Row rowTituloHoja = sheet.createRow(0);
+//	        Cell cellTituloHoja = rowTituloHoja.createCell(0);
+//	        cellTituloHoja.setCellValue("Reporte de Acciones");
+//	        cellTituloHoja.setCellStyle(styleBorder);
+//	        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 11)); //combinar Celdas para titulo
+
+		Row rowSubTitulo = sheet.createRow(0);
+		Cell cellSub1 = rowSubTitulo.createCell(0);cellSub1.setCellValue("SUPERVISOR");cellSub1.setCellStyle(styleTitulo);
+		Cell cellSub2 = rowSubTitulo.createCell(1);cellSub2.setCellValue("ASESOR");cellSub2.setCellStyle(styleTitulo);
+		Cell cellSub3 = rowSubTitulo.createCell(2);cellSub3.setCellValue("CLIENTE");cellSub3.setCellStyle(styleTitulo);
+		Cell cellSub4 = rowSubTitulo.createCell(3);cellSub4.setCellValue("LOTE");cellSub4.setCellStyle(styleTitulo);
+		Cell cellSub5 = rowSubTitulo.createCell(4);cellSub5.setCellValue("MANZANA");cellSub5.setCellStyle(styleTitulo);
+		Cell cellSub6 = rowSubTitulo.createCell(5);cellSub6.setCellValue("PROYECTO");cellSub6.setCellStyle(styleTitulo);
+		Cell cellSub7 = rowSubTitulo.createCell(6);cellSub7.setCellValue("FECHA VENTA");cellSub7.setCellStyle(styleTitulo);
+		Cell cellSub8 = rowSubTitulo.createCell(7);cellSub8.setCellValue("TIPO PAGO");cellSub8.setCellStyle(styleTitulo);
+		Cell cellSub9 = rowSubTitulo.createCell(8);cellSub9.setCellValue("PRECIO");cellSub9.setCellStyle(styleTitulo);
+		Cell cellSub10 = rowSubTitulo.createCell(9);cellSub10.setCellValue("COMISION ASESOR");cellSub10.setCellStyle(styleTitulo);
+		Cell cellSub11 = rowSubTitulo.createCell(10);cellSub11.setCellValue("COMISION SUPERVISOR");cellSub11.setCellStyle(styleTitulo);
+		Cell cellSub12 = rowSubTitulo.createCell(11);cellSub12.setCellValue("COMISION SUBGERENTE");cellSub12.setCellStyle(styleTitulo);
+
+		int index = 1;
+		if (!lstComisiones.isEmpty()) {
+			for (Comisiones c : lstComisiones) {
+				Row rowDetail = sheet.createRow(index);
+				Cell cell1 = rowDetail.createCell(0);cell1.setCellValue(c.getPersonSupervisor().getSurnames()+" "+c.getPersonSupervisor().getNames());cell1.setCellStyle(styleBorder);
+				Cell cell2 = rowDetail.createCell(1);cell2.setCellValue(c.getPersonAsesor().getSurnames()+" "+c.getPersonAsesor().getNames());cell2.setCellStyle(styleBorder);
+				Cell cell3 = rowDetail.createCell(2);cell3.setCellValue(c.getContrato().getPersonVenta().getSurnames()+" "+c.getContrato().getPersonVenta().getNames());cell3.setCellStyle(styleBorder);
+				Cell cell4 = rowDetail.createCell(3);cell4.setCellValue(c.getLote().getNumberLote());cell4.setCellStyle(styleBorder);
+				Cell cell5 = rowDetail.createCell(4);cell5.setCellValue(c.getLote().getManzana().getName());cell5.setCellStyle(styleBorder);
+				Cell cell6 = rowDetail.createCell(5);cell6.setCellValue(c.getLote().getProject().getName());cell6.setCellStyle(styleBorder); 
+				Cell cell7 = rowDetail.createCell(6);cell7.setCellValue(c.getContrato().getFechaVenta()==null?"": sdf.format(c.getContrato().getFechaVenta()));cell7.setCellStyle(styleBorder);
+				Cell cell8 = rowDetail.createCell(7);cell8.setCellValue(c.getContrato().getTipoPago());cell8.setCellStyle(styleBorder);
+				Cell cell9 = rowDetail.createCell(8);cell9.setCellValue(c.getContrato().getMontoVenta()+"");cell9.setCellStyle(styleBorder);
+				Cell cell10 = rowDetail.createCell(9);cell10.setCellValue(c.getComisionAsesor()+"");cell10.setCellStyle(styleBorder);
+				Cell cell11 = rowDetail.createCell(10);cell11.setCellValue(c.getComisionSupervisor()+"");cell11.setCellStyle(styleBorder);
+				Cell cell12 = rowDetail.createCell(11);cell12.setCellValue(c.getComisionSubgerente()+"");cell12.setCellStyle(styleBorder);
+				
+				index++;
+			}
+		}
+
+		for (int j = 0; j <= 11; j++) {
+			sheet.autoSizeColumn(j);
+		}
+		try {
+			ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()
+					.getContext();
+			String filePath = scontext.getRealPath("/WEB-INF/fileAttachments/" + nombreArchivo);
+			File file = new File(filePath);
+			FileOutputStream out = new FileOutputStream(file);
+			workbook.write(out);
+			out.close();
+			fileDes = DefaultStreamedContent.builder().name(nombreArchivo).contentType("aplication/xls")
+					.stream(() -> FacesContext.getCurrentInstance().getExternalContext()
+							.getResourceAsStream("/WEB-INF/fileAttachments/" + nombreArchivo))
+					.build();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	public double promedio3UltimosMenses(Empleado empleado) {
+		double promedio = 0.0;
+		double total1=0;
+		
+		if(comision1!=null) {
+			total1 = total1+ buscarLotesVendidos(empleado, comision1);
+		}
+		if(comision2!=null) {
+			total1 = total1+ buscarLotesVendidos(empleado, comision2);
+		}
+		if(comision3!=null) {
+			total1 = total1+ buscarLotesVendidos(empleado, comision3);
+		}
+		
+		promedio = total1/3;
+	
+		promedio = Math.round(promedio * 100.0) / 100.0;	
+		//**************************************
+		if (promedio >= 0.0) {
+			empleado.setNivel("BAJO");
+		}
+		if (promedio >= 1.5) {
+			empleado.setNivel("MEDIO");
+		}
+		if (promedio >= 5.0) {
+			empleado.setNivel("ALTO");
+		}
+		
+		
+		
+		return promedio;
+	}
+	
+	public int buscarLotesVendidos(Empleado empleado, Comision comision) {
+		int total = 0;
+		
+		if(comision != null) {
+			List<Comisiones> lstCom = comisionesService.findByEstadoAndComisionAndPersonAsesor(true, comision, empleado.getPerson());
+			if(!lstCom.isEmpty()) {
+				total = lstCom.size();
+			}
+		}
+		
+		return total;
+	}
+	
+	public void verMesAnterior() {
+		index++;
+		comision1 = lstComision.get(index);
+		comision2 = lstComision.get(index+1);
+		comision3 = lstComision.get(index+2);
+		
+		fecha1 = "No Registrado";
+		fecha2 = "No Registrado";
+		fecha3 = "No Registrado";
+		
+		if(comision1!=null) {
+			fecha1 = sdfMesAnio.format(comision1.getFechaIni());
+		}
+		if(comision2!=null) {
+			fecha2 = sdfMesAnio.format(comision2.getFechaIni());
+		}
+		if(comision3!=null) {
+			fecha3 = sdfMesAnio.format(comision3.getFechaIni());
+		}
+		
+	}
+	
+	public void verMesSiguiente() {
+		index--;
+		if(index<=0) {
+			index=0;
+			comision1 = lstComision.get(index);
+			comision2 = lstComision.get(index+1);
+			comision3 = lstComision.get(index+2);
+			
+			fecha1 = "No Registrado";
+			fecha2 = "No Registrado";
+			fecha3 = "No Registrado";
+			
+			if(comision1!=null) {
+				fecha1 = sdfMesAnio.format(comision1.getFechaIni());
+			}
+			if(comision2!=null) {
+				fecha2 = sdfMesAnio.format(comision2.getFechaIni());
+			}
+			if(comision3!=null) {
+				fecha3 = sdfMesAnio.format(comision3.getFechaIni());
+			}
+		}
+		
+		
+		
+	}
+	
+	public void mostrarTresMeses() {
+		
 	}
 	
 	public void iniciarLazyEmpleados() {
@@ -164,13 +380,29 @@ public class ComisionesBean extends BaseBean implements Serializable  {
                 		   
                 	   }
                 	}
-                }        
+                }   
+                
+                String cargo = "%%";
+                String area = "%%";
+                
+                if(cargoFilter!=null) {
+                	cargo = "%"+cargoFilter.getDescripcion()+"%";
+                }
+                
+                if(areaFilter!=null) {
+                	area = "%"+areaFilter.getNombre()+"%";
+                }
+                
                 Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
                
                 Page<Empleado> pageEmpleado=null;
                
-                
-                pageEmpleado= empleadoService.findByPersonSurnamesLikeAndEstado(names, true, pageable);
+                if(teamFilter==null) {
+                    pageEmpleado= empleadoService.findByPersonSurnamesLikeAndEstadoAndCargoDescripcionLikeAndAreaNombreLike(names, true,cargo,area, pageable);
+                }else {
+                    pageEmpleado= empleadoService.findByPersonSurnamesLikeAndEstadoAndCargoDescripcionLikeAndAreaNombreLikeAndTeam(names, true,cargo,area,teamFilter, pageable);
+
+                }
                 
                 setRowCount((int) pageEmpleado.getTotalElements());
                 return datasource = pageEmpleado.getContent();
@@ -1051,15 +1283,15 @@ public class ComisionesBean extends BaseBean implements Serializable  {
         };
     }
 	
-	public Converter getConversorPersonSupervisorMovimiento() {
+	public Converter getConversorCargo() {
         return new Converter() {
             @Override
             public Object getAsObject(FacesContext context, UIComponent component, String value) {
                 if (value.trim().equals("") || value == null || value.trim().equals("null")) {
                     return null;
                 } else {
-                	Person c = null;
-                    for (Person si : lstPersonSupervisorMovimiento) {
+                	Cargo c = null;
+                    for (Cargo si : lstCargo) {
                         if (si.getId().toString().equals(value)) {
                             c = si;
                         }
@@ -1073,7 +1305,63 @@ public class ComisionesBean extends BaseBean implements Serializable  {
                 if (value == null || value.equals("")) {
                     return "";
                 } else {
-                    return ((Person) value).getId() + "";
+                    return ((Cargo) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorArea() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Area c = null;
+                    for (Area si : lstArea) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Area) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorTeam() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                    Team c = null;
+                    for (Team si : lstTeam) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Team) value).getId() + "";
                 }
             }
         };
@@ -1282,17 +1570,119 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	public void setLstMetaSupervisor(List<MetaSupervisor> lstMetaSupervisor) {
 		this.lstMetaSupervisor = lstMetaSupervisor;
 	}
-	public Person getPersonsupervisorMovimiento() {
-		return personsupervisorMovimiento;
+	public CargoService getCargoService() {
+		return cargoService;
 	}
-	public void setPersonsupervisorMovimiento(Person personsupervisorMovimiento) {
-		this.personsupervisorMovimiento = personsupervisorMovimiento;
+	public void setCargoService(CargoService cargoService) {
+		this.cargoService = cargoService;
 	}
-	public List<Person> getLstPersonSupervisorMovimiento() {
-		return lstPersonSupervisorMovimiento;
+	public LazyDataModel<Empleado> getLstEmpleadoLazy() {
+		return lstEmpleadoLazy;
 	}
-	public void setLstPersonSupervisorMovimiento(List<Person> lstPersonSupervisorMovimiento) {
-		this.lstPersonSupervisorMovimiento = lstPersonSupervisorMovimiento;
+	public void setLstEmpleadoLazy(LazyDataModel<Empleado> lstEmpleadoLazy) {
+		this.lstEmpleadoLazy = lstEmpleadoLazy;
+	}
+	public Cargo getCargoFilter() {
+		return cargoFilter;
+	}
+	public void setCargoFilter(Cargo cargoFilter) {
+		this.cargoFilter = cargoFilter;
+	}
+	public List<Cargo> getLstCargo() {
+		return lstCargo;
+	}
+	public void setLstCargo(List<Cargo> lstCargo) {
+		this.lstCargo = lstCargo;
+	}
+	public AreaService getAreaService() {
+		return areaService;
+	}
+	public void setAreaService(AreaService areaService) {
+		this.areaService = areaService;
+	}
+	public Area getAreaFilter() {
+		return areaFilter;
+	}
+	public void setAreaFilter(Area areaFilter) {
+		this.areaFilter = areaFilter;
+	}
+	public List<Area> getLstArea() {
+		return lstArea;
+	}
+	public void setLstArea(List<Area> lstArea) {
+		this.lstArea = lstArea;
+	}
+	public Team getTeamFilter() {
+		return teamFilter;
+	}
+	public void setTeamFilter(Team teamFilter) {
+		this.teamFilter = teamFilter;
+	}
+	public List<Team> getLstTeam() {
+		return lstTeam;
+	}
+	public void setLstTeam(List<Team> lstTeam) {
+		this.lstTeam = lstTeam;
+	}
+	public Comision getComision1() {
+		return comision1;
+	}
+	public void setComision1(Comision comision1) {
+		this.comision1 = comision1;
+	}
+	public Comision getComision2() {
+		return comision2;
+	}
+	public void setComision2(Comision comision2) {
+		this.comision2 = comision2;
+	}
+	public Comision getComision3() {
+		return comision3;
+	}
+	public void setComision3(Comision comision3) {
+		this.comision3 = comision3;
+	}
+	public String getFecha1() {
+		return fecha1;
+	}
+	public void setFecha1(String fecha1) {
+		this.fecha1 = fecha1;
+	}
+	public String getFecha2() {
+		return fecha2;
+	}
+	public void setFecha2(String fecha2) {
+		this.fecha2 = fecha2;
+	}
+	public String getFecha3() {
+		return fecha3;
+	}
+	public void setFecha3(String fecha3) {
+		this.fecha3 = fecha3;
+	}
+	public int getIndex() {
+		return index;
+	}
+	public void setIndex(int index) {
+		this.index = index;
+	}
+	public SimpleDateFormat getSdfMesAnio() {
+		return sdfMesAnio;
+	}
+	public void setSdfMesAnio(SimpleDateFormat sdfMesAnio) {
+		this.sdfMesAnio = sdfMesAnio;
+	}
+	public StreamedContent getFileDes() {
+		return fileDes;
+	}
+	public void setFileDes(StreamedContent fileDes) {
+		this.fileDes = fileDes;
+	}
+	public String getNombreArchivo() {
+		return nombreArchivo;
+	}
+	public void setNombreArchivo(String nombreArchivo) {
+		this.nombreArchivo = nombreArchivo;
 	}
 	
 }

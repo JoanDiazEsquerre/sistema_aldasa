@@ -35,9 +35,9 @@ public class AreaServiceImpl implements AreaService  {
 	}
 
 	@Override
-	public List<Area> findByEstado(boolean estado) {
+	public List<Area> findByEstadoOrderByNombreAsc(boolean estado) {
 		// TODO Auto-generated method stub
-		return areaRepository.findByEstado(estado);
+		return areaRepository.findByEstadoOrderByNombreAsc(estado);
 	}
 
 	

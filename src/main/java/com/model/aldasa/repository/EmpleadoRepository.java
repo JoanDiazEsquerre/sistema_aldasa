@@ -17,7 +17,7 @@ import com.model.aldasa.entity.Team;
 
 public interface EmpleadoRepository extends JpaRepository<Empleado, Integer> {
 	
-	Page<Empleado> findByPersonSurnamesLikeAndEstado(String person, boolean status, Pageable pageable);
+	Page<Empleado> findByPersonSurnamesLikeAndEstadoAndCargoDescripcionLikeAndAreaNombreLike(String person, boolean status, String cargo, String area, Pageable pageable);
 	Empleado findByPerson (Person person);
 	Empleado findByPersonDniAndEstadoAndExterno(String dniPerson, boolean estado, boolean externo);
 	List<Empleado> findByEstadoAndExternoOrderByPersonSurnamesAsc(boolean estado, boolean externo);
@@ -29,6 +29,8 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, Integer> {
 	Page<Empleado> findByPersonAndEstadoAndSucursalEmpresa(Person person, boolean status, Empresa empresa, Pageable pageable);
 	Page<Empleado> findByEstadoAndAreaAndSucursalEmpresa(boolean estado, Area area, Empresa empresa, Pageable pageable);
 	Page<Empleado> findByPersonAndEstadoAndAreaAndSucursalEmpresa(Person person, boolean status, Area area, Empresa empresa, Pageable pageable);
+	Page<Empleado> findByPersonSurnamesLikeAndEstadoAndCargoDescripcionLikeAndAreaNombreLikeAndTeam(String person, boolean status, String cargo, String area, Team team, Pageable pageable);
+
 	
 	List<Empleado> findByEstado(boolean status);
 	List<Empleado> findByPersonAndEstado(Person person, boolean status);

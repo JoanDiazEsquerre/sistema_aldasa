@@ -57,6 +57,8 @@ public class Empleado {
 	@JoinColumn(name="idcargo")
 	private Cargo cargo;
 	
+	private transient String nivel;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -129,6 +131,12 @@ public class Empleado {
 	}
 	public void setCargo(Cargo cargo) {
 		this.cargo = cargo;
+	}
+	public String getNivel() {
+		return nivel;
+	}
+	public void setNivel(String nivel) {
+		this.nivel = nivel;
 	}
 
 	

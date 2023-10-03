@@ -1,0 +1,125 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	locale="#{localeBean.usedLocale}"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<h:form id="form">
+		<h2 style="color: #007d4c;">MANTENIMIENTOS > VOUCHER</h2>
+		<h:panelGrid columns="10">
+			<p:selectOneButton value="#{voucherBean.estado}" unselectable="false">
+				<f:selectItem itemLabel="Activos" itemValue="#{true}" />
+				<f:selectItem itemLabel="Inactivos" itemValue="#{false}" />
+				<p:ajax update="idTable"/>
+			</p:selectOneButton>
+			
+			<p:outputLabel value="Sucursal:" style="margin-left: 10px"/>
+			<p:selectOneMenu id="sucursal" value="#{voucherBean.sucursal}" style="margin:5px;width:250px" converter="#{voucherBean.conversorSucursal}">
+				<f:selectItem itemLabel="[-TODOS-]" itemValue="#{null}"></f:selectItem>
+				<f:selectItems value="#{voucherBean.lstSucursal}" var="suc" itemLabel="#{suc.razonSocial}" itemValue="#{suc}"/> 
+				<p:ajax update="idTable"/>
+			</p:selectOneMenu>
+			
+		</h:panelGrid>
+		
+		<p:dataTable var="imagen" id="idTable" value="#{voucherBean.lstImagenLazy}" widgetVar="imagenTable" rowIndexVar="row" paginator="true" rows="15" size="small"
+			emptyMessage="No se encontraron resultados." paginatorPosition="bottom" rowKey="#{imagen.id}" selection="#{voucherBean.imagenSelected}" selectionMode="single">
+			<f:facet name="header">
+				<div class="p-d-flex p-ai-center p-jc-between">
+					<span>Lista de Vouchers</span>
+				</div>
+			</f:facet>
+<!-- 			<p:ajax event="rowSelect" listener="#{voucherBean.modifyProfile()}" update=":formProfileDialog :dialogProfile" oncomplete="PF('profileDialog').show();" /> -->
+	
+			<p:column style="width:42px;text-align: left">
+				<f:facet name="header">
+					<p:commandLink action="#{voucherBean.newImagen()}"
+						update=":dialogImagen :formTeamDialog"
+						oncomplete="PF('imagenDialog').show();"
+						title="NUEVO VOUCHER">
+						<p:graphicImage width="50" value="/recursos/images/anadir.png" />
+	
+					</p:commandLink>
+				</f:facet>
+			</p:column>
+	
+			<p:column width="25px">
+	                      #{row +1}
+	        </p:column>
+	        
+			<p:column headerText="Fecha y Hora" sortBy="#{imagen.fecha}" filterMatchMode="contains">
+				<h:outputText value="#{voucherBean.convertirHora(imagen.fecha)}" />
+			</p:column>
+			<p:column headerText="Monto" sortBy="#{imagen.monto}" filterMatchMode="contains">
+				<h:outputText value="#{imagen.monto}" />
+			</p:column>
+			<p:column headerText="Número Operación" sortBy="#{imagen.numeroOperacion}" filterBy="#{imagen.numeroOperacion}" filterMatchMode="contains">
+				<h:outputText value="#{imagen.numeroOperacion}" />
+			</p:column>
+			<p:column headerText="Cuenta Bancaria" sortBy="#{imagen.cuentaBancaria.numero}" filterBy="#{imagen.cuentaBancaria.numero}" filterMatchMode="contains">
+				<h:outputText value="#{imagen.cuentaBancaria.banco.nombre} : #{imagen.cuentaBancaria.numero} (#{imagen.cuentaBancaria.moneda eq 'S'? 'SOLES': 'DÓLARES'})" />
+			</p:column>
+			<p:column headerText="Tipo de Transacción" sortBy="#{imagen.tipoTransaccion}" filterBy="#{imagen.tipoTransaccion}" filterMatchMode="contains">
+				<h:outputText value="#{imagen.tipoTransaccion}" />
+			</p:column>
+			<p:column headerText="Boleta/Factura" sortBy="#{imagen.documentoVenta.numero}" filterMatchMode="contains">
+				<h:outputText value="#{imagen.documentoVenta.serie}-#{imagen.documentoVenta.numero}" />
+			</p:column>
+			<p:column headerText="Sucursal" sortBy="#{imagen.cuentaBancaria.sucursal.razonSocial}" filterMatchMode="contains">
+				<h:outputText value="#{imagen.cuentaBancaria.sucursal.razonSocial}" />
+			</p:column>
+			<p:column headerText="Usuario" sortBy="#{imagen.usuario.username}" filterMatchMode="contains">
+				<h:outputText value="#{imagen.usuario.username}" />
+			</p:column>
+			<p:column headerText="Sucursal" sortBy="#{imagen.cuentaBancaria.sucursal.razonSocial}" filterMatchMode="contains">
+				<h:outputText value="#{imagen.cuentaBancaria.sucursal.razonSocial}" />
+			</p:column>
+		</p:dataTable>
+		<p:contextMenu for="idTable" >
+	    	<p:menuitem value="Eliminar" update="idTable" icon="pi pi-times" action="#{voucherBean.anularVoucher}" />
+       	</p:contextMenu>
+	</h:form>
+	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogImagen" header="NUEVO VOUCHER" widgetVar="imagenDialog" resizable="false" closable="true"
+		appendTo="@(body)" style="width:auto">
+		<h:form id="formTeamDialog">
+		    
+			<h:panelGrid id="grid" columns="2">
+				<h:outputLabel value="Fecha y Hora:" /> 
+				<p:datePicker value="#{voucherBean.imagenSelected.fecha}" timeInput="true" pattern="dd/MM/yyyy HH:mm:ss a" showTime="true"/>
+				
+				<h:outputLabel  value="Monto: " />
+				<p:inputNumber  value="#{voucherBean.imagenSelected.monto}" />
+				
+				<h:outputLabel value="Nro. de Operación:" />
+				<p:inputText  value="#{voucherBean.imagenSelected.numeroOperacion}" />
+				
+				<p:outputLabel value="Sucursal:" style="margin-left: 10px"/>
+				<p:selectOneMenu id="sucursal" value="#{voucherBean.sucursalDialog}" converter="#{voucherBean.conversorSucursal}">
+					<f:selectItem itemLabel="[-Seleccionar-]" itemValue="#{null}"></f:selectItem>
+					<f:selectItems value="#{voucherBean.lstSucursal}" var="suc" itemLabel="#{suc.razonSocial}" itemValue="#{suc}"/> 
+					<p:ajax listener="#{voucherBean.listarCuentaBancaria}" update=":formTeamDialog:ctaBanc" />
+				</p:selectOneMenu>
+				
+				<h:outputLabel value="Cuenta Banc:" />
+				<p:selectOneMenu value="#{voucherBean.imagenSelected.cuentaBancaria}" id="ctaBanc" converter="#{voucherBean.conversorCuentaBancaria}" >
+                    <f:selectItems value="#{voucherBean.lstCuentaBancaria}" var="cb" itemLabel="#{cb.banco.abreviatura} : #{cb.numero}  (#{cb.moneda eq 'D'?'Dólares':'Soles'})" itemValue="#{cb}"/>
+                </p:selectOneMenu>
+				
+				<h:outputLabel value="Tipo de Operación:"/>
+				<p:selectOneMenu  value="#{voucherBean.imagenSelected.tipoTransaccion}">
+					<f:selectItem itemLabel="DEPOSITO EN EFECTIVO" itemValue="DEPOSITO EN EFECTIVO"/>
+					<f:selectItem itemLabel="TRASFERENCIAS BANCARIAS" itemValue="TRASFERENCIAS BANCARIAS"/>
+					<f:selectItem itemLabel="TRASFERENCIA INTERBANCARIA" itemValue="TRASFERENCIA INTERBANCARIA"/>
+					<f:selectItem itemLabel="POS" itemValue="POS"/>
+				</p:selectOneMenu>	
+				
+				<p:commandButton value="Guardar" action="#{voucherBean.saveVoucher()}"  update=":form:idTable"/>
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+		
+	
+</ui:composition>

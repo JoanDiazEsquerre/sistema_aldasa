@@ -16,14 +16,14 @@
 					<h:outputLabel for="optionComision" value="Comision:" style="float: rigth;" />
 					<p:selectOneMenu id="optionComision" value="#{comisionesBean.comisionSelected}" converter="#{comisionesBean.conversorComision}" style="float: Left;">
 						<f:selectItems value="#{comisionesBean.lstComision}" var="com" itemLabel="#{com.codigo} : #{comisionesBean.sdf.format(com.fechaIni)}-#{comisionesBean.sdf.format(com.fechaCierre)}" itemValue="#{prof}" />
-						<p:ajax listener="#{comisionesBean.cambiarComision}" update="idTableComisiones,optionSupervisores" />
+						<p:ajax listener="#{comisionesBean.cambiarComision}" update=":form:tabView:idTableComisiones :form:tabView:optionSupervisores" />
 					</p:selectOneMenu>
 					
 					<h:outputLabel for="optionSupervisores" value="Supervisores:" style="float: rigth;" />
 					<p:selectOneMenu id="optionSupervisores" value="#{comisionesBean.personSupervisorSelected}" converter="#{comisionesBean.conversorPersonSupervisor}" style="float: Left;">
 						<f:selectItem itemLabel="[-- Todos --]" itemValue=""/>
 						<f:selectItems value="#{comisionesBean.lstPersonSupervisor}" var="per" itemLabel="#{per.names} #{per.surnames}" itemValue="#{per}" />
-						<p:ajax update="idTableComisiones" />
+						<p:ajax update=":form:tabView:idTableComisiones" />
 					</p:selectOneMenu>
 				
 					
@@ -39,7 +39,12 @@
 		
 					<p:commandButton value="Alcance Meta" styleClass="mr-2" actionListener="#{comisionesBean.mostrarMeta()}"
 							oncomplete="PF('dialogMeta').show();" update="dialogAlcanceMeta">
-		       		</p:commandButton>           	
+		       		</p:commandButton>  
+		       		
+		       		<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{comisionesBean.procesarExcel()}"
+		                         icon="pi pi-file-excel" styleClass="mr-2">
+		            	<p:fileDownload value="#{comisionesBean.fileDes}"/> 
+		      		</p:commandButton>         	
 				</h:panelGrid>
 			
 				<p:dataTable var="com" id="idTableComisiones" value="#{comisionesBean.lstComisionesLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="15" style="width:100%"
@@ -61,40 +66,40 @@
 						<h:outputText value="#{com.lote.personVenta.dni} / #{com.lote.personVenta.surnames} #{com.lote.personVenta.names}" />
 					</p:column>
 		
-					<p:column headerText="N° Lote" sortBy="#{com.lote.numberLote}"  filterMatchMode="contains" responsivePriority="14" style="text-align: center" width="50px" >
-						<h:outputText value="#{com.lote.numberLote}" />
+					<p:column headerText="N° Lote" sortBy="#{com.contrato.lote.numberLote}"  filterMatchMode="contains" responsivePriority="14" style="text-align: center" width="50px" >
+						<h:outputText value="#{com.contrato.lote.numberLote}" />
 					</p:column>
 					
-					<p:column headerText="Mz" sortBy="#{com.lote.manzana.name}" filterMatchMode="contains" responsivePriority="13" style="text-align: center" width="50px">
-						<h:outputText value="#{com.lote.manzana.name}" />
+					<p:column headerText="Mz" sortBy="#{com.contrato.lote.manzana.name}" filterMatchMode="contains" responsivePriority="13" style="text-align: center" width="50px">
+						<h:outputText value="#{com.contrato.lote.manzana.name}" />
 					</p:column>
 					
-					<p:column headerText="Proyecto" sortBy="#{com.lote.project.name}" filterMatchMode="contains" width="200px">
-		                <h:outputText value="#{com.lote.project.name}" />
+					<p:column headerText="Proyecto" sortBy="#{com.contrato.lote.project.name}" filterMatchMode="contains" width="200px">
+		                <h:outputText value="#{com.contrato.lote.project.name}" />
 		            </p:column>
 		            
 					<p:column headerText="Fecha Venta" filterMatchMode="contains" responsivePriority="3" style="text-align: center" width="100px">
-						<h:outputText value="#{com.lote.fechaVendido}"> 
+						<h:outputText value="#{com.contrato.fechaVenta}"> 
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
 					
-					<p:column headerText="Tipo de Pago" sortBy="#{com.lote.tipoPago}" filterMatchMode="contains" style="text-align: center" width="100px">
-		                <h:outputText value="#{com.lote.tipoPago}" />
+					<p:column headerText="Tipo de Pago" sortBy="#{com.contrato.tipoPago}" filterMatchMode="contains" style="text-align: center" width="100px">
+		                <h:outputText value="#{com.contrato.tipoPago}" />
 		            </p:column>
 					
-					<p:column headerText="Cuotas" sortBy="#{com.lote.numeroCuota}" filterMatchMode="contains" style="text-align: center" width="50px">
-		                <h:outputText value="#{com.lote.numeroCuota}" />
+					<p:column headerText="Cuotas" sortBy="#{com.contrato.numeroCuota}" filterMatchMode="contains" style="text-align: center" width="50px">
+		                <h:outputText value="#{com.contrato.numeroCuota}" />
 		            </p:column>
 		            
-		            <p:column headerText="Precio" filterMatchMode="contains" sortBy="#{com.lote.montoVenta}" style="text-align: center" width="100px">
-						<h:outputText value="#{com.lote.montoVenta}"  >
+		            <p:column headerText="Precio" filterMatchMode="contains" sortBy="#{com.contrato.montoVenta}" style="text-align: center" width="100px">
+						<h:outputText value="#{com.contrato.montoVenta}"  >
 		                    <f:convertNumber currencySymbol="" type="currency"  />
 		                </h:outputText> 
 					</p:column>
 					
-					<p:column headerText="Inicial" filterMatchMode="contains" sortBy="#{com.lote.montoInicial}" style="text-align: center" width="100px" >
-						<h:outputText value="#{com.lote.montoInicial}"  >
+					<p:column headerText="Inicial" filterMatchMode="contains" sortBy="#{com.contrato.montoInicial}" style="text-align: center" width="100px" >
+						<h:outputText value="#{com.contrato.montoInicial}"  >
 		                    <f:convertNumber currencySymbol="" type="currency"  />
 		                </h:outputText> 
 					</p:column>
@@ -121,74 +126,87 @@
 			
 			</p:tab>
 			<p:tab title="Movimiento de Ventas por Asesor" >
-				<h:outputLabel value="Supervisores:" style="float: rigth;" />
-				<p:selectOneMenu value="#{comisionesBean.personsupervisorMovimiento}" converter="#{comisionesBean.conversorPersonSupervisorMovimiento}" style="float: Left;">
-					<f:selectItem itemLabel="[-- Todos --]" itemValue=""/>
-					<f:selectItems value="#{comisionesBean.lstPersonSupervisorMovimiento}" var="per" itemLabel="#{per.names} #{per.surnames}" itemValue="#{per}" />
-					<p:ajax update="idTableComisiones" />
-				</p:selectOneMenu>
+				<h:outputLabel value="Equipo: " />
+				<p:selectOneMenu id="optionTeam" value="#{comisionesBean.teamFilter}" converter="#{comisionesBean.conversorTeam}" style="margin:10px" >
+             	   <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
+                   <f:selectItems value="#{comisionesBean.lstTeam}" var="prof" itemLabel="#{prof.name} / #{prof.personSupervisor.surnames} #{prof.personSupervisor.names}" itemValue="#{prof}"/>
+                   <p:ajax update=":form:tabView:idTableEmpleado" />
+                </p:selectOneMenu>
 				
-				<p:dataTable var="empleado" id="idTableEmpleado" value="#{empleadoBean.lstEmpleadoLazy}" widgetVar="empleadoTable" rowIndexVar="row" paginator="true" rows="15" size="small"
-					emptyMessage="No se encontraron empleados."	paginatorPosition="bottom" rowKey="#{empleado.id}" selection="#{empleadoBean.empleadoSelected}" selectionMode="single">
-					<p:ajax event="rowSelect" listener="#{empleadoBean.modifyEmpleado()}" update=":formEmpleadoDialog :dialogEmpleado" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('empleadoDialog').show();" />
+				
+			
+				
+				<p:dataTable var="empleado" id="idTableEmpleado" value="#{comisionesBean.lstEmpleadoLazy}" widgetVar="empleadoTable" rowIndexVar="row" paginator="true" rows="15" size="small"
+					emptyMessage="No se encontraron empleados."	paginatorPosition="bottom" rowKey="#{empleado.id}">
 				
 					<f:facet name="header">
 						<div class="p-d-flex p-ai-center p-jc-between">
+							<p:commandButton actionListener="#{comisionesBean.verMesAnterior}" update=":form:tabView:idTableEmpleado" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();" icon="pi pi-backward" styleClass="rounded-button ui-button-secondary" style="margin:5px" />
+							<p:commandButton actionListener="#{comisionesBean.verMesSiguiente}" update=":form:tabView:idTableEmpleado" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();" icon="pi pi-forward" styleClass="rounded-button ui-button-secondary" />
 							<span>Lista de Empleados</span>
 						</div>
 					</f:facet>
 				
-					<p:column style="width:42px;text-align: left">
-						<f:facet name="header">
-							<p:commandLink action="#{empleadoBean.newEmpleado()}"
-								update=":formEmpleadoDialog :dialogEmpleado"
-								onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('empleadoDialog').show();"
-								title="NUEVO EMPLEADO">
-								<p:graphicImage width="50" value="/recursos/images/anadir.png" />
-			
-							</p:commandLink>
-						</f:facet>
-					</p:column>
 			
 					<p:column width="25px">
 			                      #{row +1}
 			        </p:column>
 			        
-					<p:column headerText="Nombre del empleado" sortBy="#{empleado.person.surnames}" filterBy="#{empleado.person.surnames}" filterMatchMode="contains">
-						<h:outputText value="#{empleado.person.surnames} #{empleado.person.names}" />
-					</p:column>
-					<p:column headerText="Fecha Ingreso" filterMatchMode="contains">
-						<h:outputText value="#{empleado.fechaIngreso}">
-							<f:convertDateTime pattern="dd/MM/yyyy" />
-						</h:outputText>
-					</p:column>
-		
-					<p:column headerText="Fecha Salida" filterMatchMode="contains">
-						<h:outputText value="#{empleado.fechaSalida}">
-							<f:convertDateTime pattern="dd/MM/yyyy" />
-						</h:outputText>
-					</p:column>
-					<p:column headerText="Sueldo Básico" sortBy="#{empleado.sueldoBasico}" filterMatchMode="contains">
-						<h:outputText value="#{empleado.sueldoBasico}" > 
-						 <f:convertNumber currencySymbol="" type="currency"  />
-						 </h:outputText>
-					</p:column>
-					<p:column headerText="Cargo" sortBy="#{empleado.cargo.descripcion}"
-						filterMatchMode="contains">
-						<h:outputText value="#{empleado.cargo.descripcion}" />
-					</p:column>
-					<p:column headerText="Área" sortBy="#{empleado.area.nombre}"
-						filterMatchMode="contains">
-						<h:outputText value="#{empleado.area.nombre}" />
-					</p:column>
-					<p:column headerText="Externo" sortBy="#{empleado.externo}" filterMatchMode="contains">
-						<h:outputText value="#{empleado.externo? 'SI': 'NO'}" />
-					</p:column>
-					<p:column headerText="Equipo" sortBy="#{empleado.team.name}" filterMatchMode="contains">
+			        <p:column headerText="Equipo" sortBy="#{empleado.team.name}" filterMatchMode="contains" width="70px">
 						<h:outputText value="#{empleado.team.name}" />
 					</p:column>
-					<p:column headerText="Planilla" sortBy="#{empleado.planilla}" filterMatchMode="contains">
-						<h:outputText value="#{empleado.planilla? 'SI':'NO'}" />
+			        
+					<p:column headerText="Nombre del empleado" sortBy="#{empleado.person.surnames}" filterBy="#{empleado.person.surnames}" filterMatchMode="contains" width="230px">
+						<h:outputText value="#{empleado.person.surnames} #{empleado.person.names}" />
+					</p:column>
+					<p:column headerText="Cargo" style="text-align:center; width:130px">
+						<f:facet name="header">
+							Cargo
+				        	<p:selectOneMenu value="#{comisionesBean.cargoFilter}" converter="#{comisionesBean.conversorCargo}" style="width:100%" >
+								<f:selectItem itemLabel="[-Ninguno-]" value="#{null}"/>
+								<f:selectItems value="#{comisionesBean.lstCargo}" var="cargo" itemLabel="#{cargo.descripcion}" itemValue="#{cargo}"/>
+								<p:ajax update=":form:tabView:idTableEmpleado" />
+							</p:selectOneMenu>
+						</f:facet>
+						
+						<h:outputText value="#{empleado.cargo.descripcion}" />
+					</p:column>
+					
+					<p:column headerText="Área" style="text-align:center; width:130px">
+						<f:facet name="header">
+							Área
+				        	<p:selectOneMenu value="#{comisionesBean.areaFilter}" converter="#{comisionesBean.conversorArea}" style="width:100%">
+			                    <f:selectItem itemLabel="[-Ninguno-]" value="#{null}"/>
+			                    <f:selectItems value="#{comisionesBean.lstArea}" var="area" itemLabel="#{area.nombre}" itemValue="#{area}"/>
+			                    <p:ajax update=":form:tabView:idTableEmpleado" />
+			                </p:selectOneMenu>
+						</f:facet>
+						
+						<h:outputText value="#{empleado.area.nombre}" />
+					</p:column>
+					
+					<p:column headerText="Externo" sortBy="#{empleado.externo}" filterMatchMode="contains" style="width: 50px">
+						<h:outputText value="#{empleado.externo? 'SI': 'NO'}" />
+					</p:column>
+					
+					<p:column headerText="#{comisionesBean.fecha3}"  filterMatchMode="contains" style="width: 50px; color:brown">
+						<h:outputText value="#{comisionesBean.buscarLotesVendidos(empleado, comisionesBean.comision3)}" />
+					</p:column>
+					
+					<p:column headerText="#{comisionesBean.fecha2}"  filterMatchMode="contains" style="width: 50px; color:brown">
+						<h:outputText value="#{comisionesBean.buscarLotesVendidos(empleado, comisionesBean.comision2)}" />
+					</p:column>
+					
+					<p:column headerText="#{comisionesBean.fecha1}"  filterMatchMode="contains" style="width: 50px; color:brown">
+						<h:outputText value="#{comisionesBean.buscarLotesVendidos(empleado, comisionesBean.comision1)}" />
+					</p:column>
+					
+					<p:column headerText="Prom. 3 Últimos Meses" filterMatchMode="contains" style="width: 100px;text-align:center;color: #ff33dd">
+						<h:outputText value="#{comisionesBean.promedio3UltimosMenses(empleado)}" style="color: #ff33dd"/>
+					</p:column>
+					
+					<p:column headerText="RENDIMIENTO" width="120px" filterMatchMode="contains" style="width: 100px;text-align:center">
+						<h:outputText value="#{empleado.nivel}" style="#{empleado.nivel  eq 'BAJO'?'color:red': empleado.nivel eq 'MEDIO'?'color:blue':'color:green'}"  />
 					</p:column>
 				</p:dataTable>
 			</p:tab>

@@ -25,7 +25,8 @@ public interface EmpleadoService {
 	Empleado findByPersonDniAndEstadoAndExterno(String dniPerson, boolean estado, boolean externo);
 	List<Empleado> findByEstadoAndExternoOrderByPersonSurnamesAsc(boolean estado, boolean externo);
 
-	Page<Empleado> findByPersonSurnamesLikeAndEstado(String person, boolean status, Pageable pageable);
+	Page<Empleado> findByPersonSurnamesLikeAndEstadoAndCargoDescripcionLikeAndAreaNombreLike(String person, boolean status, String cargo, String area, Pageable pageable);
+	Page<Empleado> findByPersonSurnamesLikeAndEstadoAndCargoDescripcionLikeAndAreaNombreLikeAndTeam(String person, boolean status, String cargo, String area, Team team, Pageable pageable);
 	
 	
 	Page<Empleado> findByEstadoAndSucursalEmpresa(boolean status, Empresa empresa, Pageable pageable);

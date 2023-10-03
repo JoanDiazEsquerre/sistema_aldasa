@@ -45,7 +45,7 @@
 					
 					<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{reporteAsistenciaBean.procesarExcel()}"
 		                         icon="pi pi-file-excel" styleClass="mr-2">
-		            <p:fileDownload value="#{reporteAsistenciaBean.fileDes}"/> 
+		            	<p:fileDownload value="#{reporteAsistenciaBean.fileDes}"/> 
 		      		</p:commandButton>
 		      		
 		      		<p:commandButton id="botonAuto" value="Auto-generar Registro" actionListener="#{reporteAsistenciaBean.autogenerarRegistroMes}"

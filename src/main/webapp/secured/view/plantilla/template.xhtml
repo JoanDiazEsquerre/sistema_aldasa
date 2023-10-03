@@ -58,7 +58,6 @@
 							<p:menuitem value="Mapeo de Lotes" icon="pi pi-th-large" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProyectoMapeoLotesPage()}" rendered="#{navegacionBean.subMenuMapeoLote}"/>
 			            	<p:menuitem value="Comisiones" icon="pi pi-dollar" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getProyectoComisionesPage()}" rendered="#{navegacionBean.subMenuComisiones}"/>
 			            	<p:menuitem value="Contratos" icon="pi pi-book" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getContratosPage()}" rendered="#{navegacionBean.subMenuContrato}"/> 
-			            	
 			            </p:submenu>
 			            
 			            <p:submenu label="Ventas" rendered="#{navegacionBean.menuVentas}">
@@ -75,6 +74,7 @@
 							<p:menuitem value="Empleados" ajax="false" icon="pi pi-sitemap" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoEmpleadoPage()}" rendered="#{navegacionBean.subMenuEmpleado}"/>
 							<p:menuitem value="Clientes" ajax="false" icon="pi pi-sitemap" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoClientePage()}" rendered="#{navegacionBean.subMenuCliente}"/>
 							<p:menuitem value="Comisión" icon="pi pi-dollar" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoComisionPage()}" rendered="#{navegacionBean.subMenuComision}"/>
+							<p:menuitem value="Voucher" icon="pi pi-file" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoVoucherPage()}" rendered="#{navegacionBean.subMenuVoucher}"/>
 							<p:menuitem value="Cambiar Contraseña" ajax="false" icon="pi pi-lock" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPasswordchangePage()}" rendered="#{navegacionBean.subMenuCambiarContrasenia}" />
 							
 <!-- 							<p:menuitem value="Cuenta Bancaria" ajax="false" icon="pi pi-wallet" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoCuentaBancariaPage()}" rendered="#{navegacionBean.subMenuCuentaBancaria}" /> -->

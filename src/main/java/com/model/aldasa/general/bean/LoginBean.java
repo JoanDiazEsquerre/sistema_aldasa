@@ -21,6 +21,7 @@ import com.model.aldasa.service.UsuarioSucursalService;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.NavigationHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
@@ -88,6 +89,13 @@ public class LoginBean {
 
                     //navegacionBean.onPageLoad();
                     response.sendRedirect(request.getContextPath()+"/secured/view/home.xhtml");
+                    FacesContext facesContext = FacesContext.getCurrentInstance();
+                    
+                    // Obtén el manejador de navegación
+                    NavigationHandler navigationHandler = facesContext.getApplication().getNavigationHandler();
+                    
+                    // Realiza una redirección a la misma página
+                    navigationHandler.handleNavigation(facesContext, null, "refresh");
                     valor = "success";
             	}else {
             		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("sucursalLog", null); 

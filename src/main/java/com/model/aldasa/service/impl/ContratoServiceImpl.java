@@ -59,20 +59,21 @@ public class ContratoServiceImpl implements ContratoService{
 					comisiones.setPersonSupervisor(plantilla.getPersonSupervisor());
 					
 					if (entity.getTipoPago().equals("Contado")) {
-						BigDecimal multiplica = plantilla.getMontoVenta().multiply(new BigDecimal(comision.getComisionContado()));
+						BigDecimal multiplica = entity.getMontoVenta().multiply(new BigDecimal(comision.getComisionContado()));
 						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));	
 					}else {
-						BigDecimal multiplica = plantilla.getMontoVenta().multiply(new BigDecimal(comision.getComisionCredito()));
+						BigDecimal multiplica = entity.getMontoVenta().multiply(new BigDecimal(comision.getComisionCredito()));
 						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
 					}
 					
-					BigDecimal multiplicaSup = plantilla.getMontoVenta().multiply(new BigDecimal(comision.getComisionSupervisor()));
+					BigDecimal multiplicaSup = entity.getMontoVenta().multiply(new BigDecimal(comision.getComisionSupervisor()));
 					comisiones.setComisionSupervisor(multiplicaSup.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
 					
-					BigDecimal multiplicaSub = plantilla.getMontoVenta().multiply(new BigDecimal(comision.getSubgerente()));
+					BigDecimal multiplicaSub = entity.getMontoVenta().multiply(new BigDecimal(comision.getSubgerente()));
 					comisiones.setComisionSubgerente(multiplicaSub.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
 					comisiones.setEstado(true);
-					comisiones.setComision(comision);
+					comisiones.setComision(comision); 
+					comisiones.setContrato(entity);
 					comisionesRepository.save(comisiones);
 					entity.setComisiones(comisiones);
 				}

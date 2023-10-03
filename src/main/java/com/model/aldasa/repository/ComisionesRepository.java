@@ -26,4 +26,6 @@ public interface ComisionesRepository extends JpaRepository<Comisiones, Integer>
 	
 	List<Comisiones> findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(boolean estado, String Status,String tipoEmnpleado, Date fechaIni, Date fechaFin);
 	List<Comisiones> findByEstadoAndComision(boolean estado, Comision comision);
+	List<Comisiones> findByEstadoAndComisionAndPersonAsesor(boolean estado, Comision comision, Person personAsesor);
+
 }

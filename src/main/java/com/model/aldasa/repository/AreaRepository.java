@@ -8,7 +8,7 @@ import com.model.aldasa.entity.Area;
 
 public interface AreaRepository extends JpaRepository<Area, Integer>  {
 	
-	List<Area> findByEstado(boolean estado);
+	List<Area> findByEstadoOrderByNombreAsc(boolean estado);
 
 
 }

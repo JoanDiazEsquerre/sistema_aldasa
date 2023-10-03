@@ -48,11 +48,11 @@ public class NavegacionBean implements Serializable  {
 	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas, menuAlmacen;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
 					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato, subMenuDocumentoVentas, subMenuPlantillaVenta, 
-					subMenuDocumentoVenta, subMenuInventario, subMenuCliente, subMenuMapeoLote;
+					subMenuDocumentoVenta, subMenuInventario, subMenuCliente, subMenuMapeoLote, subMenuVoucher;
 	
 	private int[] permisoProspectos,permisoProspeccion,permisoAgenda,permisoSimulador,permisoPersonas,permisoUsuarios,permisoPerfiles,permisoProyectos,permisoEquipos, permisoCambiarConstrasenia,
 					permisoReporteAcciones,permisoManzanas,permisoLotes,permisoComisiones,permisoComision,permisoEmpleado,permisoReporteLotes,permisoAsistencia,permisoReporteAsistencia,permisoRequerimientoSeparacion,
-					permisoRankingVentas,permisoContrato,permisoReporteDocumentoVentas,permisoDocumentoVenta,permisoInventario,permisoCliente, permisoPlantillaVenta, permisoMapeoLote;
+					permisoRankingVentas,permisoContrato,permisoReporteDocumentoVentas,permisoDocumentoVenta,permisoInventario,permisoCliente, permisoPlantillaVenta, permisoMapeoLote, permisoVoucher;
 
 	@PostConstruct
 	public void init() {
@@ -95,6 +95,7 @@ public class NavegacionBean implements Serializable  {
 		permisoCliente= obtenerPermisosPorPerfil(26);
 		permisoPlantillaVenta=obtenerPermisosPorPerfil(27);
 		permisoMapeoLote = obtenerPermisosPorPerfil(28);
+		permisoVoucher = obtenerPermisosPorPerfil(29);
 		
 		permisoPantallas();
 		
@@ -179,8 +180,9 @@ public class NavegacionBean implements Serializable  {
 		subMenuCliente= validaPermiso(permisoCliente);
 		subMenuComision= validaPermiso(permisoComision);
 		subMenuCambiarContrasenia= validaPermiso(permisoCambiarConstrasenia);
+		subMenuVoucher = validaPermiso(permisoVoucher);
 		
-		if(subMenuPersonas || subMenuUsuarios || subMenuPerfiles || subMenuEquipos || subMenuEmpleado || subMenuCliente || subMenuComision || subMenuCambiarContrasenia) {
+		if(subMenuPersonas || subMenuUsuarios || subMenuPerfiles || subMenuEquipos || subMenuEmpleado || subMenuCliente || subMenuComision || subMenuCambiarContrasenia || subMenuVoucher) {
 			menuMantenimiento=true;
 		}
 		
@@ -299,6 +301,10 @@ public class NavegacionBean implements Serializable  {
 
 	public void getMantenimientoComisionPage() {
 		ruta = "modulos/general/mantenimientos/comision.xhtml";
+	}
+	
+	public void getMantenimientoVoucherPage() {
+		ruta = "modulos/general/mantenimientos/voucher.xhtml";
 	}
 
 	public void getMantenimientoPasswordchangePage() {
@@ -798,6 +804,24 @@ public class NavegacionBean implements Serializable  {
 	}
 	public void setSubMenuMapeoLote(boolean subMenuMapeoLote) {
 		this.subMenuMapeoLote = subMenuMapeoLote;
+	}
+	public boolean isSubMenuVoucher() {
+		return subMenuVoucher;
+	}
+	public void setSubMenuVoucher(boolean subMenuVoucher) {
+		this.subMenuVoucher = subMenuVoucher;
+	}
+	public int[] getPermisoMapeoLote() {
+		return permisoMapeoLote;
+	}
+	public void setPermisoMapeoLote(int[] permisoMapeoLote) {
+		this.permisoMapeoLote = permisoMapeoLote;
+	}
+	public int[] getPermisoVoucher() {
+		return permisoVoucher;
+	}
+	public void setPermisoVoucher(int[] permisoVoucher) {
+		this.permisoVoucher = permisoVoucher;
 	}
 	
 	

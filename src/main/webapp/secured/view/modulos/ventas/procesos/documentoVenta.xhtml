@@ -1270,9 +1270,7 @@
 			<h:panelGrid id="idDatosVoucher" columns="2" >  
 			
 				<h:outputLabel value="Fecha:"/> 
-				<h:outputLabel value="#{documentoVentaBean.fechaVoucherDialog}" > 
-					<f:convertDateTime pattern="dd/MM/yyyy hh:mm:ss a" />
-				</h:outputLabel>
+				<h:outputLabel value="#{documentoVentaBean.convertirHora(documentoVentaBean.fechaVoucherDialog)}" /> 
 				
 				<h:outputLabel value="Monto:"/>
 				<h:outputLabel value="#{documentoVentaBean.montoVoucherDialog}"> 

@@ -18,6 +18,6 @@ public interface ProfileService {
    Profile findByName (String name);
    Profile findByNameException(String name, int idProfile);
    
-	Page<Profile> findByNameLikeAndStatus(String name, boolean status, Pageable pageable);
+   Page<Profile> findByNameLikeAndStatus(String name, boolean status, Pageable pageable);
 
 }

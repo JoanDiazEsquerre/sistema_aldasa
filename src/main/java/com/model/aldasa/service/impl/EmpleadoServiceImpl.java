@@ -41,9 +41,9 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 
 
 	@Override
-	public Page<Empleado> findByPersonSurnamesLikeAndEstado(String person, boolean status, Pageable pageable) {
+	public Page<Empleado> findByPersonSurnamesLikeAndEstadoAndCargoDescripcionLikeAndAreaNombreLike(String person, boolean status, String cargo, String area, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return empleadoRepository.findByPersonSurnamesLikeAndEstado(person, status, pageable);
+		return empleadoRepository.findByPersonSurnamesLikeAndEstadoAndCargoDescripcionLikeAndAreaNombreLike(person, status, cargo, area, pageable);
 	}
 
 
@@ -137,6 +137,14 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 	public List<Empleado> findByEstadoAndTeam(boolean status, Team team) {
 		// TODO Auto-generated method stub
 		return empleadoRepository.findByEstadoAndTeam(status, team);
+	}
+
+
+	@Override
+	public Page<Empleado> findByPersonSurnamesLikeAndEstadoAndCargoDescripcionLikeAndAreaNombreLikeAndTeam(
+			String person, boolean status, String cargo, String area, Team team, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return empleadoRepository.findByPersonSurnamesLikeAndEstadoAndCargoDescripcionLikeAndAreaNombreLikeAndTeam(person, status, cargo, area, team, pageable); 
 	}
 
 

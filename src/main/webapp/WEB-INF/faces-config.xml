@@ -193,7 +193,39 @@
 		</managed-property>
 	</managed-bean>
 
-
+	<managed-bean>
+		<managed-bean-name>voucherBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.general.bean.VoucherBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>imagenService</property-name>
+			<value>#{imagenService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>projectService</property-name>
+			<value>#{projectService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>manzanaService</property-name>
+			<value>#{manzanaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>loteService</property-name>
+			<value>#{loteService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>cuentaBancariaService</property-name>
+			<value>#{cuentaBancariaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>sucursalService</property-name>
+			<value>#{sucursalService}</value>
+		</managed-property>
+	</managed-bean>
 
 	<managed-bean>
 		<managed-bean-name>agendaBean</managed-bean-name>
@@ -468,6 +500,14 @@
 		<managed-property>
 			<property-name>metaSupervisorService</property-name>
 			<value>#{metaSupervisorService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>cargoService</property-name>
+			<value>#{cargoService}</value> 
+		</managed-property>
+		<managed-property>
+			<property-name>areaService</property-name>
+			<value>#{areaService}</value> 
 		</managed-property>
 	</managed-bean>
 	
@@ -838,6 +878,14 @@
 		<managed-property>
 			<property-name>navegacionBean</property-name>
 			<value>#{navegacionBean}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>tipoDocumentoService</property-name>
+			<value>#{tipoDocumentoService}</value>
+		</managed-property>
+		<managed-property> 
+			<property-name>detalleDocumentoVentaService</property-name> 
+			<value>#{detalleDocumentoVentaService}</value>
 		</managed-property>
 	</managed-bean>
 	

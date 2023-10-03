@@ -16,40 +16,40 @@
 		</p:selectOneButton>  
 		    
 		<p:dataTable var="profile" id="idTableProfile" value="#{profileBean.lstProfileLazy}" widgetVar="profileTable" rowIndexVar="row" paginator="true" rows="15" size="small"
-		emptyMessage="No se encontraron perfiles."	paginatorPosition="bottom" rowKey="#{profile.id}" selection="#{profileBean.profileSelected}" selectionMode="single">
-		<f:facet name="header">
-			<div class="p-d-flex p-ai-center p-jc-between">
-				<span>Lista de Perfiles</span>
-			</div>
-		</f:facet>
-		<p:ajax event="rowSelect" listener="#{profileBean.modifyProfile()}" update=":formProfileDialog :dialogProfile" oncomplete="PF('profileDialog').show();" />
-
-		<p:column style="width:42px;text-align: left">
+			emptyMessage="No se encontraron perfiles."	paginatorPosition="bottom" rowKey="#{profile.id}" selection="#{profileBean.profileSelected}" selectionMode="single">
 			<f:facet name="header">
-				<p:commandLink action="#{profileBean.newProfile()}"
-					update=":formProfileDialog :dialogProfile"
-					oncomplete="PF('profileDialog').show();"
-					title="NUEVO PERFIL">
-					<p:graphicImage width="50" value="/recursos/images/anadir.png" />
-
-				</p:commandLink>
+				<div class="p-d-flex p-ai-center p-jc-between">
+					<span>Lista de Perfiles</span>
+				</div>
 			</f:facet>
-		</p:column>
-
-		<p:column width="25px">
-                      #{row +1}
-        </p:column>
-        
-		<p:column headerText="Nombre de Perfil" sortBy="#{profile.name}"
-			filterBy="#{profile.name}" filterMatchMode="contains">
-			<h:outputText value="#{profile.name}" />
-		</p:column>
-		<p:column headerText="Permisos" width="10%">
-			<p:commandButton icon="pi pi-sign-in" process="@this" oncomplete="PF('profileDialogPermiso').show()" action="#{profileBean.verPermisos}" update="dialogProfilePermiso" >
-				<f:setPropertyActionListener value="#{profile}" target="#{profileBean.profileSelected}" />
-			</p:commandButton> 
-		</p:column>
-	</p:dataTable>
+			<p:ajax event="rowSelect" listener="#{profileBean.modifyProfile()}" update=":formProfileDialog :dialogProfile" oncomplete="PF('profileDialog').show();" />
+	
+			<p:column style="width:42px;text-align: left">
+				<f:facet name="header">
+					<p:commandLink action="#{profileBean.newProfile()}"
+						update=":formProfileDialog :dialogProfile"
+						oncomplete="PF('profileDialog').show();"
+						title="NUEVO PERFIL">
+						<p:graphicImage width="50" value="/recursos/images/anadir.png" />
+	
+					</p:commandLink>
+				</f:facet>
+			</p:column>
+	
+			<p:column width="25px">
+	                      #{row +1}
+	        </p:column>
+	        
+			<p:column headerText="Nombre de Perfil" sortBy="#{profile.name}"
+				filterBy="#{profile.name}" filterMatchMode="contains">
+				<h:outputText value="#{profile.name}" />
+			</p:column>
+			<p:column headerText="Permisos" width="10%">
+				<p:commandButton icon="pi pi-sign-in" process="@this" oncomplete="PF('profileDialogPermiso').show()" action="#{profileBean.verPermisos}" update="dialogProfilePermiso" >
+					<f:setPropertyActionListener value="#{profile}" target="#{profileBean.profileSelected}" />
+				</p:commandButton> 
+			</p:column>
+		</p:dataTable>
 
 	</h:form>
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogProfile" header="#{profileBean.tituloDialog}" widgetVar="profileDialog" resizable="false" closable="true"

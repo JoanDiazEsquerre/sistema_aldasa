@@ -95,6 +95,13 @@ public class ComisionesServiceImpl implements ComisionesService  {
 		return comisionesRepository.findByEstadoAndComisionAndPersonSupervisor(estado, comision, personSupervisor, pageable);
 	}
 
+	@Override
+	public List<Comisiones> findByEstadoAndComisionAndPersonAsesor(boolean estado, Comision comision,
+			Person personAsesor) {
+		// TODO Auto-generated method stub
+		return comisionesRepository.findByEstadoAndComisionAndPersonAsesor(estado, comision, personAsesor); 
+	}
+
 	
 	
 

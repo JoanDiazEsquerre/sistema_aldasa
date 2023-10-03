@@ -49,6 +49,10 @@ public class Comisiones {
     @JoinColumn(name="idcomision")
     private Comision comision;
 	
+	@ManyToOne
+    @JoinColumn(name="idcontrato")
+    private Contrato contrato;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -109,4 +113,11 @@ public class Comisiones {
 	public void setPersonSupervisor(Person personSupervisor) {
 		this.personSupervisor = personSupervisor;
 	}
+	public Contrato getContrato() {
+		return contrato;
+	}
+	public void setContrato(Contrato contrato) {
+		this.contrato = contrato;
+	}
+	
 }

@@ -60,12 +60,28 @@
 				 <f:convertNumber currencySymbol="" type="currency"  />
 				 </h:outputText>
 			</p:column>
-			<p:column headerText="Cargo" sortBy="#{empleado.cargo.descripcion}"
-				filterMatchMode="contains">
+			<p:column headerText="Cargo" style="text-align:center;">
+				<f:facet name="header">
+					Cargo
+		        	<p:selectOneMenu value="#{empleadoBean.cargoFilter}" converter="#{empleadoBean.conversorCargo}" style="margin:5px; width:130px" >
+						<f:selectItem itemLabel="[-TODOS-]" value="#{null}"/>
+						<f:selectItems value="#{empleadoBean.lstCargo}" var="cargo" itemLabel="#{cargo.descripcion}" itemValue="#{cargo}"/>
+						<p:ajax update=":form:idTableEmpleado" />
+					</p:selectOneMenu>
+				</f:facet>
+				
 				<h:outputText value="#{empleado.cargo.descripcion}" />
 			</p:column>
-			<p:column headerText="Área" sortBy="#{empleado.area.nombre}"
-				filterMatchMode="contains">
+			<p:column headerText="Área" style="text-align:center;">
+				<f:facet name="header">
+					Área
+		        	<p:selectOneMenu value="#{empleadoBean.areaFilter}" converter="#{empleadoBean.conversorArea}" style="margin:10px" >
+	                    <f:selectItem itemLabel="[-TODOS-]" value="#{null}"/>
+	                    <f:selectItems value="#{empleadoBean.lstArea}" var="area" itemLabel="#{area.nombre}" itemValue="#{area}"/>
+	                    <p:ajax update=":form:idTableEmpleado" />
+	                </p:selectOneMenu>
+				</f:facet>
+				
 				<h:outputText value="#{empleado.area.nombre}" />
 			</p:column>
 			<p:column headerText="Externo" sortBy="#{empleado.externo}" filterMatchMode="contains">

@@ -120,7 +120,7 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 		fechaFin = new Date();
 		tipo = "";
 		iniciarLazy();
-		lstArea=areaService.findByEstado(true);
+		lstArea=areaService.findByEstadoOrderByNombreAsc(true);
 		iniciarEmpleadoLazy();
 	}
 	

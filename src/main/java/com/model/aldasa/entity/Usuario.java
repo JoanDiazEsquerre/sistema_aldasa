@@ -39,6 +39,9 @@ public class Usuario {
 	@Column(name="aprobarplantillaventa")
 	private boolean aprobarPlantillaVenta;
 	
+	@Column(name="descargarreporteventa")
+	private boolean descargarReporteVenta;
+	
 	
 	public Integer getId() {
 		return id;
@@ -93,6 +96,12 @@ public class Usuario {
 	}
 	public void setAprobarPlantillaVenta(boolean aprobarPlantillaVenta) {
 		this.aprobarPlantillaVenta = aprobarPlantillaVenta;
+	}
+	public boolean isDescargarReporteVenta() {
+		return descargarReporteVenta;
+	}
+	public void setDescargarReporteVenta(boolean descargarReporteVenta) {
+		this.descargarReporteVenta = descargarReporteVenta;
 	}	
 	
 }

@@ -77,7 +77,7 @@ public class InventarioBean extends BaseBean implements Serializable{
 	@PostConstruct
 	public void init() {
 		iniciarLazy();
-		lstArea=areaService.findByEstado(true);
+		lstArea=areaService.findByEstadoOrderByNombreAsc(true);
 		iniciarLazyInventarioBienes();
 	}
 	

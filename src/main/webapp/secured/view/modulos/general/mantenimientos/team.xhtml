@@ -15,39 +15,39 @@
 				listener="#{teamBean.listarTeam()}" />
 		</p:selectOneButton>      
 		<p:dataTable var="team" id="idTableTeam" value="#{teamBean.listTeam}" widgetVar="teamTable" rowIndexVar="row" paginator="true" rows="15" size="small"
-		emptyMessage="No se encontraron equipos."	paginatorPosition="bottom" rowKey="#{team.id}" selection="#{teamBean.teamSelected}" selectionMode="single">
-		<f:facet name="header">
-			<div class="p-d-flex p-ai-center p-jc-between">
-				<span>Lista de Equipos</span>
-			</div>
-		</f:facet>
-		<p:ajax event="rowSelect" listener="#{teamBean.modifyTeam()}" update=":formTeamDialog :dialogTeam" oncomplete="PF('teamDialog').show();" />
-
-		<p:column style="width:42px;text-align: left">
+			emptyMessage="No se encontraron equipos."	paginatorPosition="bottom" rowKey="#{team.id}" selection="#{teamBean.teamSelected}" selectionMode="single">
 			<f:facet name="header">
-				<p:commandLink action="#{teamBean.newTeam()}"
-					update=":formTeamDialog :dialogTeam"
-					oncomplete="PF('teamDialog').show();"
-					title="NUEVO EQUIPO">
-					<p:graphicImage width="50" value="/recursos/images/anadir.png" />
-
-				</p:commandLink>
+				<div class="p-d-flex p-ai-center p-jc-between">
+					<span>Lista de Equipos</span>
+				</div>
 			</f:facet>
-		</p:column>
-
-		<p:column width="25px">
-                      #{row +1}
-        </p:column>
-        
-		<p:column headerText="Nombre de Equipo" sortBy="#{team.name}"
-			filterBy="#{team.name}" filterMatchMode="contains">
-			<h:outputText value="#{team.name}" />
-		</p:column>
-		<p:column headerText="Supervisor" sortBy="#{team.personSupervisor.surnames} #{team.personSupervisor.names}"
-			filterBy="#{team.personSupervisor.surnames} #{team.personSupervisor.names}" filterMatchMode="contains">
-			<h:outputText value="#{team.personSupervisor.surnames} #{team.personSupervisor.names}" />
-		</p:column>
-	</p:dataTable>
+			<p:ajax event="rowSelect" listener="#{teamBean.modifyTeam()}" update=":formTeamDialog :dialogTeam" oncomplete="PF('teamDialog').show();" />
+	
+			<p:column style="width:42px;text-align: left">
+				<f:facet name="header">
+					<p:commandLink action="#{teamBean.newTeam()}"
+						update=":formTeamDialog :dialogTeam"
+						oncomplete="PF('teamDialog').show();"
+						title="NUEVO EQUIPO">
+						<p:graphicImage width="50" value="/recursos/images/anadir.png" />
+	
+					</p:commandLink>
+				</f:facet>
+			</p:column>
+	
+			<p:column width="25px">
+	                      #{row +1}
+	        </p:column>
+	        
+			<p:column headerText="Nombre de Equipo" sortBy="#{team.name}"
+				filterBy="#{team.name}" filterMatchMode="contains">
+				<h:outputText value="#{team.name}" />
+			</p:column>
+			<p:column headerText="Supervisor" sortBy="#{team.personSupervisor.surnames} #{team.personSupervisor.names}"
+				filterBy="#{team.personSupervisor.surnames} #{team.personSupervisor.names}" filterMatchMode="contains">
+				<h:outputText value="#{team.personSupervisor.surnames} #{team.personSupervisor.names}" />
+			</p:column>
+		</p:dataTable>
 
 	</h:form>
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogTeam" header="#{teamBean.tituloDialog}" widgetVar="teamDialog" resizable="false" closable="true"

@@ -223,9 +223,73 @@ public class DocumentoVentaServiceImpl implements DocumentoVentaService{
 		return documentoVentaRepository.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndEnvioSunat(estado, sucursal, razonSocial, numero, ruc, envioSunat, pageable);
 	}
 
+	@Override
+	public Page<DocumentoVenta> findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(
+			Boolean estado, Sucursal sucursal, String razonSocial, String numero, String ruc, Date fechaIni,
+			Date fechaFin, String user,Pageable pageable) {
+		// TODO Auto-generated method stub
+		return documentoVentaRepository.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(estado, sucursal, razonSocial, numero, ruc, fechaIni, fechaFin, user,pageable);
+	}
+
+	@Override
+	public Page<DocumentoVenta> findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndTipoDocumentoAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(
+			Boolean estado, Sucursal sucursal, String razonSocial, String numero, String ruc,
+			TipoDocumento tipoDocumento, Date fechaIni, Date fechaFin,String user, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return documentoVentaRepository.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndTipoDocumentoAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(estado, sucursal, razonSocial, numero, ruc, tipoDocumento, fechaIni, fechaFin, user,pageable);
+	}
+
+	@Override
+	public Page<DocumentoVenta> findBySucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(
+			Sucursal sucursal, String razonSocial, String numero, String ruc, Date fechaIni, Date fechaFin, String user,
+			Pageable pageable) {
+		// TODO Auto-generated method stub
+		return documentoVentaRepository.findBySucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(sucursal, razonSocial, numero, ruc, fechaIni, fechaFin, user, pageable);
+	}
+
+	@Override
+	public Page<DocumentoVenta> findBySucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndTipoDocumentoAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(
+			Sucursal sucursal, String razonSocial, String numero, String ruc, TipoDocumento tipoDocumento,
+			Date fechaIni, Date fechaFin, String user, Pageable pageable) {
+		// TODO Auto-generated method stub 
+		return documentoVentaRepository.findBySucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndTipoDocumentoAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(sucursal, razonSocial, numero, ruc, tipoDocumento, fechaIni, fechaFin, user, pageable);
+	}
+
+	@Override
+	public List<DocumentoVenta> findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(
+			Boolean estado, Sucursal sucursal, String razonSocial, String numero, String ruc, Date fechaIni,
+			Date fechaFin, String user) {
+		// TODO Auto-generated method stub
+		return documentoVentaRepository.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(estado, sucursal, razonSocial, numero, ruc, fechaIni, fechaFin, user);
+	}
+
+	@Override
+	public List<DocumentoVenta> findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndTipoDocumentoAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(
+			Boolean estado, Sucursal sucursal, String razonSocial, String numero, String ruc,
+			TipoDocumento tipoDocumento, Date fechaIni, Date fechaFin, String user) {
+		// TODO Auto-generated method stub
+		return documentoVentaRepository.findByEstadoAndSucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndTipoDocumentoAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(estado, sucursal, razonSocial, numero, ruc, tipoDocumento, fechaIni, fechaFin, user);
+	}
+
+	@Override
+	public List<DocumentoVenta> findBySucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(
+			Sucursal sucursal, String razonSocial, String numero, String ruc, Date fechaIni, Date fechaFin,
+			String user) {
+		// TODO Auto-generated method stub
+		return documentoVentaRepository.findBySucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(sucursal, razonSocial, numero, ruc, fechaIni, fechaFin, user);
+	}
+
+	@Override
+	public List<DocumentoVenta> findBySucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndTipoDocumentoAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(
+			Sucursal sucursal, String razonSocial, String numero, String ruc, TipoDocumento tipoDocumento,
+			Date fechaIni, Date fechaFin, String user) {
+		// TODO Auto-generated method stub
+		return documentoVentaRepository.findBySucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndTipoDocumentoAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(sucursal, razonSocial, numero, ruc, tipoDocumento, fechaIni, fechaFin, user);
+	}
+
 	
 
-
+ 
 	
 
 	

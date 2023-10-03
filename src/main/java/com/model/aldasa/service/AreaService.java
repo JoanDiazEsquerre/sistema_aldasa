@@ -14,7 +14,7 @@ public interface AreaService {
 	Area save(Area entity);
 	void delete(Area entity);
 	
-	List<Area> findByEstado(boolean estado);
+	List<Area> findByEstadoOrderByNombreAsc(boolean estado);
 
 
 }

@@ -36,6 +36,22 @@ public class Imagen {
 	@Column(name="tipotransaccion")
 	private String tipoTransaccion;
 	
+	@ManyToOne
+	@JoinColumn(name="iddocumentoventa")
+	private DocumentoVenta documentoVenta;
+	
+	@ManyToOne
+	@JoinColumn(name="idlote")
+	private Lote lote;
+	
+	@ManyToOne
+	@JoinColumn(name="idusuario")
+	private Usuario usuario;
+	
+	@Column(name="fecharegistro")
+	private Date fechaRegistro;
+	
+	
 	
 	public Integer getId() {
 		return id;
@@ -90,6 +106,30 @@ public class Imagen {
 	}
 	public void setTipoTransaccion(String tipoTransaccion) {
 		this.tipoTransaccion = tipoTransaccion;
+	}
+	public DocumentoVenta getDocumentoVenta() {
+		return documentoVenta;
+	}
+	public void setDocumentoVenta(DocumentoVenta documentoVenta) {
+		this.documentoVenta = documentoVenta;
+	}
+	public Lote getLote() {
+		return lote;
+	}
+	public void setLote(Lote lote) {
+		this.lote = lote;
+	}
+	public Usuario getUsuario() {
+		return usuario;
+	}
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+	public Date getFechaRegistro() {
+		return fechaRegistro;
+	}
+	public void setFechaRegistro(Date fechaRegistro) {
+		this.fechaRegistro = fechaRegistro;
 	}
 	
 	
