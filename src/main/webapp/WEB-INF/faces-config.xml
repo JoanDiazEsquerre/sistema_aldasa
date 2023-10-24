@@ -34,7 +34,6 @@
 			<property-name>usuarioService</property-name>
 			<value>#{usuarioService}</value>
 		</managed-property>
-		
 	</managed-bean>
 
 	<managed-bean>
@@ -224,6 +223,10 @@
 		<managed-property>
 			<property-name>sucursalService</property-name>
 			<value>#{sucursalService}</value>
+		</managed-property>
+		<managed-property> 
+			<property-name>detalleDocumentoVentaService</property-name>
+			<value>#{detalleDocumentoVentaService}</value>
 		</managed-property>
 	</managed-bean>
 
@@ -689,6 +692,42 @@
 			<property-name>voucherService</property-name>
 			<value>#{voucherService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>personService</property-name>
+			<value>#{personService}</value> 
+		</managed-property>
+		<managed-property>
+			<property-name>teamService</property-name>
+			<value>#{teamService}</value> 
+		</managed-property>
+		<managed-property>
+			<property-name>empleadoService</property-name>
+			<value>#{empleadoService}</value>  
+		</managed-property>
+		<managed-property>
+			<property-name>projectService</property-name>
+			<value>#{projectService}</value>  
+		</managed-property>
+		<managed-property>
+			<property-name>manzanaService</property-name>
+			<value>#{manzanaService}</value>  
+		</managed-property>
+		<managed-property>
+			<property-name>imagenRequerimientoSeparacionService</property-name>
+			<value>#{imagenRequerimientoSeparacionService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>loadImageBean</property-name>
+			<value>#{loadImageBean}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>imagenService</property-name>
+			<value>#{imagenService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>documentoVentaService</property-name>
+			<value>#{documentoVentaService}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>
@@ -775,6 +814,10 @@
 			<property-name>plantillaVentaService</property-name>
 			<value>#{plantillaVentaService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>usuarioService</property-name>
+			<value>#{usuarioService}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>
@@ -798,8 +841,8 @@
 			<value>#{cuotaService}</value>
 		</managed-property>
 		<managed-property>
-			<property-name>voucherService</property-name>
-			<value>#{voucherService}</value>
+			<property-name>requerimientoSeparacionService</property-name>
+			<value>#{requerimientoSeparacionService}</value>
 		</managed-property>
 		<managed-property>
 			<property-name>productoService</property-name>
@@ -1004,6 +1047,10 @@
 		<managed-property>
 			<property-name>empleadoService</property-name>
 			<value>#{empleadoService}</value> 
+		</managed-property>
+		<managed-property>
+			<property-name>requerimientoSeparacionService</property-name>
+			<value>#{requerimientoSeparacionService}</value>
 		</managed-property>
 	</managed-bean>
 	

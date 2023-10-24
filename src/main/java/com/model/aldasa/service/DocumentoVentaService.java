@@ -20,8 +20,12 @@ public interface DocumentoVentaService {
 	Optional<DocumentoVenta> findById(Integer id);
 	DocumentoVenta save(DocumentoVenta entity);
 	DocumentoVenta save(DocumentoVenta entity, List<DetalleDocumentoVenta> lstDetalleDocumentoVenta, SerieDocumento serieDocumento);
+	DocumentoVenta anular(DocumentoVenta entity);
+	DocumentoVenta findByDocumentoVentaRefAndEstado(DocumentoVenta documentoVenta, boolean estado);
+	
 	void delete(DocumentoVenta entity);
-		
+	
+	
 	List<DocumentoVenta> findByEstadoAndSucursalEmpresaAndFechaEmisionBetween(boolean estado, Empresa empresa, Date fechaIni, Date fechaFin);
 	List<DocumentoVenta> findByEstadoAndSucursalAndFechaEmisionBetween(boolean estado, Sucursal sucursal, Date fechaIni, Date fechaFin);
 	List<DocumentoVenta> findByDocumentoVentaRefAndTipoDocumentoAndEstado(DocumentoVenta documentoVenta, TipoDocumento tipoDocumento, boolean estado);

@@ -79,6 +79,10 @@
 						<h:outputText value="#{plantilla.personSupervisor.surnames} #{plantilla.personSupervisor.names}" />
 					</p:column>
 					
+					<p:column headerText="Monto Separación" filterMatchMode="contains">
+						<h:outputText value="#{plantilla.requerimientoSeparacion.monto}" style="font-weight:bold;color: green" />
+					</p:column>
+					
 					<p:column headerText="Usuario Registra" sortBy="#{plantilla.usuario.person.surnames} " filterMatchMode="contains">
 						<h:outputText value="#{plantilla.usuario.person.surnames} #{plantilla.usuario.person.names}" />
 					</p:column>
@@ -173,6 +177,7 @@
 					<p:selectOneMenu style="margin:5px; width:220px" id="lote" value="#{plantillaVentaBean.lotePlantilla}" converter="#{plantillaVentaBean.conversorLotePlantilla}" > 
 						<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
 						<f:selectItems value="#{plantillaVentaBean.lstLotePlantilla}" var="manz" itemLabel="#{manz.numberLote}" itemValue="#{manz}"/>
+						<p:ajax listener="#{plantillaVentaBean.consultarSeparacion()}" update="mensajeSeparacion"/>
 					</p:selectOneMenu>
 					 
 					
@@ -199,9 +204,13 @@
 					<h:outputLabel value="Interés:" rendered="#{plantillaVentaBean.tipoPagoPlantilla eq 'Crédito'}"/>
 					<p:inputNumber value="#{plantillaVentaBean.interesPlantilla}" rendered="#{plantillaVentaBean.tipoPagoPlantilla eq 'Crédito'}"/>
 				
+					
 				</h:panelGrid>
 				
-				<p:commandButton value="Guardar" action="#{plantillaVentaBean.validaDatosPlantilla()}" />
+				<h:panelGrid columns="1">
+					<p:outputLabel value="#{plantillaVentaBean.mensajeSeparacion}" style="font-weight:bold; color: red;" id="mensajeSeparacion"/>
+					<p:commandButton value="Guardar" action="#{plantillaVentaBean.validaDatosPlantilla()}" />
+				</h:panelGrid>
 				
 				<h:panelGrid columns="1" width="100%" id="pnlCond">
 					<p:fileUpload value="#{plantillaVentaBean.file1}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
@@ -332,7 +341,7 @@
 				<p:inputText value="#{plantillaVentaBean.numeroTransaccion}"/>
 				
 				<h:outputLabel value="Fecha Operación:" />
-				<p:datePicker value="#{plantillaVentaBean.fechaOperacion}"  showTime="true" style="margin:5px" pattern="dd/MM/yyyy hh:mm:ss a" readonlyInput="true"/> 
+				<p:datePicker value="#{plantillaVentaBean.fechaOperacion}" timeInput="true" showTime="true" style="margin:5px" pattern="dd/MM/yyyy hh:mm:ss a" readonlyInput="true"/> 
 			
 				<p:commandButton value="Validar" actionListener="#{plantillaVentaBean.validaVoucher}" />
 

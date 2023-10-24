@@ -77,6 +77,10 @@ public class Contrato {
 	@JoinColumn(name="idcomisiones")
 	private Comisiones comisiones;
 	
+	@ManyToOne
+	@JoinColumn(name="idusuariocobranza")
+	private Usuario usuarioCobranza;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -191,6 +195,12 @@ public class Contrato {
 	}
 	public void setComisiones(Comisiones comisiones) {
 		this.comisiones = comisiones;
+	}
+	public Usuario getUsuarioCobranza() {
+		return usuarioCobranza;
+	}
+	public void setUsuarioCobranza(Usuario usuarioCobranza) {
+		this.usuarioCobranza = usuarioCobranza;
 	}
 	
 	

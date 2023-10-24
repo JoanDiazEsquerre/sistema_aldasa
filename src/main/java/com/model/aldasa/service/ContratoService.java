@@ -19,6 +19,7 @@ public interface ContratoService {
 	Contrato save(Contrato entity);
 	void delete(Contrato entity);
 	List<Contrato> findAll();
+	List<Contrato> findByEstadoAndLoteProjectSucursalAndTipoPagoAndCancelacionTotal(boolean status, Sucursal sucursal, String tipoPago, boolean cancelacionTotal);
 	
 	Page<Contrato> findByEstado(boolean status, Pageable pageable);
 	Page<Contrato> findByEstadoAndLoteProjectSucursalAndLoteProjectNameLikeAndLoteManzanaNameLikeAndLoteNumberLoteLike(boolean status, Sucursal sucursal, String project, String manzana, String numLote, Pageable pageable);

@@ -67,9 +67,31 @@ public class ImagenServiceImpl implements ImagenService{
 	} 
 
 	@Override
-	public Page<Imagen> findByEstadoAndCuentaBancariaSucursalRazonSocialLikeAndNumeroOperacionLikeAndCuentaBancariaNumeroLikeAndTipoTransaccionLikeOrderByIdDesc(boolean estado, String sucursal,String numeroOperacion, String numCuenta, String tipoTrasaccion,Pageable pageable) {
+	public Page<Imagen> findByEstadoAndCuentaBancariaSucursalRazonSocialLikeAndNumeroOperacionLikeAndCuentaBancariaNumeroLikeAndTipoTransaccionLikeAndFechaBetweenOrderByIdDesc(boolean estado, String sucursal, String numeroOperacion, String numCuenta, String tipoTrasaccion, Date fechaIni, Date fechaFin,Pageable pageable){
 		// TODO Auto-generated method stub
-		return imagenRepository.findByEstadoAndCuentaBancariaSucursalRazonSocialLikeAndNumeroOperacionLikeAndCuentaBancariaNumeroLikeAndTipoTransaccionLikeOrderByIdDesc(estado, sucursal, numeroOperacion, numCuenta, tipoTrasaccion, pageable);
+		return imagenRepository.findByEstadoAndCuentaBancariaSucursalRazonSocialLikeAndNumeroOperacionLikeAndCuentaBancariaNumeroLikeAndTipoTransaccionLikeAndFechaBetweenOrderByIdDesc(estado, sucursal, numeroOperacion, numCuenta, tipoTrasaccion, fechaIni, fechaFin, pageable);
+	}
+
+	@Override
+	public Page<Imagen> findByEstadoAndCuentaBancariaAndNumeroOperacionLikeAndCuentaBancariaNumeroLikeAndTipoTransaccionLikeAndFechaBetweenOrderByIdDesc(
+			boolean estado, CuentaBancaria cuentaBancaria, String numeroOperacion, String numCuenta,
+			String tipoTrasaccion, Date fechaIni, Date fechaFin, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return imagenRepository.findByEstadoAndCuentaBancariaAndNumeroOperacionLikeAndCuentaBancariaNumeroLikeAndTipoTransaccionLikeAndFechaBetweenOrderByIdDesc(estado, cuentaBancaria, numeroOperacion, numCuenta, tipoTrasaccion, fechaIni, fechaFin, pageable);
+	}
+
+	@Override
+	public List<Imagen> findByEstadoAndCuentaBancariaAndFechaBetweenOrderByFechaDesc(boolean estado,
+			CuentaBancaria cuentaBancaria, Date fechaIni, Date fechaFin) {
+		// TODO Auto-generated method stub
+		return imagenRepository.findByEstadoAndCuentaBancariaAndFechaBetweenOrderByFechaDesc(estado, cuentaBancaria, fechaIni, fechaFin);
+	}
+
+	@Override
+	public List<Imagen> findByEstadoAndCuentaBancariaSucursalRazonSocialLikeAndFechaBetweenOrderByFechaDesc(
+			boolean estado, String sucursal, Date fechaIni, Date fechaFin) {
+		// TODO Auto-generated method stub
+		return imagenRepository.findByEstadoAndCuentaBancariaSucursalRazonSocialLikeAndFechaBetweenOrderByFechaDesc(estado, sucursal, fechaIni, fechaFin); 
 	} 
 
 }

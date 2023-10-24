@@ -22,7 +22,10 @@ public interface RequerimientoSeparacionService {
 	
 	List<RequerimientoSeparacion> findByProspection(Prospection prostection);
 	
-	Page<RequerimientoSeparacion> findAllByEstadoAndProspectionProjectSucursal(String estado, Sucursal sucursal, Pageable pageable);
+	Page<RequerimientoSeparacion> findAllByEstadoAndLoteProjectSucursal(String estado, Sucursal sucursal, Pageable pageable);
+	
+	Page<RequerimientoSeparacion> findAllByEstadoAndLoteProjectSucursalAndGeneraDocumento(String estado, Sucursal sucursal, boolean generaDocuento,Pageable pageable);
+
 
 
 	

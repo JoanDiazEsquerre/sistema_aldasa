@@ -1,6 +1,10 @@
 package com.model.aldasa.general.bean;
 
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -17,23 +21,35 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.servlet.ServletContext;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.jdt.internal.compiler.env.IUpdatableModule.AddExports;
 import org.primefaces.PrimeFaces;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
+import org.primefaces.model.StreamedContent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.CuentaBancaria;
+import com.model.aldasa.entity.DetalleDocumentoVenta;
+import com.model.aldasa.entity.DocumentoVenta;
 import com.model.aldasa.entity.Imagen;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.service.CuentaBancariaService;
+import com.model.aldasa.service.DetalleDocumentoVentaService;
 import com.model.aldasa.service.ImagenService;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.ManzanaService;
@@ -42,6 +58,7 @@ import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.SucursalService;
 import com.model.aldasa.service.TeamService;
 import com.model.aldasa.util.BaseBean;
+import com.model.aldasa.util.UtilXls;
 
 @ManagedBean
 @ViewScoped
@@ -70,24 +87,149 @@ public class VoucherBean extends BaseBean implements Serializable {
 	@ManagedProperty(value = "#{sucursalService}")
 	private SucursalService sucursalService;
 	
+	@ManagedProperty(value = "#{detalleDocumentoVentaService}")
+	private DetalleDocumentoVentaService detalleDocumentoVentaService;
+	
+	private String nombreArchivo = "Reporte de Voucher.xlsx";
+	
 	private boolean estado;
 	private String tituloDialog;
 	
 	private Sucursal sucursal, sucursalDialog;
 	private Imagen imagenSelected;
+	private CuentaBancaria ctaBanFilter;
 	
 	private List<Sucursal> lstSucursal;
 	private List<CuentaBancaria> lstCuentaBancaria;
+	private List<CuentaBancaria> lstCuentaBancariaFilter;
 	
 	private LazyDataModel<Imagen> lstImagenLazy;
 	
 	SimpleDateFormat sdfFull = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 	
+	private Date fechaIni, fechaFin;
+	
+	private StreamedContent fileDes;
+	
 	@PostConstruct
 	public void init() {
 		estado=true;
 		lstSucursal =sucursalService.findByEstado(true);
+		
+		fechaIni = new Date();
+		fechaFin = new Date();
 		iniciarLazy();
+	}
+	
+	public void procesarExcel() {
+		
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet sheet = workbook.createSheet("Reporte Voucher");
+
+		CellStyle styleBorder = UtilXls.styleCell(workbook, 'B');
+		CellStyle styleTitulo = UtilXls.styleCell(workbook, 'A');
+		
+		Row rowSubTitulo = sheet.createRow(0);
+		Cell cellSub1 = null;
+		cellSub1 = rowSubTitulo.createCell(0);cellSub1.setCellValue("FECHA Y HORA");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(1);cellSub1.setCellValue("MONTO");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(2);cellSub1.setCellValue("NRO OPERACION");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(3);cellSub1.setCellValue("CUENTA BANCARIA");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(4);cellSub1.setCellValue("TIPO TRANSACCION");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(5);cellSub1.setCellValue("BOLETA / FACTURA");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(6);cellSub1.setCellValue("COMENTARIO");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(7);cellSub1.setCellValue("USUARIO");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(8);cellSub1.setCellValue("SUCURSAL");cellSub1.setCellStyle(styleTitulo);
+
+
+		fechaIni.setHours(0);
+        fechaIni.setMinutes(0);
+        fechaIni.setSeconds(0);
+        fechaFin.setHours(23);
+        fechaFin.setMinutes(59);
+        fechaFin.setSeconds(59);
+		
+        List<Imagen> lstVoucher = new ArrayList<>();
+        
+        String sucursalName="%%";
+        if(sucursal!=null) {
+        	sucursalName="%"+sucursal.getRazonSocial()+"%";
+        }
+        
+        if(ctaBanFilter != null) {
+        	lstVoucher =  imagenService.findByEstadoAndCuentaBancariaAndFechaBetweenOrderByFechaDesc(estado, ctaBanFilter, fechaIni, fechaFin);
+
+        }else {
+        	lstVoucher =  imagenService.findByEstadoAndCuentaBancariaSucursalRazonSocialLikeAndFechaBetweenOrderByFechaDesc(estado, sucursalName, fechaIni, fechaFin);
+        }
+        
+		
+		int index = 1;
+		BigDecimal total = BigDecimal.ZERO;
+		
+		for (Imagen imagen : lstVoucher) {
+//			List<DetalleDocumentoVenta> lstDet = detalleDocumentoVentaService.findByDocumentoVentaAndEstado(d, true);	
+			
+			rowSubTitulo = sheet.createRow(index);
+			cellSub1 = rowSubTitulo.createCell(0);cellSub1.setCellValue(convertirHora(imagen.getFecha()));cellSub1.setCellStyle(styleBorder);
+			cellSub1 = rowSubTitulo.createCell(1);cellSub1.setCellValue(imagen.getMonto().doubleValue());cellSub1.setCellStyle(styleBorder);
+			cellSub1 = rowSubTitulo.createCell(2);cellSub1.setCellValue(imagen.getNumeroOperacion());cellSub1.setCellStyle(styleBorder);
+			cellSub1 = rowSubTitulo.createCell(3);cellSub1.setCellValue(imagen.getCuentaBancaria().getBanco().getNombre()+ " : " +imagen.getCuentaBancaria().getNumero()+" ("+ (imagen.getCuentaBancaria().getMoneda().equals("S") ? "SOLES)": "DÓLARES)"));cellSub1.setCellStyle(styleBorder);
+			cellSub1 = rowSubTitulo.createCell(4);cellSub1.setCellValue(imagen.getTipoTransaccion());cellSub1.setCellStyle(styleBorder);
+			cellSub1 = rowSubTitulo.createCell(5);cellSub1.setCellValue(imagen.getDocumentoVenta()==null?"": imagen.getDocumentoVenta().getSerie()+"-"+imagen.getDocumentoVenta().getNumero());cellSub1.setCellStyle(styleBorder);
+			cellSub1 = rowSubTitulo.createCell(6);cellSub1.setCellValue(imagen.getDocumentoVenta()==null? imagen.getComentario() : obtenerDetalleBoleta(imagen.getDocumentoVenta()));cellSub1.setCellStyle(styleBorder);
+			cellSub1 = rowSubTitulo.createCell(7);cellSub1.setCellValue(imagen.getUsuario()==null?"": imagen.getUsuario().getUsername());cellSub1.setCellStyle(styleBorder);
+			cellSub1 = rowSubTitulo.createCell(8);cellSub1.setCellValue(imagen.getCuentaBancaria().getSucursal().getRazonSocial());cellSub1.setCellStyle(styleBorder);
+			
+			total = total.add(imagen.getMonto());
+			
+			index++;
+		}
+		
+		
+		rowSubTitulo = sheet.createRow(index);
+		cellSub1 = rowSubTitulo.createCell(1);cellSub1.setCellValue(total.doubleValue());cellSub1.setCellStyle(styleBorder);
+		
+		
+		for (int j = 0; j <= 8; j++) {
+			sheet.autoSizeColumn(j);
+			
+		}
+		try {
+			ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()
+					.getContext();
+			String filePath = scontext.getRealPath("/WEB-INF/fileAttachments/" + nombreArchivo);
+			File file = new File(filePath);
+			FileOutputStream out = new FileOutputStream(file);
+			workbook.write(out);
+			out.close();
+			fileDes = DefaultStreamedContent.builder().name(nombreArchivo).contentType("aplication/xls")
+					.stream(() -> FacesContext.getCurrentInstance().getExternalContext()
+							.getResourceAsStream("/WEB-INF/fileAttachments/" + nombreArchivo))
+					.build();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String obtenerDetalleBoleta(DocumentoVenta documentoVenta) {
+		String detalle="";
+		List<DetalleDocumentoVenta> lstDet = detalleDocumentoVentaService.findByDocumentoVentaAndEstado(documentoVenta, true);
+		
+		int cont = 0;
+		for(DetalleDocumentoVenta det: lstDet) {
+			if(cont !=0) {
+				detalle = detalle+ ". \n";
+			}
+			
+			detalle = detalle + det.getDescripcion();
+			cont++;
+		}
+		
+		
+		return detalle;
 	}
 	
 	public void saveVoucher() {
@@ -142,6 +284,15 @@ public class VoucherBean extends BaseBean implements Serializable {
 			if(!lstCuentaBancaria.isEmpty()) {
 				imagenSelected.setCuentaBancaria(lstCuentaBancaria.get(0));
 			}
+		}
+		
+	}
+	
+	public void listarCuentaBancariaFilter() {
+		lstCuentaBancariaFilter = new ArrayList<>();
+		
+		if(sucursal != null) {
+			lstCuentaBancariaFilter=cuentaBancariaService.findByEstadoAndSucursal(true, sucursal);
 		}
 		
 	}
@@ -227,8 +378,20 @@ public class VoucherBean extends BaseBean implements Serializable {
                 	sucursalName="%"+sucursal.getRazonSocial()+"%";
                 }
                
+                fechaIni.setHours(0);
+                fechaIni.setMinutes(0);
+                fechaIni.setSeconds(0);
+                fechaFin.setHours(23);
+                fechaFin.setMinutes(59);
+                fechaFin.setSeconds(59);
                 
-                page =  imagenService.findByEstadoAndCuentaBancariaSucursalRazonSocialLikeAndNumeroOperacionLikeAndCuentaBancariaNumeroLikeAndTipoTransaccionLikeOrderByIdDesc(estado,sucursalName,numeroOp,cuenta,tipoTransaccion, pageable); 
+                if(ctaBanFilter != null) {
+                    page =  imagenService.findByEstadoAndCuentaBancariaAndNumeroOperacionLikeAndCuentaBancariaNumeroLikeAndTipoTransaccionLikeAndFechaBetweenOrderByIdDesc(estado,ctaBanFilter,numeroOp,cuenta,tipoTransaccion,fechaIni,fechaFin, pageable); 
+
+                }else {
+                    page =  imagenService.findByEstadoAndCuentaBancariaSucursalRazonSocialLikeAndNumeroOperacionLikeAndCuentaBancariaNumeroLikeAndTipoTransaccionLikeAndFechaBetweenOrderByIdDesc(estado,sucursalName,numeroOp,cuenta,tipoTransaccion,fechaIni,fechaFin, pageable); 
+                }
+                
                 
                 setRowCount((int) page.getTotalElements());
                 return datasource = page.getContent();
@@ -273,6 +436,34 @@ public class VoucherBean extends BaseBean implements Serializable {
                 } else {
                 	CuentaBancaria c = null;
                     for (CuentaBancaria si : lstCuentaBancaria) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((CuentaBancaria) value).getId() + "";
+                }
+            }
+        };
+    }
+	
+	public Converter getConversorCuentaBancariaFilter() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	CuentaBancaria c = null;
+                    for (CuentaBancaria si : lstCuentaBancariaFilter) {
                         if (si.getId().toString().equals(value)) {
                             c = si;
                         }
@@ -390,6 +581,42 @@ public class VoucherBean extends BaseBean implements Serializable {
 	}
 	public void setNavegacionBean(NavegacionBean navegacionBean) {
 		this.navegacionBean = navegacionBean;
+	}
+	public DetalleDocumentoVentaService getDetalleDocumentoVentaService() {
+		return detalleDocumentoVentaService;
+	}
+	public void setDetalleDocumentoVentaService(DetalleDocumentoVentaService detalleDocumentoVentaService) {
+		this.detalleDocumentoVentaService = detalleDocumentoVentaService;
+	}
+	public Date getFechaIni() {
+		return fechaIni;
+	}
+	public void setFechaIni(Date fechaIni) {
+		this.fechaIni = fechaIni;
+	}
+	public Date getFechaFin() {
+		return fechaFin;
+	}
+	public void setFechaFin(Date fechaFin) {
+		this.fechaFin = fechaFin;
+	}
+	public CuentaBancaria getCtaBanFilter() {
+		return ctaBanFilter;
+	}
+	public void setCtaBanFilter(CuentaBancaria ctaBanFilter) {
+		this.ctaBanFilter = ctaBanFilter;
+	}
+	public List<CuentaBancaria> getLstCuentaBancariaFilter() {
+		return lstCuentaBancariaFilter;
+	}
+	public void setLstCuentaBancariaFilter(List<CuentaBancaria> lstCuentaBancariaFilter) {
+		this.lstCuentaBancariaFilter = lstCuentaBancariaFilter;
+	}
+	public StreamedContent getFileDes() {
+		return fileDes;
+	}
+	public void setFileDes(StreamedContent fileDes) {
+		this.fileDes = fileDes;
 	}
 	
 	

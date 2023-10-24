@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity. DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
+import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.entity.TipoDocumento;
 import com.model.aldasa.entity.Voucher;
@@ -20,7 +21,7 @@ public interface DetalleDocumentoVentaService {
 	DetalleDocumentoVenta save(DetalleDocumentoVenta entity);
 	void delete(DetalleDocumentoVenta entity);
 	
-	List<DetalleDocumentoVenta> findByVoucherIdAndEstado(int voucher, boolean estado);
+	List<DetalleDocumentoVenta> findByRequerimientoSeparacionAndDocumentoVentaEstado(RequerimientoSeparacion requerimientoSeparacion, boolean estado);
 	
 	List<DetalleDocumentoVenta> findByDocumentoVentaAndEstado(DocumentoVenta documentoVenta, boolean estado);
 	

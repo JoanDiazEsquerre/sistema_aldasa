@@ -51,7 +51,7 @@ public class Imagen {
 	@Column(name="fecharegistro")
 	private Date fechaRegistro;
 	
-	
+	String comentario;
 	
 	public Integer getId() {
 		return id;
@@ -130,6 +130,12 @@ public class Imagen {
 	}
 	public void setFechaRegistro(Date fechaRegistro) {
 		this.fechaRegistro = fechaRegistro;
+	}
+	public String getComentario() {
+		return comentario;
+	}
+	public void setComentario(String comentario) {
+		this.comentario = comentario;
 	}
 	
 	

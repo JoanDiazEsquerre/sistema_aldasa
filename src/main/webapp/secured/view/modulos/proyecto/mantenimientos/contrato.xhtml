@@ -16,13 +16,14 @@
 					<f:selectItem itemLabel="Anulados" itemValue="#{false}" />
 					<p:ajax  update="idTableContrato"/>
 				</p:selectOneButton> 
-				
-                <p:commandButton value="ACTUALIZAR" style="display:none;" onclick="PrimeFaces.monitorDownload(start, stop);" id="btnAct" styleClass="ui-button-success" icon="pi pi-check"> 
-                	<p:fileDownload value="#{contratoBean.fileDes}"/> 
-                </p:commandButton>
+                
+                <p:commandButton value="Descargar" rendered="#{navegacionBean.usuarioLogin.profile.id eq 1}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{contratoBean.procesarExcel}" icon="pi pi-file-excel" styleClass="ui-button-success" style="margin-left:20px">
+		           <p:fileDownload value="#{contratoBean.fileDes}"/> 
+		      	</p:commandButton>
 				
 				<p:dataTable var="contrato" id="idTableContrato" value="#{contratoBean.lstContratoLazy}" widgetVar="contratoTable" rowIndexVar="row" paginator="true" rows="15" size="small"
-				emptyMessage="No se encontraron contratos." style="width: 150%"	paginatorPosition="bottom" rowKey="#{contrato.id}"  selectionMode="single" selection="#{contratoBean.contratoSelected}">
+					emptyMessage="No se encontraron contratos." style="width: 150%"	paginatorPosition="bottom" rowKey="#{contrato.id}"  selectionMode="single" 
+					selection="#{contratoBean.contratoSelected}" editable="true" editMode="cell">
 				
 					<f:facet name="header">
 						<div class="p-d-flex p-ai-center p-jc-between">
@@ -115,6 +116,21 @@
 							<f:setPropertyActionListener value="#{contrato}" target="#{contratoBean.contratoSelected}"  />
 						</p:commandButton>
 					</p:column>
+					
+					<p:column headerText="Asesor Cobranza" width="100px">
+		                <p:cellEditor>
+		                    <f:facet name="output">
+		                        <h:outputText value="#{contrato.usuarioCobranza.username}"/>
+		                    </f:facet>
+		                    <f:facet name="input">    
+		                        <h:selectOneMenu value="#{contrato.usuarioCobranza}" converter="#{contratoBean.conversorUsuario}">
+									<f:selectItem itemLabel="[-Ninguno-]" itemValue="#{null}"></f:selectItem>
+									<f:selectItems value="#{contratoBean.lstUsuarioCobranza}" var="usu" itemLabel="#{usu.username}" itemValue="#{usu}"/> 
+									<p:ajax listener="#{contratoBean.actualizarUsuarioCobranza(contrato)}" update="idTableContrato" />
+								</h:selectOneMenu>
+		                    </f:facet>
+		                </p:cellEditor>
+		            </p:column>
 				</p:dataTable>
 				
 				<p:contextMenu id="menuTableReq" for="idTableContrato" >

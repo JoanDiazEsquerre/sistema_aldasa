@@ -153,7 +153,7 @@
 				</p:tab>
 				<p:tab title="Permisos" > 
 				
-					<h:panelGrid columns="2"> 
+					<h:panelGrid columns="4"> 
 					
 						<h:outputLabel value="Modificar Cronograma:" />
 		                <p:selectOneMenu value="#{userBean.userSelected.modificarCronograma}" style="margin:10px" >
@@ -169,6 +169,18 @@
 		                
 		                <h:outputLabel value="Descargar Reporte Ventas:" />
 		                <p:selectOneMenu value="#{userBean.userSelected.descargarReporteVenta}" style="margin:10px" >
+		                    <f:selectItem itemLabel="NO" itemValue="#{false}"/>
+		                    <f:selectItem itemLabel="SI" itemValue="#{true}"/>
+		                </p:selectOneMenu>
+		                
+		                <h:outputLabel value="Modificar voucher:" />
+		                <p:selectOneMenu value="#{userBean.userSelected.modificarVoucher}" style="margin:10px" >
+		                    <f:selectItem itemLabel="NO" itemValue="#{false}"/>
+		                    <f:selectItem itemLabel="SI" itemValue="#{true}"/>
+		                </p:selectOneMenu>
+		                
+		                <h:outputLabel value="Aprobar Requerimiento Separación:" />
+		                <p:selectOneMenu value="#{userBean.userSelected.aprobarRequerimientoSeparacion}" style="margin:10px" >
 		                    <f:selectItem itemLabel="NO" itemValue="#{false}"/>
 		                    <f:selectItem itemLabel="SI" itemValue="#{true}"/>
 		                </p:selectOneMenu>

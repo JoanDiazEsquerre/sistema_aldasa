@@ -755,13 +755,12 @@ public class ProspeccionBean  extends BaseBean{
 		requerimientoSeparacion.setFecha(new Date());
 		requerimientoSeparacion.setEstado("Pendiente");
 		requerimientoSeparacion.setProspection(prospectionSelected); 
-		requerimientoSeparacion.setNombreImagen("");
 		
 		RequerimientoSeparacion guardarReq = requerimientoSeparacionService.save(requerimientoSeparacion);
 		
 		if(guardarReq != null) {
 			String rename = guardarReq.getId() + "." + getExtension(file.getFileName());
-			guardarReq.setNombreImagen(rename);
+//			guardarReq.setNombreImagen(rename);
 			requerimientoSeparacionService.save(guardarReq);
 			
             subirArchivo(rename);

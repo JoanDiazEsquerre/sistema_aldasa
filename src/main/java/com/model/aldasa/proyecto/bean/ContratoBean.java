@@ -3,7 +3,7 @@ package com.model.aldasa.proyecto.bean;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.IOException; 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -29,6 +29,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.servlet.ServletContext;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFAbstractNum;
@@ -52,6 +58,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STJc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STVerticalJc;
+import org.primefaces.PrimeFaces;
 import org.primefaces.component.column.Column;
 import org.primefaces.context.PrimeRequestContext;
 import org.primefaces.event.CellEditEvent;
@@ -69,12 +76,15 @@ import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.CuentaBancaria;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
+import com.model.aldasa.entity.DocumentoVenta;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.ObservacionContrato;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.PlantillaVenta;
 import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.Simulador;
+import com.model.aldasa.entity.Sucursal;
+import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.entity.Voucher;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.proyecto.jrdatasource.DataSourceCronogramaPago;
@@ -88,11 +98,19 @@ import com.model.aldasa.service.ObservacionContratoService;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.PlantillaVentaService;
 import com.model.aldasa.service.RequerimientoSeparacionService;
+import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.service.VoucherService;
 import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.EstadoLote;
 import com.model.aldasa.util.NumeroALetra;
-import com.model.aldasa.ventas.jrdatasource.DataSourceDocumentoVenta;
+import com.model.aldasa.util.Perfiles;
+import com.model.aldasa.util.UtilXls;
+import com.model.aldasa.ventas.jrdatasource.DataSourceDocumentoVenta; 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.time.LocalDate;
+import java.time.Period;
 
 @ManagedBean
 @ViewScoped
@@ -136,6 +154,9 @@ public class ContratoBean extends BaseBean implements Serializable{
 	@ManagedProperty(value = "#{plantillaVentaService}")
 	private PlantillaVentaService plantillaVentaService;
 	
+	@ManagedProperty(value = "#{usuarioService}")
+	private UsuarioService usuarioService;
+	
 	
 	private String meses[]= {"ENERO","FEBRERO","MARZO","ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE","DICIEMBRE"};
 	
@@ -147,6 +168,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 	private List<Simulador> lstSimulador = new ArrayList<>();
 	private List<Simulador> lstSimuladorPrevio = new ArrayList<>();
 	private List<ObservacionContrato> lstObservacionContrato = new ArrayList<>();
+	private List<Usuario> lstUsuarioCobranza;
 	
 	private List<Cuota> lstCuotaVista = new ArrayList<>();
 
@@ -156,6 +178,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 	
 	private StreamedContent fileDes;
 	private String nombreArchivo = "Contrato.docx";
+	private String nombreArchivoReporte = "Reporte Contratos.xlsx";
 
 	private String nombreLoteSelected;
 	private Date fechaVenta, fechaPrimeraCuota; 
@@ -183,12 +206,160 @@ public class ContratoBean extends BaseBean implements Serializable{
 	@PostConstruct
 	public void init() {
 		estado = true;
+		lstUsuarioCobranza = usuarioService.findByProfileIdAndStatus(Perfiles.ASISTENTE_COBRANZA.getId(), true);
 		iniciarLazy();
 		listarPersonas();
 		lstCuentaBancaria = cuentaBancariaService.findByEstadoAndSucursal(true, navegacionBean.getSucursalLogin());
 		verCronogramaPago();
 		observacion="";
 		
+	}
+	
+	public void actualizarUsuarioCobranza(Contrato contrato) {
+        contratoService.save(contrato);
+        addInfoMessage("Se actualizó el Usuario de Cobranza correctamente.");
+    }
+	
+	public void procesarExcel() {		
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet sheet = workbook.createSheet("Reporte Contratos");
+
+		CellStyle styleBorder = UtilXls.styleCell(workbook, 'B');
+		CellStyle styleTitulo = UtilXls.styleCell(workbook, 'A');
+		
+		Row rowSubTitulo = sheet.createRow(0);
+		Cell cellSub1 = null;
+		cellSub1 = rowSubTitulo.createCell(0);cellSub1.setCellValue("PROYECTO");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(1);cellSub1.setCellValue("MANZANA");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(2);cellSub1.setCellValue("LOTE");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(3);cellSub1.setCellValue("CLIENTE");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(4);cellSub1.setCellValue("DNI");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(5);cellSub1.setCellValue("FECHA PRIMERO CUOTA");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(6);cellSub1.setCellValue("FECHA PROX CUOTA");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(7);cellSub1.setCellValue("IMPORTE PROX CUOTA");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(8);cellSub1.setCellValue("CUOTAS PROGRAMADAS");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(9);cellSub1.setCellValue("MESES TRANSCURRIDOS");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(10);cellSub1.setCellValue("CUOTAS PAGADAS");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(11);cellSub1.setCellValue("CUOTAS ATRADASAS");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(12);cellSub1.setCellValue("MONTO CUOTAS PAGADAS");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(13);cellSub1.setCellValue("MONTO CUOTAS ATRASADAS");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(14);cellSub1.setCellValue("SALDO PENDIENTE");cellSub1.setCellStyle(styleTitulo); 
+		cellSub1 = rowSubTitulo.createCell(15);cellSub1.setCellValue("ASESOR COBRANZA");cellSub1.setCellStyle(styleTitulo); 
+
+		List<Contrato> lstContratos = contratoService.findByEstadoAndLoteProjectSucursalAndTipoPagoAndCancelacionTotal(true, navegacionBean.getSucursalLogin(), "Crédito", false); 
+		
+		int index = 1;
+		BigDecimal total = BigDecimal.ZERO;
+		
+		if (!lstContratos.isEmpty()){
+			for(Contrato c : lstContratos) {
+				int numCuotasProg = 0;
+				int numCuotasPagadas=0;
+				int numCuotasPendientes=0;
+				int numCuotasAtrasadas=0;
+				
+				Date fechaProxCuota = null;
+				BigDecimal montoProxCuota = BigDecimal.ZERO;
+				BigDecimal montoPagado = BigDecimal.ZERO;
+				BigDecimal montoAtrasado = BigDecimal.ZERO;
+				BigDecimal montoPendiente = BigDecimal.ZERO;
+				
+				LocalDate fecha1 = c.getFechaPrimeraCuota().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+		        LocalDate fecha2 = new Date().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+
+		        // Calcula el período entre las dos fechas
+		        Period periodo = Period.between(fecha1, fecha2);
+
+		        // Calcula los meses transcurridos
+		        int mesesTranscurridos = periodo.getYears() * 12 + periodo.getMonths();				
+				List<Cuota> lstcuotas = cuotaService.findByContratoAndEstado(c, true);
+				List<Cuota> lstcuotasPendientes = new ArrayList<>();
+				List<Cuota> lstcuotasPagadas = new ArrayList<>();
+				
+				System.out.println("tmaño cuota: "+lstcuotas.size());
+				if(!lstcuotas.isEmpty()) {
+					for(Cuota cuota : lstcuotas) {
+						if(cuota.getNroCuota()!=0) {
+							numCuotasProg++;
+							
+							if(cuota.getPagoTotal().equals("S") && !cuota.isPrepago()) {
+								numCuotasPagadas++;
+								montoPagado = montoPagado.add(cuota.getCuotaTotal());
+							}
+							
+							if(cuota.getPagoTotal().equals("N") && !cuota.isPrepago()) {
+								numCuotasPendientes++;
+								montoPendiente = montoPendiente.add(cuota.getCuotaTotal().subtract(cuota.getAdelanto()));
+								
+								
+								if(fechaProxCuota==null) {
+									fechaProxCuota = cuota.getFechaPago();
+									montoProxCuota = cuota.getCuotaTotal();
+								}
+								
+								if(cuota.getFechaPago().before(new Date())) {
+									numCuotasAtrasadas++;
+									montoAtrasado = montoAtrasado.add(cuota.getCuotaTotal().subtract(cuota.getAdelanto()));
+								}
+							}
+							
+							if(cuota.getPagoTotal().equals("S") && cuota.isPrepago()) {
+								montoPagado = montoPagado.add(cuota.getCuotaTotal());
+							}
+						}
+					}
+				}
+				
+				total = total.add(montoPendiente);
+				
+				
+				rowSubTitulo = sheet.createRow(index);
+				cellSub1 = rowSubTitulo.createCell(0);cellSub1.setCellValue(c.getLote().getProject().getName());cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(1);cellSub1.setCellValue(c.getLote().getManzana().getName());cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(2);cellSub1.setCellValue(c.getLote().getNumberLote());cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(3);cellSub1.setCellValue(c.getPersonVenta().getSurnames()+" "+ c.getPersonVenta().getNames());cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(4);cellSub1.setCellValue(c.getPersonVenta().getDni());cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(5);cellSub1.setCellValue(sdf.format(c.getFechaPrimeraCuota()));cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(6);cellSub1.setCellValue(fechaProxCuota==null?"": sdf.format(fechaProxCuota));cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(7);cellSub1.setCellValue(montoProxCuota+"");cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(8);cellSub1.setCellValue(numCuotasProg+"");cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(9);cellSub1.setCellValue(mesesTranscurridos+"");cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(10);cellSub1.setCellValue(numCuotasPagadas+"");cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(11);cellSub1.setCellValue(numCuotasAtrasadas+"");cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(12);cellSub1.setCellValue(montoPagado.doubleValue());cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(13);cellSub1.setCellValue(montoAtrasado.doubleValue());cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(14);cellSub1.setCellValue(montoPendiente.doubleValue());cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(15);cellSub1.setCellValue(c.getUsuarioCobranza() == null? "": c.getUsuarioCobranza().getUsername());cellSub1.setCellStyle(styleBorder);
+					
+				index++;
+			}
+		}
+		
+		rowSubTitulo = sheet.createRow(index);
+		cellSub1 = rowSubTitulo.createCell(14);cellSub1.setCellValue(total.doubleValue());cellSub1.setCellStyle(styleBorder);
+		
+		
+		for (int j = 0; j <= 15; j++) {
+			sheet.autoSizeColumn(j);
+			
+		}
+		try {
+			ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()
+					.getContext();
+			String filePath = scontext.getRealPath("/WEB-INF/fileAttachments/" + nombreArchivoReporte);
+			File file = new File(filePath);
+			FileOutputStream out = new FileOutputStream(file);
+			workbook.write(out);
+			out.close();
+			fileDes = DefaultStreamedContent.builder().name(nombreArchivoReporte).contentType("aplication/xls")
+					.stream(() -> FacesContext.getCurrentInstance().getExternalContext()
+							.getResourceAsStream("/WEB-INF/fileAttachments/" + nombreArchivoReporte))
+					.build();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void cambiarEstadoFirma(Contrato contrato) {
@@ -485,19 +656,15 @@ public class ContratoBean extends BaseBean implements Serializable{
 			cuotaCero.setCuotaTotal(montoInicial);
 			cuotaCero.setAdelanto(BigDecimal.ZERO);
 
-			RequerimientoSeparacion requerimiento = requerimientoSeparacionService.findAllByLoteAndEstado(contrato.getLote(), "Atendido");
+			RequerimientoSeparacion requerimiento = requerimientoSeparacionService.findAllByLoteAndEstado(contrato.getLote(), "Aprobado");
 			if(requerimiento!=null) {
-				Voucher voucher = voucherService.findByRequerimientoSeparacion(requerimiento);
-				if(voucher!=null) {
-					List<DetalleDocumentoVenta> detalle = detalleDocumentoVentaService.findByVoucherIdAndEstado(voucher.getId(), true);
-					if(!detalle.isEmpty()) {
-						for(DetalleDocumentoVenta d: detalle) {
-							if(d.getDocumentoVenta().getTipoDocumento().getAbreviatura().equals("F") || d.getDocumentoVenta().getTipoDocumento().getAbreviatura().equals("B")) {
-								cuotaCero.setAdelanto(d.getImporteVenta());
-							}
+				List<DetalleDocumentoVenta> detalle = detalleDocumentoVentaService.findByRequerimientoSeparacionAndDocumentoVentaEstado(requerimiento, true);
+				if(!detalle.isEmpty()) {
+					for(DetalleDocumentoVenta d: detalle) {
+						if(d.getDocumentoVenta().getTipoDocumento().getAbreviatura().equals("F") || d.getDocumentoVenta().getTipoDocumento().getAbreviatura().equals("B")) {
+							cuotaCero.setAdelanto(d.getImporteVenta());
 						}
 					}
-					
 				}
 			} 
 			
@@ -8826,18 +8993,14 @@ public class ContratoBean extends BaseBean implements Serializable{
 				cuota.setCuotaTotal(montoVenta);
 				cuota.setAdelanto(BigDecimal.ZERO);
 				
-				RequerimientoSeparacion requerimiento = requerimientoSeparacionService.findAllByLoteAndEstado(contrato.getLote(), "Atendido");
+				RequerimientoSeparacion requerimiento = requerimientoSeparacionService.findAllByLoteAndEstado(contrato.getLote(), "Aprobado");
 				if(requerimiento!=null) {
-					Voucher voucher = voucherService.findByRequerimientoSeparacion(requerimiento);
-					if(voucher!=null) {
-						List<DetalleDocumentoVenta> detalle = detalleDocumentoVentaService.findByVoucherIdAndEstado(voucher.getId(), true); 
-						if(!detalle.isEmpty()) {
-							for(DetalleDocumentoVenta d: detalle) {
-								if(d.getDocumentoVenta().getTipoDocumento().getAbreviatura().equals("F") || d.getDocumentoVenta().getTipoDocumento().getAbreviatura().equals("B")) {
-									cuota.setAdelanto(d.getImporteVenta());
-								}
+					List<DetalleDocumentoVenta> detalle = detalleDocumentoVentaService.findByRequerimientoSeparacionAndDocumentoVentaEstado(requerimiento, true); 
+					if(!detalle.isEmpty()) {
+						for(DetalleDocumentoVenta d: detalle) {
+							if(d.getDocumentoVenta().getTipoDocumento().getAbreviatura().equals("F") || d.getDocumentoVenta().getTipoDocumento().getAbreviatura().equals("B")) {
+								cuota.setAdelanto(d.getImporteVenta());
 							}
-							
 						}
 						
 					}
@@ -9740,6 +9903,34 @@ public class ContratoBean extends BaseBean implements Serializable{
         };
     }
 	
+	public Converter getConversorUsuario() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Usuario c = null;
+                    for (Usuario si : lstUsuarioCobranza) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Usuario) value).getId() + "";
+                }
+            }
+        };
+    }
+	
 	
 	public LoteService getLoteService() {
 		return loteService;
@@ -10055,6 +10246,24 @@ public class ContratoBean extends BaseBean implements Serializable{
 	}
 	public void setPlantillaVentaService(PlantillaVentaService plantillaVentaService) {
 		this.plantillaVentaService = plantillaVentaService;
+	}
+	public UsuarioService getUsuarioService() {
+		return usuarioService;
+	}
+	public void setUsuarioService(UsuarioService usuarioService) {
+		this.usuarioService = usuarioService;
+	}
+	public String getNombreArchivoReporte() {
+		return nombreArchivoReporte;
+	}
+	public void setNombreArchivoReporte(String nombreArchivoReporte) {
+		this.nombreArchivoReporte = nombreArchivoReporte;
+	}
+	public List<Usuario> getLstUsuarioCobranza() {
+		return lstUsuarioCobranza;
+	}
+	public void setLstUsuarioCobranza(List<Usuario> lstUsuarioCobranza) {
+		this.lstUsuarioCobranza = lstUsuarioCobranza;
 	}
 		
 	

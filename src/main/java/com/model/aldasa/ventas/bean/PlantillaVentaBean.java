@@ -57,6 +57,7 @@ import com.model.aldasa.entity.Producto;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.Prospection;
+import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.SerieDocumento;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.TipoDocumento;
@@ -85,6 +86,7 @@ import com.model.aldasa.service.PlantillaVentaService;
 import com.model.aldasa.service.ProductoService;
 import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.ProspectService;
+import com.model.aldasa.service.RequerimientoSeparacionService;
 import com.model.aldasa.service.SerieDocumentoService;
 import com.model.aldasa.service.TeamService;
 import com.model.aldasa.service.TipoDocumentoService;
@@ -94,7 +96,6 @@ import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.NumeroALetra;
 import com.model.aldasa.util.Perfiles;
 import com.model.aldasa.util.TipoProductoType;
-import com.model.aldasa.ventas.jrdatasource.DataSourceDocumentoVenta;
 
 @ManagedBean
 @ViewScoped
@@ -138,6 +139,9 @@ public class PlantillaVentaBean extends BaseBean {
 	@ManagedProperty(value = "#{empleadoService}")
 	private EmpleadoService empleadoService;
 	
+	@ManagedProperty(value = "#{requerimientoSeparacionService}")
+	private RequerimientoSeparacionService requerimientoSeparacionService;
+	
 	private LazyDataModel<PlantillaVenta> lstPlantillaLazy;
 	
 	private List<Project> lstProject;
@@ -148,7 +152,7 @@ public class PlantillaVentaBean extends BaseBean {
 	private List<Team> lstTeam;
 	private List<Person> lstPersonAsesor = new ArrayList<>();
 
-	
+	private RequerimientoSeparacion requerimientoBusqueda;
 	private PlantillaVenta plantillaVentaSelected;
 	private CuentaBancaria cuentaBancariaSelected;
 	private Project proyectoPlantilla;	
@@ -158,7 +162,7 @@ public class PlantillaVentaBean extends BaseBean {
 	private Person personCliente, personAsesor;
 
 	
-	private String estadoPlantillaFilter = "Pendiente";
+	private String estadoPlantillaFilter = "Pendiente", mensajeSeparacion="";
 	private String imagen1, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8, imagen9, imagen10;
 	private BigDecimal monto, montoPlantilla, interesPlantilla, inicialPlantilla;
 	private Date fechaOperacion = new Date() ;
@@ -175,6 +179,17 @@ public class PlantillaVentaBean extends BaseBean {
 		lstCuentaBancaria=cuentaBancariaService.findByEstadoAndSucursal(true, navegacionBean.getSucursalLogin());
 		lstPerson = personService.findByStatus(true);
 		lstTeam=teamService.findByStatus(true);
+	}
+	
+	public void consultarSeparacion() {
+		requerimientoBusqueda = null;
+		mensajeSeparacion="";
+		if(lotePlantilla != null) {
+			requerimientoBusqueda = requerimientoSeparacionService.findAllByLoteAndEstado(lotePlantilla, "Aprobado");
+			if(requerimientoBusqueda!=null) {
+				mensajeSeparacion = "El lote seleccionado tiene una separacion de "+ requerimientoBusqueda.getMonto() +" soles.";
+			}
+		}
 	}
 	
 	public void anularPlantilla() {
@@ -229,46 +244,46 @@ public class PlantillaVentaBean extends BaseBean {
 	public void subirArchivo(String nombre, UploadedFile file) {
 		//  File result = new File("/home/imagen/IMG-DOCUMENTO-VENTA/" + nombre);
 		//  File result = new File("C:\\IMG-DOCUMENTO-VENTA\\" + nombre);
-		  File result = new File(navegacionBean.getSucursalLogin().getEmpresa().getRutaPlantillaVenta() + nombre);
+	  File result = new File(navegacionBean.getSucursalLogin().getEmpresa().getRutaPlantillaVenta() + nombre);
+	
+		  try {
 		
-			  try {
-			
-			      FileOutputStream fileOutputStream = new FileOutputStream(result);
-			
-			      byte[] buffer = new byte[1024];
-			
-			      int bulk;
-			
-			      // Here you get uploaded picture bytes, while debugging you can see that 34818
-			      InputStream inputStream = file.getInputStream();
-			
-			      while (true) {
-			
-			          bulk = inputStream.read(buffer);
-			
-			          if (bulk < 0) {
-			
-			              break;
-			
-			          } //end of if
-			
-			          fileOutputStream.write(buffer, 0, bulk);
-			          fileOutputStream.flush();
-			
-			      } //end fo while(true)
-			
-			      fileOutputStream.close();
-			      inputStream.close();
-			
-			      FacesMessage msg = new FacesMessage("El archivo subió correctamente.");
-			      FacesContext.getCurrentInstance().addMessage(null, msg);
-			
-			  } catch (IOException e) {
-			      e.printStackTrace();
-			      FacesMessage error = new FacesMessage("The files were not uploaded!");
-			      FacesContext.getCurrentInstance().addMessage(null, error);
-			  }
-		}
+		      FileOutputStream fileOutputStream = new FileOutputStream(result);
+		
+		      byte[] buffer = new byte[1024];
+		
+		      int bulk;
+		
+		      // Here you get uploaded picture bytes, while debugging you can see that 34818
+		      InputStream inputStream = file.getInputStream();
+		
+		      while (true) {
+		
+		          bulk = inputStream.read(buffer);
+		
+		          if (bulk < 0) {
+		
+		              break;
+		
+		          } //end of if
+		
+		          fileOutputStream.write(buffer, 0, bulk);
+		          fileOutputStream.flush();
+		
+		      } //end fo while(true)
+		
+		      fileOutputStream.close();
+		      inputStream.close();
+		
+		      FacesMessage msg = new FacesMessage("El archivo subió correctamente.");
+		      FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		  } catch (IOException e) {
+		      e.printStackTrace();
+		      FacesMessage error = new FacesMessage("The files were not uploaded!");
+		      FacesContext.getCurrentInstance().addMessage(null, error);
+		  }
+	}
 		
 	
 	public void subirImagenes(String idPlantilla, PlantillaVenta plantilla) {
@@ -491,6 +506,7 @@ public class PlantillaVentaBean extends BaseBean {
 		plantillaVentaNew.setEstado("Pendiente");
 		plantillaVentaNew.setUsuario(navegacionBean.getUsuarioLogin());
 		plantillaVentaNew.setFecha(new Date());
+		plantillaVentaNew.setRequerimientoSeparacion(requerimientoBusqueda);
 		PlantillaVenta plantilla = plantillaVentaService.save(plantillaVentaNew);
 		
 		if(plantilla == null) {
@@ -1283,6 +1299,18 @@ public class PlantillaVentaBean extends BaseBean {
 	}
 	public void setInicialPlantilla(BigDecimal inicialPlantilla) {
 		this.inicialPlantilla = inicialPlantilla;
+	}
+	public String getMensajeSeparacion() {
+		return mensajeSeparacion;
+	}
+	public void setMensajeSeparacion(String mensajeSeparacion) {
+		this.mensajeSeparacion = mensajeSeparacion;
+	}
+	public RequerimientoSeparacionService getRequerimientoSeparacionService() {
+		return requerimientoSeparacionService;
+	}
+	public void setRequerimientoSeparacionService(RequerimientoSeparacionService requerimientoSeparacionService) {
+		this.requerimientoSeparacionService = requerimientoSeparacionService;
 	}
 	
 	

@@ -78,6 +78,13 @@ public class PlantillaVenta {
 	@Column(name="realizoboletainicial")
 	private boolean realizoBoletaInicial;
 	
+	@ManyToOne
+    @JoinColumn(name="iddocumentoventa")
+    private DocumentoVenta documentoVenta;
+	
+	@ManyToOne
+    @JoinColumn(name="idrequerimientoseparacion")
+    private RequerimientoSeparacion requerimientoSeparacion;
 	
 	public Integer getId() {
 		return id;
@@ -192,6 +199,18 @@ public class PlantillaVenta {
 	}
 	public void setRealizoBoletaInicial(boolean realizoBoletaInicial) {
 		this.realizoBoletaInicial = realizoBoletaInicial;
+	}
+	public DocumentoVenta getDocumentoVenta() {
+		return documentoVenta;
+	}
+	public void setDocumentoVenta(DocumentoVenta documentoVenta) {
+		this.documentoVenta = documentoVenta;
+	}
+	public RequerimientoSeparacion getRequerimientoSeparacion() {
+		return requerimientoSeparacion;
+	}
+	public void setRequerimientoSeparacion(RequerimientoSeparacion requerimientoSeparacion) {
+		this.requerimientoSeparacion = requerimientoSeparacion;
 	}
 	
 	

@@ -1,6 +1,8 @@
 package com.model.aldasa.util;
 
 import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -44,6 +46,22 @@ public class BaseBean {
     public static InputStream getRutaGrafico(String rutaGrafico) {
         FacesContext context = FacesContext.getCurrentInstance();
         return context.getExternalContext().getResourceAsStream(rutaGrafico);
+    }
+    
+    public Date sumarRestarFecha(Date fecha, int sumaresta){
+        Calendar calendar = Calendar.getInstance();
+        try{
+
+            calendar.setTime(fecha);
+            
+            calendar.add(Calendar.DAY_OF_WEEK, sumaresta);
+     
+        }
+        catch(Exception e)
+        {
+            System.out.println("Error:\n" + e);
+        }
+        return calendar.getTime();
     }
 
 }

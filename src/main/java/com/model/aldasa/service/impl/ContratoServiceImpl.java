@@ -120,6 +120,12 @@ public class ContratoServiceImpl implements ContratoService{
 		return contratoRepository.findByPersonVentaSurnamesLikeAndPersonVentaDniLikeAndEstadoAndCancelacionTotalAndLoteProjectSucursal(personVenta, dni, estado, cancelacionTotal, sucursal, pageable);
 	}
 
+	@Override
+	public List<Contrato> findByEstadoAndLoteProjectSucursalAndTipoPagoAndCancelacionTotal(boolean status, Sucursal sucursal, String tipoPago, boolean cancelacionTotal) {
+		// TODO Auto-generated method stub
+		return contratoRepository.findByEstadoAndLoteProjectSucursalAndTipoPagoAndCancelacionTotal(status, sucursal, tipoPago, cancelacionTotal); 
+	}
+
 
 
 	

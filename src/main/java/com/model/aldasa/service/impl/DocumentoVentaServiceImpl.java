@@ -15,6 +15,7 @@ import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
 import com.model.aldasa.entity.Empresa;
+import com.model.aldasa.entity.Imagen;
 import com.model.aldasa.entity.PlantillaVenta;
 import com.model.aldasa.entity.SerieDocumento;
 import com.model.aldasa.entity.Sucursal;
@@ -23,7 +24,9 @@ import com.model.aldasa.repository.ContratoRepository;
 import com.model.aldasa.repository.CuotaRepository;
 import com.model.aldasa.repository.DetalleDocumentoVentaRepository;
 import com.model.aldasa.repository.DocumentoVentaRepository;
+import com.model.aldasa.repository.ImagenRepository;
 import com.model.aldasa.repository.PlantillaVentaRepository;
+import com.model.aldasa.repository.RequerimientoSeparacionRepository;
 import com.model.aldasa.repository.SerieDocumentoRepository;
 import com.model.aldasa.repository.VoucherRepository;
 import com.model.aldasa.service.DocumentoVentaService;
@@ -48,10 +51,13 @@ public class DocumentoVentaServiceImpl implements DocumentoVentaService{
 	private ContratoRepository contratoRepository;
 
 	@Autowired
-	private VoucherRepository voucherRepository;
+	private RequerimientoSeparacionRepository requerimientoSeparacionRepository;
 	
 	@Autowired
 	private PlantillaVentaRepository plantillaVentaRepository;
+	
+	@Autowired
+	private ImagenRepository imagenRepository;
 	
 	@Override
 	public Optional<DocumentoVenta> findById(Integer id) {
@@ -81,6 +87,7 @@ public class DocumentoVentaServiceImpl implements DocumentoVentaService{
 					if(!lstPlantilla.isEmpty()) {
 						for(PlantillaVenta p: lstPlantilla) {
 							p.setRealizoBoletaInicial(true);
+							p.setDocumentoVenta(entity); 
 							plantillaVentaRepository.save(p);
 						}
 					}
@@ -121,9 +128,10 @@ public class DocumentoVentaServiceImpl implements DocumentoVentaService{
 				
 			}
 			
-			if(d.getVoucher()!=null) {
-				d.getVoucher().setGeneraDocumento(true); 
-				voucherRepository.save(d.getVoucher());
+			if(d.getRequerimientoSeparacion()!=null) {
+				d.getRequerimientoSeparacion().setGeneraDocumento(true); 
+				d.getRequerimientoSeparacion().setDocumentoVenta(entity);
+				requerimientoSeparacionRepository.save(d.getRequerimientoSeparacion());
 			}
 			if(d.getCuotaPrepago()!=null) {
 				d.getCuotaPrepago().setPagoTotal("S");
@@ -285,6 +293,57 @@ public class DocumentoVentaServiceImpl implements DocumentoVentaService{
 			Date fechaIni, Date fechaFin, String user) {
 		// TODO Auto-generated method stub
 		return documentoVentaRepository.findBySucursalAndRazonSocialLikeAndNumeroLikeAndRucLikeAndTipoDocumentoAndFechaEmisionBetweenAndUsuarioRegistroUsernameLike(sucursal, razonSocial, numero, ruc, tipoDocumento, fechaIni, fechaFin, user);
+	}
+
+	@Override
+	public DocumentoVenta anular(DocumentoVenta entity) {
+		if(entity.getDocumentoVentaRef()!=null) {
+			if(entity.getDocumentoVentaRef().getTipoDocumento().getAbreviatura().equals("C")) {
+				entity.getDocumentoVentaRef().setNotacredito(false);
+				entity.getDocumentoVentaRef().setNumeroNotaCredito(null);
+
+			}
+			if(entity.getDocumentoVentaRef().getTipoDocumento().getAbreviatura().equals("D")) {
+				entity.getDocumentoVentaRef().setNotaDebito(false);
+				entity.getDocumentoVentaRef().setNumeroNotaDebito(null);
+			}
+			documentoVentaRepository.save(entity.getDocumentoVentaRef());
+		}
+		
+		entity.setEstado(false);
+		documentoVentaRepository.save(entity);
+		List<DetalleDocumentoVenta> lstDetalleDocumentoVentaSelected = detalleDocumentoVentaRepository.findByDocumentoVentaAndEstado(entity, true);
+	
+		for(DetalleDocumentoVenta d:lstDetalleDocumentoVentaSelected) {
+			// estte recorrido	AQUI HACERLO CON CONSULTA NATIVA
+//			d.setEstado(false); 
+//			detalleDocumentoVentaService.save(d);
+			
+			if(d.getRequerimientoSeparacion()!=null) {
+				d.getRequerimientoSeparacion().setGeneraDocumento(false);
+				requerimientoSeparacionRepository.save(d.getRequerimientoSeparacion());
+			}
+			if(d.getCuota()!=null) {
+				d.getCuota().setPagoTotal("N");
+				cuotaRepository.save(d.getCuota());
+			}
+		}
+		
+		// aqui anulamos las imagenes
+		String nombreBusqueda = "%"+entity.getId() +"_%";
+		List<Imagen> lstImagen = imagenRepository.findByNombreLikeAndEstado(nombreBusqueda, true);
+		for(Imagen i:lstImagen) {
+			i.setEstado(false);
+			imagenRepository.save(i);
+		}
+		
+		return entity;
+	}
+
+	@Override
+	public DocumentoVenta findByDocumentoVentaRefAndEstado(DocumentoVenta documentoVenta, boolean estado) {
+		// TODO Auto-generated method stub
+		return documentoVentaRepository.findByDocumentoVentaRefAndEstado(documentoVenta, estado);
 	}
 
 	

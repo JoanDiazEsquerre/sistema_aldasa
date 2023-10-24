@@ -43,8 +43,8 @@ public class DetalleDocumentoVenta{
 	private Cuota cuota;
 	
 	@ManyToOne
-	@JoinColumn(name="idvoucher")
-	private Voucher voucher;
+	@JoinColumn(name="idrequerimientoseparacion")
+	private RequerimientoSeparacion requerimientoSeparacion;
 	
 	@ManyToOne
 	@JoinColumn(name="idcuotaprepago")
@@ -117,11 +117,11 @@ public class DetalleDocumentoVenta{
 	public void setEstado(boolean estado) {
 		this.estado = estado;
 	}
-	public Voucher getVoucher() {
-		return voucher;
+	public RequerimientoSeparacion getRequerimientoSeparacion() {
+		return requerimientoSeparacion;
 	}
-	public void setVoucher(Voucher voucher) {
-		this.voucher = voucher;
+	public void setRequerimientoSeparacion(RequerimientoSeparacion requerimientoSeparacion) {
+		this.requerimientoSeparacion = requerimientoSeparacion;
 	}
 	public BigDecimal getAdelanto() {
 		return adelanto;

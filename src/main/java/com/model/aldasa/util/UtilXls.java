@@ -21,6 +21,8 @@ public class UtilXls {
 			cellStyleDefault.setBorderTop(CellStyle.BORDER_THIN);
 			cellStyleDefault.setBorderRight(CellStyle.BORDER_THIN);
 			cellStyleDefault.setBorderLeft(CellStyle.BORDER_THIN);
+			cellStyleDefault.setWrapText(true);
+			cellStyleDefault.setVerticalAlignment(CellStyle.VERTICAL_TOP); 
 		}
 
 		if (tipo == 'A') {

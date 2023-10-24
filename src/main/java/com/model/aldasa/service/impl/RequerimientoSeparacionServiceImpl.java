@@ -46,15 +46,22 @@ public class RequerimientoSeparacionServiceImpl implements RequerimientoSeparaci
 	}
 
 	@Override
-	public Page<RequerimientoSeparacion> findAllByEstadoAndProspectionProjectSucursal(String estado, Sucursal sucursal, Pageable pageable) {
+	public Page<RequerimientoSeparacion> findAllByEstadoAndLoteProjectSucursal(String estado, Sucursal sucursal, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return requerimientoSeparacionRepository.findAllByEstadoAndProspectionProjectSucursal(estado, sucursal, pageable);
+		return requerimientoSeparacionRepository.findAllByEstadoAndLoteProjectSucursal(estado, sucursal, pageable);
 	}
 
 	@Override
 	public RequerimientoSeparacion findAllByLoteAndEstado(Lote lote, String estado) {
 		// TODO Auto-generated method stub
 		return requerimientoSeparacionRepository.findAllByLoteAndEstado(lote, estado);
+	}
+
+	@Override
+	public Page<RequerimientoSeparacion> findAllByEstadoAndLoteProjectSucursalAndGeneraDocumento(String estado,
+			Sucursal sucursal, boolean generaDocuento, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return requerimientoSeparacionRepository.findAllByEstadoAndLoteProjectSucursalAndGeneraDocumento(estado, sucursal, generaDocuento, pageable); 
 	}
 
 

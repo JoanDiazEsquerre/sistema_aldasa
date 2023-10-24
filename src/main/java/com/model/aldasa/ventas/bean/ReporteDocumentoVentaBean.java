@@ -601,30 +601,46 @@ public class ReporteDocumentoVentaBean extends BaseBean implements Serializable{
 		Row rowSubTitulo = sheet.createRow(0);
 		Cell cellSub1 = null;
 		cellSub1 = rowSubTitulo.createCell(0);cellSub1.setCellValue("FECHA");cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(1);cellSub1.setCellValue("CORRELATIVO "+ navegacionBean.getSucursalLogin().getRazonSocial());cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(2);cellSub1.setCellValue("");cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(3);cellSub1.setCellValue("");cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(4);cellSub1.setCellValue("");cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(5);cellSub1.setCellValue("MONTO");cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(6);cellSub1.setCellValue("ENCARGADO(A)");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(1);cellSub1.setCellValue("CLIENTE");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(2);cellSub1.setCellValue("PROYECTO");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(3);cellSub1.setCellValue("MANZANA");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(4);cellSub1.setCellValue("LOTE");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(5);cellSub1.setCellValue("DETALLE");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(6);cellSub1.setCellValue("CORRELATIVO "+ navegacionBean.getSucursalLogin().getRazonSocial());cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(7);cellSub1.setCellValue("");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(8);cellSub1.setCellValue("");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(9);cellSub1.setCellValue("");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(10);cellSub1.setCellValue("MONTO");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(11);cellSub1.setCellValue("ENCARGADO(A)");cellSub1.setCellStyle(styleTitulo);
 
 		
 		rowSubTitulo = sheet.createRow(1);
 		cellSub1 = rowSubTitulo.createCell(0);cellSub1.setCellValue("");cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(1);cellSub1.setCellValue("BOLETAS");cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(2);cellSub1.setCellValue("FACTURAS");cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(3);cellSub1.setCellValue("NOTA DE CREDITO");cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(4);cellSub1.setCellValue("ANULADAS");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(1);cellSub1.setCellValue("");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(2);cellSub1.setCellValue("");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(3);cellSub1.setCellValue("");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(4);cellSub1.setCellValue("");cellSub1.setCellStyle(styleTitulo);
 		cellSub1 = rowSubTitulo.createCell(5);cellSub1.setCellValue("");cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(6);cellSub1.setCellValue("");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(6);cellSub1.setCellValue("BOLETAS");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(7);cellSub1.setCellValue("FACTURAS");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(8);cellSub1.setCellValue("NOTA DE CREDITO");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(9);cellSub1.setCellValue("ANULADAS");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(10);cellSub1.setCellValue("");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(11);cellSub1.setCellValue("");cellSub1.setCellStyle(styleTitulo);
 
 		
 		
 
-		sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 0)); //combinar Celdas para titulo
-		sheet.addMergedRegion(new CellRangeAddress(0, 0, 1, 4));
+		sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 0));
+		sheet.addMergedRegion(new CellRangeAddress(0, 1, 1, 1));
+		sheet.addMergedRegion(new CellRangeAddress(0, 1, 2, 2));
+		sheet.addMergedRegion(new CellRangeAddress(0, 1, 3, 3));
+		sheet.addMergedRegion(new CellRangeAddress(0, 1, 4, 4));
 		sheet.addMergedRegion(new CellRangeAddress(0, 1, 5, 5));
-		sheet.addMergedRegion(new CellRangeAddress(0, 1, 6, 6));
+		
+		sheet.addMergedRegion(new CellRangeAddress(0, 0, 6, 9));
+		sheet.addMergedRegion(new CellRangeAddress(0, 1, 10, 10));
+		sheet.addMergedRegion(new CellRangeAddress(0, 1, 11, 11));
 		
 		fechaIni.setHours(0);
         fechaIni.setMinutes(0);
@@ -639,14 +655,57 @@ public class ReporteDocumentoVentaBean extends BaseBean implements Serializable{
 		
 		if (!lstDocumentoVentaReporte.isEmpty()) {
 			for (DocumentoVenta d : lstDocumentoVentaReporte) {
+				List<DetalleDocumentoVenta> lstDet = detalleDocumentoVentaService.findByDocumentoVentaAndEstado(d, true);
+				
+				String proyecto = "";
+				String manzana = "";
+				String lote = "";
+				String detalle="";
+				int cont=1;
+				for(DetalleDocumentoVenta det : lstDet) {
+					String saltoLinea="";
+					if(cont!=1) {
+						saltoLinea = "\n";
+					}
+					
+					if(det.getCuota()!=null) {
+						proyecto = proyecto + saltoLinea+  cont+") " + det.getCuota().getContrato().getLote().getProject().getName();
+						manzana = manzana + saltoLinea +cont+") " + det.getCuota().getContrato().getLote().getManzana().getName();
+						lote =  lote +saltoLinea + cont+") " + det.getCuota().getContrato().getLote().getNumberLote();
+						detalle = detalle +saltoLinea + cont+") "+ det.getProducto().getDescripcion() + " "+ det.getCuota().getNroCuota()+" : "+ det.getImporteVenta();
+					}
+					
+					if(det.getCuotaPrepago()!=null) {
+						proyecto = proyecto + saltoLinea + cont+") " + det.getCuotaPrepago().getContrato().getLote().getProject().getName();
+						manzana = manzana + saltoLinea + cont+") " + det.getCuotaPrepago().getContrato().getLote().getManzana().getName();
+						lote = lote + saltoLinea + cont+") " + det.getCuotaPrepago().getContrato().getLote().getNumberLote();
+						detalle = detalle + saltoLinea + cont+") "+ det.getProducto().getDescripcion();
+					}
+					
+					if(det.getRequerimientoSeparacion()!=null) {
+						proyecto = proyecto +saltoLinea + cont+") " + det.getRequerimientoSeparacion().getLote().getProject().getName();
+						manzana = manzana + saltoLinea + cont+") " + det.getRequerimientoSeparacion().getLote().getManzana().getName();
+						lote = lote + saltoLinea + cont+") " + det.getRequerimientoSeparacion().getLote().getNumberLote();
+						detalle = detalle + saltoLinea + cont+") "+ det.getProducto().getDescripcion(); 
+					}
+
+					cont++;
+				}
+				
+				
 				rowSubTitulo = sheet.createRow(index);
 				cellSub1 = rowSubTitulo.createCell(0);cellSub1.setCellValue(sdf.format(d.getFechaEmision()));cellSub1.setCellStyle(styleBorder);
-				cellSub1 = rowSubTitulo.createCell(1);cellSub1.setCellValue(d.getTipoDocumento().getCodigo().equals("03")? d.getSerie()+"-"+d.getNumero():"");cellSub1.setCellStyle(styleBorder);
-				cellSub1 = rowSubTitulo.createCell(2);cellSub1.setCellValue(d.getTipoDocumento().getCodigo().equals("01")? d.getSerie()+"-"+d.getNumero():"");cellSub1.setCellStyle(styleBorder);
-				cellSub1 = rowSubTitulo.createCell(3);cellSub1.setCellValue(d.getTipoDocumento().getCodigo().equals("07")? d.getSerie()+"-"+d.getNumero():"");cellSub1.setCellStyle(styleBorder);
-				cellSub1 = rowSubTitulo.createCell(4);cellSub1.setCellValue(!d.isEstado()? d.getSerie()+"-"+d.getNumero():"");cellSub1.setCellStyle(styleBorder);
-				cellSub1 = rowSubTitulo.createCell(5);cellSub1.setCellValue(d.getTipoDocumento().getCodigo().equals("03") ||d.getTipoDocumento().getCodigo().equals("01")? d.getTotal()+"":"0");cellSub1.setCellStyle(styleBorder);
-				cellSub1 = rowSubTitulo.createCell(6);cellSub1.setCellValue(d.getUsuarioRegistro().getUsername());cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(1);cellSub1.setCellValue(d.getRazonSocial());cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(2);cellSub1.setCellValue(proyecto.equals("")?"DOCUMENTO LIBRE": proyecto);cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(3);cellSub1.setCellValue(manzana.equals("")?"DOCUMENTO LIBRE": manzana);cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(4);cellSub1.setCellValue(lote.equals("")?"DOCUMENTO LIBRE": lote);cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(5);cellSub1.setCellValue(detalle.equals("")?"DOCUMENTO LIBRE": detalle);cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(6);cellSub1.setCellValue(d.getTipoDocumento().getCodigo().equals("03")? d.getSerie()+"-"+d.getNumero():"");cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(7);cellSub1.setCellValue(d.getTipoDocumento().getCodigo().equals("01")? d.getSerie()+"-"+d.getNumero():"");cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(8);cellSub1.setCellValue(d.getTipoDocumento().getCodigo().equals("07")? d.getSerie()+"-"+d.getNumero():"");cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(9);cellSub1.setCellValue(!d.isEstado()? d.getSerie()+"-"+d.getNumero():"");cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(10);cellSub1.setCellValue(d.getTipoDocumento().getCodigo().equals("03") ||d.getTipoDocumento().getCodigo().equals("01")? d.getTotal()+"":"0");cellSub1.setCellStyle(styleBorder);
+				cellSub1 = rowSubTitulo.createCell(11);cellSub1.setCellValue(d.getUsuarioRegistro().getUsername());cellSub1.setCellStyle(styleBorder);
 				
 				if(d.getTipoDocumento().getCodigo().equals("03") ||d.getTipoDocumento().getCodigo().equals("01")) {
 					total = total.add(d.getTotal());
@@ -657,11 +716,12 @@ public class ReporteDocumentoVentaBean extends BaseBean implements Serializable{
 		}
 		
 		rowSubTitulo = sheet.createRow(index);
-		cellSub1 = rowSubTitulo.createCell(5);cellSub1.setCellValue(total+"");cellSub1.setCellStyle(styleBorder);
+		cellSub1 = rowSubTitulo.createCell(10);cellSub1.setCellValue(total+"");cellSub1.setCellStyle(styleBorder);
 		
 		
-		for (int j = 0; j <= 6; j++) {
+		for (int j = 0; j <= 11; j++) {
 			sheet.autoSizeColumn(j);
+			
 		}
 		try {
 			ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()

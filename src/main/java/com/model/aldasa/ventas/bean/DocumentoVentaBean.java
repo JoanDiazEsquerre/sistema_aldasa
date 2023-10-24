@@ -53,6 +53,7 @@ import com.model.aldasa.entity.Producto;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Prospect;
 import com.model.aldasa.entity.Prospection;
+import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.SerieDocumento;
 import com.model.aldasa.entity.TipoDocumento;
 import com.model.aldasa.entity.TipoOperacion;
@@ -74,6 +75,7 @@ import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProductoService;
 import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.ProspectService;
+import com.model.aldasa.service.RequerimientoSeparacionService;
 import com.model.aldasa.service.SerieDocumentoService;
 import com.model.aldasa.service.TipoDocumentoService;
 import com.model.aldasa.service.TipoOperacionService;
@@ -102,8 +104,8 @@ public class DocumentoVentaBean extends BaseBean {
 	@ManagedProperty(value = "#{cuotaService}")
 	private CuotaService cuotaService;
 	
-	@ManagedProperty(value = "#{voucherService}")
-	private VoucherService voucherService;
+	@ManagedProperty(value = "#{requerimientoSeparacionService}")
+	private RequerimientoSeparacionService requerimientoSeparacionService;
 	
 	@ManagedProperty(value = "#{productoService}")
 	private ProductoService productoService;
@@ -155,7 +157,7 @@ public class DocumentoVentaBean extends BaseBean {
 
 	private LazyDataModel<DocumentoVenta> lstDocumentoVentaLazy;
 	private LazyDataModel<Cuota> lstCuotaLazy;
-	private LazyDataModel<Voucher> lstVoucherLazy;
+	private LazyDataModel<RequerimientoSeparacion> lstRequerimientoLazy;
 	private LazyDataModel<Cuota> lstPrepagoLazy;
 	private LazyDataModel<Contrato> lstContratosPendientesLazy;
 
@@ -163,7 +165,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private List<SerieDocumento> lstSerieDocumento;
 	private List<SerieDocumento> lstSerieNotaDocumento;
 	private List<Cuota> lstCuota;    
-	private List<Voucher> lstVoucher;
+//	private List<Voucher> lstVoucher;
 	private List<DetalleDocumentoVenta> lstDetalleDocumentoVenta = new ArrayList<>();
 	private List<DetalleDocumentoVenta> lstDetalleDocumentoVentaSelected = new ArrayList<>(); 
 	private List<DocumentoVenta> lstDocumentoVenta = new ArrayList<>();
@@ -187,7 +189,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private SerieDocumento serieDocumentoSelected ;
 	private SerieDocumento serieNotaDocumentoSelected ;
 	private Cuota cuotaSelected ;
-	private Voucher voucherSelected ;
+	private RequerimientoSeparacion requerimientoSelected ;
 	private Cuota prepagoSelected ;
 	private Cliente clienteSelected;
 	private Contrato contratoPendienteSelected;
@@ -199,17 +201,16 @@ public class DocumentoVentaBean extends BaseBean {
 	private Identificador identificadorSelected;
 	private Person personSelected;
 	private Project projectFilter;
+	private Imagen imagenSelected;
 
 
 	private DocumentoVenta documentoVentaNew;
 	private DetalleDocumentoVenta detalleDocumentoVentaSelected;
 	private DetalleDocumentoVenta detalleDocumentoVenta;
 	private Producto productoCuota,productoAdelanto,productoInteres, productoVoucher,productoAmortizacion, productoInicial;
-	private Person persona;
+//	private Person persona;
 	private Usuario usuarioLogin = new Usuario();
-	private CuentaBancaria ctaBanc1, ctaBanc2, ctaBanc3, ctaBanc4, ctaBanc5, ctaBanc6, ctaBanc7, ctaBanc8, ctaBanc9, ctaBanc10;
-	
-
+	private CuentaBancaria ctaBanc1, ctaBanc2, ctaBanc3, ctaBanc4, ctaBanc5, ctaBanc6, ctaBanc7, ctaBanc8, ctaBanc9, ctaBanc10, cuentaVoucherDialog;
 	
 	private Date fechaEmision = new Date() ;
 	private Date fechaEmisionNotaVenta = new Date() ;
@@ -309,7 +310,7 @@ public class DocumentoVentaBean extends BaseBean {
 		iniciarDatosDocVenta();	
 		listarSerie();
 		iniciarLazyCuota(); 
-		iniciarLazyVoucher();
+		iniciarLazyRequerimiento();
 		iniciarLazyPrepago();
 		iniciarLazyContratosPendientes();
 		productoCuota = productoService.findByEstadoAndTipoProducto(true,TipoProductoType.CUOTA.getTipo());
@@ -327,6 +328,49 @@ public class DocumentoVentaBean extends BaseBean {
 		lstProject= projectService.findByStatusAndSucursal(true, navegacionBean.getSucursalLogin());
 		lstProducto = productoService.findByEstado(true);
 		lstCuentaBancaria=cuentaBancariaService.findByEstadoAndSucursal(true, navegacionBean.getSucursalLogin());
+	}
+	
+	public void saveVoucherSelected() {
+		if(imagenSelected == null) {
+			addErrorMessage("Primero selecciona una imagen.");
+			return;
+		}
+		
+		if(fechaVoucherDialog==null) {
+			addErrorMessage("Seleccionar una fecha.");
+			return;
+		}
+		
+		if(montoVoucherDialog == null) {
+			addErrorMessage("Ingresar un monto.");
+			return;		
+		}else if (montoVoucherDialog.compareTo(BigDecimal.ZERO) <=0) {
+			addErrorMessage("Ingresar un monto mayor a 0.");
+			return;	
+		}
+		
+		if(nroOperacionVoucherDialog.equals("")) {
+			addErrorMessage("Ingresar número de operación.");
+			return;	
+		}
+		
+		if(cuentaVoucherDialog==null) {
+			addErrorMessage("seleccionar una cuenta bancaria.");
+			return;	
+		}
+		
+		List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaVoucherDialog, montoVoucherDialog, nroOperacionVoucherDialog, cuentaVoucherDialog, tipoTransaccionDialog);
+		if(!buscarImagen.isEmpty()) {
+			addErrorMessage("Ya existe el voucher.");
+		}else {
+			imagenSelected.setFecha(fechaVoucherDialog);
+			imagenSelected.setMonto(montoVoucherDialog);
+			imagenSelected.setNumeroOperacion(nroOperacionVoucherDialog);
+			imagenSelected.setCuentaBancaria(cuentaVoucherDialog);
+			imagenSelected.setTipoTransaccion(tipoTransaccionDialog);
+			imagenService.save(imagenSelected);
+			addInfoMessage("Se guardó correctamente el voucher.");
+		}
 	}
 	
 	public void cambioIgv() {
@@ -747,27 +791,29 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	
 	public void obtenerDatosVoucher(String nombre) {
-		Imagen imagen = imagenService.findByNombre(nombre); 
-		if(imagen!=null) {
-			fechaVoucherDialog=imagen.getFecha();
-			montoVoucherDialog = imagen.getMonto();
-			nroOperacionVoucherDialog = imagen.getNumeroOperacion();
-			tipoTransaccionDialog = imagen.getTipoTransaccion();
-			if(imagen.getCuentaBancaria()!=null) {
-				ctaBancDialog = imagen.getCuentaBancaria().getBanco().getAbreviatura()+" "+ imagen.getCuentaBancaria().getNumero();
+		imagenSelected = imagenService.findByNombre(nombre); 
+		if(imagenSelected!=null) {
+			fechaVoucherDialog=imagenSelected.getFecha();
+			montoVoucherDialog = imagenSelected.getMonto();
+			nroOperacionVoucherDialog = imagenSelected.getNumeroOperacion();
+			tipoTransaccionDialog = imagenSelected.getTipoTransaccion();
+			cuentaVoucherDialog = imagenSelected.getCuentaBancaria();
+			if(imagenSelected.getCuentaBancaria()!=null) {
+				ctaBancDialog = imagenSelected.getCuentaBancaria().getBanco().getAbreviatura()+" "+ imagenSelected.getCuentaBancaria().getNumero();
 			}
 			
 		}
 	}
 	
 	public void verVoucher() {
-		
+		imagenSelected = null;
 		if(documentoVentaSelected.getTipoDocumento().getAbreviatura().equals("B") || documentoVentaSelected.getTipoDocumento().getAbreviatura().equals("F")) {
 			fechaVoucherDialog = null;
 			montoVoucherDialog=null;
 			nroOperacionVoucherDialog="";
 			tipoTransaccionDialog="";
 			ctaBancDialog="";
+			cuentaVoucherDialog = null;
 			
 			loadImageDocumentoBean.setNombreArchivo("0.png");
 			imagen1 = "";
@@ -1213,46 +1259,12 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	
 	private void anulacionFinalDeDocumento() {
-		if(documentoVentaSelected.getDocumentoVentaRef()!=null) {
-			if(documentoVentaSelected.getDocumentoVentaRef().getTipoDocumento().getAbreviatura().equals("C")) {
-				documentoVentaSelected.getDocumentoVentaRef().setNotacredito(false);
-				documentoVentaSelected.getDocumentoVentaRef().setNumeroNotaCredito(null);
-
-			}
-			if(documentoVentaSelected.getDocumentoVentaRef().getTipoDocumento().getAbreviatura().equals("D")) {
-				documentoVentaSelected.getDocumentoVentaRef().setNotaDebito(false);
-				documentoVentaSelected.getDocumentoVentaRef().setNumeroNotaDebito(null);
-			}
-			documentoVentaService.save(documentoVentaSelected.getDocumentoVentaRef());
+		DocumentoVenta doc= documentoVentaService.anular(documentoVentaSelected);
+		if(doc!=null) {
+			addInfoMessage("Documento de venta anulado.");	
+		}else {
+			addErrorMessage("No se pudo anular el documento.");
 		}
-		
-		documentoVentaSelected.setEstado(false);
-		documentoVentaService.save(documentoVentaSelected);
-		lstDetalleDocumentoVentaSelected = detalleDocumentoVentaService.findByDocumentoVentaAndEstado(documentoVentaSelected, true);
-	
-		for(DetalleDocumentoVenta d:lstDetalleDocumentoVentaSelected) {
-			// estte recorrido	AQUI HACERLO CON CONSULTA NATIVA
-//			d.setEstado(false); 
-//			detalleDocumentoVentaService.save(d);
-			
-			if(d.getVoucher()!=null) {
-				d.getVoucher().setGeneraDocumento(false);
-				voucherService.save(d.getVoucher());
-			}
-			if(d.getCuota()!=null) {
-				d.getCuota().setPagoTotal("N");
-				cuotaService.save(d.getCuota());
-			}
-		}
-		
-		// aqui anulamos las imagenes
-		String nombreBusqueda = "%"+documentoVentaSelected.getId() +"_%";
-		List<Imagen> lstImagen = imagenService.findByNombreLikeAndEstado(nombreBusqueda, true);
-		for(Imagen i:lstImagen) {
-			i.setEstado(false);
-			imagenService.save(i);
-		}
-		addInfoMessage("Documento de venta anulado.");	
 	}
 	
 	
@@ -1761,7 +1773,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		DocumentoVenta documento = documentoVentaService.save(documentoVenta, lstDetalleDocumentoVenta, serieDocumentoSelected); 
 		if(documento != null) {
-			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
+//			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
 			
 			lstDetalleDocumentoVenta.clear();// claer es limpiar en ingles prueba
 			clienteSelected=null;
@@ -1777,8 +1789,8 @@ public class DocumentoVentaBean extends BaseBean {
 			email3Text = "";
 			incluirIgv=false;
 			
-			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
-			addInfoMessage("Se guardó el documento correctamente. "+addMensaje);
+//			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
+			addInfoMessage("Se guardó el documento correctamente. ");
 			
 		}else {
 			addErrorMessage("No se puede guardar el documento."); 
@@ -2072,11 +2084,11 @@ public class DocumentoVentaBean extends BaseBean {
 		}
 	}
 	
-	public void listarVoucher() {
-		lstVoucher = new ArrayList<>();
-		lstVoucher = voucherService.findByEstado(true);
-		
-	}
+//	public void listarVoucher() {
+//		lstVoucher = new ArrayList<>();
+//		lstVoucher = voucherService.findByEstado(true);
+//		
+//	}
 	
 	public void listarCuota() {
 		lstCuota = new ArrayList<>();
@@ -2137,7 +2149,7 @@ public class DocumentoVentaBean extends BaseBean {
 			detalle.setAdelanto(cuotaSelected.getAdelanto());
 			detalle.setImporteVenta(cuotaSelected.getCuotaSI().subtract(cuotaSelected.getAdelanto()));
 			detalle.setCuota(cuotaSelected);
-			detalle.setVoucher(null);
+			detalle.setRequerimientoSeparacion(null);
 			detalle.setCuotaPrepago(null);
 			detalle.setImporteVentaSinIgv(BigDecimal.ZERO);
 			detalle.setPrecioSinIgv(BigDecimal.ZERO);
@@ -2154,7 +2166,7 @@ public class DocumentoVentaBean extends BaseBean {
 				detalle.setAdelanto(cuotaSelected.getAdelanto());		
 				detalle.setImporteVenta(cuotaSelected.getCuotaSI().subtract(cuotaSelected.getAdelanto()));
 				detalle.setCuota(cuotaSelected);
-				detalle.setVoucher(null);
+				detalle.setRequerimientoSeparacion(null);
 				detalle.setCuotaPrepago(null);
 				detalle.setImporteVentaSinIgv(BigDecimal.ZERO);
 				detalle.setPrecioSinIgv(BigDecimal.ZERO);
@@ -2171,7 +2183,7 @@ public class DocumentoVentaBean extends BaseBean {
 					detalleInteres.setAdelanto(BigDecimal.ZERO);
 					detalleInteres.setImporteVenta(cuotaSelected.getInteres());
 					detalleInteres.setCuota(cuotaSelected);
-					detalleInteres.setVoucher(null);
+					detalleInteres.setRequerimientoSeparacion(null);
 					detalleInteres.setCuotaPrepago(null);
 					detalleInteres.setImporteVentaSinIgv(BigDecimal.ZERO);
 					detalleInteres.setPrecioSinIgv(BigDecimal.ZERO);
@@ -2193,7 +2205,7 @@ public class DocumentoVentaBean extends BaseBean {
 					detalle.setAdelanto(cuotaSelected.getAdelanto());
 					detalle.setImporteVenta(cuotaSelected.getCuotaSI().subtract(cuotaSelected.getAdelanto()));
 					detalle.setCuota(cuotaSelected);
-					detalle.setVoucher(null);
+					detalle.setRequerimientoSeparacion(null);
 					detalle.setCuotaPrepago(null);
 					detalle.setImporteVentaSinIgv(BigDecimal.ZERO);
 					detalle.setPrecioSinIgv(BigDecimal.ZERO);
@@ -2209,7 +2221,7 @@ public class DocumentoVentaBean extends BaseBean {
 					detalleInteres.setAdelanto(BigDecimal.ZERO);
 					detalleInteres.setImporteVenta(cuotaSelected.getInteres());
 					detalleInteres.setCuota(cuotaSelected);
-					detalleInteres.setVoucher(null);
+					detalleInteres.setRequerimientoSeparacion(null);
 					detalleInteres.setCuotaPrepago(null);
 					detalleInteres.setImporteVentaSinIgv(BigDecimal.ZERO);
 					detalleInteres.setPrecioSinIgv(BigDecimal.ZERO);
@@ -2227,7 +2239,7 @@ public class DocumentoVentaBean extends BaseBean {
 					detalle.setAdelanto(cuotaSelected.getAdelanto());		
 					detalle.setImporteVenta(cuotaSelected.getCuotaSI().add(cuotaSelected.getInteres()).subtract(cuotaSelected.getAdelanto()));
 					detalle.setCuota(cuotaSelected);
-					detalle.setVoucher(null);
+					detalle.setRequerimientoSeparacion(null);
 					detalle.setCuotaPrepago(null);
 					detalle.setImporteVentaSinIgv(BigDecimal.ZERO);
 					detalle.setPrecioSinIgv(BigDecimal.ZERO);
@@ -2245,23 +2257,23 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		
 		calcularTotales();
-		persona = cuotaSelected.getContrato().getPersonVenta();
+//		persona = cuotaSelected.getContrato().getPersonVenta();
 		addInfoMessage("Cuota importada correctamente."); 
 		
 	
 	}
 	
-	public void importarVoucher() {
+	public void importarRequerimiento() {
 		
 		if(!lstDetalleDocumentoVenta.isEmpty()) {
 			for(DetalleDocumentoVenta d:lstDetalleDocumentoVenta) {
-				if(d.getVoucher() != null) {
-					if(voucherSelected.getId()==d.getVoucher().getId()) {
+				if(d.getRequerimientoSeparacion() != null) {
+					if(requerimientoSelected.getId()==d.getRequerimientoSeparacion().getId()) {
 						addErrorMessage("Ya seleccionó el voucher");			
 						return;
 					}
 					
-					if(voucherSelected.getRequerimientoSeparacion().getProspection().getProspect().getPerson().getId() != d.getVoucher().getRequerimientoSeparacion().getProspection().getProspect().getPerson().getId()) {
+					if(requerimientoSelected.getPerson().getId() != d.getRequerimientoSeparacion().getProspection().getProspect().getPerson().getId()) {
 						addErrorMessage("El voucher debe ser de la misma persona.");
 						return;
 					}
@@ -2274,9 +2286,9 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		clienteSelected=null;
 		if(tipoDocumentoSelected.getAbreviatura().equals("B")) {
-			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(voucherSelected.getRequerimientoSeparacion().getProspection().getProspect().getPerson(), true, true);
+			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(requerimientoSelected.getPerson(), true, true);
 		}else {
-			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(voucherSelected.getRequerimientoSeparacion().getProspection().getProspect().getPerson(), true, false);
+			clienteSelected = clienteService.findByPersonAndEstadoAndPersonaNatural(requerimientoSelected.getPerson(), true, false);
 		}
 		onChangeCliente();
 		
@@ -2284,13 +2296,13 @@ public class DocumentoVentaBean extends BaseBean {
 		//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
 		detalle.setDocumentoVenta(null);
 		detalle.setProducto(productoVoucher);
-		detalle.setDescripcion("PAGO DE SEPARACIÓN POR LA VENTA DE UN LOTE DE TERRENO CON N° "+ voucherSelected.getRequerimientoSeparacion().getLote().getNumberLote() +" MZ - "+ voucherSelected.getRequerimientoSeparacion().getLote().getManzana().getName() +" , UBICADO EN " + voucherSelected.getRequerimientoSeparacion().getLote().getProject().getName());
-		detalle.setAmortizacion(voucherSelected.getMonto());
+		detalle.setDescripcion("PAGO DE SEPARACIÓN POR LA VENTA DE UN LOTE DE TERRENO CON N° "+ requerimientoSelected.getLote().getNumberLote() +" MZ - "+ requerimientoSelected.getLote().getManzana().getName() +" , UBICADO EN " + requerimientoSelected.getLote().getProject().getName());
+		detalle.setAmortizacion(requerimientoSelected.getMonto());
 		detalle.setInteres(BigDecimal.ZERO);
 		detalle.setAdelanto(BigDecimal.ZERO);
-		detalle.setImporteVenta(voucherSelected.getMonto());
+		detalle.setImporteVenta(requerimientoSelected.getMonto());
 		detalle.setCuota(null);
-		detalle.setVoucher(voucherSelected);
+		detalle.setRequerimientoSeparacion(requerimientoSelected);
 		detalle.setCuotaPrepago(null);
 		detalle.setEstado(true);
 		detalle.setImporteVentaSinIgv(BigDecimal.ZERO);
@@ -2298,7 +2310,7 @@ public class DocumentoVentaBean extends BaseBean {
 		lstDetalleDocumentoVenta.add(detalle);
 		
 		calcularTotales();
-		persona = voucherSelected.getRequerimientoSeparacion().getProspection().getProspect().getPerson(); 
+//		persona = voucherSelected.getRequerimientoSeparacion().getProspection().getProspect().getPerson(); 
 		addInfoMessage("Voucher importado correctamente."); 
 	}
 	
@@ -2344,7 +2356,7 @@ public class DocumentoVentaBean extends BaseBean {
 		detalle.setAdelanto(BigDecimal.ZERO);
 		detalle.setImporteVenta(prepagoSelected.getCuotaTotal());
 		detalle.setCuota(null);
-		detalle.setVoucher(null);
+		detalle.setRequerimientoSeparacion(null);
 		detalle.setCuotaPrepago(prepagoSelected);
 		detalle.setEstado(true);
 		detalle.setImporteVentaSinIgv(BigDecimal.ZERO);
@@ -2352,7 +2364,7 @@ public class DocumentoVentaBean extends BaseBean {
 		lstDetalleDocumentoVenta.add(detalle);
 		
 		calcularTotales();
-		persona = prepagoSelected.getContrato().getPersonVenta(); 
+//		persona = prepagoSelected.getContrato().getPersonVenta(); 
 		addInfoMessage("Prepago importado correctamente."); 
 				
 	}
@@ -2389,7 +2401,7 @@ public class DocumentoVentaBean extends BaseBean {
 		if(lstDetalleDocumentoVenta.isEmpty()) {
 			clienteSelected = null;
 			cuotaSelected = null;
-			persona=null;
+//			persona=null;
 		}
 		addInfoMessage("Detalle eliminado");
 		
@@ -2399,7 +2411,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		documentoVentaNew= new DocumentoVenta(); 
 		documentoVentaNew.setFechaEmision(new Date());
-		persona=null;
+//		persona=null;
 		
 	}
 	
@@ -2599,10 +2611,10 @@ public class DocumentoVentaBean extends BaseBean {
 		};
 	}
 		
-	public void iniciarLazyVoucher() {
+	public void iniciarLazyRequerimiento() {
 
-		lstVoucherLazy = new LazyDataModel<Voucher>() {
-			private List<Voucher> datasource;
+		lstRequerimientoLazy = new LazyDataModel<RequerimientoSeparacion>() {
+			private List<RequerimientoSeparacion> datasource;
 
             @Override
             public void setRowIndex(int rowIndex) {
@@ -2614,23 +2626,23 @@ public class DocumentoVentaBean extends BaseBean {
             }
 
             @Override
-            public Voucher getRowData(String rowKey) {
+            public RequerimientoSeparacion getRowData(String rowKey) {
                 int intRowKey = Integer.parseInt(rowKey);
-                for (Voucher voucher : datasource) {
-                    if (voucher.getId() == intRowKey) {
-                        return voucher;
+                for (RequerimientoSeparacion requerimientoSeparacion : datasource) {
+                    if (requerimientoSeparacion.getId() == intRowKey) {
+                        return requerimientoSeparacion;
                     }
                 }
                 return null;
             }
 
             @Override
-            public String getRowKey(Voucher voucher) {
-                return String.valueOf(voucher.getId());
+            public String getRowKey(RequerimientoSeparacion requerimientoSeparacion) {
+                return String.valueOf(requerimientoSeparacion.getId());
             }
 
 			@Override
-			public List<Voucher> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+			public List<RequerimientoSeparacion> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                
 //				String names = "%" + (filterBy.get("person.surnames") != null ? filterBy.get("person.surnames").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
 
@@ -2647,10 +2659,7 @@ public class DocumentoVentaBean extends BaseBean {
                 }        
                 Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
                
-                Page<Voucher> pageVoucher=null;
-               
-                
-                pageVoucher= voucherService.findByEstadoAndGeneraDocumento(true, false, pageable);
+                Page<RequerimientoSeparacion> pageVoucher= requerimientoSeparacionService.findAllByEstadoAndLoteProjectSucursalAndGeneraDocumento("Aprobado", navegacionBean.getSucursalLogin(), false, pageable);
                 
                 setRowCount((int) pageVoucher.getTotalElements());
                 return datasource = pageVoucher.getContent();
@@ -2848,7 +2857,7 @@ public class DocumentoVentaBean extends BaseBean {
             if (documentoVentaSelected.getTipoDocumento().getAbreviatura().equals("B")) {
             	 parametros.put("TIPOCOMPROBANTE", "BOLETA DE VENTA");
             }else {
-            	parametros.put("TIPOCOMPROBANTE", "FACTURA");
+            	parametros.put("TIPOCOMPROBANTE", documentoVentaSelected.getTipoDocumento().getDescripcion().toUpperCase());
             }   
             
             parametros.put("NOMBRECOMERCIAL", documentoVentaSelected.getRazonSocial());
@@ -3333,24 +3342,13 @@ public class DocumentoVentaBean extends BaseBean {
 	public void setCuotaSelected(Cuota cuotaSelected) {
 		this.cuotaSelected = cuotaSelected;
 	}
-	public List<Voucher> getLstVoucher() {
-		return lstVoucher;
+	public RequerimientoSeparacion getRequerimientoSelected() {
+		return requerimientoSelected;
 	}
-	public void setLstVoucher(List<Voucher> lstVoucher) {
-		this.lstVoucher = lstVoucher;
+	public void setRequerimientoSelected(RequerimientoSeparacion requerimientoSelected) {
+		this.requerimientoSelected = requerimientoSelected;
 	}
-	public VoucherService getVoucherService() {
-		return voucherService;
-	}
-	public void setVoucherService(VoucherService voucherService) {
-		this.voucherService = voucherService;
-	}
-	public Voucher getVoucherSelected() {
-		return voucherSelected;
-	}
-	public void setVoucherSelected(Voucher voucherSelected) {
-		this.voucherSelected = voucherSelected;
-	}
+
 	public String getTipoPago() {
 		return tipoPago;
 	}
@@ -3477,12 +3475,19 @@ public class DocumentoVentaBean extends BaseBean {
 	public void setLstCuotaLazy(LazyDataModel<Cuota> lstCuotaLazy) {
 		this.lstCuotaLazy = lstCuotaLazy;
 	}
-	public LazyDataModel<Voucher> getLstVoucherLazy() {
-		return lstVoucherLazy;
+	public RequerimientoSeparacionService getRequerimientoSeparacionService() {
+		return requerimientoSeparacionService;
 	}
-	public void setLstVoucherLazy(LazyDataModel<Voucher> lstVoucherLazy) {
-		this.lstVoucherLazy = lstVoucherLazy;
+	public void setRequerimientoSeparacionService(RequerimientoSeparacionService requerimientoSeparacionService) {
+		this.requerimientoSeparacionService = requerimientoSeparacionService;
 	}
+	public LazyDataModel<RequerimientoSeparacion> getLstRequerimientoLazy() {
+		return lstRequerimientoLazy;
+	}
+	public void setLstRequerimientoLazy(LazyDataModel<RequerimientoSeparacion> lstRequerimientoLazy) {
+		this.lstRequerimientoLazy = lstRequerimientoLazy;
+	}
+
 	public String getNumero() {
 		return numero;
 	}
@@ -3537,12 +3542,6 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setProductoVoucher(Producto productoVoucher) {
 		this.productoVoucher = productoVoucher;
-	}
-	public Person getPersona() {
-		return persona;
-	}
-	public void setPersona(Person persona) {
-		this.persona = persona;
 	}
 	public ReportGenBo getReportGenBo() {
 		return reportGenBo;
@@ -4521,6 +4520,18 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setSdfFull(SimpleDateFormat sdfFull) {
 		this.sdfFull = sdfFull;
+	}
+	public Imagen getImagenSelected() {
+		return imagenSelected;
+	}
+	public void setImagenSelected(Imagen imagenSelected) {
+		this.imagenSelected = imagenSelected;
+	}
+	public CuentaBancaria getCuentaVoucherDialog() {
+		return cuentaVoucherDialog;
+	}
+	public void setCuentaVoucherDialog(CuentaBancaria cuentaVoucherDialog) {
+		this.cuentaVoucherDialog = cuentaVoucherDialog;
 	}
 	
 	

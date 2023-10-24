@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
+import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.entity.TipoDocumento;
 import com.model.aldasa.entity.Voucher;
@@ -47,9 +48,9 @@ public class DetalleDocumentoVentaServiceImpl implements DetalleDocumentoVentaSe
 	}
 
 	@Override
-	public List<DetalleDocumentoVenta> findByVoucherIdAndEstado(int voucher, boolean estado) {
+	public 	List<DetalleDocumentoVenta> findByRequerimientoSeparacionAndDocumentoVentaEstado(RequerimientoSeparacion requerimientoSeparacion, boolean estado){
 		// TODO Auto-generated method stub
-		return detalleDocumentoVentaRepository.findByVoucherIdAndEstado(voucher, estado);
+		return detalleDocumentoVentaRepository.findByRequerimientoSeparacionAndDocumentoVentaEstado(requerimientoSeparacion, estado);
 	}
 
 	@Override

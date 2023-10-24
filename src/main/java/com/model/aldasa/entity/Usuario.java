@@ -42,6 +42,13 @@ public class Usuario {
 	@Column(name="descargarreporteventa")
 	private boolean descargarReporteVenta;
 	
+	@Column(name="modificarvoucher")
+	private boolean modificarVoucher;
+	
+	@Column(name="aprobarrequerimientoseparacion")
+	private boolean aprobarRequerimientoSeparacion;
+	
+	
 	
 	public Integer getId() {
 		return id;
@@ -102,6 +109,18 @@ public class Usuario {
 	}
 	public void setDescargarReporteVenta(boolean descargarReporteVenta) {
 		this.descargarReporteVenta = descargarReporteVenta;
+	}
+	public boolean isModificarVoucher() {
+		return modificarVoucher;
+	}
+	public void setModificarVoucher(boolean modificarVoucher) {
+		this.modificarVoucher = modificarVoucher;
+	}
+	public boolean isAprobarRequerimientoSeparacion() {
+		return aprobarRequerimientoSeparacion;
+	}
+	public void setAprobarRequerimientoSeparacion(boolean aprobarRequerimientoSeparacion) {
+		this.aprobarRequerimientoSeparacion = aprobarRequerimientoSeparacion;
 	}	
 	
 }
