@@ -7,7 +7,7 @@
 	xmlns:f="http://java.sun.com/jsf/core">
 
 	<h:form id="form">
-		<h2 style="color: #007d4c;">MANTENIMIENTOS > COMISIÓN</h2>
+		<h2 style="color: #007d4c;">MANTENIMIENTOS > CONFIGURACIÓN COMISIÓN</h2>
 		<h:panelGrid id="grid" columns="8" width="95%">
 
 			<h:outputLabel for="años" value="Año:" />
@@ -136,7 +136,9 @@
 		</p:dataTable>
 		
 		<p:contextMenu for="idTableComision">
-            <p:menuitem value="Meta Supervisor" update="dialogComision2" icon="pi pi-search" oncomplete="PF('comisionDialog2').show()" actionListener="#{comisionBean.cargarTeam()}"/>
+            <p:menuitem value="Meta Supervisor" update="dialogComision2" icon="pi pi-search" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('comisionDialog2').show(); PF('blockUIWidgetGeneral').unblock();" actionListener="#{comisionBean.cargarTeam()}"/>
+        	<p:menuitem value="Comisión por Proyecto" update="dialogProyecto" onstart="PF('blockUIWidgetGeneral').block();" icon="pi pi-search" oncomplete="PF('dialogProyecto').show(); PF('blockUIWidgetGeneral').unblock();" actionListener="#{comisionBean.listarComisionProyecto()}"/>
+        	
         </p:contextMenu>
 
 	</h:form>
@@ -333,5 +335,61 @@
 			
 	    </h:form>
 	</p:dialog>
+	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogProyecto" header="Comision por Proyecto" widgetVar="dialogProyecto" resizable="false" closable="true"
+		appendTo="@(body)" width="50%">
+		<h:form id="formComisionProyecto">    
+	        <h:panelGrid id="gridProy" columns="2" width="50%">
+				<h:outputLabel for="optionProy" value="Proyecto:"  />						
+				<p:selectOneMenu id="optionProy" value="#{comisionBean.comisionProyectoNew.proyecto}" converter="#{comisionBean.conversorProyecto}" style="margin:5px; width:220px">
+					<f:selectItem itemLabel="[-- Seleccionar --]" itemValue="#{null}" />
+					<f:selectItems value="#{comisionBean.lstProyecto}" var="prof" itemLabel="#{prof.name}" itemValue="#{prof}" />
+				</p:selectOneMenu>
+				
+				<p:outputLabel for="cont" value="Interes Contado: "/>
+                <p:inputNumber id="cont" value="#{comisionBean.comisionProyectoNew.interesContado}" minValue="1" decimalPlaces="0" /> 
+                
+                <p:outputLabel for="cred" value="Interes Crédito: "/>
+                <p:inputNumber id="cred" value="#{comisionBean.comisionProyectoNew.interesCredito}" minValue="1" decimalPlaces="0" /> 
+                
+                <p:commandButton value="Guardar" action="#{comisionBean.saveComisionProyecto()}" update="idTableProyecto, gridProy" />
+						   	
+			</h:panelGrid>
+			
+			<p:dataTable var="cp" id="idTableProyecto" value="#{comisionBean.lstComisionProyecto}" rowIndexVar="row" paginator="true" rows="8" 
+				size="small" emptyMessage="No se encontratos resultados." paginatorPosition="bottom" rowKey="#{cp.id}" selection="#{comisionBean.comisionProyectoSelected}" selectionMode="single">
+				
+				<p:column width="25px">
+	                      #{row +1}
+	        	</p:column>
+	        	
+				<p:column headerText="Proyecto" sortBy="#{cp.proyecto.name}"  filterMatchMode="contains" >
+					<h:outputText value="#{cp.proyecto.name}"  />
+				</p:column>
+				
+				<p:column headerText="Interés Contado" sortBy="#{cp.interesContado}"  filterMatchMode="contains" >
+					<h:outputText value="#{cp.interesContado}"  />
+				</p:column>
+				
+				<p:column headerText="Interés Crédito" sortBy="#{cp.interesCredito}"  filterMatchMode="contains" >
+					<h:outputText value="#{cp.interesCredito}"  />
+				</p:column>
+				
+				<p:column headerText=""  filterMatchMode="contains" >
+					<p:commandButton icon="pi pi-trash" styleClass="rounded-button ui-button-danger" process="@this" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('blockUIWidgetGeneral').unblock();" actionListener="#{comisionBean.eliminarComisionProyecto(cp)}" update="idTableProyecto"/>
+				</p:column>
+				
+				
+				
+			</p:dataTable>
+			
+	    </h:form>
+	</p:dialog>
+	
+	<pe:blockUI widgetVar="blockUIWidgetGeneral">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
 	     
 </ui:composition>

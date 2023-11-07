@@ -22,7 +22,7 @@
 		      	</p:commandButton>
 				
 				<p:dataTable var="contrato" id="idTableContrato" value="#{contratoBean.lstContratoLazy}" widgetVar="contratoTable" rowIndexVar="row" paginator="true" rows="15" size="small"
-					emptyMessage="No se encontraron contratos." style="width: 150%"	paginatorPosition="bottom" rowKey="#{contrato.id}"  selectionMode="single" 
+					emptyMessage="No se encontraron contratos." style="width: 200%"	paginatorPosition="bottom" rowKey="#{contrato.id}"  selectionMode="single" 
 					selection="#{contratoBean.contratoSelected}" editable="true" editMode="cell">
 				
 					<f:facet name="header">
@@ -35,7 +35,16 @@
 			                      #{row +1}
 			        </p:column>
 			        
- 			        <p:column headerText="Proyecto" filterMatchMode="contains" width="200px" sortBy="#{contrato.lote.project.name}" filterBy="#{contrato.lote.project.name}">
+					<p:column headerText="Proyecto" style="text-align:center; width:150px">
+						<f:facet name="header">
+							Proyecto
+				        	<p:selectOneMenu value="#{contratoBean.projectFilter}" converter="#{contratoBean.conversorProject}" style="margin:5px; width:100%" >
+								<f:selectItem itemLabel="[-TODOS-]" value="#{null}"/>
+								<f:selectItems value="#{contratoBean.lstProject}" var="project" itemLabel="#{project.name}" itemValue="#{project}"/>
+								<p:ajax update="idTableContrato" />
+							</p:selectOneMenu>
+						</f:facet>
+						
 						<h:outputText value="#{contrato.lote.project.name}"/>
 					</p:column>
 					
@@ -73,13 +82,19 @@
 						<h:outputText value="#{contrato.numeroCuota}"/>
 					</p:column>
 					
-					<p:column headerText="Interés" filterMatchMode="contains" width="70px">
+					<p:column headerText="Interés Original" filterMatchMode="contains" width="70px">
+						<h:outputText value="#{contrato.interesOriginal}#{contrato.interesOriginal eq null?'':'%'}">  
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Interés Actual" filterMatchMode="contains" width="70px">
 						<h:outputText value="#{contrato.interes}#{contrato.interes eq null?'':'%'}">  
 							<f:convertNumber type="currency" currencySymbol=""/>
 						</h:outputText>
 					</p:column>
 					
-					<p:column headerText="Fecha 1ra Cuota" filterMatchMode="contains" width="70px">
+					<p:column headerText="Fecha 1ra Cuota" filterMatchMode="contains" width="100px">
 						<h:outputText value="#{contrato.fechaPrimeraCuota}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
@@ -131,6 +146,29 @@
 		                    </f:facet>
 		                </p:cellEditor>
 		            </p:column>
+		            
+		            <p:column width="70px" headerText="Minuta Leg." sortBy="#{contrato.minutaLegalizada}" filterMatchMode="contains">
+						<p:commandButton value="#{contrato.firma eq true?'SI':'NO'}" onclick="PF('saveConfirmaML').show()"  styleClass="#{contrato.minutaLegalizada eq true? 'ui-button-success' : 'ui-button-warning'}"> 
+							<f:setPropertyActionListener value="#{contrato}" target="#{contratoBean.contratoSelected}"  />
+						</p:commandButton>
+					</p:column>
+					<p:column width="70px" headerText="Minuta Aut." sortBy="#{contrato.minutaAutorizada}" filterMatchMode="contains">
+						<p:commandButton  value="#{contrato.minutaAutorizada eq true?'SI':'NO'}" onclick="PF('saveConfirmaMA').show()"  styleClass="#{contrato.minutaAutorizada eq true? 'ui-button-success' : 'ui-button-warning'}"> 
+							<f:setPropertyActionListener value="#{contrato}" target="#{contratoBean.contratoSelected}"  />
+						</p:commandButton>
+					</p:column>
+					<p:column width="70px" headerText="Escritura." sortBy="#{contrato.escritura}" filterMatchMode="contains">
+						<p:commandButton  value="#{contrato.escritura eq true?'SI':'NO'}" onclick="PF('saveConfirmaEsc').show()"  styleClass="#{contrato.escritura eq true? 'ui-button-success' : 'ui-button-warning'}"> 
+							<f:setPropertyActionListener value="#{contrato}" target="#{contratoBean.contratoSelected}"  />
+						</p:commandButton>
+					</p:column>
+					<p:column width="70px" headerText="Indep." sortBy="#{contrato.independizacion}" filterMatchMode="contains">
+						<p:commandButton value="#{contrato.independizacion eq true?'SI':'NO'}" onclick="PF('saveConfirmaInd').show()"  styleClass="#{contrato.independizacion eq true? 'ui-button-success' : 'ui-button-warning'}"> 
+							<f:setPropertyActionListener value="#{contrato}" target="#{contratoBean.contratoSelected}"  />
+						</p:commandButton>
+					</p:column>
+					
+					
 				</p:dataTable>
 				
 				<p:contextMenu id="menuTableReq" for="idTableContrato" >
@@ -561,6 +599,72 @@
             <p:commandButton value="NO" oncomplete="PF('saveConfirmaPago').hide()"/>
         </h:form>
     </p:confirmDialog>
+    
+    
+    
+    
+    
+    
+    <pe:blockUI target="saveConfirmaML" widgetVar="blockUIWidgetML">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="saveConfirmaML" message="¿Está seguro que tiene minuta legalizada?" header="Confirmación"
+                      severity="alert" widgetVar="saveConfirmaML" appendTo="@(body)">
+        <h:form >
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetML').block();" oncomplete="PF('blockUIWidgetML').unblock();PF('saveConfirmaML').hide()" actionListener="#{contratoBean.cambiarEstadoMinutaLegalizada(contratoBean.contratoSelected)}" update=":form:tabView:idTableContrato" />
+            <p:commandButton value="NO" oncomplete="PF('saveConfirmaML').hide()"/>
+        </h:form>
+    </p:confirmDialog>
+    
+    
+    
+    <pe:blockUI target="saveConfirmaMA" widgetVar="blockUIWidgetMA">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="saveConfirmaMA" message="¿Está seguro que firmó el cotrato?" header="Confirmación"
+                      severity="alert" widgetVar="saveConfirmaMA" appendTo="@(body)">
+        <h:form >
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetMA').block();" oncomplete="PF('blockUIWidgetMA').unblock();PF('saveConfirmaMA').hide()" actionListener="#{contratoBean.cambiarEstadoMinutaAutorizada(contratoBean.contratoSelected)}" update=":form:tabView:idTableContrato" />
+            <p:commandButton value="NO" oncomplete="PF('saveConfirmaMA').hide()"/>
+        </h:form>
+    </p:confirmDialog>
+    
+    
+    
+    <pe:blockUI target="saveConfirmaEsc" widgetVar="blockUIWidgetEsc">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="saveConfirmaEsc" message="¿Está seguro que firmó el cotrato?" header="Confirmación"
+                      severity="alert" widgetVar="saveConfirmaEsc" appendTo="@(body)">
+        <h:form >
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetEsc').block();" oncomplete="PF('blockUIWidgetEsc').unblock();PF('saveConfirmaEsc').hide()" actionListener="#{contratoBean.cambiarEstadoEscritura(contratoBean.contratoSelected)}" update=":form:tabView:idTableContrato" />
+            <p:commandButton value="NO" oncomplete="PF('saveConfirmaEsc').hide()"/>
+        </h:form>
+    </p:confirmDialog>
+    
+    
+    
+    <pe:blockUI target="saveConfirmaInd" widgetVar="blockUIWidgetInd">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="saveConfirmaInd" message="¿Está seguro que firmó el cotrato?" header="Confirmación"
+                      severity="alert" widgetVar="saveConfirmaInd" appendTo="@(body)">
+        <h:form >
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetInd').block();" oncomplete="PF('blockUIWidgetInd').unblock();PF('saveConfirmaInd').hide()" actionListener="#{contratoBean.cambiarEstadoIndependizacion(contratoBean.contratoSelected)}" update=":form:tabView:idTableContrato" />
+            <p:commandButton value="NO" oncomplete="PF('saveConfirmaInd').hide()"/>
+        </h:form>
+    </p:confirmDialog>
+    
+    
+    
 	
 	<script type="text/javascript">
         

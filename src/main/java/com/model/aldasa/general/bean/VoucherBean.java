@@ -138,8 +138,12 @@ public class VoucherBean extends BaseBean implements Serializable {
 		cellSub1 = rowSubTitulo.createCell(4);cellSub1.setCellValue("TIPO TRANSACCION");cellSub1.setCellStyle(styleTitulo);
 		cellSub1 = rowSubTitulo.createCell(5);cellSub1.setCellValue("BOLETA / FACTURA");cellSub1.setCellStyle(styleTitulo);
 		cellSub1 = rowSubTitulo.createCell(6);cellSub1.setCellValue("COMENTARIO");cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(7);cellSub1.setCellValue("USUARIO");cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(8);cellSub1.setCellValue("SUCURSAL");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(7);cellSub1.setCellValue("TIPO PRODUCTO");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(8);cellSub1.setCellValue("PROYECTO");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(9);cellSub1.setCellValue("MANZANA");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(10);cellSub1.setCellValue("LOTE");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(11);cellSub1.setCellValue("USUARIO");cellSub1.setCellStyle(styleTitulo);
+		cellSub1 = rowSubTitulo.createCell(12);cellSub1.setCellValue("SUCURSAL");cellSub1.setCellStyle(styleTitulo);
 
 
 		fechaIni.setHours(0);
@@ -178,8 +182,16 @@ public class VoucherBean extends BaseBean implements Serializable {
 			cellSub1 = rowSubTitulo.createCell(4);cellSub1.setCellValue(imagen.getTipoTransaccion());cellSub1.setCellStyle(styleBorder);
 			cellSub1 = rowSubTitulo.createCell(5);cellSub1.setCellValue(imagen.getDocumentoVenta()==null?"": imagen.getDocumentoVenta().getSerie()+"-"+imagen.getDocumentoVenta().getNumero());cellSub1.setCellStyle(styleBorder);
 			cellSub1 = rowSubTitulo.createCell(6);cellSub1.setCellValue(imagen.getDocumentoVenta()==null? imagen.getComentario() : obtenerDetalleBoleta(imagen.getDocumentoVenta()));cellSub1.setCellStyle(styleBorder);
-			cellSub1 = rowSubTitulo.createCell(7);cellSub1.setCellValue(imagen.getUsuario()==null?"": imagen.getUsuario().getUsername());cellSub1.setCellStyle(styleBorder);
-			cellSub1 = rowSubTitulo.createCell(8);cellSub1.setCellValue(imagen.getCuentaBancaria().getSucursal().getRazonSocial());cellSub1.setCellStyle(styleBorder);
+			
+			cellSub1 = rowSubTitulo.createCell(7);cellSub1.setCellValue(imagen.getDocumentoVenta()==null?"": obtenerDetalleBoletaTipoProducto(imagen.getDocumentoVenta()));cellSub1.setCellStyle(styleBorder);
+
+			cellSub1 = rowSubTitulo.createCell(8);cellSub1.setCellValue(imagen.getDocumentoVenta()==null?"": obtenerDetalleBoletaProyecto(imagen.getDocumentoVenta()));cellSub1.setCellStyle(styleBorder);
+			cellSub1 = rowSubTitulo.createCell(9);cellSub1.setCellValue(imagen.getDocumentoVenta()==null?"": obtenerDetalleBoletaManzana(imagen.getDocumentoVenta()));cellSub1.setCellStyle(styleBorder);
+			cellSub1 = rowSubTitulo.createCell(10);cellSub1.setCellValue(imagen.getDocumentoVenta()==null?"": obtenerDetalleBoletaLote(imagen.getDocumentoVenta()));cellSub1.setCellStyle(styleBorder);
+			
+			
+			cellSub1 = rowSubTitulo.createCell(11);cellSub1.setCellValue(imagen.getUsuario()==null?"": imagen.getUsuario().getUsername());cellSub1.setCellStyle(styleBorder);
+			cellSub1 = rowSubTitulo.createCell(12);cellSub1.setCellValue(imagen.getCuentaBancaria().getSucursal().getRazonSocial());cellSub1.setCellStyle(styleBorder);
 			
 			total = total.add(imagen.getMonto());
 			
@@ -191,7 +203,7 @@ public class VoucherBean extends BaseBean implements Serializable {
 		cellSub1 = rowSubTitulo.createCell(1);cellSub1.setCellValue(total.doubleValue());cellSub1.setCellStyle(styleBorder);
 		
 		
-		for (int j = 0; j <= 8; j++) {
+		for (int j = 0; j <= 12; j++) {
 			sheet.autoSizeColumn(j);
 			
 		}
@@ -221,15 +233,232 @@ public class VoucherBean extends BaseBean implements Serializable {
 		int cont = 0;
 		for(DetalleDocumentoVenta det: lstDet) {
 			if(cont !=0) {
-				detalle = detalle+ ". \n";
+				detalle = detalle+ " \n";
 			}
 			
-			detalle = detalle + det.getDescripcion();
+			detalle = detalle + det.getDescripcion()+".";
 			cont++;
 		}
 		
 		
 		return detalle;
+	}
+	
+	public String obtenerDetalleBoletaProyecto(DocumentoVenta documentoVenta) {
+		String detalle="";
+		List<DetalleDocumentoVenta> lstDet = detalleDocumentoVentaService.findByDocumentoVentaAndEstado(documentoVenta, true);
+		List<String> lstProyectos = new ArrayList<>();
+		
+		int cont = 0;
+		for(DetalleDocumentoVenta det: lstDet) {
+			if(cont !=0) {
+				detalle = detalle+ " \n";
+			}
+			
+			if(det.getCuota()!=null) {
+				String nombre =  det.getCuota().getContrato().getLote().getProject().getName();
+				if(lstProyectos.isEmpty()) {
+					lstProyectos.add(nombre);
+					detalle = detalle + nombre;
+				}else {
+					boolean busqueda = buscarPalabra(lstProyectos, nombre);
+					if(!busqueda) {
+						lstProyectos.add(nombre);
+						detalle = detalle + nombre;
+					}
+				}
+			}
+			
+			if(det.getRequerimientoSeparacion()!=null) {
+				String nombre =  det.getRequerimientoSeparacion().getLote().getProject().getName();
+				if(lstProyectos.isEmpty()) {
+					lstProyectos.add(nombre);
+					detalle = detalle + nombre;
+				}else {
+					boolean busqueda = buscarPalabra(lstProyectos, nombre);
+					if(!busqueda) {
+						lstProyectos.add(nombre);
+						detalle = detalle + nombre;
+					}
+				}
+			}
+			
+			if(det.getCuotaPrepago()!=null) {			
+				String nombre =  det.getCuotaPrepago().getContrato().getLote().getProject().getName();
+				if(lstProyectos.isEmpty()) {
+					lstProyectos.add(nombre);
+					detalle = detalle + nombre;
+				}else {
+					boolean busqueda = buscarPalabra(lstProyectos, nombre);
+					if(!busqueda) {
+						lstProyectos.add(nombre);
+						detalle = detalle + nombre;
+					}
+				}
+			}
+			cont++;
+		}
+		
+		
+		return detalle;
+	}
+	
+	public String obtenerDetalleBoletaManzana(DocumentoVenta documentoVenta) {
+		String detalle="";
+		List<DetalleDocumentoVenta> lstDet = detalleDocumentoVentaService.findByDocumentoVentaAndEstado(documentoVenta, true);
+		List<String> lstManzana = new ArrayList<>();
+		
+		int cont = 0;
+		for(DetalleDocumentoVenta det: lstDet) {
+			if(cont !=0) {
+				detalle = detalle+ " \n";
+			}
+			
+			if(det.getCuota()!=null) {
+				String nombre =  det.getCuota().getContrato().getLote().getManzana().getName();
+				if(lstManzana.isEmpty()) {
+					lstManzana.add(nombre);
+					detalle = detalle + nombre;
+				}else {
+					boolean busqueda = buscarPalabra(lstManzana, nombre);
+					if(!busqueda) {
+						lstManzana.add(nombre);
+						detalle = detalle + nombre;
+					}
+				}
+			}
+			
+			if(det.getRequerimientoSeparacion()!=null) {
+				String nombre =  det.getRequerimientoSeparacion().getLote().getManzana().getName();
+				if(lstManzana.isEmpty()) {
+					lstManzana.add(nombre);
+					detalle = detalle + nombre;
+				}else {
+					boolean busqueda = buscarPalabra(lstManzana, nombre);
+					if(!busqueda) {
+						lstManzana.add(nombre);
+						detalle = detalle + nombre;
+					}
+				}
+			}
+			
+			if(det.getCuotaPrepago()!=null) {
+				String nombre =  det.getCuotaPrepago().getContrato().getLote().getManzana().getName();
+				if(lstManzana.isEmpty()) {
+					lstManzana.add(nombre);
+					detalle = detalle + nombre;
+				}else {
+					boolean busqueda = buscarPalabra(lstManzana, nombre);
+					if(!busqueda) {
+						lstManzana.add(nombre);
+						detalle = detalle + nombre;
+					}
+				}
+			}			
+			cont++;
+		}
+		
+		
+		return detalle;
+	}
+	
+	public String obtenerDetalleBoletaLote(DocumentoVenta documentoVenta) {
+		String detalle="";
+		List<DetalleDocumentoVenta> lstDet = detalleDocumentoVentaService.findByDocumentoVentaAndEstado(documentoVenta, true);
+		List<String> lstLote = new ArrayList<>();
+
+		
+		int cont = 0;
+		for(DetalleDocumentoVenta det: lstDet) {
+			if(cont !=0) {
+				detalle = detalle+ " \n";
+			}
+			
+			if(det.getCuota()!=null) {
+				String nombre =  det.getCuota().getContrato().getLote().getNumberLote();
+				if(lstLote.isEmpty()) {
+					lstLote.add(nombre);
+					detalle = detalle + nombre;
+				}else {
+					boolean busqueda = buscarPalabra(lstLote, nombre);
+					if(!busqueda) {
+						lstLote.add(nombre);
+						detalle = detalle + nombre;
+					}
+				}
+			}
+			if(det.getRequerimientoSeparacion()!=null) {
+				String nombre =  det.getRequerimientoSeparacion().getLote().getNumberLote();
+				if(lstLote.isEmpty()) {
+					lstLote.add(nombre);
+					detalle = detalle + nombre;
+				}else {
+					boolean busqueda = buscarPalabra(lstLote, nombre);
+					if(!busqueda) {
+						lstLote.add(nombre);
+						detalle = detalle + nombre;
+					}
+				}
+			}
+			
+			if(det.getCuotaPrepago()!=null) {
+				String nombre =  det.getCuotaPrepago().getContrato().getLote().getNumberLote();
+				if(lstLote.isEmpty()) {
+					lstLote.add(nombre);
+					detalle = detalle + nombre;
+				}else {
+					boolean busqueda = buscarPalabra(lstLote, nombre);
+					if(!busqueda) {
+						lstLote.add(nombre);
+						detalle = detalle + nombre;
+					}
+				}
+			}
+			cont++;
+		}
+		
+		
+		return detalle;
+	}
+	
+	public String obtenerDetalleBoletaTipoProducto(DocumentoVenta documentoVenta) {
+		String detalle="";
+		List<DetalleDocumentoVenta> lstDet = detalleDocumentoVentaService.findByDocumentoVentaAndEstado(documentoVenta, true);
+		List<String> lstProducto = new ArrayList<>();
+
+		
+		int cont = 0;
+		for(DetalleDocumentoVenta det: lstDet) {
+			if(cont !=0) {
+				detalle = detalle+ " \n";
+			}
+			
+			String nombre =  det.getProducto().getDescripcion();
+			if(lstProducto.isEmpty()) {
+				lstProducto.add(nombre);
+				detalle = detalle + nombre;
+			}else {
+				boolean busqueda = buscarPalabra(lstProducto, nombre);
+				if(!busqueda) {
+					lstProducto.add(nombre);
+					detalle = detalle + nombre;
+				}
+			}
+			cont++;
+		}
+		
+		
+		return detalle;
+	}
+	
+	public boolean buscarPalabra(List<String> lstPalabra, String busqueda) {
+		boolean encuentra = false;
+		for(String nom : lstPalabra) {
+			if(nom.equals(busqueda)) {
+				encuentra= true;
+			}
+		}
+		return encuentra;
 	}
 	
 	public void saveVoucher() {

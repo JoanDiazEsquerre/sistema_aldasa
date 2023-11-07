@@ -1,5 +1,7 @@
 package com.model.aldasa.general.bean;
 
+import static org.hamcrest.CoreMatchers.containsStringIgnoringCase;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -27,16 +29,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Comision;
+import com.model.aldasa.entity.ComisionProyecto;
 import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.MetaSupervisor;
+import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Team;
+import com.model.aldasa.service.ComisionProyectoService;
 import com.model.aldasa.service.ComisionService;
 import com.model.aldasa.service.MetaSupervisorService;
+import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.TeamService;
+import com.model.aldasa.util.BaseBean;
 
 @ManagedBean
 @ViewScoped
-public class ComisionBean implements Serializable {
+public class ComisionBean extends BaseBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -49,14 +56,26 @@ public class ComisionBean implements Serializable {
 	@ManagedProperty(value = "#{metaSupervisorService}")
 	private MetaSupervisorService metaSupervisorService;
 	
+	@ManagedProperty(value = "#{comisionProyectoService}")
+	private ComisionProyectoService comisionProyectoService;
+	
+	@ManagedProperty(value = "#{projectService}")
+	private ProjectService projectService;
+	
+	@ManagedProperty(value = "#{navegacionBean}")
+	private NavegacionBean navegacionBean;
+	
 	private LazyDataModel<Comision> lstComisionLazy;
 	
 	private List<Team> lstTeam;
 	private List<MetaSupervisor> lstMetaSupervisor;
+	private List<ComisionProyecto> lstComisionProyecto;
+	private List<Project> lstProyecto;
 	
 	private Comision comisionSelected;
 	private Team teamSelected;
 	private MetaSupervisor metaSupervisorSelected;
+	private ComisionProyecto comisionProyectoNew, comisionProyectoSelected;
 	
 	private String tituloDialog, anio;
 	
@@ -72,8 +91,58 @@ public class ComisionBean implements Serializable {
 	
 	@PostConstruct
 	public void init() {
+		iniciarComisionProyecto();
 		anio=sdfY.format(new Date());
 		getListaLazyComision();
+		lstProyecto = projectService.findByStatusAndSucursal(true, navegacionBean.getSucursalLogin());
+	}
+	
+	public void eliminarComisionProyecto(ComisionProyecto cp) {
+		cp.setEstado(false);
+		comisionProyectoService.save(cp);
+		listarComisionProyecto();
+		addInfoMessage("Se eliminó correctamente.");
+	}
+	
+	public void saveComisionProyecto() {
+		if(comisionProyectoNew.getProyecto()==null) {
+			addErrorMessage("Seleccionar un Proyecto");
+			return;
+		}else {
+			ComisionProyecto cp = comisionProyectoService.findByComisionAndProyectoAndEstado(comisionSelected, comisionProyectoNew.getProyecto(), true);
+			if(cp!=null) {
+				addErrorMessage("Ya se agregó el proyecto.");
+				return;
+			}
+		}
+		
+		if(comisionProyectoNew.getInteresContado()==null || comisionProyectoNew.getInteresContado().compareTo(BigDecimal.ZERO) <=0) {
+			addErrorMessage("El interés al contado debe ser mayor que 0.");
+			return;
+		}
+		
+		if(comisionProyectoNew.getInteresCredito()==null || comisionProyectoNew.getInteresCredito().compareTo(BigDecimal.ZERO) <=0) {
+			addErrorMessage("El interés al crédito debe ser mayor que 0.");
+			return;
+		}
+		
+		ComisionProyecto save = comisionProyectoService.save(comisionProyectoNew);
+		if(save!=null) {
+			addInfoMessage("Se guardó correctamente.");
+			iniciarComisionProyecto();
+			listarComisionProyecto();
+		}
+	}
+	
+	public void iniciarComisionProyecto() {
+		comisionProyectoNew = new ComisionProyecto();
+		comisionProyectoNew.setEstado(true);
+		comisionProyectoNew.setComision(comisionSelected); 
+	}
+	
+	public void listarComisionProyecto() {
+		iniciarComisionProyecto();
+		lstComisionProyecto = comisionProyectoService.findByComisionAndEstado(comisionSelected, true);
 	}
 	
 	public void getListaLazyComision() {
@@ -337,6 +406,34 @@ public class ComisionBean implements Serializable {
         };
     }
 	
+	public Converter getConversorProyecto() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                    Project c = null;
+                    for (Project si : lstProyecto) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Project) value).getId() + "";
+                }
+            }
+        };
+    }
+	
 
 	public String getTituloDialog() {
 		return tituloDialog;
@@ -437,15 +534,65 @@ public class ComisionBean implements Serializable {
 	public void setLstMetaSupervisor(List<MetaSupervisor> lstMetaSupervisor) {
 		this.lstMetaSupervisor = lstMetaSupervisor;
 	}
-
 	public MetaSupervisor getMetaSupervisorSelected() {
 		return metaSupervisorSelected;
 	}
-
 	public void setMetaSupervisorSelected(MetaSupervisor metaSupervisorSelected) {
 		this.metaSupervisorSelected = metaSupervisorSelected;
 	}
+	public ComisionProyectoService getComisionProyectoService() {
+		return comisionProyectoService;
+	}
+	public void setComisionProyectoService(ComisionProyectoService comisionProyectoService) {
+		this.comisionProyectoService = comisionProyectoService;
+	}
+	public List<ComisionProyecto> getLstComisionProyecto() {
+		return lstComisionProyecto;
+	}
+	public void setLstComisionProyecto(List<ComisionProyecto> lstComisionProyecto) {
+		this.lstComisionProyecto = lstComisionProyecto;
+	}
+	public List<Project> getLstProyecto() {
+		return lstProyecto;
+	}
+	public void setLstProyecto(List<Project> lstProyecto) {
+		this.lstProyecto = lstProyecto;
+	}
+	public ProjectService getProjectService() {
+		return projectService;
+	}
+	public void setProjectService(ProjectService projectService) {
+		this.projectService = projectService;
+	}
+	public SimpleDateFormat getSdf2() {
+		return sdf2;
+	}
+	public void setSdf2(SimpleDateFormat sdf2) {
+		this.sdf2 = sdf2;
+	}
+	public SimpleDateFormat getSdfY2() {
+		return sdfY2;
+	}
+	public void setSdfY2(SimpleDateFormat sdfY2) {
+		this.sdfY2 = sdfY2;
+	}
+	public NavegacionBean getNavegacionBean() {
+		return navegacionBean;
+	}
+	public void setNavegacionBean(NavegacionBean navegacionBean) {
+		this.navegacionBean = navegacionBean;
+	}
+	public ComisionProyecto getComisionProyectoNew() {
+		return comisionProyectoNew;
+	}
+	public void setComisionProyectoNew(ComisionProyecto comisionProyectoNew) {
+		this.comisionProyectoNew = comisionProyectoNew;
+	}
+	public ComisionProyecto getComisionProyectoSelected() {
+		return comisionProyectoSelected;
+	}
+	public void setComisionProyectoSelected(ComisionProyecto comisionProyectoSelected) {
+		this.comisionProyectoSelected = comisionProyectoSelected;
+	}
 	
-	
-
 }

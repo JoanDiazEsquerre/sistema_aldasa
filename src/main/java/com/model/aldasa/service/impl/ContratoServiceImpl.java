@@ -11,13 +11,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Comision;
+import com.model.aldasa.entity.ComisionProyecto;
 import com.model.aldasa.entity.Comisiones;
 import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.MetaSupervisor;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.PlantillaVenta;
+import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Sucursal;
+import com.model.aldasa.repository.ComisionProyectoRepository;
 import com.model.aldasa.repository.ComisionRepository;
 import com.model.aldasa.repository.ComisionesRepository;
 import com.model.aldasa.repository.ContratoRepository;
@@ -39,6 +42,9 @@ public class ContratoServiceImpl implements ContratoService{
 	
 	@Autowired
 	private PlantillaVentaRepository plantillaVentaRepository;
+	
+	@Autowired
+	private ComisionProyectoRepository comisionProyectoRepository;
 
 	@Override
 	public Optional<Contrato> findById(Integer id) {
@@ -46,10 +52,18 @@ public class ContratoServiceImpl implements ContratoService{
 	}
 
 	@Override
-	public Contrato save(Contrato entity) {
+	public Contrato saveGeneraComision(Contrato entity) {
 		if(entity.isFirma()) {
 			Comision comision = comisionRepository.findByFechaIniLessThanEqualAndFechaCierreGreaterThanEqual(entity.getFechaVenta(), entity.getFechaVenta());
 			if(comision != null){
+				ComisionProyecto cp = comisionProyectoRepository.findByComisionAndProyectoAndEstado(comision, entity.getLote().getProject(), true);
+				BigDecimal interesContado=new BigDecimal(comision.getComisionContado()); BigDecimal interesCredito=new BigDecimal(comision.getComisionCredito());
+				if(cp!=null) {
+					interesContado = cp.getInteresContado();
+					interesCredito = cp.getInteresCredito();
+				}
+			
+				
 				List<PlantillaVenta> lstPlantilla = plantillaVentaRepository.findByEstadoAndLote("Aprobado", entity.getLote());
 				if(!lstPlantilla.isEmpty()) {
 					PlantillaVenta plantilla = lstPlantilla.get(0);
@@ -59,10 +73,10 @@ public class ContratoServiceImpl implements ContratoService{
 					comisiones.setPersonSupervisor(plantilla.getPersonSupervisor());
 					
 					if (entity.getTipoPago().equals("Contado")) {
-						BigDecimal multiplica = entity.getMontoVenta().multiply(new BigDecimal(comision.getComisionContado()));
+						BigDecimal multiplica = entity.getMontoVenta().multiply(interesContado);
 						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));	
 					}else {
-						BigDecimal multiplica = entity.getMontoVenta().multiply(new BigDecimal(comision.getComisionCredito()));
+						BigDecimal multiplica = entity.getMontoVenta().multiply(interesCredito);
 						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
 					}
 					
@@ -108,9 +122,9 @@ public class ContratoServiceImpl implements ContratoService{
 	}
 
 	@Override
-	public Page<Contrato> findByEstadoAndLoteProjectSucursalAndLoteProjectNameLikeAndLoteManzanaNameLikeAndLoteNumberLoteLike(boolean status, Sucursal sucursal,String project, String manzana, String numeroLote, Pageable pageable) {
+	public Page<Contrato> findByEstadoAndLoteProjectSucursalAndLoteProjectAndLoteManzanaNameLikeAndLoteNumberLoteLike(boolean status, Sucursal sucursal,Project project, String manzana, String numeroLote, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return contratoRepository.findByEstadoAndLoteProjectSucursalAndLoteProjectNameLikeAndLoteManzanaNameLikeAndLoteNumberLoteLike(status, sucursal, project, manzana, numeroLote, pageable);
+		return contratoRepository.findByEstadoAndLoteProjectSucursalAndLoteProjectAndLoteManzanaNameLikeAndLoteNumberLoteLike(status, sucursal, project, manzana, numeroLote, pageable);
 	}
 
 	@Override
@@ -124,6 +138,19 @@ public class ContratoServiceImpl implements ContratoService{
 	public List<Contrato> findByEstadoAndLoteProjectSucursalAndTipoPagoAndCancelacionTotal(boolean status, Sucursal sucursal, String tipoPago, boolean cancelacionTotal) {
 		// TODO Auto-generated method stub
 		return contratoRepository.findByEstadoAndLoteProjectSucursalAndTipoPagoAndCancelacionTotal(status, sucursal, tipoPago, cancelacionTotal); 
+	}
+
+	@Override
+	public Contrato save(Contrato entity) {
+		// TODO Auto-generated method stub
+		return contratoRepository.save(entity);
+	}
+
+	@Override
+	public Page<Contrato> findByEstadoAndLoteProjectSucursalAndLoteManzanaNameLikeAndLoteNumberLoteLike(boolean status,
+			Sucursal sucursal, String manzana, String numLote, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return contratoRepository.findByEstadoAndLoteProjectSucursalAndLoteManzanaNameLikeAndLoteNumberLoteLike(status, sucursal, manzana, numLote, pageable);
 	}
 
 

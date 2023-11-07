@@ -24,21 +24,24 @@ public class Contrato {
 	private Lote lote;
 	
 	@Column(name="fechaventa")
-	Date fechaVenta;
+	private Date fechaVenta;
 	
 	@Column(name="montoventa")
-	BigDecimal montoVenta;
+	private BigDecimal montoVenta;
 	
 	@Column(name="tipopago")
-	String tipoPago;
+	private String tipoPago;
 	
 	@Column(name="montoinicial")
-	BigDecimal montoInicial;
+	private BigDecimal montoInicial;
 	
 	@Column(name="nrocuota")
-	Integer numeroCuota;
+	private Integer numeroCuota;
 	
-	BigDecimal interes;
+	private BigDecimal interes;
+	
+	@Column(name="interesoriginal")
+	private BigDecimal interesOriginal;
 	
 	@ManyToOne
 	@JoinColumn(name="idpersonventa")
@@ -80,6 +83,16 @@ public class Contrato {
 	@ManyToOne
 	@JoinColumn(name="idusuariocobranza")
 	private Usuario usuarioCobranza;
+	
+	@Column(name="minutalegalizada")
+	private boolean minutaLegalizada;
+	
+	@Column(name="minutaautorizada")
+	private boolean minutaAutorizada;
+	
+	private boolean escritura;
+	
+	private boolean independizacion;
 	
 	public Integer getId() {
 		return id;
@@ -202,6 +215,35 @@ public class Contrato {
 	public void setUsuarioCobranza(Usuario usuarioCobranza) {
 		this.usuarioCobranza = usuarioCobranza;
 	}
-	
+	public BigDecimal getInteresOriginal() {
+		return interesOriginal;
+	}
+	public void setInteresOriginal(BigDecimal interesOriginal) {
+		this.interesOriginal = interesOriginal;
+	}
+	public boolean isMinutaLegalizada() {
+		return minutaLegalizada;
+	}
+	public void setMinutaLegalizada(boolean minutaLegalizada) {
+		this.minutaLegalizada = minutaLegalizada;
+	}
+	public boolean isMinutaAutorizada() {
+		return minutaAutorizada;
+	}
+	public void setMinutaAutorizada(boolean minutaAutorizada) {
+		this.minutaAutorizada = minutaAutorizada;
+	}
+	public boolean isEscritura() {
+		return escritura;
+	}
+	public void setEscritura(boolean escritura) {
+		this.escritura = escritura;
+	}
+	public boolean isIndependizacion() {
+		return independizacion;
+	}
+	public void setIndependizacion(boolean independizacion) {
+		this.independizacion = independizacion;
+	}
 	
 }

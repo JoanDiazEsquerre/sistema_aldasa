@@ -27,7 +27,7 @@
 				</p:selectOneButton>
 
 				<p:dataTable var="documento" id="idTableListDoc" value="#{documentoVentaBean.lstDocumentoVentaLazy}" rowIndexVar="row" paginator="true" rows="15" size="small" 
-					emptyMessage="No se encontraron documentos de venta." paginatorPosition="bottom" rowKey="#{documento.id}" selection="#{documentoVentaBean.documentoVentaSelected}" selectionMode="single">
+					emptyMessage="No se encontraron documentos de venta." style="width: 120%;" paginatorPosition="bottom" rowKey="#{documento.id}" selection="#{documentoVentaBean.documentoVentaSelected}" selectionMode="single">
 
 					<f:facet name="header">
 						<div class="p-d-flex p-ai-center p-jc-between">
@@ -41,10 +41,10 @@
 			                      #{row +1}
 			        </p:column>
 			        
-			        <p:column headerText="Tipo Comprobante" filterMatchMode="contains" style="margin:5px; width:150px">
+			        <p:column headerText="Tipo Comprobante" filterMatchMode="contains" style="margin:5px; width:100px">
 						<f:facet name="header">
 							Tipo Documento
-				        	<p:selectOneMenu value="#{documentoVentaBean.tipoDocumentoFilter}" converter="#{documentoVentaBean.conversorTipoDocumentoSunat}" style="margin:5px; width:130px" >
+				        	<p:selectOneMenu value="#{documentoVentaBean.tipoDocumentoFilter}" converter="#{documentoVentaBean.conversorTipoDocumentoSunat}" style="margin:5px;width:100%" >
 								<f:selectItem itemLabel="TODOS" value="#{null}"/>
 								<f:selectItems value="#{documentoVentaBean.lstTipoDocumentoEnvioSunat}" var="tipoDocumento" itemLabel="#{tipoDocumento.descripcion}" itemValue="#{tipoDocumento}"/>
 								<p:ajax update=":form:tabView:idTableListDoc" listener="#{documentoVentaBean.iniciarLazy()}" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('blockUIWidgetGeneral').unblock();" />
@@ -53,37 +53,36 @@
 						<h:outputText value="#{documento.tipoDocumento.descripcion}" />
 					</p:column>
 
-					<p:column headerText="Cliente(Razón social)" sortBy="#{documento.razonSocial}" filterBy="#{documento.razonSocial}" filterMatchMode="contains">
+					<p:column headerText="Cliente(Razón social)" sortBy="#{documento.razonSocial}" filterBy="#{documento.razonSocial}" style="width: 200px" filterMatchMode="contains">
 						<h:outputText value="#{documento.razonSocial}" />
 					</p:column>
 					
-					<p:column headerText="RUC/DNI" sortBy="#{documento.ruc}" style="text-align:center;" filterBy="#{documento.ruc}" filterMatchMode="contains">
+					<p:column headerText="RUC/DNI" sortBy="#{documento.ruc}" style="text-align:center; width: 150px;" filterBy="#{documento.ruc}" filterMatchMode="contains">
 						<h:outputText value="#{documento.ruc}" />
 					</p:column>
 
 					
 
-					<p:column headerText="Número" sortBy="#{documento.numero}" filterBy="#{documento.numero}" filterMatchMode="contains">
+					<p:column headerText="Número" sortBy="#{documento.numero}" filterBy="#{documento.numero}" style="width: 150px;" filterMatchMode="contains">
 						<h:outputText value="#{documento.serie}-#{documento.numero}" />
 					</p:column>
 
 					
-
-					<p:column headerText="Dirección" filterMatchMode="contains">
+					<p:column headerText="Dirección" filterMatchMode="contains" width="300px">
 						<h:outputText value="#{documento.direccion}" />
 					</p:column>
 
-					<p:column headerText="Fecha Emision" sortBy="#{documento.fechaEmision}" style="text-align:center;" filterMatchMode="contains">
+					<p:column headerText="Fecha Emision" sortBy="#{documento.fechaEmision}" style="text-align:center;width: 100px;" filterMatchMode="contains">
 						<h:outputText value="#{documento.fechaEmision}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Tipo Moneda" filterMatchMode="contains" style="text-align:center;">
+					<p:column headerText="Tipo Moneda" filterMatchMode="contains" style="text-align:center;width:50px;">
 						<h:outputText value="#{documento.tipoMoneda eq 'S'?'Soles':'Dólares'}" />
 					</p:column>
 
-					<p:column headerText="Tipo Pago" filterMatchMode="contains" style="text-align:center;">
+					<p:column headerText="Tipo Pago" filterMatchMode="contains" style="text-align:center;width: 70px;">
 						<h:outputText value="#{documento.tipoPago}" />
 					</p:column>
 
@@ -99,22 +98,26 @@
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Total" filterMatchMode="contains" style="text-align:center;">
+					<p:column headerText="Total" filterMatchMode="contains" style="text-align:center;width: 100px;">
 						<h:outputText value="#{documento.total}" > 
 							<f:convertNumber type="currency" currencySymbol=""/>
 						</h:outputText>
 					</p:column>
-					<p:column headerText="Enviado SUNAT" sortBy="#{documento.envioSunat}" filterMatchMode="contains" style="text-align:center;">
+					<p:column headerText="Enviado SUNAT" sortBy="#{documento.envioSunat}" filterMatchMode="contains" style="text-align:center;width: 70px;">
 						<h:outputText value="#{documento.envioSunat?'SI': 'NO'}" style="font-weight: bolder;color:#{documento.envioSunat?'red': 'black'}" />
 					</p:column>
+					
+					<p:column headerText="Doc. Ref." sortBy="#{documento.documentoVentaRef.numero}" filterMatchMode="contains" style="width: 150px;">
+						<h:outputText value="#{documento.documentoVentaRef.serie}-#{documento.documentoVentaRef.numero}" />
+					</p:column>
 
-					<p:column headerText="Fecha Registro" filterMatchMode="contains" style="text-align:center;">
+					<p:column headerText="Fecha Registro" filterMatchMode="contains" style="text-align:center;width: 100px;">
 						<h:outputText value="#{documento.fechaRegistro}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Usuario Registro"	sortBy="#{documento.usuarioRegistro.username}" filterMatchMode="contains" style="text-align:center;">
+					<p:column headerText="Usuario Registro"	sortBy="#{documento.usuarioRegistro.username}" filterMatchMode="contains" style="text-align:center;width: 100px;">
 						<h:outputText value="#{documento.usuarioRegistro.username}" />
 					</p:column>
 				
@@ -249,7 +252,7 @@
 					</h:panelGrid>
 
 					<h:panelGrid id="gridImpVoucher">
-						<p:commandButton id="movieBtnVou" style="font-size: 14px;" value="Importar Voucher Inicial" icon="pi pi-search" update=":form:tabView:tableVoucher" />
+						<p:commandButton id="movieBtnVou" style="font-size: 14px;" value="Importar Separación" icon="pi pi-search" update=":form:tabView:tableVoucher" />
 						<p:overlayPanel for="movieBtnVou" dynamic="true" style="width:700px" widgetVar="moviePickerVoucher">
 							<p:dataTable var="req" value="#{documentoVentaBean.lstRequerimientoLazy}"  rows="5" paginator="true" selectionMode="single" rowIndexVar="row"
 								paginatorPosition="bottom" selection="#{documentoVentaBean.requerimientoSelected}" rowKey="#{req.id}" id="tableVoucher"
@@ -815,7 +818,7 @@
 			
 				<h:panelGrid columns="4">
 	                
-	                <p:commandButton id="idLotesPendientePago" style="margin-left:10px" icon="pi pi-search"  value="Importar Contrato" update=":form:tabView:tableContrato :form:tabView:pnlContrato"/>
+	                <p:commandButton id="idLotesPendientePago" style="margin-left:10px" icon="pi pi-search"  value="Importar Contrato" update=":form:tabView:tableContrato"/>
 					<p:overlayPanel for="idLotesPendientePago" dynamic="true" style="width:600px" widgetVar="moviePickerLotePendientePago">
 						<p:dataTable var="contrato" value="#{documentoVentaBean.lstContratosPendientesLazy}" rows="5" paginator="true" selectionMode="single" rowIndexVar="row"
 							paginatorPosition="bottom" selection="#{documentoVentaBean.contratoPendienteSelected}" rowKey="#{contrato.id}" id="tableContrato"
@@ -995,6 +998,12 @@
 					
 					<p:column headerText="Interés" filterMatchMode="contains" >
 						<h:outputText  value="#{cuotaContrato.interes}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Adelanto" filterMatchMode="contains" >
+						<h:outputText  value="#{cuotaContrato.adelanto}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
 							<f:convertNumber type="currency" currencySymbol=""/>
 						</h:outputText>
 					</p:column>
@@ -1520,7 +1529,8 @@
     </pe:blockUI>
     <p:confirmDialog id="cancelarContrato" message="¿Está seguro de cancelar la simulación del prepago?" header="Confirmación" severity="alert" widgetVar="cancelarContrato" appendTo="@(body)">
         <h:form >
-            <p:commandButton value="SI" onstart="PF('blockUIWidgetCancelarContrato').block();" oncomplete="PF('blockUIWidgetCancelarContrato').unblock();PF('cancelarContrato').hide()"  action="#{documentoVentaBean.cancelarContrato()}" update=":form:tabView:tableContrato :form:tabView:pnlContrato :form:tabView:tableCuotaContrato"/>
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetCancelarContrato').block();" oncomplete="PF('blockUIWidgetCancelarContrato').unblock();PF('cancelarContrato').hide()"  
+            	action="#{documentoVentaBean.cancelarContrato()}" update=":form:tabView:tableContrato :form:tabView:pnlContrato :form:tabView:tableCuotaContrato :form:tabView:idPrepagoGrid :form:tabView:gridTotales"/>
             <p:commandButton value="NO" oncomplete="PF('cancelarContrato').hide()"/>
         </h:form>
     </p:confirmDialog>

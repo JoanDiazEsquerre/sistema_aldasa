@@ -462,6 +462,7 @@ public class LoteBean extends BaseBean implements Serializable{
 		if (tituloDialog.equals("NUEVO LOTE")) {
 			Lote validarExistencia = loteService.findByNumberLoteAndManzanaAndProject(loteSelected.getNumberLote(), loteSelected.getManzana(), loteSelected.getProject());
 			if (validarExistencia == null) {
+				loteSelected.setRealizoContrato("N");
 				Lote lote = loteService.save(loteSelected);
 //				generarComision(lote);
 				newLote();

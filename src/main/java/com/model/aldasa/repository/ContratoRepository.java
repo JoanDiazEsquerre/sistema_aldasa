@@ -8,6 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.Person;
+import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Sucursal;
 
 public interface ContratoRepository extends PagingAndSortingRepository<Contrato, Integer> {
@@ -16,8 +17,9 @@ public interface ContratoRepository extends PagingAndSortingRepository<Contrato,
 
 	
 	Page<Contrato> findByEstado(boolean status, Pageable pageable);
-	Page<Contrato> findByEstadoAndLoteProjectSucursalAndLoteProjectNameLikeAndLoteManzanaNameLikeAndLoteNumberLoteLike(boolean status, Sucursal sucursal, String project, String manzana, String numLote, Pageable pageable);
+	Page<Contrato> findByEstadoAndLoteProjectSucursalAndLoteProjectAndLoteManzanaNameLikeAndLoteNumberLoteLike(boolean status, Sucursal sucursal, Project project, String manzana, String numLote, Pageable pageable);
 	Page<Contrato> findByPersonVentaSurnamesLikeAndPersonVentaDniLikeAndEstadoAndCancelacionTotalAndLoteProjectSucursal(String personVenta, String dni, boolean estado, boolean cancelacionTotal, Sucursal sucursal,Pageable pageable);
 
+	Page<Contrato> findByEstadoAndLoteProjectSucursalAndLoteManzanaNameLikeAndLoteNumberLoteLike(boolean status, Sucursal sucursal, String manzana, String numLote, Pageable pageable);
 
 }

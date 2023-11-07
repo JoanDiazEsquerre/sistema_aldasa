@@ -1193,6 +1193,11 @@ public class DocumentoVentaBean extends BaseBean {
 
 		}else {
 			if(!lstCuotaPendientesTemporal.isEmpty()) {
+				if(!tipoPrepago.equals("PC")) {
+					contratoPendienteSelected.setInteres(nuevoInteres);
+					contratoService.save(contratoPendienteSelected);
+				}
+				
 				for(Cuota c:lstCuotaPendientes) {
 					c.setEstado(false);
 					cuotaService.save(c);
@@ -1250,11 +1255,11 @@ public class DocumentoVentaBean extends BaseBean {
 			}
 		}
 		
-		deudaActualSinInteres= BigDecimal.ZERO;
-		for(Cuota c:lstCuotaPagadas) {
-			deudaActualSinInteres = deudaActualSinInteres.add(c.getCuotaTotal());
-		}
-		deudaActualSinInteres = contratoPendienteSelected.getMontoVenta().subtract(deudaActualSinInteres);
+//		deudaActualSinInteres= BigDecimal.ZERO;
+//		for(Cuota c:lstCuotaPagadas) {
+//			deudaActualSinInteres = deudaActualSinInteres.add(c.getCuotaTotal());
+//		}
+//		deudaActualSinInteres = contratoPendienteSelected.getMontoVenta().subtract(deudaActualSinInteres);
 		
 	}
 	
@@ -1773,7 +1778,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		DocumentoVenta documento = documentoVentaService.save(documentoVenta, lstDetalleDocumentoVenta, serieDocumentoSelected); 
 		if(documento != null) {
-//			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
+			int envio =enviarDocumentoSunat(documento, lstDetalleDocumentoVenta);
 			
 			lstDetalleDocumentoVenta.clear();// claer es limpiar en ingles prueba
 			clienteSelected=null;
@@ -1789,8 +1794,8 @@ public class DocumentoVentaBean extends BaseBean {
 			email3Text = "";
 			incluirIgv=false;
 			
-//			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
-			addInfoMessage("Se guardó el documento correctamente. ");
+			String addMensaje = envio>0?"Se envio correctamente a SUNAT":"No se pudo enviar a SUNAT";
+			addInfoMessage("Se guardó el documento correctamente. "+addMensaje);
 			
 		}else {
 			addErrorMessage("No se puede guardar el documento."); 
@@ -2273,7 +2278,7 @@ public class DocumentoVentaBean extends BaseBean {
 						return;
 					}
 					
-					if(requerimientoSelected.getPerson().getId() != d.getRequerimientoSeparacion().getProspection().getProspect().getPerson().getId()) {
+					if(!requerimientoSelected.getPerson().getId().equals(d.getRequerimientoSeparacion().getPerson().getId())) {
 						addErrorMessage("El voucher debe ser de la misma persona.");
 						return;
 					}

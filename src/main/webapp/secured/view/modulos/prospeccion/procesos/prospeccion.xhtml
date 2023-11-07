@@ -174,7 +174,7 @@
 					<p:commandButton value="Guardar" actionListener="#{prospeccionBean.saveActionProspection}" update=":formEvents:tabOpciones:gridAcciones :formEvents:tabOpciones:idTableDet :form:tabView:idTableProy" style="margin-top:10px"/>
 					
 					 <p:dataTable var="det" id="idTableDet" value="#{prospeccionBean.lstProspectionDetail}" rowIndexVar="row" paginator="true" rows="5" size="small" 
-					emptyMessage="No se encontraron eventos." paginatorPosition="bottom" rowKey="#{det.id}" selection="#{prospeccionBean.prospectionDetailSelected}" selectionMode="single"> 
+						emptyMessage="No se encontraron eventos." paginatorPosition="bottom" rowKey="#{det.id}" selection="#{prospeccionBean.prospectionDetailSelected}" selectionMode="single"> 
 						<f:facet name="header">
 							<div class="p-d-flex p-ai-center p-jc-between">
 								<span>Lista de Eventos</span>

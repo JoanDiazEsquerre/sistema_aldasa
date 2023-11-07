@@ -50,6 +50,7 @@ import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Meta;
 import com.model.aldasa.entity.MetaSupervisor;
 import com.model.aldasa.entity.Person;
+import com.model.aldasa.entity.ResumenComisionAsesor;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.service.AreaService;
@@ -112,7 +113,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	private Comision comisionSelected;
 	private Comisiones comisionesSelected;
 	private Lote loteSelected;
-	private Person personSupervisorSelected;
+	private Person personSupervisorSelected, personSupervisorResumen;
 	private Cargo cargoFilter;
 	private Area areaFilter;
 	private Team teamFilter;
@@ -129,6 +130,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	private BigDecimal totalSolesContado = BigDecimal.ZERO;
 	private BigDecimal totalSolesInicial = BigDecimal.ZERO;
 	private BigDecimal totalSolesPendiente = BigDecimal.ZERO;
+	private BigDecimal totalComisionSupervisor;
 	
 //	private List<Person> lstPersonAsesor;
 	private List<Comision> lstComision;
@@ -140,6 +142,8 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	private List<Cargo> lstCargo;
 	private List<Area> lstArea;
 	private List<Team> lstTeam;
+	private List<Person> lstPersonAsesor;
+	private List<ResumenComisionAsesor> lstResumenMuestra;
 	
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");  
 	SimpleDateFormat sdfM = new SimpleDateFormat("MM");  
@@ -162,6 +166,62 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 		iniciarLazyEmpleados();
 		verMesSiguiente();
 	}
+	
+	public void verResumen() {
+		lstResumenMuestra = new ArrayList<>();
+		totalComisionSupervisor = BigDecimal.ZERO;
+		
+		if(!lstComisiones.isEmpty()) {
+			for(Person asesor : lstPersonAsesor) {
+				int contadorVenta = 0;
+				ResumenComisionAsesor resumen = new ResumenComisionAsesor();
+				resumen.setPersonAsesor(asesor);
+				resumen.setComision(BigDecimal.ZERO);
+				resumen.setComisionSupervisor(BigDecimal.ZERO);
+				resumen.setBono(BigDecimal.ZERO);
+				resumen.setTotalLotesVendidos(0);
+				
+				for(Comisiones comision : lstComisiones) {
+					if(personSupervisorResumen == null) {
+						if(asesor.getId().equals(comision.getPersonAsesor().getId())) {
+							resumen.setComision(resumen.getComision().add(comision.getComisionAsesor()));
+							resumen.setComisionSupervisor(resumen.getComisionSupervisor().add(comision.getComisionSupervisor()));
+							contadorVenta++;
+						}
+					}else {
+						if(asesor.getId().equals(comision.getPersonAsesor().getId()) && comision.getPersonSupervisor().getId().equals(personSupervisorResumen.getId())) {
+							resumen.setComision(resumen.getComision().add(comision.getComisionAsesor()));
+							resumen.setComisionSupervisor(resumen.getComisionSupervisor().add(comision.getComisionSupervisor()));
+							
+							totalComisionSupervisor = totalComisionSupervisor.add(comision.getComisionSupervisor());
+							
+							contadorVenta++;
+						}
+					}
+					
+					
+				}
+				resumen.setTotalLotesVendidos(contadorVenta); 
+				
+				if(contadorVenta >= 2 && contadorVenta <= 4) {
+					resumen.setBono(comisionSelected.getBonoJunior());
+				}
+				
+				if(contadorVenta >= 5 && contadorVenta <= 8) {
+					resumen.setBono(comisionSelected.getBonoSenior());
+				}
+				
+				if(contadorVenta >= 9) {
+					resumen.setBono(comisionSelected.getBonoMaster());
+				}
+				
+				lstResumenMuestra.add(resumen);
+				
+			}
+		}
+	}
+
+	
 	
 	public void procesarExcel() {
 		XSSFWorkbook workbook = new XSSFWorkbook();
@@ -669,10 +729,12 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	public void cambiarComision() {
 		lstComisiones = comisionesService.findByEstadoAndComision(true, comisionSelected);
 		lstPersonSupervisor = new ArrayList<>();
+		lstPersonAsesor = new ArrayList<>();
 		personSupervisorSelected=null;
 		
 		if(!lstComisiones.isEmpty()) {
 			for(Comisiones c : lstComisiones) {
+				// para listar supervisores
 				if(lstPersonSupervisor.isEmpty()) {
 					lstPersonSupervisor.add(c.getPersonSupervisor());
 				}else {
@@ -685,6 +747,22 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 					}
 					if(!encuentra) {
 						lstPersonSupervisor.add(c.getPersonSupervisor());
+					}
+				}
+				
+				//para listar asesores
+				if(lstPersonAsesor.isEmpty()) {
+					lstPersonAsesor.add(c.getPersonAsesor());
+				}else {
+					boolean encuentra=false;
+					for(Person p:lstPersonAsesor) {
+						
+						if(p.getId().equals(c.getPersonAsesor().getId())) { 
+							encuentra=true;
+						}
+					}
+					if(!encuentra) {
+						lstPersonAsesor.add(c.getPersonAsesor());						
 					}
 				}
 			}
@@ -918,7 +996,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 		}
 		if(num !=0) {
 			BigDecimal multiplicado = new BigDecimal(num).multiply(new BigDecimal(100));    
-			calculo = multiplicado.divide(new BigDecimal(metaSupervisor.getMeta()));
+			calculo = multiplicado.divide(new BigDecimal(metaSupervisor.getMeta()), 2, RoundingMode.HALF_UP);
 		}
 		return calculo;
 	}
@@ -1683,6 +1761,38 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	}
 	public void setNombreArchivo(String nombreArchivo) {
 		this.nombreArchivo = nombreArchivo;
+	}
+
+	public List<Person> getLstPersonAsesor() {
+		return lstPersonAsesor;
+	}
+
+	public void setLstPersonAsesor(List<Person> lstPersonAsesor) {
+		this.lstPersonAsesor = lstPersonAsesor;
+	}
+
+	public List<ResumenComisionAsesor> getLstResumenMuestra() {
+		return lstResumenMuestra;
+	}
+
+	public void setLstResumenMuestra(List<ResumenComisionAsesor> lstResumenMuestra) {
+		this.lstResumenMuestra = lstResumenMuestra;
+	}
+
+	public Person getPersonSupervisorResumen() {
+		return personSupervisorResumen;
+	}
+
+	public void setPersonSupervisorResumen(Person personSupervisorResumen) {
+		this.personSupervisorResumen = personSupervisorResumen;
+	}
+
+	public BigDecimal getTotalComisionSupervisor() {
+		return totalComisionSupervisor;
+	}
+
+	public void setTotalComisionSupervisor(BigDecimal totalComisionSupervisor) {
+		this.totalComisionSupervisor = totalComisionSupervisor;
 	}
 	
 }

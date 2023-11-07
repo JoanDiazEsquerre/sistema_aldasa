@@ -530,8 +530,20 @@
 			<property-name>metaSupervisorService</property-name>
 			<value>#{metaSupervisorService}</value>
 		</managed-property>
-		
+		<managed-property>
+			<property-name>comisionProyectoService</property-name>
+			<value>#{comisionProyectoService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>projectService</property-name>
+			<value>#{projectService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value>
+		</managed-property>
 	</managed-bean>
+	
 	<managed-bean>
 		<managed-bean-name>empleadoBean</managed-bean-name>
 		<managed-bean-class>com.model.aldasa.general.bean.EmpleadoBean</managed-bean-class>
@@ -817,6 +829,10 @@
 		<managed-property>
 			<property-name>usuarioService</property-name>
 			<value>#{usuarioService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>projectService</property-name>
+			<value>#{projectService}</value>
 		</managed-property>
 	</managed-bean>
 	
