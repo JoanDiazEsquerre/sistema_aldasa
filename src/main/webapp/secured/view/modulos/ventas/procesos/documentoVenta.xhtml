@@ -991,7 +991,7 @@
 					</p:column>
 				
 					<p:column headerText="Cuota SI" filterMatchMode="contains" >
-						<h:outputText  value="#{cuotaContrato.nroCuota eq 0 ? cuotaContrato.cuotaSI : cuotaContrato.pagoTotal eq 'S'? cuotaContrato.cuotaSI : cuotaContrato.cuotaSI-cuotaContrato.adelanto}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
+						<h:outputText  value="#{cuotaContrato.nroCuota eq 0 ? cuotaContrato.cuotaSI : cuotaContrato.pagoTotal eq 'S'? cuotaContrato.cuotaSI : cuotaContrato.cuotaSI}" style="font-weight: bold;color:#{cuotaContrato.prepago eq true ?'green':'black'}"> 
 							<f:convertNumber type="currency" currencySymbol=""/>
 						</h:outputText>
 					</p:column>
