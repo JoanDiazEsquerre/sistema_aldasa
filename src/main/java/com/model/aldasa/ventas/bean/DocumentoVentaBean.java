@@ -276,7 +276,7 @@ public class DocumentoVentaBean extends BaseBean {
     private UploadedFile file10;
 
 	SimpleDateFormat sdf = new SimpleDateFormat("dd 'de'  MMMMM 'del' yyyy");
-	SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
+	SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
 	SimpleDateFormat sdfFull = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 	
@@ -329,6 +329,25 @@ public class DocumentoVentaBean extends BaseBean {
 		lstProducto = productoService.findByEstado(true);
 		lstCuentaBancaria=cuentaBancariaService.findByEstadoAndSucursal(true, navegacionBean.getSucursalLogin());
 	}
+	
+	public String convertirHora(Date hora) {
+		String a = "";
+		if(hora != null) {
+			a = sdf2.format(hora);
+		}
+		
+		return a;
+	}
+    
+    public String convertirHoraFull(Date hora) {
+		String a = "";
+		if(hora != null) {
+			a = sdfFull.format(hora);
+		}
+		
+		return a;
+	}
+
 	
 	public void saveVoucherSelected() {
 		if(imagenSelected == null) {
@@ -1804,14 +1823,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 	}
 	
-	public String convertirHora(Date hora) {
-		String a = "";
-		if(hora != null) {
-			a = sdfFull.format(hora);
-		}
-		
-		return a;
-	}
+	
 	
 	public void setearInfoVoucher() {
 		fechaImag1=null;fechaImag2=null;fechaImag3=null;fechaImag4=null;fechaImag5=null;fechaImag6=null;fechaImag7=null;fechaImag8=null;fechaImag9=null;fechaImag10=null;

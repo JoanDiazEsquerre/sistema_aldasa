@@ -1,0 +1,62 @@
+package com.model.aldasa.service.impl;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.model.aldasa.entity.CuentaBancaria;
+import com.model.aldasa.entity.PlantillaVenta;
+import com.model.aldasa.entity.RequerimientoSeparacion;
+import com.model.aldasa.entity.VoucherTemp;
+import com.model.aldasa.repository.VoucherTempRepository;
+import com.model.aldasa.service.VoucherTempService;
+
+@Service("voucherTempService")
+public class VoucherTempServiceImpl implements VoucherTempService {
+	
+	@Autowired
+	private VoucherTempRepository voucherTempRepository;
+
+	@Override
+	public Optional<VoucherTemp> findById(Integer id) {
+		// TODO Auto-generated method stub
+		return voucherTempRepository.findById(id);
+	}
+
+	@Override
+	public VoucherTemp save(VoucherTemp entity) {
+		// TODO Auto-generated method stub
+		return voucherTempRepository.save(entity);
+	}
+
+	@Override
+	public void delete(VoucherTemp entity) {
+		// TODO Auto-generated method stub
+		voucherTempRepository.delete(entity);
+	}
+
+	@Override
+	public List<VoucherTemp> findByRequerimientoSeparacionAndEstado(RequerimientoSeparacion req, boolean status) {
+		// TODO Auto-generated method stub
+		return voucherTempRepository.findByRequerimientoSeparacionAndEstado(req, status); 
+	}
+
+	@Override
+	public List<VoucherTemp> findByPlantillaVentaAndEstado(PlantillaVenta plantilla, boolean status) {
+		// TODO Auto-generated method stub
+		return voucherTempRepository.findByPlantillaVentaAndEstado(plantilla, status);
+	}
+
+	@Override
+	public VoucherTemp findByPlantillaVentaAndMontoAndTipoTransaccionAndNumeroTransaccionAndFechaAndCuentaBancaria(
+			PlantillaVenta plantilla, BigDecimal monto, String tipoTransaccion, String numTransaccion, Date fecha, CuentaBancaria ctaBanc) {
+		// TODO Auto-generated method stub
+		return voucherTempRepository.findByPlantillaVentaAndMontoAndTipoTransaccionAndNumeroTransaccionAndFechaAndCuentaBancaria(plantilla, monto, tipoTransaccion, numTransaccion, fecha, ctaBanc);
+	}
+
+
+}
