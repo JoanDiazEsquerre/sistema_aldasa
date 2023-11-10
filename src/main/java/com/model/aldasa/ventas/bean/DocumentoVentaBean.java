@@ -298,7 +298,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		List<String> lstCodigoSunat=new ArrayList<>();
 		lstCodigoSunat.add("01");
-		lstCodigoSunat.add("03");
+		lstCodigoSunat.add("03"); 
 		lstCodigoSunat.add("07");
 		lstCodigoSunat.add("08");
 		lstTipoDocumentoEnvioSunat = tipoDocumentoService.findByEstadoAndCodigoIn(true, lstCodigoSunat);
