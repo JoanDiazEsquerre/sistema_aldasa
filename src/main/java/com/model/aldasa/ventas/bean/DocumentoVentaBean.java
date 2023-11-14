@@ -2383,7 +2383,7 @@ public class DocumentoVentaBean extends BaseBean {
 			for(VoucherTemp temp : lstVoucherTemp) {
 				if(cont ==1) {
 					fechaImag1 = temp.getFechaOperacion();
-					montoImag1 = temp.getMonto();
+					montoImag1 = temp.getMonto(); 
 					nroOperImag1 = temp.getNumeroOperacion();
 					ctaBanc1 = temp.getCuentaBancaria();
 					tipoTransaccion1 = temp.getTipoTransaccion();
