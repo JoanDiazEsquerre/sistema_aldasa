@@ -335,6 +335,25 @@ public class DocumentoVentaBean extends BaseBean {
 		lstCuentaBancaria=cuentaBancariaService.findByEstadoAndSucursal(true, navegacionBean.getSucursalLogin());
 	}
 	
+	public String convertirHora(Date hora) {
+		String a = "";
+		if(hora != null) {
+			a = sdf2.format(hora);
+		}
+		
+		return a;
+	}
+    
+    public String convertirHoraFull(Date hora) {
+		String a = "";
+		if(hora != null) {
+			a = sdfFull.format(hora);
+		}
+		
+		return a;
+	}
+
+	
 	public void saveVoucherSelected() {
 		if(imagenSelected == null) {
 			addErrorMessage("Primero selecciona una imagen.");
@@ -1809,14 +1828,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 	}
 	
-	public String convertirHora(Date hora) {
-		String a = "";
-		if(hora != null) {
-			a = sdfFull.format(hora);
-		}
-		
-		return a;
-	}
+	
 	
 	public void setearInfoVoucher() {
 		fechaImag1=null;fechaImag2=null;fechaImag3=null;fechaImag4=null;fechaImag5=null;fechaImag6=null;fechaImag7=null;fechaImag8=null;fechaImag9=null;fechaImag10=null;
