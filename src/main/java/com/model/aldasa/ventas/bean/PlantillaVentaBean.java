@@ -150,6 +150,7 @@ public class PlantillaVentaBean extends BaseBean {
 	@ManagedProperty(value = "#{documentoVentaService}")
 	private DocumentoVentaService documentoVentaService;
 	
+
 	private LazyDataModel<PlantillaVenta> lstPlantillaLazy;
 	
 	private List<Project> lstProject;
@@ -195,6 +196,7 @@ public class PlantillaVentaBean extends BaseBean {
 		lstTeam=teamService.findByStatus(true);
 	}
 	
+
 	public void eliminarDatoTemporal(VoucherTemp temp) {
 		temp.setEstado(false);
 		voucherTempService.save(temp);
@@ -206,6 +208,7 @@ public class PlantillaVentaBean extends BaseBean {
 	
 	public void saveVoucherTemp() {
 		VoucherTemp busqueda = voucherTempService.findByPlantillaVentaAndMontoAndTipoTransaccionAndNumeroOperacionAndFechaOperacionAndCuentaBancaria(plantillaVentaSelected, monto, tipoTransaccion, numeroTransaccion, fechaOperacion, cuentaBancariaSelected);
+
 		if(busqueda != null) {
 			addErrorMessage("El voucher ya se registró a datos temporales.");
 		}else {
@@ -219,7 +222,9 @@ public class PlantillaVentaBean extends BaseBean {
 			busqueda.setEstado(true);
 			voucherTempService.save(busqueda);
 			listarDatosTemporales();
+			
 			addInfoMessage("El voucher se añadió a datos temporales correctamente");
+
 			
 		}
 	}
@@ -1423,6 +1428,7 @@ public class PlantillaVentaBean extends BaseBean {
 	public void setDocumentoVentaService(DocumentoVentaService documentoVentaService) {
 		this.documentoVentaService = documentoVentaService;
 	}
+
 	
 	
 }

@@ -352,6 +352,7 @@
 						<p:commandButton value="Validar" actionListener="#{plantillaVentaBean.validaVoucher}" update=":formPlantillaDialog:tabPlantilla:op"/>
 						
 						<p:commandButton value="Agregar a Temporal" id="valida" update=":formPlantillaDialog:tabPlantilla:tableTemp" rendered="#{plantillaVentaBean.valida}" actionListener="#{plantillaVentaBean.saveVoucherTemp}" />
+
 		
 					</h:panelGrid>
 				</p:tab>
@@ -394,6 +395,7 @@
 							<p:commandButton   icon="pi pi-trash" styleClass="rounded-button ui-button-danger" action="#{plantillaVentaBean.eliminarDatoTemporal(temp)}" 
 							update=":formPlantillaDialog:tabPlantilla:tableTemp"/>
 						</p:column>
+
 					</p:dataTable>
 				</p:tab>
 			</p:tabView>
