@@ -1088,6 +1088,7 @@
 			<property-name>documentoVentaService</property-name>
 			<value>#{documentoVentaService}</value>
 		</managed-property>
+
 	</managed-bean>
 	
 	<managed-bean>
