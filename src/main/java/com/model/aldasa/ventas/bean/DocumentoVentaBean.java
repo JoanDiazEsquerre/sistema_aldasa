@@ -281,7 +281,7 @@ public class DocumentoVentaBean extends BaseBean {
     private UploadedFile file10;
 
 	SimpleDateFormat sdf = new SimpleDateFormat("dd 'de'  MMMMM 'del' yyyy");
-	SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
+	SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
 	SimpleDateFormat sdfFull = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 	
@@ -303,7 +303,7 @@ public class DocumentoVentaBean extends BaseBean {
 		
 		List<String> lstCodigoSunat=new ArrayList<>();
 		lstCodigoSunat.add("01");
-		lstCodigoSunat.add("03");
+		lstCodigoSunat.add("03"); 
 		lstCodigoSunat.add("07");
 		lstCodigoSunat.add("08");
 		lstTipoDocumentoEnvioSunat = tipoDocumentoService.findByEstadoAndCodigoIn(true, lstCodigoSunat);
@@ -2383,7 +2383,7 @@ public class DocumentoVentaBean extends BaseBean {
 			for(VoucherTemp temp : lstVoucherTemp) {
 				if(cont ==1) {
 					fechaImag1 = temp.getFechaOperacion();
-					montoImag1 = temp.getMonto(); 
+					montoImag1 = temp.getMonto();
 					nroOperImag1 = temp.getNumeroOperacion();
 					ctaBanc1 = temp.getCuentaBancaria();
 					tipoTransaccion1 = temp.getTipoTransaccion();

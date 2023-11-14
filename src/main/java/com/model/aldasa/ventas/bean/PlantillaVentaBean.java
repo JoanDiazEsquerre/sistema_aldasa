@@ -150,6 +150,7 @@ public class PlantillaVentaBean extends BaseBean {
 	@ManagedProperty(value = "#{documentoVentaService}")
 	private DocumentoVentaService documentoVentaService;
 	
+
 	private LazyDataModel<PlantillaVenta> lstPlantillaLazy;
 	
 	private List<Project> lstProject;

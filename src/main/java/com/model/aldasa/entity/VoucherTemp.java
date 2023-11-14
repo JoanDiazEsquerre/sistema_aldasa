@@ -84,8 +84,9 @@ public class VoucherTemp {
 	public void setNumeroOperacion(String numeroOperacion) {
 		this.numeroOperacion = numeroOperacion;
 	}
+	
 	public Date getFechaOperacion() {
-		return fechaOperacion ;
+		return fechaOperacion;
 	}
 	public void setFechaOperacion(Date fechaOperacion) {
 		this.fechaOperacion = fechaOperacion;
