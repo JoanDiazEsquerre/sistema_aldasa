@@ -740,6 +740,10 @@
 			<property-name>documentoVentaService</property-name>
 			<value>#{documentoVentaService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>voucherTempService</property-name>
+			<value>#{voucherTempService}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>
@@ -920,6 +924,14 @@
 			<property-name>cuentaBancariaService</property-name> 
 			<value>#{cuentaBancariaService}</value>
 		</managed-property>
+		<managed-property> 
+			<property-name>cuentaBancariaService</property-name> 
+			<value>#{cuentaBancariaService}</value>
+		</managed-property>
+		<managed-property> 
+			<property-name>voucherTempService</property-name> 
+			<value>#{voucherTempService}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>
@@ -1067,6 +1079,14 @@
 		<managed-property>
 			<property-name>requerimientoSeparacionService</property-name>
 			<value>#{requerimientoSeparacionService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>voucherTempService</property-name>
+			<value>#{voucherTempService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>documentoVentaService</property-name>
+			<value>#{documentoVentaService}</value>
 		</managed-property>
 	</managed-bean>
 	

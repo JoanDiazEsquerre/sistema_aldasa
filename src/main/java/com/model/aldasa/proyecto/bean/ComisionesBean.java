@@ -649,7 +649,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	
 	public BigDecimal obtenerSueldoBasicoAsesor(Person asesor) {
 		BigDecimal sueldo = BigDecimal.ZERO;
-		Empleado empleado = empleadoService.findByPerson(asesor);
+		Empleado empleado = empleadoService.findByPersonId(asesor.getId());
 		if(empleado != null) {
 			sueldo = empleado.getSueldoBasico();
 		}
@@ -717,7 +717,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	
 	public BigDecimal obtenerTotoalComisionesAsesor(Person asesor) {
 		BigDecimal sueldo = BigDecimal.ZERO;
-		Empleado empleado = empleadoService.findByPerson(asesor);
+		Empleado empleado = empleadoService.findByPersonId(asesor.getId());
 		if(empleado != null) {
 			sueldo = empleado.getSueldoBasico();
 		}

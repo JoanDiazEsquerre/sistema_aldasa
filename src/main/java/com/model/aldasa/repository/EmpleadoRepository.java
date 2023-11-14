@@ -18,7 +18,7 @@ import com.model.aldasa.entity.Team;
 public interface EmpleadoRepository extends JpaRepository<Empleado, Integer> {
 	
 	Page<Empleado> findByPersonSurnamesLikeAndEstadoAndCargoDescripcionLikeAndAreaNombreLike(String person, boolean status, String cargo, String area, Pageable pageable);
-	Empleado findByPerson (Person person);
+	Empleado findByPersonId (Integer id);
 	Empleado findByPersonDniAndEstadoAndExterno(String dniPerson, boolean estado, boolean externo);
 	List<Empleado> findByEstadoAndExternoOrderByPersonSurnamesAsc(boolean estado, boolean externo);
 

@@ -59,6 +59,7 @@ import com.model.aldasa.entity.TipoDocumento;
 import com.model.aldasa.entity.TipoOperacion;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.entity.Voucher;
+import com.model.aldasa.entity.VoucherTemp;
 import com.model.aldasa.fe.ConsumingPostBoImpl;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.reporteBo.ReportGenBo;
@@ -80,6 +81,7 @@ import com.model.aldasa.service.SerieDocumentoService;
 import com.model.aldasa.service.TipoDocumentoService;
 import com.model.aldasa.service.TipoOperacionService;
 import com.model.aldasa.service.VoucherService;
+import com.model.aldasa.service.VoucherTempService;
 import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.NumeroALetra;
 import com.model.aldasa.util.Perfiles;
@@ -151,6 +153,9 @@ public class DocumentoVentaBean extends BaseBean {
 	
 	@ManagedProperty(value = "#{cuentaBancariaService}")
 	private CuentaBancariaService cuentaBancariaService;
+	
+	@ManagedProperty(value = "#{voucherTempService}")
+	private VoucherTempService voucherTempService;
 	
 	private boolean estado = true;
 	private Boolean estadoSunat;
@@ -2159,6 +2164,88 @@ public class DocumentoVentaBean extends BaseBean {
 			detalle.setImporteVentaSinIgv(BigDecimal.ZERO);
 			detalle.setPrecioSinIgv(BigDecimal.ZERO);
 			lstDetalleDocumentoVenta.add(detalle);
+			
+			List<VoucherTemp> lstVoucherTemp = voucherTempService.findByPlantillaVentaEstadoAndPlantillaVentaLoteAndEstado("Aprobado", cuotaSelected.getContrato().getLote(), true);
+			if(!lstVoucherTemp.isEmpty()) {
+				numMuestraImagen = lstVoucherTemp.size();
+				int cont = 1;
+				for(VoucherTemp temp : lstVoucherTemp) {
+					if(cont ==1) {
+						fechaImag1 = temp.getFechaOperacion();
+						montoImag1 = temp.getMonto();
+						nroOperImag1 = temp.getNumeroOperacion();
+						ctaBanc1 = temp.getCuentaBancaria();
+						tipoTransaccion1 = temp.getTipoTransaccion();
+					}
+					if(cont ==2) {
+						fechaImag2 = temp.getFechaOperacion();
+						montoImag2 = temp.getMonto();
+						nroOperImag2 = temp.getNumeroOperacion();
+						ctaBanc2 = temp.getCuentaBancaria();
+						tipoTransaccion2 = temp.getTipoTransaccion();
+					}
+					if(cont ==3) {
+						fechaImag3 = temp.getFechaOperacion();
+						montoImag3 = temp.getMonto();
+						nroOperImag3 = temp.getNumeroOperacion();
+						ctaBanc3 = temp.getCuentaBancaria();
+						tipoTransaccion3 = temp.getTipoTransaccion();
+					}
+					if(cont ==4) {
+						fechaImag4 = temp.getFechaOperacion();
+						montoImag4 = temp.getMonto();
+						nroOperImag4 = temp.getNumeroOperacion();
+						ctaBanc4 = temp.getCuentaBancaria();
+						tipoTransaccion4 = temp.getTipoTransaccion();
+					}
+					if(cont ==5) {
+						fechaImag5 = temp.getFechaOperacion();
+						montoImag5 = temp.getMonto();
+						nroOperImag5 = temp.getNumeroOperacion();
+						ctaBanc5 = temp.getCuentaBancaria();
+						tipoTransaccion5 = temp.getTipoTransaccion();
+					}
+					if(cont ==6) {
+						fechaImag6 = temp.getFechaOperacion();
+						montoImag6 = temp.getMonto();
+						nroOperImag6 = temp.getNumeroOperacion();
+						ctaBanc6 = temp.getCuentaBancaria();
+						tipoTransaccion6 = temp.getTipoTransaccion();
+					}
+					if(cont ==7) {
+						fechaImag7 = temp.getFechaOperacion();
+						montoImag7 = temp.getMonto();
+						nroOperImag7 = temp.getNumeroOperacion();
+						ctaBanc7 = temp.getCuentaBancaria();
+						tipoTransaccion7 = temp.getTipoTransaccion();
+					}
+					if(cont ==8) {
+						fechaImag8 = temp.getFechaOperacion();
+						montoImag8 = temp.getMonto();
+						nroOperImag8 = temp.getNumeroOperacion();
+						ctaBanc8 = temp.getCuentaBancaria();
+						tipoTransaccion8 = temp.getTipoTransaccion();
+					}
+					if(cont ==9) {
+						fechaImag9 = temp.getFechaOperacion();
+						montoImag9 = temp.getMonto();
+						nroOperImag9 = temp.getNumeroOperacion();
+						ctaBanc9 = temp.getCuentaBancaria();
+						tipoTransaccion9 = temp.getTipoTransaccion();
+					}
+					if(cont ==10) {
+						fechaImag10 = temp.getFechaOperacion();
+						montoImag10 = temp.getMonto();
+						nroOperImag10 = temp.getNumeroOperacion();
+						ctaBanc10 = temp.getCuentaBancaria();
+						tipoTransaccion10 = temp.getTipoTransaccion();
+					}
+					
+					cont++;
+					
+				}
+				
+			}
 		}else {
 			if(cuotaSelected.getAdelanto().compareTo(BigDecimal.ZERO) == 0) {
 				DetalleDocumentoVenta detalle = new DetalleDocumentoVenta();
@@ -2287,6 +2374,87 @@ public class DocumentoVentaBean extends BaseBean {
 				}
 			}
 
+		}
+		
+		List<VoucherTemp> lstVoucherTemp = voucherTempService.findByRequerimientoSeparacionEstadoAndRequerimientoSeparacionLoteAndEstado("Aprobado", requerimientoSelected.getLote(), true);
+		if(!lstVoucherTemp.isEmpty()) {
+			numMuestraImagen = lstVoucherTemp.size();
+			int cont = 1;
+			for(VoucherTemp temp : lstVoucherTemp) {
+				if(cont ==1) {
+					fechaImag1 = temp.getFechaOperacion();
+					montoImag1 = temp.getMonto();
+					nroOperImag1 = temp.getNumeroOperacion();
+					ctaBanc1 = temp.getCuentaBancaria();
+					tipoTransaccion1 = temp.getTipoTransaccion();
+				}
+				if(cont ==2) {
+					fechaImag2 = temp.getFechaOperacion();
+					montoImag2 = temp.getMonto();
+					nroOperImag2 = temp.getNumeroOperacion();
+					ctaBanc2 = temp.getCuentaBancaria();
+					tipoTransaccion2 = temp.getTipoTransaccion();
+				}
+				if(cont ==3) {
+					fechaImag3 = temp.getFechaOperacion();
+					montoImag3 = temp.getMonto();
+					nroOperImag3 = temp.getNumeroOperacion();
+					ctaBanc3 = temp.getCuentaBancaria();
+					tipoTransaccion3 = temp.getTipoTransaccion();
+				}
+				if(cont ==4) {
+					fechaImag4 = temp.getFechaOperacion();
+					montoImag4 = temp.getMonto();
+					nroOperImag4 = temp.getNumeroOperacion();
+					ctaBanc4 = temp.getCuentaBancaria();
+					tipoTransaccion4 = temp.getTipoTransaccion();
+				}
+				if(cont ==5) {
+					fechaImag5 = temp.getFechaOperacion();
+					montoImag5 = temp.getMonto();
+					nroOperImag5 = temp.getNumeroOperacion();
+					ctaBanc5 = temp.getCuentaBancaria();
+					tipoTransaccion5 = temp.getTipoTransaccion();
+				}
+				if(cont ==6) {
+					fechaImag6 = temp.getFechaOperacion();
+					montoImag6 = temp.getMonto();
+					nroOperImag6 = temp.getNumeroOperacion();
+					ctaBanc6 = temp.getCuentaBancaria();
+					tipoTransaccion6 = temp.getTipoTransaccion();
+				}
+				if(cont ==7) {
+					fechaImag7 = temp.getFechaOperacion();
+					montoImag7 = temp.getMonto();
+					nroOperImag7 = temp.getNumeroOperacion();
+					ctaBanc7 = temp.getCuentaBancaria();
+					tipoTransaccion7 = temp.getTipoTransaccion();
+				}
+				if(cont ==8) {
+					fechaImag8 = temp.getFechaOperacion();
+					montoImag8 = temp.getMonto();
+					nroOperImag8 = temp.getNumeroOperacion();
+					ctaBanc8 = temp.getCuentaBancaria();
+					tipoTransaccion8 = temp.getTipoTransaccion();
+				}
+				if(cont ==9) {
+					fechaImag9 = temp.getFechaOperacion();
+					montoImag9 = temp.getMonto();
+					nroOperImag9 = temp.getNumeroOperacion();
+					ctaBanc9 = temp.getCuentaBancaria();
+					tipoTransaccion9 = temp.getTipoTransaccion();
+				}
+				if(cont ==10) {
+					fechaImag10 = temp.getFechaOperacion();
+					montoImag10 = temp.getMonto();
+					nroOperImag10 = temp.getNumeroOperacion();
+					ctaBanc10 = temp.getCuentaBancaria();
+					tipoTransaccion10 = temp.getTipoTransaccion();
+				}
+				
+				cont++;
+				
+			}
 		}
 		
 		clienteSelected=null;
@@ -4537,6 +4705,12 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setCuentaVoucherDialog(CuentaBancaria cuentaVoucherDialog) {
 		this.cuentaVoucherDialog = cuentaVoucherDialog;
+	}
+	public VoucherTempService getVoucherTempService() {
+		return voucherTempService;
+	}
+	public void setVoucherTempService(VoucherTempService voucherTempService) {
+		this.voucherTempService = voucherTempService;
 	}
 	
 	

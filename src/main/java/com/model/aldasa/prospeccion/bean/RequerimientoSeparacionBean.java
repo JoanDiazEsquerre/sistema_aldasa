@@ -52,6 +52,7 @@ import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.entity.Voucher;
+import com.model.aldasa.entity.VoucherTemp;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.ActionService;
 import com.model.aldasa.service.BancoService;
@@ -70,6 +71,7 @@ import com.model.aldasa.service.RequerimientoSeparacionService;
 import com.model.aldasa.service.TeamService;
 import com.model.aldasa.service.UsuarioService;
 import com.model.aldasa.service.VoucherService;
+import com.model.aldasa.service.VoucherTempService;
 import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.EstadoLote;
 import com.model.aldasa.util.EstadoRequerimientoSeparacionType;
@@ -77,7 +79,7 @@ import com.model.aldasa.util.Perfiles;
 
 @ManagedBean
 @ViewScoped
-public class RequerimientoSeparacionBean  extends BaseBean implements Serializable {
+public class RequerimientoSeparacionBean extends BaseBean implements Serializable {
 	
 	@ManagedProperty(value = "#{requerimientoSeparacionService}")
 	private RequerimientoSeparacionService requerimientoSeparacionService;
@@ -133,6 +135,9 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	@ManagedProperty(value = "#{documentoVentaService}")
 	private DocumentoVentaService documentoVentaService;
 	
+	@ManagedProperty(value = "#{voucherTempService}")
+	private VoucherTempService voucherTempService;
+	
 	
 	private LazyDataModel<RequerimientoSeparacion> lstReqSepLazy;
 
@@ -150,6 +155,7 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	private String imagen1, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8, imagen9, imagen10;
 	private boolean apruebaConta = false;
 	private boolean ejecutaRequerimiento = false;
+	private boolean valida;
 	private int cantidad=0;
 	private BigDecimal monto;
 	private Date fechaOperacion = new Date() ;
@@ -161,6 +167,7 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	private List<Person> lstPersonAsesor = new ArrayList<>();
 	private List<Project> lstProject;
 	private List<Manzana> lstManzanaReq;
+	private List<VoucherTemp> lstVoucherTemporal;
 	
 	private UploadedFile file1,file2,file3,file4,file5,file6,file7,file8,file9,file10;
 
@@ -170,6 +177,7 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 
 	@PostConstruct
 	public void init() {
+		valida = false;
 		lstPerson = personService.findByStatus(true);
 		lstTeam=teamService.findByStatus(true);
 		lstProject=projectService.findByStatusAndSucursal(true, navegacionBean.getSucursalLogin());
@@ -179,6 +187,40 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 		permisosAprobaciones();
 		iniciarLazy();
 		iniciarDatosRequerimiento();
+	}
+	
+	public void eliminarDatoTemporal(VoucherTemp temp) {
+		temp.setEstado(false);
+		voucherTempService.save(temp);
+		
+		listarDatosTemporales();
+		addInfoMessage("Se eliminó correctamente");
+		
+	}
+	
+	public void saveVoucherTemp() {
+		VoucherTemp busqueda = voucherTempService.findByRequerimientoSeparacionAndMontoAndTipoTransaccionAndNumeroOperacionAndFechaOperacionAndCuentaBancaria(requerimientoSeparacionSelected, monto, tipoTransaccion, numeroTransaccion, fechaOperacion, cuentaBancariaSelected);
+		if(busqueda != null) {
+			addErrorMessage("El voucher ya se registró a datos temporales.");
+		}else {
+			busqueda = new VoucherTemp();
+			busqueda.setRequerimientoSeparacion(requerimientoSeparacionSelected);
+			busqueda.setMonto(monto);
+			busqueda.setTipoTransaccion(tipoTransaccion);
+			busqueda.setNumeroOperacion(numeroTransaccion);
+			busqueda.setFechaOperacion(fechaOperacion);
+			busqueda.setCuentaBancaria(cuentaBancariaSelected);
+			busqueda.setEstado(true);
+			voucherTempService.save(busqueda);
+			listarDatosTemporales();
+			addInfoMessage("El voucher se añadió a datos temporales correctamente");
+			
+		}
+	}
+	
+
+	public void listarDatosTemporales() {
+		lstVoucherTemporal = voucherTempService.findByRequerimientoSeparacionAndEstado(requerimientoSeparacionSelected, true);
 	}
 	
 	public void validarAnulacion() {
@@ -251,6 +293,7 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	}
 	
 	public void validaVoucher() {
+		valida=false;
 		if(cuentaBancariaSelected == null) {
 			addErrorMessage("Seleccionar una cuenta bancaria.");
 			return;
@@ -281,6 +324,7 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 			addErrorMessage("Ya existe el voucher.");
 		}else {
 			addInfoMessage("Voucher aceptable"); 
+			valida = true;
 		}
 	}
 	
@@ -1395,6 +1439,36 @@ public class RequerimientoSeparacionBean  extends BaseBean implements Serializab
 	}
 	public void setDocumentoVentaService(DocumentoVentaService documentoVentaService) {
 		this.documentoVentaService = documentoVentaService;
+	}
+	public boolean isValida() {
+		return valida;
+	}
+	public void setValida(boolean valida) {
+		this.valida = valida;
+	}
+	public SimpleDateFormat getSdfFull() {
+		return sdfFull;
+	}
+	public void setSdfFull(SimpleDateFormat sdfFull) {
+		this.sdfFull = sdfFull;
+	}
+	public SimpleDateFormat getSdf() {
+		return sdf;
+	}
+	public void setSdf(SimpleDateFormat sdf) {
+		this.sdf = sdf;
+	}
+	public VoucherTempService getVoucherTempService() {
+		return voucherTempService;
+	}
+	public void setVoucherTempService(VoucherTempService voucherTempService) {
+		this.voucherTempService = voucherTempService;
+	}
+	public List<VoucherTemp> getLstVoucherTemporal() {
+		return lstVoucherTemporal;
+	}
+	public void setLstVoucherTemporal(List<VoucherTemp> lstVoucherTemporal) {
+		this.lstVoucherTemporal = lstVoucherTemporal;
 	}
 	
 

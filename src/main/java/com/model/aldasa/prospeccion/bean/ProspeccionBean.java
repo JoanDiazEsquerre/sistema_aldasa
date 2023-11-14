@@ -290,7 +290,7 @@ public class ProspeccionBean  extends BaseBean{
 	public void listarPersonasAssessor() {
 		List<Empleado> lstEmpl = new ArrayList<>();
 		if(usuarioLogin.getProfile().getName().equals(Perfiles.ASESOR.getName())) {	
-			Empleado e = empleadoService.findByPerson(usuarioLogin.getPerson());
+			Empleado e = empleadoService.findByPersonId(usuarioLogin.getPerson().getId());
 			if(e!=null)lstEmpl.add(e);
 		} else if (usuarioLogin.getProfile().getName().equals(Perfiles.SUPERVISOR.getName())) {
 			Team team = teamService.findByPersonSupervisor(usuarioLogin.getPerson());

@@ -48,9 +48,9 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 
 
 	@Override
-	public Empleado findByPerson(Person person) {
+	public Empleado findByPersonId(Integer id) {
 		// TODO Auto-generated method stub
-		return empleadoRepository.findByPerson(person);
+		return empleadoRepository.findByPersonId(id);
 	}
 
 

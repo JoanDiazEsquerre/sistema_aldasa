@@ -20,7 +20,7 @@ public interface EmpleadoService {
 	Empleado save(Empleado empleado);
 	void delete(Empleado empleado);
 	
-	Empleado findByPerson (Person person);
+	Empleado findByPersonId (Integer id);
 	Empleado findByPersonIdException(int idPerson, int idEmpleado);
 	Empleado findByPersonDniAndEstadoAndExterno(String dniPerson, boolean estado, boolean externo);
 	List<Empleado> findByEstadoAndExternoOrderByPersonSurnamesAsc(boolean estado, boolean externo);

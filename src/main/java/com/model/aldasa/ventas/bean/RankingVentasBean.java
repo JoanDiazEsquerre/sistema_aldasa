@@ -77,7 +77,7 @@ public class RankingVentasBean implements Serializable {
 		lstUsuario = new ArrayList<>();
 		List<Usuario> lstusu = usuarioService.findByStatus(true);
 		for (Usuario a : lstusu) {
-			Empleado empleado = empleadoService.findByPerson(a.getPerson());
+			Empleado empleado = empleadoService.findByPersonId(a.getPerson().getId());
 			if(empleado != null) {
 				Date fechaActual = sumarDiasAFecha(new Date(), -1);
 				Date fechaFin = empleado.getFechaSalida();
@@ -116,7 +116,7 @@ public class RankingVentasBean implements Serializable {
 	
 	public int totalLotesVendido(Usuario usuario) {
 		int lot = 0;
-		Empleado empleado = empleadoService.findByPerson(usuario.getPerson());
+		Empleado empleado = empleadoService.findByPersonId(usuario.getPerson().getId());
 		if(empleado!=null) {
 			List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(),usuario.getPerson().getDni() ,empleado.getFechaIngreso(), new Date());
 			if(!lstLotesVendidos.isEmpty()) {
@@ -128,7 +128,7 @@ public class RankingVentasBean implements Serializable {
 	
 	public int mesesTrabajados(Usuario usuario) {
 		int meses = 0;
-		Empleado empleado = empleadoService.findByPerson(usuario.getPerson());
+		Empleado empleado = empleadoService.findByPersonId(usuario.getPerson().getId());
 		if(empleado != null) {
 			int anioIngreso = empleado.getFechaIngreso().getYear();
 			int anioSalida = empleado.getFechaSalida().getYear();
@@ -170,7 +170,7 @@ public class RankingVentasBean implements Serializable {
 	
 	public boolean validarMesNoTrabajado(Usuario usuario, String mes, String anio) {
 		boolean valor = false;
-		Empleado empleado = empleadoService.findByPerson(usuario.getPerson());
+		Empleado empleado = empleadoService.findByPersonId(usuario.getPerson().getId());
 		
 		if(empleado!=null) {
 			String anioMesEnviadoText = anio+mes;
@@ -189,7 +189,7 @@ public class RankingVentasBean implements Serializable {
 	
 	public int mesesQueVendio(Usuario usuario) {
 		int mesesVenta = 0;
-		Empleado empleado = empleadoService.findByPerson(usuario.getPerson());
+		Empleado empleado = empleadoService.findByPersonId(usuario.getPerson().getId());
 		if(empleado!=null) {
 			Date fechaIngreso = empleado.getFechaIngreso();
 			fechaIngreso.setDate(1);
@@ -223,7 +223,7 @@ public class RankingVentasBean implements Serializable {
 	
 	public double promedioMensualVentas(Usuario usuario) {
 		double prom = 0.0;
-		Empleado empleado = empleadoService.findByPerson(usuario.getPerson());
+		Empleado empleado = empleadoService.findByPersonId(usuario.getPerson().getId());
 		if(totalLotesVendido(usuario)>0) {
 			double tlv = totalLotesVendido(usuario) ;
 			double mt = mesesTrabajados(usuario);

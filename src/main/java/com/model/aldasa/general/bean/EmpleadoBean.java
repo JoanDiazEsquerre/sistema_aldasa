@@ -119,7 +119,7 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 			return ;
 		}
 		if (tituloDialog.equals("NUEVO EMPLEADO")) {
-			Empleado validarExistencia = empleadoService.findByPerson(empleadoSelected.getPerson());
+			Empleado validarExistencia = empleadoService.findByPersonId(empleadoSelected.getPerson().getId());
 			if (validarExistencia == null) {
 				empleadoService.save(empleadoSelected);
 				PrimeFaces.current().executeScript("PF('empleadoDialog').hide();");

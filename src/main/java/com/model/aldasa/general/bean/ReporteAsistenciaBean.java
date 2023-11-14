@@ -633,7 +633,7 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 
 				List<Empleado> lstempleados = new ArrayList<>();
 				if (empleadoSelected != null) {
-					Empleado emp = empleadoService.findByPerson(empleadoSelected.getPerson());
+					Empleado emp = empleadoService.findByPersonId(empleadoSelected.getPerson().getId());
 					lstempleados.add(emp);
 				} else {
 					lstempleados = empleadoService.findByEstadoAndExternoOrderByPersonSurnamesAsc(true, false);

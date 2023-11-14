@@ -186,7 +186,7 @@
 								paginatorPosition="bottom" selection="#{documentoVentaBean.cuotaSelected}" rowKey="#{cuota.id}" id="tableCuota"
 								emptyMessage="No se encontraron resultados" size="small">
 								<p:ajax event="rowSelect" listener="#{documentoVentaBean.importarCuota}" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('moviePickerCuota').hide();PF('blockUIWidgetGeneral').unblock();" 
-								update=":form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante" />
+								update=":form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante :form:tabView:pnlCond" />
 
 								<p:column headerText="Nro Cuota" sortBy="#{cuota.nroCuota}" style="text-align:center; width:60px">
 									<h:outputText value="#{cuota.nroCuota}" style="font-size: 14px;" />
@@ -259,7 +259,7 @@
 								emptyMessage="No se encontraron resultados" size="small">
 								
 								<p:ajax event="rowSelect" listener="#{documentoVentaBean.importarRequerimiento()}" onstart="PF('blockUIWidgetGeneral').block();" oncomplete="PF('moviePickerVoucher').hide();PF('blockUIWidgetGeneral').unblock();" 
-								update=":form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante"/>
+								update=":form:tabView:gridImpCuota  :form:tabView:idTableDetalleDocVenta :form:tabView:gridMontos :form:tabView:pnl :form:tabView:idTipoComprobante :form:tabView:pnlCond"/>
 
 								<p:column headerText="Lote - Mz" style="text-align:center; width:60px">
 									<h:outputText value="#{req.lote.numberLote}-#{req.lote.manzana.name}" style="font-size: 14px;" />

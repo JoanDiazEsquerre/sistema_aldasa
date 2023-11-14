@@ -192,108 +192,154 @@
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogPlantilla" header="REQUERIMIENTO SEPARACIÓN" widgetVar="plantillaNewDialog" resizable="false" closable="true"
 		appendTo="@(body)"  width="50%" height="500px">
 		<h:form id="formPlantillaDialog">
-			<p:commandButton value="APROBAR" actionListener="#{requerimientoSeparacionBean.aprobarRequerimiento}" rendered="#{requerimientoSeparacionBean.requerimientoSeparacionSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarRequerimientoSeparacion}" process="@this" update=":form:tabView:idTableReqsep" style="margin:10px" styleClass="ui-button-success"/>
-			<p:commandButton value="RECHAZAR" actionListener="#{requerimientoSeparacionBean.rechazarRequerimiento}" rendered="#{requerimientoSeparacionBean.requerimientoSeparacionSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarRequerimientoSeparacion}" process="@this" update=":form:tabView:idTableReqsep" styleClass="ui-button-warning"/>
+			<p:tabView id="tabPlantilla">
+				<p:tab title="Aprobación"> 
+					<p:commandButton value="APROBAR" actionListener="#{requerimientoSeparacionBean.aprobarRequerimiento}" rendered="#{requerimientoSeparacionBean.requerimientoSeparacionSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarRequerimientoSeparacion}" process="@this" update=":form:tabView:idTableReqsep" style="margin:10px" styleClass="ui-button-success"/>
+					<p:commandButton value="RECHAZAR" actionListener="#{requerimientoSeparacionBean.rechazarRequerimiento}" rendered="#{requerimientoSeparacionBean.requerimientoSeparacionSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarRequerimientoSeparacion}" process="@this" update=":form:tabView:idTableReqsep" styleClass="ui-button-warning"/>
+					
+					<h:panelGrid id="idDatosPlantilla" columns="2" >  
+					
+						<h:outputLabel value="Cliente: " style="font-weight:bold"/>
+						<h:outputLabel value="#{requerimientoSeparacionBean.requerimientoSeparacionSelected.person.surnames} #{requerimientoSeparacionBean.requerimientoSeparacionSelected.person.names} / DNI: #{requerimientoSeparacionBean.requerimientoSeparacionSelected.person.dni}"/> 
+						
+						<h:outputLabel value="Proyecto: " style="font-weight:bold"/>
+						<h:outputLabel value="#{requerimientoSeparacionBean.requerimientoSeparacionSelected.lote.project.name}"/> 
+						
+						<h:outputLabel value="Manzana: " style="font-weight:bold"/>
+						<h:outputLabel value="#{requerimientoSeparacionBean.requerimientoSeparacionSelected.lote.manzana.name}"/> 
+						
+						<h:outputLabel value="Lote: " style="font-weight:bold"/>
+						<h:outputLabel value="#{requerimientoSeparacionBean.requerimientoSeparacionSelected.lote.numberLote}"/> 
+					
+						<h:outputLabel value="Monto: " style="font-weight:bold"/>
+						<h:outputLabel value="#{requerimientoSeparacionBean.requerimientoSeparacionSelected.monto}"> 
+							<f:convertNumber type="currency" currencySymbol=""/>
+						</h:outputLabel>
+						
+						<p:outputLabel value="Fecha Separación: "/>
+		        		<h:outputLabel value="#{requerimientoSeparacionBean.convertirHora(requerimientoSeparacionBean.fechaSeparacion)}"/>
+		        		<p:outputLabel value="Fecha Fin: "/>
+		        		<h:outputLabel value="#{requerimientoSeparacionBean.convertirHora(requerimientoSeparacionBean.fechaVencimiento)}"/>
+					</h:panelGrid>
+					<h:panelGrid columns="5" > 
+					
+						<p:commandButton value="IMAGEN 1" update=":formPlantillaDialog:tabPlantilla:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen1 eq ''}" >
+							<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen1}" target="#{loadImageBean.nombreArchivo}"  />
+						</p:commandButton>
+					
+						<p:commandButton value="IMAGEN 2" update=":formPlantillaDialog:tabPlantilla:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen2 eq ''}">
+							<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen2}" target="#{loadImageBean.nombreArchivo}"  />
+						</p:commandButton>
+					
+						<p:commandButton value="IMAGEN 3" update=":formPlantillaDialog:tabPlantilla:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen3 eq ''}">
+							<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen3}" target="#{loadImageBean.nombreArchivo}"  />
+						</p:commandButton>
+					
+						<p:commandButton value="IMAGEN 4" update=":formPlantillaDialog:tabPlantilla:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen4 eq ''}">
+							<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen4}" target="#{loadImageBean.nombreArchivo}"  />
+						</p:commandButton>
+						
+						<p:commandButton value="IMAGEN 5" update=":formPlantillaDialog:tabPlantilla:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen5 eq ''}">
+							<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen5}" target="#{loadImageBean.nombreArchivo}"  />
+						</p:commandButton>
+						
+						<p:commandButton value="IMAGEN 6" update=":formPlantillaDialog:tabPlantilla:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen6 eq ''}">
+							<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen6}" target="#{loadImageBean.nombreArchivo}"  />
+						</p:commandButton>
+						
+						<p:commandButton value="IMAGEN 7" update=":formPlantillaDialog:tabPlantilla:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen7 eq ''}">
+							<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen7}" target="#{loadImageBean.nombreArchivo}"  />
+						</p:commandButton>
+						
+						<p:commandButton value="IMAGEN 8" update=":formPlantillaDialog:tabPlantilla:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen8 eq ''}">
+							<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen8}" target="#{loadImageBean.nombreArchivo}"  />
+						</p:commandButton>
+						
+						<p:commandButton value="IMAGEN 9" update=":formPlantillaDialog:tabPlantilla:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen9 eq ''}">
+							<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen9}" target="#{loadImageBean.nombreArchivo}"  />
+						</p:commandButton>
+						
+						<p:commandButton value="IMAGEN 10" update=":formPlantillaDialog:tabPlantilla:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen10 eq ''}">
+							<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen10}" target="#{loadImageBean.nombreArchivo}"  />
+						</p:commandButton>
 			
-			<h:panelGrid id="idDatosPlantilla" columns="2" >  
-			
-				<h:outputLabel value="Cliente: " style="font-weight:bold"/>
-				<h:outputLabel value="#{requerimientoSeparacionBean.requerimientoSeparacionSelected.person.surnames} #{requerimientoSeparacionBean.requerimientoSeparacionSelected.person.names} / DNI: #{requerimientoSeparacionBean.requerimientoSeparacionSelected.person.dni}"/> 
+					</h:panelGrid>
+					
+					<p:graphicImage width="400"  value="#{loadImageBean.image}" id="imagenLoad" cache="false"/>
+					
+					<h:panelGrid columns="4" id="op">
+						<h:outputLabel  value="Cuenta Bancaria:" />
+						<p:selectOneMenu value="#{requerimientoSeparacionBean.cuentaBancariaSelected}" converter="#{requerimientoSeparacionBean.conversorCuentaBancaria}" >
+		                    <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
+		                    <f:selectItems value="#{requerimientoSeparacionBean.lstCuentaBancaria}" var="cb" itemLabel="#{cb.banco.abreviatura} : #{cb.numero}  (#{cb.moneda eq 'D'?'Dólares':'Soles'})" itemValue="#{cb}"/>
+		                </p:selectOneMenu>
+						
+						<h:outputLabel value="Monto:" />
+						<p:inputNumber value="#{requerimientoSeparacionBean.monto}" modifyValueOnWheel="false"/>
+						
+						<h:outputLabel value="Tipo de transacción: " />
+						<p:selectOneMenu id="tipo" value="#{requerimientoSeparacionBean.tipoTransaccion}" >
+							<f:selectItem itemLabel="[- Seleccionar -]" itemValue=""/>
+							<f:selectItem itemLabel="DEPOSITO EN EFECTIVO" itemValue="DEPOSITO EN EFECTIVO"/>
+							<f:selectItem itemLabel="TRASFERENCIAS BANCARIAS" itemValue="TRASFERENCIAS BANCARIAS"/>
+							<f:selectItem itemLabel="TRASFERENCIA INTERBANCARIA" itemValue="TRASFERENCIA INTERBANCARIA"/>
+							<f:selectItem itemLabel="POS" itemValue="POS"/>
+						</p:selectOneMenu>
+						
+						<h:outputLabel value="Nro. transacción:" />
+						<p:inputText value="#{requerimientoSeparacionBean.numeroTransaccion}"/>
+						
+						<h:outputLabel value="Fecha Operación:" />
+						<p:datePicker value="#{requerimientoSeparacionBean.fechaOperacion}" timeInput="true" showTime="true" style="margin:5px" pattern="dd/MM/yyyy hh:mm:ss a" readonlyInput="true"/> 
+					
+						<p:commandButton value="Validar" actionListener="#{requerimientoSeparacionBean.validaVoucher}" update=":formPlantillaDialog:tabPlantilla:op"/>
+						<p:commandButton value="Agregar a Temporal" id="valida" update=":formPlantillaDialog:tabPlantilla:tableTemp" rendered="#{requerimientoSeparacionBean.valida}" actionListener="#{requerimientoSeparacionBean.saveVoucherTemp}" />
+						
+						
+					</h:panelGrid>
+				</p:tab>
 				
-				<h:outputLabel value="Proyecto: " style="font-weight:bold"/>
-				<h:outputLabel value="#{requerimientoSeparacionBean.requerimientoSeparacionSelected.lote.project.name}"/> 
-				
-				<h:outputLabel value="Manzana: " style="font-weight:bold"/>
-				<h:outputLabel value="#{requerimientoSeparacionBean.requerimientoSeparacionSelected.lote.manzana.name}"/> 
-				
-				<h:outputLabel value="Lote: " style="font-weight:bold"/>
-				<h:outputLabel value="#{requerimientoSeparacionBean.requerimientoSeparacionSelected.lote.numberLote}"/> 
-			
-				<h:outputLabel value="Monto: " style="font-weight:bold"/>
-				<h:outputLabel value="#{requerimientoSeparacionBean.requerimientoSeparacionSelected.monto}"> 
-					<f:convertNumber type="currency" currencySymbol=""/>
-				</h:outputLabel>
-				
-				<p:outputLabel value="Fecha Separación: "/>
-        		<h:outputLabel value="#{requerimientoSeparacionBean.convertirHora(requerimientoSeparacionBean.fechaSeparacion)}"/>
-        		<p:outputLabel value="Fecha Fin: "/>
-        		<h:outputLabel value="#{requerimientoSeparacionBean.convertirHora(requerimientoSeparacionBean.fechaVencimiento)}"/>
-			</h:panelGrid>
-			<h:panelGrid columns="5" > 
-			
-				<p:commandButton value="IMAGEN 1" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen1 eq ''}" >
-					<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen1}" target="#{loadImageBean.nombreArchivo}"  />
-				</p:commandButton>
-			
-				<p:commandButton value="IMAGEN 2" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen2 eq ''}">
-					<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen2}" target="#{loadImageBean.nombreArchivo}"  />
-				</p:commandButton>
-			
-				<p:commandButton value="IMAGEN 3" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen3 eq ''}">
-					<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen3}" target="#{loadImageBean.nombreArchivo}"  />
-				</p:commandButton>
-			
-				<p:commandButton value="IMAGEN 4" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen4 eq ''}">
-					<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen4}" target="#{loadImageBean.nombreArchivo}"  />
-				</p:commandButton>
-				
-				<p:commandButton value="IMAGEN 5" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen5 eq ''}">
-					<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen5}" target="#{loadImageBean.nombreArchivo}"  />
-				</p:commandButton>
-				
-				<p:commandButton value="IMAGEN 6" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen6 eq ''}">
-					<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen6}" target="#{loadImageBean.nombreArchivo}"  />
-				</p:commandButton>
-				
-				<p:commandButton value="IMAGEN 7" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen7 eq ''}">
-					<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen7}" target="#{loadImageBean.nombreArchivo}"  />
-				</p:commandButton>
-				
-				<p:commandButton value="IMAGEN 8" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen8 eq ''}">
-					<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen8}" target="#{loadImageBean.nombreArchivo}"  />
-				</p:commandButton>
-				
-				<p:commandButton value="IMAGEN 9" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen9 eq ''}">
-					<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen9}" target="#{loadImageBean.nombreArchivo}"  />
-				</p:commandButton>
-				
-				<p:commandButton value="IMAGEN 10" update=":formPlantillaDialog:imagenLoad" process="@this" disabled="#{requerimientoSeparacionBean.imagen10 eq ''}">
-					<f:setPropertyActionListener value="#{requerimientoSeparacionBean.imagen10}" target="#{loadImageBean.nombreArchivo}"  />
-				</p:commandButton>
+				<p:tab title="Datos Temporales"> 
+					<p:dataTable var="temp" value="#{requerimientoSeparacionBean.lstVoucherTemporal}"  selectionMode="single" rowIndexVar="row"  
+						 rowKey="#{temp.id}" id="tableTemp" emptyMessage="No se encontraron resultados." size="small">
 	
-			</h:panelGrid>
+						<f:facet name="header">
+							<div class="p-d-flex p-ai-center p-jc-between">
+								<span>LISTA DE DATOS TEMPORALES</span>
+							</div>
+						</f:facet>   
+		
+						<p:column headerText="Cuenta Banc." filterMatchMode="contains" >
+							<h:outputText value="#{temp.cuentaBancaria.banco.abreviatura} : #{temp.cuentaBancaria.numero}  (#{temp.cuentaBancaria.moneda eq 'D'?'Dólares':'Soles'})"/>
+						</p:column>
+						
+						<p:column headerText="Monto" filterMatchMode="contains" >
+							<h:outputText  value="#{temp.monto}"> 
+								<f:convertNumber type="currency" currencySymbol=""/>
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Tipo Transacción" filterMatchMode="contains" >
+							<h:outputText  value="#{temp.tipoTransaccion}" />
+						</p:column>
+						
+						<p:column headerText="Nro. Operación" filterMatchMode="contains" >
+							<h:outputText  value="#{temp.numeroOperacion}" />
+						</p:column>
+						
+						<p:column headerText="Fecha Operación" filterMatchMode="contains" >
+							<h:outputText  value="#{requerimientoSeparacionBean.convertirHoraFull(temp.fechaOperacion)}" />
+						</p:column>
+						
+						<p:column width="10%" filterMatchMode="contains">
+							<p:commandButton   icon="pi pi-trash" styleClass="rounded-button ui-button-danger" action="#{requerimientoSeparacionBean.eliminarDatoTemporal(temp)}" 
+							update=":formPlantillaDialog:tabPlantilla:tableTemp"/>
+						</p:column>
+					</p:dataTable>
+				
+				</p:tab>
+			</p:tabView>
 			
-			<p:graphicImage width="400"  value="#{loadImageBean.image}" id="imagenLoad" cache="false"/>
-			
-			<h:panelGrid columns="4">
-				<h:outputLabel  value="Cuenta Bancaria:" />
-				<p:selectOneMenu value="#{requerimientoSeparacionBean.cuentaBancariaSelected}" converter="#{requerimientoSeparacionBean.conversorCuentaBancaria}" >
-                    <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
-                    <f:selectItems value="#{requerimientoSeparacionBean.lstCuentaBancaria}" var="cb" itemLabel="#{cb.banco.abreviatura} : #{cb.numero}  (#{cb.moneda eq 'D'?'Dólares':'Soles'})" itemValue="#{cb}"/>
-                </p:selectOneMenu>
-				
-				<h:outputLabel value="Monto:" />
-				<p:inputNumber value="#{requerimientoSeparacionBean.monto}" modifyValueOnWheel="false"/>
-				
-				<h:outputLabel value="Tipo de transacción: " />
-				<p:selectOneMenu id="tipo" value="#{requerimientoSeparacionBean.tipoTransaccion}" >
-					<f:selectItem itemLabel="[- Seleccionar -]" itemValue=""/>
-					<f:selectItem itemLabel="DEPOSITO EN EFECTIVO" itemValue="DEPOSITO EN EFECTIVO"/>
-					<f:selectItem itemLabel="TRASFERENCIAS BANCARIAS" itemValue="TRASFERENCIAS BANCARIAS"/>
-					<f:selectItem itemLabel="TRASFERENCIA INTERBANCARIA" itemValue="TRASFERENCIA INTERBANCARIA"/>
-					<f:selectItem itemLabel="POS" itemValue="POS"/>
-				</p:selectOneMenu>
-				
-				<h:outputLabel value="Nro. transacción:" />
-				<p:inputText value="#{requerimientoSeparacionBean.numeroTransaccion}"/>
-				
-				<h:outputLabel value="Fecha Operación:" />
-				<p:datePicker value="#{requerimientoSeparacionBean.fechaOperacion}" timeInput="true" showTime="true" style="margin:5px" pattern="dd/MM/yyyy hh:mm:ss a" readonlyInput="true"/> 
-			
-				<p:commandButton value="Validar" actionListener="#{requerimientoSeparacionBean.validaVoucher}" />
-
-				
-			</h:panelGrid>
 		</h:form>
 	</p:dialog>
     

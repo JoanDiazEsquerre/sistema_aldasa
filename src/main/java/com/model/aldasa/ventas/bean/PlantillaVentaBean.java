@@ -64,6 +64,7 @@ import com.model.aldasa.entity.TipoDocumento;
 import com.model.aldasa.entity.TipoOperacion;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.entity.Voucher;
+import com.model.aldasa.entity.VoucherTemp;
 import com.model.aldasa.fe.ConsumingPostBoImpl;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.prospeccion.bean.LoadImagePlantillaBean;
@@ -92,6 +93,7 @@ import com.model.aldasa.service.TeamService;
 import com.model.aldasa.service.TipoDocumentoService;
 import com.model.aldasa.service.TipoOperacionService;
 import com.model.aldasa.service.VoucherService;
+import com.model.aldasa.service.VoucherTempService;
 import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.NumeroALetra;
 import com.model.aldasa.util.Perfiles;
@@ -142,6 +144,12 @@ public class PlantillaVentaBean extends BaseBean {
 	@ManagedProperty(value = "#{requerimientoSeparacionService}")
 	private RequerimientoSeparacionService requerimientoSeparacionService;
 	
+	@ManagedProperty(value = "#{voucherTempService}")
+	private VoucherTempService voucherTempService;
+	
+	@ManagedProperty(value = "#{documentoVentaService}")
+	private DocumentoVentaService documentoVentaService;
+	
 	private LazyDataModel<PlantillaVenta> lstPlantillaLazy;
 	
 	private List<Project> lstProject;
@@ -151,6 +159,7 @@ public class PlantillaVentaBean extends BaseBean {
 	private List<Person> lstPerson = new ArrayList<>();
 	private List<Team> lstTeam;
 	private List<Person> lstPersonAsesor = new ArrayList<>();
+	private List<VoucherTemp> lstVoucherTemporal;
 
 	private RequerimientoSeparacion requerimientoBusqueda;
 	private PlantillaVenta plantillaVentaSelected;
@@ -168,17 +177,69 @@ public class PlantillaVentaBean extends BaseBean {
 	private Date fechaOperacion = new Date() ;
 	private String tipoTransaccion, numeroTransaccion, tipoPagoPlantilla;
 	private Integer numeroCuotaPlantilla;
+	private boolean valida;
 	
 	private UploadedFile file1,file2,file3,file4,file5,file6,file7,file8,file9,file10;
 	
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	SimpleDateFormat sdfFull = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+	
 	@PostConstruct
 	public void init() {
+		valida = false;
 		iniciarPlantillaLazy();
 		iniciarDatosPlantilla();
 		lstProject=projectService.findByStatusAndSucursal(true, navegacionBean.getSucursalLogin());
 		lstCuentaBancaria=cuentaBancariaService.findByEstadoAndSucursal(true, navegacionBean.getSucursalLogin());
 		lstPerson = personService.findByStatus(true);
 		lstTeam=teamService.findByStatus(true);
+	}
+	
+	public void eliminarDatoTemporal(VoucherTemp temp) {
+		temp.setEstado(false);
+		voucherTempService.save(temp);
+		
+		listarDatosTemporales();
+		addInfoMessage("Se eliminó correctamente");
+		
+	}
+	
+	public void saveVoucherTemp() {
+		VoucherTemp busqueda = voucherTempService.findByPlantillaVentaAndMontoAndTipoTransaccionAndNumeroOperacionAndFechaOperacionAndCuentaBancaria(plantillaVentaSelected, monto, tipoTransaccion, numeroTransaccion, fechaOperacion, cuentaBancariaSelected);
+		if(busqueda != null) {
+			addErrorMessage("El voucher ya se registró a datos temporales.");
+		}else {
+			busqueda = new VoucherTemp();
+			busqueda.setPlantillaVenta(plantillaVentaSelected);
+			busqueda.setMonto(monto);
+			busqueda.setTipoTransaccion(tipoTransaccion);
+			busqueda.setNumeroOperacion(numeroTransaccion);
+			busqueda.setFechaOperacion(fechaOperacion);
+			busqueda.setCuentaBancaria(cuentaBancariaSelected);
+			busqueda.setEstado(true);
+			voucherTempService.save(busqueda);
+			listarDatosTemporales();
+			addInfoMessage("El voucher se añadió a datos temporales correctamente");
+			
+		}
+	}
+	
+	public String convertirHora(Date hora) {
+		String a = "";
+		if(hora != null) {
+			a = sdf.format(hora);
+		}
+		
+		return a;
+	}
+    
+    public String convertirHoraFull(Date hora) {
+		String a = "";
+		if(hora != null) {
+			a = sdfFull.format(hora);
+		}
+		
+		return a;
 	}
 	
 	public void consultarSeparacion() {
@@ -192,11 +253,23 @@ public class PlantillaVentaBean extends BaseBean {
 		}
 	}
 	
-	public void anularPlantilla() {
-		if(plantillaVentaSelected.getEstado().equals("Aprobado")) {
-			addWarnMessage("No se puede anular porque la plantilla ya se aprobó.");
-			return;
+	public void validarAnulacion() {
+		if(plantillaVentaSelected.getDocumentoVenta()!=null) {
+			DocumentoVenta docNota = documentoVentaService.findByDocumentoVentaRefAndEstado(plantillaVentaSelected.getDocumentoVenta(), true);
+			
+			if(docNota==null) {
+				if(plantillaVentaSelected.getDocumentoVenta().isEstado()) {
+					addErrorMessage("Primero debe anular o generar nota de credito del documento de venta.");
+					return;
+				}
+			}
 		}
+		
+		PrimeFaces.current().executeScript("PF('anulaPlantilla').show();");
+	}
+	
+	public void anularPlantilla() {
+		
 		plantillaVentaSelected.setEstado("Anulado");
 		plantillaVentaService.save(plantillaVentaSelected);
 		addInfoMessage("Plantilla anulado correctamente.");	
@@ -444,6 +517,7 @@ public class PlantillaVentaBean extends BaseBean {
 	}
 	
 	public void validaVoucher() {
+		valida = false;
 		if(cuentaBancariaSelected == null) {
 			addErrorMessage("Seleccionar una cuenta bancaria.");
 			return;
@@ -474,6 +548,7 @@ public class PlantillaVentaBean extends BaseBean {
 			addErrorMessage("Ya existe el voucher.");
 		}else {
 			addInfoMessage("Voucher aceptable"); 
+			valida = true;
 		}
 	}
 	
@@ -602,7 +677,13 @@ public class PlantillaVentaBean extends BaseBean {
 		}
 	}
 	
+	public void listarDatosTemporales() {
+		lstVoucherTemporal = voucherTempService.findByPlantillaVentaAndEstado(plantillaVentaSelected, true);
+	}
+	
 	public void verVoucher() {
+		listarDatosTemporales();
+		valida = false;
 		cuentaBancariaSelected = null;
 		monto = null;
 		tipoTransaccion = "";
@@ -1311,6 +1392,36 @@ public class PlantillaVentaBean extends BaseBean {
 	}
 	public void setRequerimientoSeparacionService(RequerimientoSeparacionService requerimientoSeparacionService) {
 		this.requerimientoSeparacionService = requerimientoSeparacionService;
+	}
+	public RequerimientoSeparacion getRequerimientoBusqueda() {
+		return requerimientoBusqueda;
+	}
+	public void setRequerimientoBusqueda(RequerimientoSeparacion requerimientoBusqueda) {
+		this.requerimientoBusqueda = requerimientoBusqueda;
+	}
+	public boolean isValida() {
+		return valida;
+	}
+	public void setValida(boolean valida) {
+		this.valida = valida;
+	}
+	public VoucherTempService getVoucherTempService() {
+		return voucherTempService;
+	}
+	public void setVoucherTempService(VoucherTempService voucherTempService) {
+		this.voucherTempService = voucherTempService;
+	}
+	public List<VoucherTemp> getLstVoucherTemporal() {
+		return lstVoucherTemporal;
+	}
+	public void setLstVoucherTemporal(List<VoucherTemp> lstVoucherTemporal) {
+		this.lstVoucherTemporal = lstVoucherTemporal;
+	}
+	public DocumentoVentaService getDocumentoVentaService() {
+		return documentoVentaService;
+	}
+	public void setDocumentoVentaService(DocumentoVentaService documentoVentaService) {
+		this.documentoVentaService = documentoVentaService;
 	}
 	
 	

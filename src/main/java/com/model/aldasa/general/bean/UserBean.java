@@ -356,7 +356,7 @@ public class UserBean extends BaseBean implements Serializable {
 		}
 		PrimeFaces.current().executeScript("PF('proyectoNewDialog').hide();");
 		addInfoMessage("Se guardó correctamente.");
-		Empleado empleado = empleadoService.findByPerson(userSelected.getPerson());
+		Empleado empleado = empleadoService.findByPersonId(userSelected.getPerson().getId());
 		if(empleado != null) {
 			empleado.setEstado(false);
 			empleadoService.save(empleado);
