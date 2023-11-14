@@ -330,6 +330,9 @@ public class RequerimientoSeparacionBean extends BaseBean implements Serializabl
 	
 	
 	public void verVoucher() {
+		listarDatosTemporales();
+		valida=false;
+		
 		if(requerimientoSeparacionSelected.getEstado().equals("Pendiente")) {
 			fechaSeparacion = new Date();
 			fechaVencimiento =sumarRestarFecha(new Date(), 7);

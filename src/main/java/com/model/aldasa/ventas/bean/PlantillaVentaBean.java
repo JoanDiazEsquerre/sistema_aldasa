@@ -682,7 +682,7 @@ public class PlantillaVentaBean extends BaseBean {
 	}
 	
 	public void verVoucher() {
-		listarDatosTemporales();
+		listarDatosTemporales(); 
 		valida = false;
 		cuentaBancariaSelected = null;
 		monto = null;
