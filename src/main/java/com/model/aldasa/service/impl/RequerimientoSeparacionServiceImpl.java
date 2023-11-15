@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Lote;
+import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.Sucursal;
@@ -45,11 +46,7 @@ public class RequerimientoSeparacionServiceImpl implements RequerimientoSeparaci
 		return requerimientoSeparacionRepository.findByProspection(prostection);
 	}
 
-	@Override
-	public Page<RequerimientoSeparacion> findAllByEstadoAndLoteProjectSucursal(String estado, Sucursal sucursal, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return requerimientoSeparacionRepository.findAllByEstadoAndLoteProjectSucursal(estado, sucursal, pageable);
-	}
+	
 
 	@Override
 	public RequerimientoSeparacion findAllByLoteAndEstado(Lote lote, String estado) {
@@ -63,6 +60,24 @@ public class RequerimientoSeparacionServiceImpl implements RequerimientoSeparaci
 		// TODO Auto-generated method stub
 		return requerimientoSeparacionRepository.findAllByEstadoAndLoteProjectSucursalAndGeneraDocumento(estado, sucursal, generaDocuento, pageable); 
 	}
+
+	@Override
+	public Page<RequerimientoSeparacion> findAllByEstadoAndLoteProjectSucursalAndLoteManzanaNameLikeAndLoteNumberLoteLikeAndPersonSurnamesLikeAndPersonAsesorSurnamesLikeAndPersonSupervisorSurnamesLike(
+			String estado, Sucursal sucursal, String manzana, String numLote, String person, String asesor,
+			String supervisor, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return requerimientoSeparacionRepository.findAllByEstadoAndLoteProjectSucursalAndLoteManzanaNameLikeAndLoteNumberLoteLikeAndPersonSurnamesLikeAndPersonAsesorSurnamesLikeAndPersonSupervisorSurnamesLike(estado, sucursal, manzana, numLote, person, asesor, supervisor, pageable);
+	}
+
+	@Override
+	public Page<RequerimientoSeparacion> findAllByEstadoAndLoteProjectSucursalAndLoteProjectAndLoteManzanaNameLikeAndLoteNumberLoteLikeAndPersonSurnamesLikeAndPersonAsesorSurnamesLikeAndPersonSupervisorSurnamesLike(
+			String estado, Sucursal sucursal, Project proyecto, String manzana, String numLote, String person,
+			String asesor, String supervisor, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return requerimientoSeparacionRepository.findAllByEstadoAndLoteProjectSucursalAndLoteProjectAndLoteManzanaNameLikeAndLoteNumberLoteLikeAndPersonSurnamesLikeAndPersonAsesorSurnamesLikeAndPersonSupervisorSurnamesLike(estado, sucursal, proyecto, manzana, numLote, person, asesor, supervisor, pageable);
+	}
+
+
 
 
 }

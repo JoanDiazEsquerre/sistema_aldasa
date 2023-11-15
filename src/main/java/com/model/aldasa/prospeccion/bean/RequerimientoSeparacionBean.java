@@ -147,6 +147,7 @@ public class RequerimientoSeparacionBean extends BaseBean implements Serializabl
 	private Manzana manzanaReq;
 	private RequerimientoSeparacion requerimientoSeparacionNew;
 	private Team team;
+	private Project projectFilter;
 	
 	private Date fechaSeparacion, fechaVencimiento;
 	private String estado = "Pendiente";
@@ -792,29 +793,36 @@ public class RequerimientoSeparacionBean extends BaseBean implements Serializabl
 			public List<RequerimientoSeparacion> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
 				//Aqui capturo cada filtro(Si en caso existe), le pongo % al principiio y al final y reemplazo los espacios por %, para hacer el LIKE
 				//Si debageas aqui te vas a dar cuenta como lo captura
-//				String Prospect="%"+ (filterBy.get("prospection.prospect.person.surnames")!=null?filterBy.get("prospection.prospect.person.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
-//				String Supervisor="%"+ (filterBy.get("prospection.personSupervisor.surnames")!=null?filterBy.get("prospection.personSupervisor.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
-//				String Assessor="%"+ (filterBy.get("prospection.personAssessor.surnames")!=null?filterBy.get("prospection.personAssessor.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String manzana="%"+ (filterBy.get("lote.manzana.name")!=null?filterBy.get("lote.manzana.name").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String numLote="%"+ (filterBy.get("lote.numberLote")!=null?filterBy.get("lote.numberLote").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String supervisor="%"+ (filterBy.get("personSupervisor.surnames")!=null?filterBy.get("personSupervisor.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String asesor="%"+ (filterBy.get("personAsesor.surnames")!=null?filterBy.get("personAsesor.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
+				String persona="%"+ (filterBy.get("person.surnames")!=null?filterBy.get("person.surnames").getFilterValue().toString().trim().replaceAll(" ", "%"):"")+ "%";
 
-				 Sort sort=Sort.by("fecha").descending();
-	                if(sortBy!=null) {
-	                	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
-	                	   if(entry.getValue().getOrder().isAscending()) {
-	                		   sort = Sort.by(entry.getKey()).descending();
-	                	   }else {
-	                		   sort = Sort.by(entry.getKey()).ascending();
-	                		   
-	                	   }
-	                	}
-	                }
+				
+				Sort sort=Sort.by("fecha").descending();
+                if(sortBy!=null) {
+                	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
+                	   if(entry.getValue().getOrder().isAscending()) {
+                		   sort = Sort.by(entry.getKey()).descending();
+                	   }else {
+                		   sort = Sort.by(entry.getKey()).ascending();
+                		   
+                	   }
+                	}
+                }                
 				
 				Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
-				//Aqui llamo al servicio que a  su vez llama al repositorio que contiene la sentencia LIKE, 
-				//Aqui tu tienes que completar la query, yo solo lo he hecho para dni y nombre a modo de ejemplo
-				//Tu deberias preparar el metodo para cada filtro que tengas en la tabla
+				
 				Page<RequerimientoSeparacion> pageReqSep=null;
 				
-				pageReqSep= requerimientoSeparacionService.findAllByEstadoAndLoteProjectSucursal(estado, navegacionBean.getSucursalLogin(), pageable);
+				if(projectFilter!=null) {
+					pageReqSep= requerimientoSeparacionService.findAllByEstadoAndLoteProjectSucursalAndLoteProjectAndLoteManzanaNameLikeAndLoteNumberLoteLikeAndPersonSurnamesLikeAndPersonAsesorSurnamesLikeAndPersonSupervisorSurnamesLike(estado, navegacionBean.getSucursalLogin(), projectFilter, manzana,numLote, persona, asesor, supervisor, pageable);
+                }else {
+    				pageReqSep= requerimientoSeparacionService.findAllByEstadoAndLoteProjectSucursalAndLoteManzanaNameLikeAndLoteNumberLoteLikeAndPersonSurnamesLikeAndPersonAsesorSurnamesLikeAndPersonSupervisorSurnamesLike(estado, navegacionBean.getSucursalLogin(),manzana,numLote, persona, asesor, supervisor, pageable);
+
+                }
+				
 				
 				
 				setRowCount((int) pageReqSep.getTotalElements());
@@ -1472,6 +1480,12 @@ public class RequerimientoSeparacionBean extends BaseBean implements Serializabl
 	}
 	public void setLstVoucherTemporal(List<VoucherTemp> lstVoucherTemporal) {
 		this.lstVoucherTemporal = lstVoucherTemporal;
+	}
+	public Project getProjectFilter() {
+		return projectFilter;
+	}
+	public void setProjectFilter(Project projectFilter) {
+		this.projectFilter = projectFilter;
 	}
 	
 

@@ -20,7 +20,7 @@
 					
 					<p:ajax update=":form:tabView:idTableReqsep" />
 				</p:selectOneButton>
-				<p:dataTable var="req" id="idTableReqsep" value="#{requerimientoSeparacionBean.lstReqSepLazy}" rowIndexVar="row" paginator="true" rows="5" size="small" 
+				<p:dataTable var="req" id="idTableReqsep" value="#{requerimientoSeparacionBean.lstReqSepLazy}" rowIndexVar="row" paginator="true" rows="5" size="small" style="width: 120%"
 				emptyMessage="No se encontraron requerimientos de separación." paginatorPosition="bottom" rowKey="#{req.id}" selection="#{requerimientoSeparacionBean.requerimientoSeparacionSelected}" 
 				selectionMode="single"> 
 					
@@ -47,15 +47,26 @@
 						<h:outputText value="#{req.person.surnames} #{req.person.names}" />
 					</p:column>
 					
-					<p:column headerText="Proyecto" sortBy="#{req.lote.project.name}" filterMatchMode="contains">
-						<h:outputText value="#{req.lote.project.name}" />
+					
+					
+					<p:column headerText="Proyecto" style="text-align:center;">
+						<f:facet name="header">
+							Proyecto
+				        	<p:selectOneMenu value="#{requerimientoSeparacionBean.projectFilter}" converter="#{requerimientoSeparacionBean.conversorProject}" style="margin:5px; width:130px" >
+								<f:selectItem itemLabel="[-TODOS-]" value="#{null}"/>
+								<f:selectItems value="#{requerimientoSeparacionBean.lstProject}" var="project" itemLabel="#{project.name}" itemValue="#{project}"/>
+								<p:ajax update=":form:tabView:idTableReqsep" />
+							</p:selectOneMenu>
+						</f:facet>
+						
+						<h:outputText value="#{req.lote.project.name}" style="font-size: 14px;"/>
 					</p:column>
 					
-					<p:column headerText="Manzana" sortBy="#{req.lote.manzana.name}" filterMatchMode="contains">
+					<p:column headerText="Manzana" sortBy="#{req.lote.manzana.name}" filterBy="#{req.lote.manzana.name}" filterMatchMode="contains">
 						<h:outputText value="#{req.lote.manzana.name}" />
 					</p:column>
 					
-					<p:column headerText="Lote" sortBy="#{req.lote.numberLote}" filterMatchMode="contains">
+					<p:column headerText="Lote" sortBy="#{req.lote.numberLote}" filterBy="#{req.lote.numberLote}" filterMatchMode="contains">
 						<h:outputText value="#{req.lote.numberLote}" />
 					</p:column>
 					

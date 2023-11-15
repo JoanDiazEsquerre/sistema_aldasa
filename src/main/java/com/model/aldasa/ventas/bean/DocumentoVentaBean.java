@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
@@ -37,28 +36,23 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import com.lowagie.text.Image;
 import com.model.aldasa.entity.Cliente;
 import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.CuentaBancaria;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
-import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Identificador;
 import com.model.aldasa.entity.Imagen;
 import com.model.aldasa.entity.MotivoNota;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Producto;
 import com.model.aldasa.entity.Project;
-import com.model.aldasa.entity.Prospect;
-import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.SerieDocumento;
 import com.model.aldasa.entity.TipoDocumento;
 import com.model.aldasa.entity.TipoOperacion;
 import com.model.aldasa.entity.Usuario;
-import com.model.aldasa.entity.Voucher;
 import com.model.aldasa.entity.VoucherTemp;
 import com.model.aldasa.fe.ConsumingPostBoImpl;
 import com.model.aldasa.general.bean.NavegacionBean;
@@ -75,16 +69,13 @@ import com.model.aldasa.service.MotivoNotaService;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.ProductoService;
 import com.model.aldasa.service.ProjectService;
-import com.model.aldasa.service.ProspectService;
 import com.model.aldasa.service.RequerimientoSeparacionService;
 import com.model.aldasa.service.SerieDocumentoService;
 import com.model.aldasa.service.TipoDocumentoService;
 import com.model.aldasa.service.TipoOperacionService;
-import com.model.aldasa.service.VoucherService;
 import com.model.aldasa.service.VoucherTempService;
 import com.model.aldasa.util.BaseBean;
 import com.model.aldasa.util.NumeroALetra;
-import com.model.aldasa.util.Perfiles;
 import com.model.aldasa.util.TipoProductoType;
 import com.model.aldasa.ventas.jrdatasource.DataSourceDocumentoVenta;
 
@@ -2566,7 +2557,7 @@ public class DocumentoVentaBean extends BaseBean {
 				importeTotal= importeTotal.add(d.getImporteVenta());
 //				if(d.getTotalTemp()!=null) {
 //					anticipos = anticipos.add(d.getAmortizacion());
-//				}
+//				} 
 				if(d.getCuota()!=null) {
 //					if(!d.getProducto().getTipoProducto().equals(TipoProductoType.INTERES.getTipo())) {
 						if(d.getProducto().getTipoProducto().equals(TipoProductoType.INICIAL.getTipo())) {

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
+import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Prospection;
 import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.Sucursal;
@@ -22,7 +23,8 @@ public interface RequerimientoSeparacionService {
 	
 	List<RequerimientoSeparacion> findByProspection(Prospection prostection);
 	
-	Page<RequerimientoSeparacion> findAllByEstadoAndLoteProjectSucursal(String estado, Sucursal sucursal, Pageable pageable);
+	Page<RequerimientoSeparacion> findAllByEstadoAndLoteProjectSucursalAndLoteManzanaNameLikeAndLoteNumberLoteLikeAndPersonSurnamesLikeAndPersonAsesorSurnamesLikeAndPersonSupervisorSurnamesLike(String estado, Sucursal sucursal, String manzana, String numLote, String person, String asesor, String supervisor,Pageable pageable);
+	Page<RequerimientoSeparacion> findAllByEstadoAndLoteProjectSucursalAndLoteProjectAndLoteManzanaNameLikeAndLoteNumberLoteLikeAndPersonSurnamesLikeAndPersonAsesorSurnamesLikeAndPersonSupervisorSurnamesLike(String estado, Sucursal sucursal,Project proyecto, String manzana, String numLote, String person, String asesor, String supervisor,Pageable pageable);
 	
 	Page<RequerimientoSeparacion> findAllByEstadoAndLoteProjectSucursalAndGeneraDocumento(String estado, Sucursal sucursal, boolean generaDocuento,Pageable pageable);
 

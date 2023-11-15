@@ -81,11 +81,7 @@ public class VoucherTempServiceImpl implements VoucherTempService {
 		return voucherTempRepository.findByRequerimientoSeparacionEstadoAndRequerimientoSeparacionLoteAndEstado(estadoReq, lote, status);
 	}
 	
-	public VoucherTemp findByPlantillaVentaAndMontoAndTipoTransaccionAndNumeroTransaccionAndFechaAndCuentaBancaria(
-			PlantillaVenta plantilla, BigDecimal monto, String tipoTransaccion, String numTransaccion, Date fecha, CuentaBancaria ctaBanc) {
-		// TODO Auto-generated method stub
-		return voucherTempRepository.findByPlantillaVentaAndMontoAndTipoTransaccionAndNumeroTransaccionAndFechaAndCuentaBancaria(plantilla, monto, tipoTransaccion, numTransaccion, fecha, ctaBanc);
-	}
+
 
 
 }

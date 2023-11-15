@@ -28,7 +28,6 @@ public interface VoucherTempService {
 	List<VoucherTemp> findByPlantillaVentaEstadoAndPlantillaVentaLoteAndEstado(String estadoPlantilla, Lote lote, boolean status);
 	List<VoucherTemp> findByRequerimientoSeparacionEstadoAndRequerimientoSeparacionLoteAndEstado(String estadoReq, Lote lote, boolean status);
 
-	VoucherTemp findByPlantillaVentaAndMontoAndTipoTransaccionAndNumeroTransaccionAndFechaAndCuentaBancaria(PlantillaVenta plantilla, BigDecimal monto, String tipoTransaccion, String numTransaccion, Date fecha, CuentaBancaria cuentaBancaria);
 	
 
 
