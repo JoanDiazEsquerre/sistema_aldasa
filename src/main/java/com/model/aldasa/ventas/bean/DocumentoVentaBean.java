@@ -2472,7 +2472,8 @@ public class DocumentoVentaBean extends BaseBean {
 		//null porque se tiene que guardar primero el documento de venta, luego asignar documentoVenta a todos los detalles
 		detalle.setDocumentoVenta(null);
 		detalle.setProducto(productoVoucher);
-		detalle.setDescripcion("PAGO DE SEPARACIÓN POR LA VENTA DE UN LOTE DE TERRENO CON N° "+ requerimientoSelected.getLote().getNumberLote() +" MZ - "+ requerimientoSelected.getLote().getManzana().getName() +" , UBICADO EN " + requerimientoSelected.getLote().getProject().getName());
+//		detalle.setDescripcion("PAGO DE SEPARACIÓN POR LA VENTA DE UN LOTE DE TERRENO CON N° "+ requerimientoSelected.getLote().getNumberLote() +" MZ - "+ requerimientoSelected.getLote().getManzana().getName() +" , UBICADO EN " + requerimientoSelected.getLote().getProject().getName());
+		detalle.setDescripcion("PAGO DE SEPARACIÓN POR LA VENTA DE UN LOTE DE TERRENO.");
 		detalle.setAmortizacion(requerimientoSelected.getMonto());
 		detalle.setInteres(BigDecimal.ZERO);
 		detalle.setAdelanto(BigDecimal.ZERO);

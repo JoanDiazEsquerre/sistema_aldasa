@@ -67,6 +67,8 @@ public class RequerimientoSeparacion {
 	@Column(name="fecharechaza")
 	private Date fechaRechaza;
 	
+	private String observacion;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -156,6 +158,12 @@ public class RequerimientoSeparacion {
 	}
 	public void setFechaRechaza(Date fechaRechaza) {
 		this.fechaRechaza = fechaRechaza;
+	}
+	public String getObservacion() {
+		return observacion;
+	}
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
 	}
 	
 	

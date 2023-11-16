@@ -25,7 +25,7 @@
 							<span>Lista de Plantillas de Venta</span>
 						</div>
 					</f:facet>
-					<p:ajax event="rowSelect" listener="#{plantillaVentaBean.verVoucher()}" update=":formPlantillaDialog" oncomplete="PF('plantillaNewDialog').show();" />
+					<p:ajax event="rowSelect" listener="#{plantillaVentaBean.verVoucher()}" update=":formPlantillaDialog :dialogPlantilla :formRechaza" oncomplete="PF('plantillaNewDialog').show();" />
 
 					<p:column headerText="Nro." style="width:25px;">
                             		#{row +1}
@@ -123,6 +123,10 @@
 					
 					<p:column headerText="Boleta/Factura" filterMatchMode="contains">
 						<h:outputText value="#{plantilla.documentoVenta.serie}-#{plantilla.documentoVenta.numero}" />
+					</p:column>
+					
+					<p:column headerText="Observación" filterMatchMode="contains" rendered="#{plantillaVentaBean.estadoPlantillaFilter eq 'Rechazado'}">
+						<h:outputText value="#{plantilla.observacion} " />
 					</p:column>
 				</p:dataTable>
 				<p:contextMenu id="menuTableReq" for="idTablePlantillaVenta" >
@@ -239,8 +243,9 @@
 		<h:form id="formPlantillaDialog">
 			<p:tabView id="tabPlantilla">
 				<p:tab title="Aprobación"> 
+					
 					<p:commandButton value="APROBAR" actionListener="#{plantillaVentaBean.aprobarPlantilla}" rendered="#{plantillaVentaBean.plantillaVentaSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarPlantillaVenta}" process="@this" update="formPlantillaDialog :form:tabView:idTablePlantillaVenta" style="margin:10px" styleClass="ui-button-success"/>
-					<p:commandButton value="RECHAZAR" actionListener="#{plantillaVentaBean.rechazarPlantilla}" rendered="#{plantillaVentaBean.plantillaVentaSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarPlantillaVenta}" process="@this" update="formPlantillaDialog :form:tabView:idTablePlantillaVenta" styleClass="ui-button-warning"/>
+					<p:commandButton value="RECHAZAR" onclick="PF('rechazaPlantillaVenta').show();" rendered="#{plantillaVentaBean.plantillaVentaSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarPlantillaVenta}" process="@this" update="formPlantillaDialog :form:tabView:idTablePlantillaVenta" styleClass="ui-button-warning"/>
 					
 					<h:panelGrid id="idDatosPlantilla" columns="2" >  
 					
@@ -435,8 +440,31 @@
 	<p:confirmDialog id="anulaPlantilla" message="¿Está seguro de anular la Plantilla" header="Confirmación"
                       severity="alert" widgetVar="anulaPlantilla" appendTo="@(body)">
         <h:form >
-            <p:commandButton value="SI" onstart="PF('blockUIWidgetAnularPlantilla').block();" oncomplete="PF('blockUIWidgetAnularPlantilla').unblock();PF('anulaPlantilla').hide()"  action="#{plantillaVentaBean.anularPlantilla}" update=":form:tabView:idTablePlantillaVenta"/>
-            <p:commandButton value="NO" oncomplete="PF('anulaPlantilla').hide()"/>
+       		<p:commandButton value="SI" onstart="PF('blockUIWidgetAnularPlantilla').block();" oncomplete="PF('blockUIWidgetAnularPlantilla').unblock();PF('anulaPlantilla').hide()"  action="#{plantillaVentaBean.anularPlantilla}" update=":form:tabView:idTablePlantillaVenta"/>
+           	<p:commandButton value="NO" oncomplete="PF('anulaPlantilla').hide()"/>
+        </h:form>
+    </p:confirmDialog>
+    
+    <pe:blockUI target="rechazaPlantillaVenta" widgetVar="blockUIWidgetRechazaPlantilla">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="rechazaPlantillaVenta" message="¿Está seguro de rechazar?" header="Confirmación" severity="alert" widgetVar="rechazaPlantillaVenta" appendTo="@(body)">
+        <h:form id="formRechaza">
+        	<h:panelGrid columns="2">
+        		<p:outputLabel value="Motivo:" />
+        		<p:inputText value="#{plantillaVentaBean.plantillaVentaSelected.observacion}" maxlength="200"></p:inputText>
+        		
+        		<p:commandButton value="SI" 
+        			onstart="PF('blockUIWidgetRechazaPlantilla').block();" 
+        			oncomplete="PF('blockUIWidgetRechazaPlantilla').unblock(); PF('rechazaPlantillaVenta').hide(); PF('plantillaNewDialog').hide()"  
+        			action="#{plantillaVentaBean.rechazarPlantilla()}" 
+            		update=":form:tabView:idTablePlantillaVenta"/>
+            	
+            	<p:commandButton value="NO" oncomplete="PF('rechazaPlantillaVenta').hide()"/>
+        	</h:panelGrid>
+            
         </h:form>
     </p:confirmDialog>
 	

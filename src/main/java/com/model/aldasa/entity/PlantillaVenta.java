@@ -86,6 +86,8 @@ public class PlantillaVenta {
     @JoinColumn(name="idrequerimientoseparacion")
     private RequerimientoSeparacion requerimientoSeparacion;
 	
+	private String observacion;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -212,6 +214,13 @@ public class PlantillaVenta {
 	public void setRequerimientoSeparacion(RequerimientoSeparacion requerimientoSeparacion) {
 		this.requerimientoSeparacion = requerimientoSeparacion;
 	}
+	public String getObservacion() {
+		return observacion;
+	}
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
+	}
+	
 	
 	
 }

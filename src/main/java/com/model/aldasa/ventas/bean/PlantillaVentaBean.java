@@ -170,9 +170,9 @@ public class PlantillaVentaBean extends BaseBean {
 	private Lote lotePlantilla;
 	private Team team;
 	private Person personCliente, personAsesor;
-
 	
-	private String estadoPlantillaFilter = "Pendiente", mensajeSeparacion="";
+	
+	private String estadoPlantillaFilter = "Pendiente", mensajeSeparacion="", observacion;
 	private String imagen1, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8, imagen9, imagen10;
 	private BigDecimal monto, montoPlantilla, interesPlantilla, inicialPlantilla;
 	private Date fechaOperacion = new Date() ;
@@ -488,6 +488,7 @@ public class PlantillaVentaBean extends BaseBean {
     }
 	
 	public void aprobarPlantilla() {
+//		plantillaVentaSelected.setObservacion(observacion); 
 		plantillaVentaSelected.getLote().setStatus("Vendido");
 		plantillaVentaSelected.getLote().setPersonVenta(plantillaVentaSelected.getPerson()); 
 		plantillaVentaSelected.getLote().setMontoVenta(plantillaVentaSelected.getMontoVenta());
@@ -512,6 +513,7 @@ public class PlantillaVentaBean extends BaseBean {
 	}
 	
 	public void rechazarPlantilla() {
+//		plantillaVentaSelected.setObservacion(observacion); 
 		plantillaVentaSelected.setEstado("Rechazado");
 		plantillaVentaSelected.setUsuarioRechaza(navegacionBean.getUsuarioLogin());
 		plantillaVentaSelected.setFechaRechaza(new Date());
@@ -707,7 +709,7 @@ public class PlantillaVentaBean extends BaseBean {
 		imagen9 = "";
 		imagen10 = "";
 		
-//		String nombreBusqueda = "%"+plantillaVentaSelected.getId() +"_%";
+		observacion = plantillaVentaSelected.getObservacion();
 		
 		List<ImagenPlantillaVenta> lstImagenPlantilla = imagenPlantillaVentaService.findByPlantillaVentaAndEstado(plantillaVentaSelected, true);
 		int contador = 1;
@@ -1427,6 +1429,12 @@ public class PlantillaVentaBean extends BaseBean {
 	}
 	public void setDocumentoVentaService(DocumentoVentaService documentoVentaService) {
 		this.documentoVentaService = documentoVentaService;
+	}
+	public String getObservacion() {
+		return observacion;
+	}
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
 	}
 
 	
