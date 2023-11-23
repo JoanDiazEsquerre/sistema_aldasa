@@ -148,5 +148,19 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 	}
 
 
+	@Override
+	public List<Empleado> findByEstadoAndPlanilla(boolean status, boolean planilla) {
+		// TODO Auto-generated method stub
+		return empleadoRepository.findByEstadoAndPlanilla(status, planilla);
+	}
+
+
+	@Override
+	public List<Empleado> findByEstadoAndPlanillaAndSucursal(boolean status, boolean planilla, Sucursal sucursal) {
+		// TODO Auto-generated method stub
+		return empleadoRepository.findByEstadoAndPlanillaAndSucursal(status, planilla, sucursal);
+	}
+
+
 
 }

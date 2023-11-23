@@ -38,4 +38,7 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, Integer> {
 	List<Empleado> findByPersonAndEstadoAndArea(Person person, boolean status, Area area);
 	List<Empleado> findByEstadoAndTeam(boolean status, Team team);
 
+	List<Empleado> findByEstadoAndPlanilla(boolean status, boolean planilla);
+	List<Empleado> findByEstadoAndPlanillaAndSucursal(boolean status, boolean planilla, Sucursal sucursal);
+
 }

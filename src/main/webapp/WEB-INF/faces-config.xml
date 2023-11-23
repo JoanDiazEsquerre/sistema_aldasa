@@ -572,6 +572,10 @@
 			<property-name>cargoService</property-name>
 			<value>#{cargoService}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>sucursalService</property-name>
+			<value>#{sucursalService}</value>
+		</managed-property> 
 	</managed-bean>
 	
 	<managed-bean>
@@ -1110,6 +1114,28 @@
 		<managed-property>
 			<property-name>projectService</property-name>
 			<value>#{projectService}</value>
+		</managed-property>
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>planillaBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.rrhh.bean.PlanillaBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope> 
+		<managed-property>
+			<property-name>planillaService</property-name>
+			<value>#{planillaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>sucursalService</property-name>
+			<value>#{sucursalService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>empleadoService</property-name>
+			<value>#{empleadoService}</value> 
+		</managed-property>
+		<managed-property>
+			<property-name>detallePlanillaService</property-name>
+			<value>#{detallePlanillaService}</value>
 		</managed-property>
 	</managed-bean>
 </faces-config>

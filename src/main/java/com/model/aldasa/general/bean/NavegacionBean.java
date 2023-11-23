@@ -45,14 +45,15 @@ public class NavegacionBean implements Serializable  {
 	private int idAsistenteVenta = Perfiles.ASISTENTE_VENTA.getId();
 
 	
-	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas, menuAlmacen;
-	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
+	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas, menuAlmacen, menuRRHH;
+	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuPlanilla, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
 					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato, subMenuDocumentoVentas, subMenuPlantillaVenta, 
 					subMenuDocumentoVenta, subMenuInventario, subMenuCliente, subMenuMapeoLote, subMenuVoucher;
 	
 	private int[] permisoProspectos,permisoProspeccion,permisoAgenda,permisoSimulador,permisoPersonas,permisoUsuarios,permisoPerfiles,permisoProyectos,permisoEquipos, permisoCambiarConstrasenia,
 					permisoReporteAcciones,permisoManzanas,permisoLotes,permisoComisiones,permisoComision,permisoEmpleado,permisoReporteLotes,permisoAsistencia,permisoReporteAsistencia,permisoRequerimientoSeparacion,
-					permisoRankingVentas,permisoContrato,permisoReporteDocumentoVentas,permisoDocumentoVenta,permisoInventario,permisoCliente, permisoPlantillaVenta, permisoMapeoLote, permisoVoucher;
+					permisoRankingVentas,permisoContrato,permisoReporteDocumentoVentas,permisoDocumentoVenta,permisoInventario,permisoCliente, permisoPlantillaVenta, permisoMapeoLote, permisoVoucher,
+					permisoPlanilla;
 
 	@PostConstruct
 	public void init() {
@@ -96,6 +97,7 @@ public class NavegacionBean implements Serializable  {
 		permisoPlantillaVenta=obtenerPermisosPorPerfil(27);
 		permisoMapeoLote = obtenerPermisosPorPerfil(28);
 		permisoVoucher = obtenerPermisosPorPerfil(29);
+		permisoPlanilla = obtenerPermisosPorPerfil(30);
 		
 		permisoPantallas();
 		
@@ -139,7 +141,7 @@ public class NavegacionBean implements Serializable  {
 
 	
 	public void permisoPantallas() {
-		menuProspeccion=false; menuProyecto=false; menuMantenimiento=false; menuReporte=false; menuAsistencia=false;menuVentas=false; menuAlmacen=false;
+		menuProspeccion=false; menuProyecto=false; menuMantenimiento=false; menuReporte=false; menuAsistencia=false;menuVentas=false; menuAlmacen=false; menuRRHH = false;
 		//*******************************************************************************
 		subMenuProspectos = validaPermiso(permisoProspectos);
 		subMenuProspeccion= validaPermiso(permisoProspeccion);
@@ -176,14 +178,21 @@ public class NavegacionBean implements Serializable  {
 		subMenuUsuarios= validaPermiso(permisoUsuarios);
 		subMenuPerfiles= validaPermiso(permisoPerfiles);
 		subMenuEquipos= validaPermiso(permisoEquipos);
-		subMenuEmpleado= validaPermiso(permisoEmpleado);
 		subMenuCliente= validaPermiso(permisoCliente);
 		subMenuComision= validaPermiso(permisoComision);
 		subMenuCambiarContrasenia= validaPermiso(permisoCambiarConstrasenia);
 		subMenuVoucher = validaPermiso(permisoVoucher);
 		
-		if(subMenuPersonas || subMenuUsuarios || subMenuPerfiles || subMenuEquipos || subMenuEmpleado || subMenuCliente || subMenuComision || subMenuCambiarContrasenia || subMenuVoucher) {
+		if(subMenuPersonas || subMenuUsuarios || subMenuPerfiles || subMenuEquipos || subMenuCliente || subMenuComision || subMenuCambiarContrasenia || subMenuVoucher) {
 			menuMantenimiento=true;
+		}
+		
+		//******************************************************************************
+		subMenuEmpleado= validaPermiso(permisoEmpleado);
+		subMenuPlanilla = validaPermiso(permisoPlanilla);
+		
+		if(subMenuPlanilla || subMenuEmpleado) {
+			menuRRHH=true;
 		}
 		
 		//*******************************************************************************
@@ -291,8 +300,12 @@ public class NavegacionBean implements Serializable  {
 		ruta = "modulos/general/mantenimientos/team.xhtml";
 	}
 
-	public void getMantenimientoEmpleadoPage() {
-		ruta = "modulos/general/mantenimientos/empleado.xhtml";
+	public void getRRHHEmpleadoPage() {
+		ruta = "modulos/rrhh/mantenimientos/empleado.xhtml";
+	}
+	
+	public void getRRHHPlanillaPage() {
+		ruta = "modulos/rrhh/procesos/planilla.xhtml";
 	}
 	
 	public void getMantenimientoClientePage() {
@@ -822,6 +835,18 @@ public class NavegacionBean implements Serializable  {
 	}
 	public void setPermisoVoucher(int[] permisoVoucher) {
 		this.permisoVoucher = permisoVoucher;
+	}
+	public boolean isMenuRRHH() {
+		return menuRRHH;
+	}
+	public void setMenuRRHH(boolean menuRRHH) {
+		this.menuRRHH = menuRRHH;
+	}
+	public boolean isSubMenuPlanilla() {
+		return subMenuPlanilla;
+	}
+	public void setSubMenuPlanilla(boolean subMenuPlanilla) {
+		this.subMenuPlanilla = subMenuPlanilla;
 	}
 	
 	

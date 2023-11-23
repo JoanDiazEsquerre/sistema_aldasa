@@ -57,6 +57,11 @@ public class Empleado {
 	@JoinColumn(name="idcargo")
 	private Cargo cargo;
 	
+	@ManyToOne
+	@JoinColumn(name="idfondopension")
+	private FondoPension fondoPension;
+	
+	
 	private transient String nivel;
 	
 	public Integer getId() {
@@ -137,6 +142,12 @@ public class Empleado {
 	}
 	public void setNivel(String nivel) {
 		this.nivel = nivel;
+	}
+	public FondoPension getFondoPension() {
+		return fondoPension;
+	}
+	public void setFondoPension(FondoPension fondoPension) {
+		this.fondoPension = fondoPension;
 	}
 
 	

@@ -71,7 +71,6 @@
 							<p:menuitem value="Usuarios" ajax="false" icon="pi pi-users"  actionListener="#{navegacionBean.getMantenimientoUsersPage()}" rendered="#{navegacionBean.subMenuUsuarios}"/>
 							<p:menuitem value="Perfiles" ajax="false" icon="pi pi-unlock" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoProfilePage()}" rendered="#{navegacionBean.subMenuPerfiles}" />
 							<p:menuitem value="Equipos" ajax="false" icon="pi pi-sitemap" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoTeamPage()}" rendered="#{navegacionBean.subMenuEquipos}"/>
-							<p:menuitem value="Empleados" ajax="false" icon="pi pi-sitemap" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoEmpleadoPage()}" rendered="#{navegacionBean.subMenuEmpleado}"/>
 							<p:menuitem value="Clientes" ajax="false" icon="pi pi-sitemap" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoClientePage()}" rendered="#{navegacionBean.subMenuCliente}"/>
 							<p:menuitem value="Config. Comisión" icon="pi pi-dollar" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoComisionPage()}" rendered="#{navegacionBean.subMenuComision}"/>
 							<p:menuitem value="Voucher" icon="pi pi-file" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoVoucherPage()}" rendered="#{navegacionBean.subMenuVoucher}"/>
@@ -82,6 +81,12 @@
 						
 						<p:submenu label="Asistencia" rendered="#{navegacionBean.menuAsistencia}">
 							<p:menuitem value="Asistencia"  icon="pi pi-check-circle" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getAsistenciaAsistenciaPage()}" rendered="#{navegacionBean.subMenuAsistencia}"/>
+						</p:submenu>
+						
+						<p:submenu label="Recursos Humanos" rendered="#{navegacionBean.menuRRHH}">
+							<p:menuitem value="Empleados" ajax="false" icon="pi pi-sitemap" update=":contenedor" actionListener="#{navegacionBean.getRRHHEmpleadoPage()}" rendered="#{navegacionBean.subMenuEmpleado}"/>
+							<p:menuitem value="Planillas" ajax="false" icon="pi pi-sitemap" update=":contenedor" actionListener="#{navegacionBean.getRRHHPlanillaPage()}" rendered="#{navegacionBean.subMenuPlanilla}"/>
+							
 						</p:submenu>
 						
 						<p:submenu label="Almacén" rendered="#{navegacionBean.menuAlmacen}">

@@ -28,11 +28,13 @@ import com.model.aldasa.entity.Cargo;
 import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Profile;
+import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.service.AreaService;
 import com.model.aldasa.service.CargoService;
 import com.model.aldasa.service.EmpleadoService;
 import com.model.aldasa.service.PersonService;
+import com.model.aldasa.service.SucursalService;
 import com.model.aldasa.service.TeamService;
 import com.model.aldasa.util.BaseBean;
 
@@ -59,6 +61,9 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 	
 	@ManagedProperty(value = "#{cargoService}")
 	private CargoService cargoService; 
+	
+	@ManagedProperty(value = "#{sucursalService}")
+	private SucursalService sucursalService;
 		
 	private LazyDataModel<Empleado> lstEmpleadoLazy;
 	
@@ -66,6 +71,7 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 	private List<Area> lstArea;
 	private List<Team> lstTeam;
 	private List<Cargo> lstCargo;
+	private List<Sucursal> lstSucursal;
 	
 	private Empleado empleadoSelected;
 	private Cargo cargoFilter;
@@ -81,6 +87,7 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 		lstArea=areaService.findByEstadoOrderByNombreAsc(true);
 		lstTeam=teamService.findByStatus(true);
 		lstCargo=cargoService.findByEstadoOrderByDescripcionAsc(true);
+		lstSucursal =sucursalService.findByEstado(true);
 	}
 	public void newEmpleado() {
 		tituloDialog="NUEVO EMPLEADO";
@@ -338,6 +345,34 @@ public class EmpleadoBean extends BaseBean implements Serializable {
         };
     }
 	
+	public Converter getConversorSucursal() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	Sucursal c = null;
+                    for (Sucursal si : lstSucursal) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((Sucursal) value).getId() + "";
+                }
+            }
+        };
+    }
+	
 	public Empleado getEmpleadoSelected() {
 		return empleadoSelected;
 	}
@@ -436,6 +471,18 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+	public SucursalService getSucursalService() {
+		return sucursalService;
+	}
+	public void setSucursalService(SucursalService sucursalService) {
+		this.sucursalService = sucursalService;
+	}
+	public List<Sucursal> getLstSucursal() {
+		return lstSucursal;
+	}
+	public void setLstSucursal(List<Sucursal> lstSucursal) {
+		this.lstSucursal = lstSucursal;
 	}
 	
 }
