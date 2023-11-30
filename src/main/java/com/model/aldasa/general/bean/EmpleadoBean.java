@@ -26,6 +26,7 @@ import org.springframework.data.domain.Sort;
 import com.model.aldasa.entity.Area;
 import com.model.aldasa.entity.Cargo;
 import com.model.aldasa.entity.Empleado;
+import com.model.aldasa.entity.FondoPension;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Profile;
 import com.model.aldasa.entity.Sucursal;
@@ -33,6 +34,7 @@ import com.model.aldasa.entity.Team;
 import com.model.aldasa.service.AreaService;
 import com.model.aldasa.service.CargoService;
 import com.model.aldasa.service.EmpleadoService;
+import com.model.aldasa.service.FondoPensionService;
 import com.model.aldasa.service.PersonService;
 import com.model.aldasa.service.SucursalService;
 import com.model.aldasa.service.TeamService;
@@ -64,6 +66,9 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 	
 	@ManagedProperty(value = "#{sucursalService}")
 	private SucursalService sucursalService;
+	
+	@ManagedProperty(value = "#{fondoPensionService}")
+	private FondoPensionService fondoPensionService;
 		
 	private LazyDataModel<Empleado> lstEmpleadoLazy;
 	
@@ -72,6 +77,7 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 	private List<Team> lstTeam;
 	private List<Cargo> lstCargo;
 	private List<Sucursal> lstSucursal;
+	private List<FondoPension> lstFondoPension;
 	
 	private Empleado empleadoSelected;
 	private Cargo cargoFilter;
@@ -88,6 +94,13 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 		lstTeam=teamService.findByStatus(true);
 		lstCargo=cargoService.findByEstadoOrderByDescripcionAsc(true);
 		lstSucursal =sucursalService.findByEstado(true);
+		lstFondoPension =fondoPensionService.findByEstado(true);
+	}
+	
+	public void cambiarPlanilla() {
+		if(!empleadoSelected.isPlanilla()) {
+			empleadoSelected.setFondoPension(null);
+		}
 	}
 	public void newEmpleado() {
 		tituloDialog="NUEVO EMPLEADO";
@@ -125,6 +138,16 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 			addErrorMessage("Seleccionar fechas.");
 			return ;
 		}
+		
+		if(empleadoSelected.isPlanilla()==true) {
+			if(empleadoSelected.getFondoPension()==null) {
+				addErrorMessage("El empleado tiene plantilla, seleccionar un fonde de pensión.");
+				return;
+			}
+		}else {
+			empleadoSelected.setFondoPension(null);
+		}
+		
 		if (tituloDialog.equals("NUEVO EMPLEADO")) {
 			Empleado validarExistencia = empleadoService.findByPersonId(empleadoSelected.getPerson().getId());
 			if (validarExistencia == null) {
@@ -373,6 +396,34 @@ public class EmpleadoBean extends BaseBean implements Serializable {
         };
     }
 	
+	public Converter getConversorFondoPension() {
+        return new Converter() {
+            @Override
+            public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+                    return null;
+                } else {
+                	FondoPension c = null;
+                    for (FondoPension si : lstFondoPension) {
+                        if (si.getId().toString().equals(value)) {
+                            c = si;
+                        }
+                    }
+                    return c;
+                }
+            }
+
+            @Override
+            public String getAsString(FacesContext context, UIComponent component, Object value) {
+                if (value == null || value.equals("")) {
+                    return "";
+                } else {
+                    return ((FondoPension) value).getId() + "";
+                }
+            }
+        };
+    }
+	
 	public Empleado getEmpleadoSelected() {
 		return empleadoSelected;
 	}
@@ -483,6 +534,18 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 	}
 	public void setLstSucursal(List<Sucursal> lstSucursal) {
 		this.lstSucursal = lstSucursal;
+	}
+	public FondoPensionService getFondoPensionService() {
+		return fondoPensionService;
+	}
+	public void setFondoPensionService(FondoPensionService fondoPensionService) {
+		this.fondoPensionService = fondoPensionService;
+	}
+	public List<FondoPension> getLstFondoPension() {
+		return lstFondoPension;
+	}
+	public void setLstFondoPension(List<FondoPension> lstFondoPension) {
+		this.lstFondoPension = lstFondoPension;
 	}
 	
 }

@@ -575,6 +575,10 @@
 		<managed-property>
 			<property-name>sucursalService</property-name>
 			<value>#{sucursalService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>fondoPensionService</property-name>
+			<value>#{fondoPensionService}</value>
 		</managed-property> 
 	</managed-bean>
 	

@@ -104,7 +104,7 @@
 		appendTo="@(body)" style="width:auto">
 		<h:form id="formEmpleadoDialog">
 		  
-			<h:panelGrid id="grid" columns="2">
+			<h:panelGrid id="grid" columns="4">
 			
 				<h:outputLabel for="optionPerson" value="Persona:" />
 				<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{empleadoBean.empleadoSelected.person}" 
@@ -154,6 +154,7 @@
 				<p:selectOneMenu value="#{empleadoBean.empleadoSelected.planilla}" style="margin:10px">
 					<f:selectItem itemLabel="NO" itemValue="#{false}" />
 					<f:selectItem itemLabel="SI" itemValue="#{true}" />
+					<p:ajax listener="#{empleadoBean.cambiarPlanilla()}" update="fondoPension" />
 				</p:selectOneMenu>	
 				
 				<h:outputLabel for="option" value="Estado:" />
@@ -166,6 +167,13 @@
 				<p:selectOneMenu id="sucursal" value="#{empleadoBean.empleadoSelected.sucursal}" style="margin:5px;width:250px" converter="#{empleadoBean.conversorSucursal}">
 					<f:selectItems value="#{empleadoBean.lstSucursal}" var="suc" itemLabel="#{suc.razonSocial}" itemValue="#{suc}"/> 
 				</p:selectOneMenu>
+				
+				<h:outputLabel for="fondoPension" value="Fondo Pensión: " />
+				<p:selectOneMenu id="fondoPension" value="#{empleadoBean.empleadoSelected.fondoPension}" style="margin:5px;width:250px" converter="#{empleadoBean.conversorFondoPension}">
+					<f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
+					<f:selectItems value="#{empleadoBean.lstFondoPension}" var="fondoPen" itemLabel="#{fondoPen.nombre}" itemValue="#{fondoPen}"/> 
+				</p:selectOneMenu>
+				
 			</h:panelGrid>
 			<p:commandButton value="Guardar" action="#{empleadoBean.saveEmpleado()}" update=":form:idTableEmpleado :formEmpleadoDialog" 
 			onstart="PF('blockUIWidgetDialogEmpleado').block();" oncomplete="PF('blockUIWidgetDialogEmpleado').unblock();"/>
