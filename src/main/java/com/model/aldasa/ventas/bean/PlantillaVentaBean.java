@@ -173,14 +173,14 @@ public class PlantillaVentaBean extends BaseBean {
 	
 	
 	private String estadoPlantillaFilter = "Pendiente", mensajeSeparacion="", observacion;
-	private String imagen1, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8, imagen9, imagen10;
+	private String imagen1, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8, imagen9, imagen10, imagen11, imagen12, imagen13, imagen14, imagen15;
 	private BigDecimal monto, montoPlantilla, interesPlantilla, inicialPlantilla;
 	private Date fechaOperacion = new Date() ;
 	private String tipoTransaccion, numeroTransaccion, tipoPagoPlantilla;
 	private Integer numeroCuotaPlantilla;
 	private boolean valida;
 	
-	private UploadedFile file1,file2,file3,file4,file5,file6,file7,file8,file9,file10;
+	private UploadedFile file1,file2,file3,file4,file5,file6,file7,file8,file9,file10,file11,file12,file13,file14,file15;
 	
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	SimpleDateFormat sdfFull = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
@@ -317,6 +317,11 @@ public class PlantillaVentaBean extends BaseBean {
 		file8=null;
 		file9=null;
 		file10=null;
+		file11=null;
+		file12=null;
+		file13=null;
+		file14=null;
+		file15=null;
 	}
 	
 	public void subirArchivo(String nombre, UploadedFile file) {
@@ -475,6 +480,66 @@ public class PlantillaVentaBean extends BaseBean {
 			imagenPlantillaVentaService.save(registroImagen);
 			
             subirArchivo(rename, file10);
+		}
+		
+		if(file11 != null) {
+			String rename = idPlantilla +"_11" + "." + getExtension(file11.getFileName());
+			ImagenPlantillaVenta registroImagen = new ImagenPlantillaVenta();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-PLANTILLA-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setPlantillaVenta(plantilla);
+			imagenPlantillaVentaService.save(registroImagen);
+			
+            subirArchivo(rename, file11);
+		}
+		
+		if(file12 != null) {
+			String rename = idPlantilla +"_12" + "." + getExtension(file12.getFileName());
+			ImagenPlantillaVenta registroImagen = new ImagenPlantillaVenta();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-PLANTILLA-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setPlantillaVenta(plantilla);
+			imagenPlantillaVentaService.save(registroImagen);
+			
+            subirArchivo(rename, file12);
+		}
+		
+		if(file13 != null) {
+			String rename = idPlantilla +"_13" + "." + getExtension(file13.getFileName());
+			ImagenPlantillaVenta registroImagen = new ImagenPlantillaVenta();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-PLANTILLA-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setPlantillaVenta(plantilla);
+			imagenPlantillaVentaService.save(registroImagen);
+			
+            subirArchivo(rename, file13);
+		}
+		
+		if(file14 != null) {
+			String rename = idPlantilla +"_14" + "." + getExtension(file14.getFileName());
+			ImagenPlantillaVenta registroImagen = new ImagenPlantillaVenta();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-PLANTILLA-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setPlantillaVenta(plantilla);
+			imagenPlantillaVentaService.save(registroImagen);
+			
+            subirArchivo(rename, file14);
+		}
+		
+		if(file15 != null) {
+			String rename = idPlantilla +"_15" + "." + getExtension(file15.getFileName());
+			ImagenPlantillaVenta registroImagen = new ImagenPlantillaVenta();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-PLANTILLA-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setPlantillaVenta(plantilla);
+			imagenPlantillaVentaService.save(registroImagen);
+			
+            subirArchivo(rename, file15);
 		}
 	}
 	
@@ -657,7 +722,7 @@ public class PlantillaVentaBean extends BaseBean {
 			}
 		}
 
-		if(file1 == null && file2 == null && file3 == null && file4 == null && file5 == null && file6 == null && file7 == null && file8 == null && file9 == null && file10 == null) {
+		if(file1 == null && file2 == null && file3 == null && file4 == null && file5 == null && file6 == null && file7 == null && file8 == null && file9 == null && file10 == null && file11 == null && file12 == null && file13 == null && file14 == null && file15 == null) {
 			addErrorMessage("Debes ingresar al menos una imagen.");
 			return;
 		}
@@ -708,7 +773,12 @@ public class PlantillaVentaBean extends BaseBean {
 		imagen8 = "";
 		imagen9 = "";
 		imagen10 = "";
-		
+		imagen11 = "";
+		imagen12 = "";
+		imagen13 = "";
+		imagen14 = "";
+		imagen15 = "";
+	
 		observacion = plantillaVentaSelected.getObservacion();
 		
 		List<ImagenPlantillaVenta> lstImagenPlantilla = imagenPlantillaVentaService.findByPlantillaVentaAndEstado(plantillaVentaSelected, true);
@@ -743,6 +813,21 @@ public class PlantillaVentaBean extends BaseBean {
 			}
 			if(contador==10) {
 				imagen10 = i.getNombre();
+			}
+			if(contador==11) {
+				imagen11 = i.getNombre();
+			}
+			if(contador==12) {
+				imagen12 = i.getNombre();
+			}
+			if(contador==13) {
+				imagen13 = i.getNombre();
+			}
+			if(contador==14) {
+				imagen14 = i.getNombre();
+			}
+			if(contador==15) {
+				imagen15 = i.getNombre();
 			}
 			contador ++;
 		}
@@ -1148,6 +1233,36 @@ public class PlantillaVentaBean extends BaseBean {
 	public void setImagen10(String imagen10) {
 		this.imagen10 = imagen10;
 	}
+	public String getImagen11() {
+		return imagen11;
+	}
+	public void setImagen11(String imagen11) {
+		this.imagen11 = imagen11;
+	}
+	public String getImagen12() {
+		return imagen12;
+	}
+	public void setImagen12(String imagen12) {
+		this.imagen12 = imagen12;
+	}
+	public String getImagen13() {
+		return imagen13;
+	}
+	public void setImagen13(String imagen13) {
+		this.imagen13 = imagen13;
+	}
+	public String getImagen14() {
+		return imagen14;
+	}
+	public void setImagen14(String imagen14) {
+		this.imagen14 = imagen14;
+	}
+	public String getImagen15() {
+		return imagen15;
+	}
+	public void setImagen15(String imagen15) {
+		this.imagen15 = imagen15;
+	}
 	public BigDecimal getMonto() {
 		return monto;
 	}
@@ -1279,6 +1394,48 @@ public class PlantillaVentaBean extends BaseBean {
 	}
 	public void setFile10(UploadedFile file10) {
 		this.file10 = file10;
+	}
+	public UploadedFile getFile11() {
+		return file11;
+	}
+	public void setFile11(UploadedFile file11) {
+		this.file11 = file11;
+	}
+	public UploadedFile getFile12() {
+		return file12;
+	}
+	public void setFile12(UploadedFile file12) {
+		this.file12 = file12;
+	}
+	public UploadedFile getFile13() {
+		return file13;
+	}
+	public void setFile13(UploadedFile file13) {
+		this.file13 = file13;
+	}
+	public UploadedFile getFile14() {
+		return file14;
+	}
+	public void setFile14(UploadedFile file14) {
+		this.file14 = file14;
+	}
+	public UploadedFile getFile15() {
+		return file15;
+	}
+	public void setFile15(UploadedFile file15) {
+		this.file15 = file15;
+	}
+	public SimpleDateFormat getSdf() {
+		return sdf;
+	}
+	public void setSdf(SimpleDateFormat sdf) {
+		this.sdf = sdf;
+	}
+	public SimpleDateFormat getSdfFull() {
+		return sdfFull;
+	}
+	public void setSdfFull(SimpleDateFormat sdfFull) {
+		this.sdfFull = sdfFull;
 	}
 	public ImagenService getImagenService() {
 		return imagenService;

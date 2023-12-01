@@ -70,17 +70,19 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	private SelectItem[] cboMes;
     private SelectItem[] cboTipoPlanilla;
     
-    private String tipoPlanilla , periodo, mes;
+    private String   periodo, mes;
 	private boolean estado = true;
-	private boolean bloqueo;
+	private boolean bloqueo, tipoPlanilla;
 	
 	SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
 	SimpleDateFormat sdfDay = new SimpleDateFormat("MM");
 	
 	@PostConstruct
 	public void init() {
+		tipoPlanilla = true;
 		lstEmpleadoCombo = empleadoService.findByEstado(true);
 		lstSucursal =sucursalService.findByEstado(true);
+		sucursal = lstSucursal.get(0);
 		crearFiltroMes();
 		crearFiltroTipoPlanilla();
 		
@@ -96,7 +98,11 @@ public class PlanillaBean extends BaseBean implements Serializable{
 		if(planillaNew != null) {
 			periodo= planillaNew.getPeriodo();
 			mes = planillaNew.getMes();
-			tipoPlanilla = planillaNew.getTipoPlanilla();
+			if(planillaNew.getTipoPlanilla().equals("DEPENDIENTE")) {
+				tipoPlanilla=true;
+			}else {
+				tipoPlanilla = false;
+			}
 			sucursal = planillaNew.getSucursal();
 			
 			lstDetallePlanillaTemp = detallePlanillaService.findByEstadoAndPlanilla(estado, planillaNew);
@@ -105,8 +111,7 @@ public class PlanillaBean extends BaseBean implements Serializable{
 		}else {
 			periodo= sdfYear.format(new Date());
 			mes = sdfDay.format(new Date());
-			tipoPlanilla = "DEPENDIENTE";
-			sucursal=null;
+			tipoPlanilla = true;
 			
 			listarDetallePlantillaTemporal();
 			
@@ -118,12 +123,8 @@ public class PlanillaBean extends BaseBean implements Serializable{
 		lstDetallePlanillaTemp = new ArrayList<>();
 		lstEmpleadoTemp = new ArrayList<>();
 		
-		if(sucursal ==null) {
-			lstEmpleadoTemp = empleadoService.findByEstadoAndPlanilla(true, tipoPlanilla == "DEPENDIENTE"? true: false);
-			
-		}else {
-			lstEmpleadoTemp = empleadoService.findByEstadoAndPlanillaAndSucursal(true, tipoPlanilla == "DEPENDIENTE"? true: false, sucursal);
-		}
+		lstEmpleadoTemp = empleadoService.findByEstadoAndPlanillaAndSucursal(true, tipoPlanilla, sucursal);
+		
 		
 		for(Empleado e : lstEmpleadoTemp) {
 			DetallePlanilla dt  = new DetallePlanilla();
@@ -140,7 +141,7 @@ public class PlanillaBean extends BaseBean implements Serializable{
 			dt.setComisionVariable(BigDecimal.ZERO);
 			
 			
-			if(tipoPlanilla == "DEPENDIENTE") {
+			if(tipoPlanilla) {
 				if(e.getFondoPension()!=null) {
 					
 					if(e.getFondoPension().getNombre().equals("ONP")) {
@@ -389,10 +390,16 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	public void setLstSucursal(List<Sucursal> lstSucursal) {
 		this.lstSucursal = lstSucursal;
 	}
-	public String getTipoPlanilla() {
+	public List<Empleado> getLstEmpleadoTemp() {
+		return lstEmpleadoTemp;
+	}
+	public void setLstEmpleadoTemp(List<Empleado> lstEmpleadoTemp) {
+		this.lstEmpleadoTemp = lstEmpleadoTemp;
+	}
+	public boolean isTipoPlanilla() {
 		return tipoPlanilla;
 	}
-	public void setTipoPlanilla(String tipoPlanilla) {
+	public void setTipoPlanilla(boolean tipoPlanilla) {
 		this.tipoPlanilla = tipoPlanilla;
 	}
 	public String getPeriodo() {

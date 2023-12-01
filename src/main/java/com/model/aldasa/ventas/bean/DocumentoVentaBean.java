@@ -206,13 +206,13 @@ public class DocumentoVentaBean extends BaseBean {
 	private Producto productoCuota,productoAdelanto,productoInteres, productoVoucher,productoAmortizacion, productoInicial;
 //	private Person persona;
 	private Usuario usuarioLogin = new Usuario();
-	private CuentaBancaria ctaBanc1, ctaBanc2, ctaBanc3, ctaBanc4, ctaBanc5, ctaBanc6, ctaBanc7, ctaBanc8, ctaBanc9, ctaBanc10, cuentaVoucherDialog;
+	private CuentaBancaria ctaBanc1, ctaBanc2, ctaBanc3, ctaBanc4, ctaBanc5, ctaBanc6, ctaBanc7, ctaBanc8, ctaBanc9, ctaBanc10, ctaBanc11, ctaBanc12, ctaBanc13, ctaBanc14, ctaBanc15, cuentaVoucherDialog;
 	
 	private Date fechaEmision = new Date() ;
 	private Date fechaEmisionNotaVenta = new Date() ;
-	private Date fechaImag1, fechaImag2, fechaImag3, fechaImag4, fechaImag5, fechaImag6, fechaImag7, fechaImag8, fechaImag9, fechaImag10, fechaEnvioSunat ;
-	private BigDecimal montoImag1, montoImag2, montoImag3, montoImag4, montoImag5, montoImag6, montoImag7, montoImag8, montoImag9, montoImag10;
-	private String nroOperImag1, nroOperImag2, nroOperImag3, nroOperImag4, nroOperImag5, nroOperImag6, nroOperImag7, nroOperImag8, nroOperImag9, nroOperImag10;
+	private Date fechaImag1, fechaImag2, fechaImag3, fechaImag4, fechaImag5, fechaImag6, fechaImag7, fechaImag8, fechaImag9, fechaImag10, fechaImag11, fechaImag12, fechaImag13, fechaImag14, fechaImag15, fechaEnvioSunat ;
+	private BigDecimal montoImag1, montoImag2, montoImag3, montoImag4, montoImag5, montoImag6, montoImag7, montoImag8, montoImag9, montoImag10, montoImag11, montoImag12, montoImag13, montoImag14, montoImag15;
+	private String nroOperImag1, nroOperImag2, nroOperImag3, nroOperImag4, nroOperImag5, nroOperImag6, nroOperImag7, nroOperImag8, nroOperImag9, nroOperImag10, nroOperImag11, nroOperImag12, nroOperImag13, nroOperImag14, nroOperImag15;
 	private String fechaTextoVista, montoLetra;
 	private String observacion, numero, numeroNota, razonSocialCliente, nombreComercialCliente,rucDniCliente, direccionCliente, email1Cliente, email2Cliente, email3Cliente  ; 
 	private String tipoPago = "Contado";
@@ -253,23 +253,15 @@ public class DocumentoVentaBean extends BaseBean {
 	private BigDecimal sumaCuotaSI, sumaInteres, sumaCuotaTotal;
 	
 	private String imagen1, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8, imagen9, imagen10;
-	private String tipoTransaccion1, tipoTransaccion2, tipoTransaccion3, tipoTransaccion4, tipoTransaccion5, tipoTransaccion6, tipoTransaccion7, tipoTransaccion8, tipoTransaccion9, tipoTransaccion10;
+	private String tipoTransaccion1, tipoTransaccion2, tipoTransaccion3, tipoTransaccion4, tipoTransaccion5, tipoTransaccion6, tipoTransaccion7, tipoTransaccion8, tipoTransaccion9, tipoTransaccion10, tipoTransaccion11, tipoTransaccion12, tipoTransaccion13, tipoTransaccion14, tipoTransaccion15;
 
 	private NumeroALetra numeroALetra = new  NumeroALetra();
 	
 	private Map<String, Object> parametros;
     private DataSourceDocumentoVenta dt; 
     
-    private UploadedFile file1;
-    private UploadedFile file2;
-    private UploadedFile file3;
-    private UploadedFile file4;
-    private UploadedFile file5;
-    private UploadedFile file6;
-    private UploadedFile file7;
-    private UploadedFile file8;
-    private UploadedFile file9;
-    private UploadedFile file10;
+    private UploadedFile file1, file2, file3, file4, file5, file6, file7, file8, file9, file10, file11, file12, file13, file14, file15;
+
 
 	SimpleDateFormat sdf = new SimpleDateFormat("dd 'de'  MMMMM 'del' yyyy");
 	SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
@@ -719,7 +711,7 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	
 	public void aumentarImagen() {
-		if(numMuestraImagen !=10) {
+		if(numMuestraImagen !=15) {
 			numMuestraImagen++;
 		}
 	}
@@ -1655,6 +1647,116 @@ public class DocumentoVentaBean extends BaseBean {
 			}
 		}
 		
+		if(file11!=null){
+			if(fechaImag11==null) {
+				addErrorMessage("Ingresar fecha del voucher nro. 11");
+				return true;
+			}
+			if(montoImag11==null) {
+				addErrorMessage("Ingresar monto del voucher nro. 11");
+				return true;
+			}else {
+				sumaMontoVoucher = sumaMontoVoucher.add(montoImag11);
+			}
+			if(nroOperImag11.equals("")) {
+				addErrorMessage("Ingresar número de operación del voucher nro. 11");
+				return true;
+			}
+			List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaImag11, montoImag11, nroOperImag11, ctaBanc11, tipoTransaccion11);
+			if(!buscarImagen.isEmpty()) {
+				addErrorMessage("Ya existe el voucher numero 11.");
+				return true;
+			}
+		}
+		
+		if(file12!=null){
+			if(fechaImag12==null) {
+				addErrorMessage("Ingresar fecha del voucher nro. 12");
+				return true;
+			}
+			if(montoImag12==null) {
+				addErrorMessage("Ingresar monto del voucher nro. 12");
+				return true;
+			}else {
+				sumaMontoVoucher = sumaMontoVoucher.add(montoImag12);
+			}
+			if(nroOperImag12.equals("")) {
+				addErrorMessage("Ingresar número de operación del voucher nro. 12");
+				return true;
+			}
+			List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaImag12, montoImag12, nroOperImag12, ctaBanc12, tipoTransaccion12);
+			if(!buscarImagen.isEmpty()) {
+				addErrorMessage("Ya existe el voucher numero 12.");
+				return true;
+			}
+		}
+		
+		if(file13!=null){
+			if(fechaImag13==null) {
+				addErrorMessage("Ingresar fecha del voucher nro. 13");
+				return true;
+			}
+			if(montoImag13==null) {
+				addErrorMessage("Ingresar monto del voucher nro. 13");
+				return true;
+			}else {
+				sumaMontoVoucher = sumaMontoVoucher.add(montoImag13);
+			}
+			if(nroOperImag13.equals("")) {
+				addErrorMessage("Ingresar número de operación del voucher nro. 13");
+				return true;
+			}
+			List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaImag13, montoImag13, nroOperImag13, ctaBanc13, tipoTransaccion13);
+			if(!buscarImagen.isEmpty()) {
+				addErrorMessage("Ya existe el voucher numero 13.");
+				return true;
+			}
+		}
+		
+		if(file14!=null){
+			if(fechaImag14==null) {
+				addErrorMessage("Ingresar fecha del voucher nro. 14");
+				return true;
+			}
+			if(montoImag14==null) {
+				addErrorMessage("Ingresar monto del voucher nro. 14");
+				return true;
+			}else {
+				sumaMontoVoucher = sumaMontoVoucher.add(montoImag14);
+			}
+			if(nroOperImag14.equals("")) {
+				addErrorMessage("Ingresar número de operación del voucher nro. 14");
+				return true;
+			}
+			List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaImag14, montoImag14, nroOperImag14, ctaBanc14, tipoTransaccion14);
+			if(!buscarImagen.isEmpty()) {
+				addErrorMessage("Ya existe el voucher numero 14.");
+				return true;
+			}
+		}
+		
+		if(file15!=null){
+			if(fechaImag15==null) {
+				addErrorMessage("Ingresar fecha del voucher nro. 15");
+				return true;
+			}
+			if(montoImag15==null) {
+				addErrorMessage("Ingresar monto del voucher nro. 15");
+				return true;
+			}else {
+				sumaMontoVoucher = sumaMontoVoucher.add(montoImag15);
+			}
+			if(nroOperImag15.equals("")) {
+				addErrorMessage("Ingresar número de operación del voucher nro. 15");
+				return true;
+			}
+			List<Imagen> buscarImagen = imagenService.findByEstadoAndFechaAndMontoAndNumeroOperacionAndCuentaBancariaAndTipoTransaccion(true, fechaImag15, montoImag15, nroOperImag15, ctaBanc15, tipoTransaccion15);
+			if(!buscarImagen.isEmpty()) {
+				addErrorMessage("Ya existe el voucher numero 15.");
+				return true;
+			}
+		}
+		
 		return valida;
 	}
 	
@@ -2012,6 +2114,101 @@ public class DocumentoVentaBean extends BaseBean {
 			
             subirArchivo(rename, file10);
 		}
+		
+		if(file11 != null) {
+			String rename = idDocumento +"_11" + "." + getExtension(file11.getFileName());
+			Imagen registroImagen = new Imagen();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-DOCUMENTO-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setFecha(fechaImag11);
+			registroImagen.setMonto(montoImag11);
+			registroImagen.setNumeroOperacion(nroOperImag11);
+			registroImagen.setCuentaBancaria(ctaBanc11);
+			registroImagen.setTipoTransaccion(tipoTransaccion11);
+			registroImagen.setDocumentoVenta(docVenta);
+			registroImagen.setUsuario(navegacionBean.getUsuarioLogin());
+			registroImagen.setFechaRegistro(new Date());
+			imagenService.save(registroImagen);
+			
+            subirArchivo(rename, file11);
+		}
+		
+		if(file12 != null) {
+			String rename = idDocumento +"_12" + "." + getExtension(file12.getFileName());
+			Imagen registroImagen = new Imagen();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-DOCUMENTO-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setFecha(fechaImag12);
+			registroImagen.setMonto(montoImag12);
+			registroImagen.setNumeroOperacion(nroOperImag12);
+			registroImagen.setCuentaBancaria(ctaBanc12);
+			registroImagen.setTipoTransaccion(tipoTransaccion12);
+			registroImagen.setDocumentoVenta(docVenta);
+			registroImagen.setUsuario(navegacionBean.getUsuarioLogin());
+			registroImagen.setFechaRegistro(new Date());
+			imagenService.save(registroImagen);
+			
+            subirArchivo(rename, file12);
+		}
+		
+		if(file13 != null) {
+			String rename = idDocumento +"_13" + "." + getExtension(file13.getFileName());
+			Imagen registroImagen = new Imagen();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-DOCUMENTO-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setFecha(fechaImag13);
+			registroImagen.setMonto(montoImag13);
+			registroImagen.setNumeroOperacion(nroOperImag13);
+			registroImagen.setCuentaBancaria(ctaBanc13);
+			registroImagen.setTipoTransaccion(tipoTransaccion13);
+			registroImagen.setDocumentoVenta(docVenta);
+			registroImagen.setUsuario(navegacionBean.getUsuarioLogin());
+			registroImagen.setFechaRegistro(new Date());
+			imagenService.save(registroImagen);
+			
+            subirArchivo(rename, file13);
+		}
+		
+		if(file14 != null) {
+			String rename = idDocumento +"_14" + "." + getExtension(file14.getFileName());
+			Imagen registroImagen = new Imagen();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-DOCUMENTO-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setFecha(fechaImag14);
+			registroImagen.setMonto(montoImag14);
+			registroImagen.setNumeroOperacion(nroOperImag14);
+			registroImagen.setCuentaBancaria(ctaBanc14);
+			registroImagen.setTipoTransaccion(tipoTransaccion14);
+			registroImagen.setDocumentoVenta(docVenta);
+			registroImagen.setUsuario(navegacionBean.getUsuarioLogin());
+			registroImagen.setFechaRegistro(new Date());
+			imagenService.save(registroImagen);
+			
+            subirArchivo(rename, file14);
+		}
+		
+		if(file15 != null) {
+			String rename = idDocumento +"_15" + "." + getExtension(file15.getFileName());
+			Imagen registroImagen = new Imagen();
+			registroImagen.setNombre(rename);
+			registroImagen.setCarpeta("IMG-DOCUMENTO-VENTA");
+			registroImagen.setEstado(true);
+			registroImagen.setFecha(fechaImag15);
+			registroImagen.setMonto(montoImag15);
+			registroImagen.setNumeroOperacion(nroOperImag15);
+			registroImagen.setCuentaBancaria(ctaBanc15);
+			registroImagen.setTipoTransaccion(tipoTransaccion15);
+			registroImagen.setDocumentoVenta(docVenta);
+			registroImagen.setUsuario(navegacionBean.getUsuarioLogin());
+			registroImagen.setFechaRegistro(new Date());
+			imagenService.save(registroImagen);
+			
+            subirArchivo(rename, file15);
+		}
 	}
 	
 	public void subirArchivo(String nombre, UploadedFile file) {
@@ -2242,6 +2439,41 @@ public class DocumentoVentaBean extends BaseBean {
 						nroOperImag10 = temp.getNumeroOperacion();
 						ctaBanc10 = temp.getCuentaBancaria();
 						tipoTransaccion10 = temp.getTipoTransaccion();
+					}
+					if(cont ==11) {
+						fechaImag11 = temp.getFechaOperacion();
+						montoImag11 = temp.getMonto();
+						nroOperImag11 = temp.getNumeroOperacion();
+						ctaBanc11 = temp.getCuentaBancaria();
+						tipoTransaccion11 = temp.getTipoTransaccion();
+					}
+					if(cont ==12) {
+						fechaImag12 = temp.getFechaOperacion();
+						montoImag12 = temp.getMonto();
+						nroOperImag12 = temp.getNumeroOperacion();
+						ctaBanc12 = temp.getCuentaBancaria();
+						tipoTransaccion12 = temp.getTipoTransaccion();
+					}
+					if(cont ==13) {
+						fechaImag13 = temp.getFechaOperacion();
+						montoImag13 = temp.getMonto();
+						nroOperImag13 = temp.getNumeroOperacion();
+						ctaBanc13 = temp.getCuentaBancaria();
+						tipoTransaccion13 = temp.getTipoTransaccion();
+					}
+					if(cont ==14) {
+						fechaImag14 = temp.getFechaOperacion();
+						montoImag14 = temp.getMonto();
+						nroOperImag14 = temp.getNumeroOperacion();
+						ctaBanc14 = temp.getCuentaBancaria();
+						tipoTransaccion14 = temp.getTipoTransaccion();
+					}
+					if(cont ==15) {
+						fechaImag15 = temp.getFechaOperacion();
+						montoImag15 = temp.getMonto();
+						nroOperImag15 = temp.getNumeroOperacion();
+						ctaBanc15 = temp.getCuentaBancaria();
+						tipoTransaccion15 = temp.getTipoTransaccion();
 					}
 					
 					cont++;
@@ -4715,6 +4947,186 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setVoucherTempService(VoucherTempService voucherTempService) {
 		this.voucherTempService = voucherTempService;
+	}
+	public CuentaBancaria getCtaBanc11() {
+		return ctaBanc11;
+	}
+	public void setCtaBanc11(CuentaBancaria ctaBanc11) {
+		this.ctaBanc11 = ctaBanc11;
+	}
+	public CuentaBancaria getCtaBanc12() {
+		return ctaBanc12;
+	}
+	public void setCtaBanc12(CuentaBancaria ctaBanc12) {
+		this.ctaBanc12 = ctaBanc12;
+	}
+	public CuentaBancaria getCtaBanc13() {
+		return ctaBanc13;
+	}
+	public void setCtaBanc13(CuentaBancaria ctaBanc13) {
+		this.ctaBanc13 = ctaBanc13;
+	}
+	public CuentaBancaria getCtaBanc14() {
+		return ctaBanc14;
+	}
+	public void setCtaBanc14(CuentaBancaria ctaBanc14) {
+		this.ctaBanc14 = ctaBanc14;
+	}
+	public CuentaBancaria getCtaBanc15() {
+		return ctaBanc15;
+	}
+	public void setCtaBanc15(CuentaBancaria ctaBanc15) {
+		this.ctaBanc15 = ctaBanc15;
+	}
+	public Date getFechaImag11() {
+		return fechaImag11;
+	}
+	public void setFechaImag11(Date fechaImag11) {
+		this.fechaImag11 = fechaImag11;
+	}
+	public Date getFechaImag12() {
+		return fechaImag12;
+	}
+	public void setFechaImag12(Date fechaImag12) {
+		this.fechaImag12 = fechaImag12;
+	}
+	public Date getFechaImag13() {
+		return fechaImag13;
+	}
+	public void setFechaImag13(Date fechaImag13) {
+		this.fechaImag13 = fechaImag13;
+	}
+	public Date getFechaImag14() {
+		return fechaImag14;
+	}
+	public void setFechaImag14(Date fechaImag14) {
+		this.fechaImag14 = fechaImag14;
+	}
+	public Date getFechaImag15() {
+		return fechaImag15;
+	}
+	public void setFechaImag15(Date fechaImag15) {
+		this.fechaImag15 = fechaImag15;
+	}
+	public BigDecimal getMontoImag11() {
+		return montoImag11;
+	}
+	public void setMontoImag11(BigDecimal montoImag11) {
+		this.montoImag11 = montoImag11;
+	}
+	public BigDecimal getMontoImag12() {
+		return montoImag12;
+	}
+	public void setMontoImag12(BigDecimal montoImag12) {
+		this.montoImag12 = montoImag12;
+	}
+	public BigDecimal getMontoImag13() {
+		return montoImag13;
+	}
+	public void setMontoImag13(BigDecimal montoImag13) {
+		this.montoImag13 = montoImag13;
+	}
+	public BigDecimal getMontoImag14() {
+		return montoImag14;
+	}
+	public void setMontoImag14(BigDecimal montoImag14) {
+		this.montoImag14 = montoImag14;
+	}
+	public BigDecimal getMontoImag15() {
+		return montoImag15;
+	}
+	public void setMontoImag15(BigDecimal montoImag15) {
+		this.montoImag15 = montoImag15;
+	}
+	public String getNroOperImag11() {
+		return nroOperImag11;
+	}
+	public void setNroOperImag11(String nroOperImag11) {
+		this.nroOperImag11 = nroOperImag11;
+	}
+	public String getNroOperImag12() {
+		return nroOperImag12;
+	}
+	public void setNroOperImag12(String nroOperImag12) {
+		this.nroOperImag12 = nroOperImag12;
+	}
+	public String getNroOperImag13() {
+		return nroOperImag13;
+	}
+	public void setNroOperImag13(String nroOperImag13) {
+		this.nroOperImag13 = nroOperImag13;
+	}
+	public String getNroOperImag14() {
+		return nroOperImag14;
+	}
+	public void setNroOperImag14(String nroOperImag14) {
+		this.nroOperImag14 = nroOperImag14;
+	}
+	public String getNroOperImag15() {
+		return nroOperImag15;
+	}
+	public void setNroOperImag15(String nroOperImag15) {
+		this.nroOperImag15 = nroOperImag15;
+	}
+	public String getTipoTransaccion11() {
+		return tipoTransaccion11;
+	}
+	public void setTipoTransaccion11(String tipoTransaccion11) {
+		this.tipoTransaccion11 = tipoTransaccion11;
+	}
+	public String getTipoTransaccion12() {
+		return tipoTransaccion12;
+	}
+	public void setTipoTransaccion12(String tipoTransaccion12) {
+		this.tipoTransaccion12 = tipoTransaccion12;
+	}
+	public String getTipoTransaccion13() {
+		return tipoTransaccion13;
+	}
+	public void setTipoTransaccion13(String tipoTransaccion13) {
+		this.tipoTransaccion13 = tipoTransaccion13;
+	}
+	public String getTipoTransaccion14() {
+		return tipoTransaccion14;
+	}
+	public void setTipoTransaccion14(String tipoTransaccion14) {
+		this.tipoTransaccion14 = tipoTransaccion14;
+	}
+	public String getTipoTransaccion15() {
+		return tipoTransaccion15;
+	}
+	public void setTipoTransaccion15(String tipoTransaccion15) {
+		this.tipoTransaccion15 = tipoTransaccion15;
+	}
+	public UploadedFile getFile11() {
+		return file11;
+	}
+	public void setFile11(UploadedFile file11) {
+		this.file11 = file11;
+	}
+	public UploadedFile getFile12() {
+		return file12;
+	}
+	public void setFile12(UploadedFile file12) {
+		this.file12 = file12;
+	}
+	public UploadedFile getFile13() {
+		return file13;
+	}
+	public void setFile13(UploadedFile file13) {
+		this.file13 = file13;
+	}
+	public UploadedFile getFile14() {
+		return file14;
+	}
+	public void setFile14(UploadedFile file14) {
+		this.file14 = file14;
+	}
+	public UploadedFile getFile15() {
+		return file15;
+	}
+	public void setFile15(UploadedFile file15) {
+		this.file15 = file15;
 	}
 	
 	

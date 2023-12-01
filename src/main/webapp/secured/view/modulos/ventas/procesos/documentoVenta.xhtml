@@ -800,7 +800,102 @@
 										<f:selectItem itemLabel="TRASFERENCIAS BANCARIAS" itemValue="TRASFERENCIAS BANCARIAS"/>
 										<f:selectItem itemLabel="TRASFERENCIA INTERBANCARIA" itemValue="TRASFERENCIA INTERBANCARIA"/>
 										<f:selectItem itemLabel="POS" itemValue="POS"/>
-									</p:selectOneMenu>		
+									</p:selectOneMenu>	
+									
+									<p:fileUpload value="#{documentoVentaBean.file11}" rendered="#{documentoVentaBean.numMuestraImagen ge 11}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 11}"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag11}" timeInput="true" rendered="#{documentoVentaBean.numMuestraImagen ge 11}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm:ss a" showTime="true"/>
+									<h:outputLabel  value="Monto: "  rendered="#{documentoVentaBean.numMuestraImagen ge 11}"/>
+									<p:inputNumber  value="#{documentoVentaBean.montoImag11}" rendered="#{documentoVentaBean.numMuestraImagen ge 11}" style="margin:5px; width:220px" />
+									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 11}" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag11}" rendered="#{documentoVentaBean.numMuestraImagen ge 11}" style="margin:5px; width:220px"  decimalPlaces="0" />	
+									<h:outputLabel value="Cuenta Banc:" rendered="#{documentoVentaBean.numMuestraImagen ge 11}"/>
+									<p:selectOneMenu value="#{documentoVentaBean.ctaBanc11}" converter="#{documentoVentaBean.conversorCuentaBancaria}" rendered="#{documentoVentaBean.numMuestraImagen ge 11}">
+					                    <f:selectItems value="#{documentoVentaBean.lstCuentaBancaria}" var="cb" itemLabel="#{cb.banco.abreviatura} : #{cb.numero}  (#{cb.moneda eq 'D'?'Dólares':'Soles'})" itemValue="#{cb}"/>
+					                </p:selectOneMenu>
+									<h:outputLabel value="Tipo de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 11}"/>
+									<p:selectOneMenu  value="#{documentoVentaBean.tipoTransaccion11}" rendered="#{documentoVentaBean.numMuestraImagen ge 11}">
+										<f:selectItem itemLabel="DEPOSITO EN EFECTIVO" itemValue="DEPOSITO EN EFECTIVO"/>
+										<f:selectItem itemLabel="TRASFERENCIAS BANCARIAS" itemValue="TRASFERENCIAS BANCARIAS"/>
+										<f:selectItem itemLabel="TRASFERENCIA INTERBANCARIA" itemValue="TRASFERENCIA INTERBANCARIA"/>
+										<f:selectItem itemLabel="POS" itemValue="POS"/>
+									</p:selectOneMenu>	
+									
+									<p:fileUpload value="#{documentoVentaBean.file12}" rendered="#{documentoVentaBean.numMuestraImagen ge 12}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 12}"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag12}" timeInput="true" rendered="#{documentoVentaBean.numMuestraImagen ge 12}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm:ss a" showTime="true"/>
+									<h:outputLabel  value="Monto: "  rendered="#{documentoVentaBean.numMuestraImagen ge 12}"/>
+									<p:inputNumber  value="#{documentoVentaBean.montoImag12}" rendered="#{documentoVentaBean.numMuestraImagen ge 12}" style="margin:5px; width:220px" />
+									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 12}" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag12}" rendered="#{documentoVentaBean.numMuestraImagen ge 12}" style="margin:5px; width:220px"  decimalPlaces="0" />	
+									<h:outputLabel value="Cuenta Banc:" rendered="#{documentoVentaBean.numMuestraImagen ge 12}"/>
+									<p:selectOneMenu value="#{documentoVentaBean.ctaBanc12}" converter="#{documentoVentaBean.conversorCuentaBancaria}" rendered="#{documentoVentaBean.numMuestraImagen ge 12}">
+					                    <f:selectItems value="#{documentoVentaBean.lstCuentaBancaria}" var="cb" itemLabel="#{cb.banco.abreviatura} : #{cb.numero}  (#{cb.moneda eq 'D'?'Dólares':'Soles'})" itemValue="#{cb}"/>
+					                </p:selectOneMenu>
+									<h:outputLabel value="Tipo de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 12}"/>
+									<p:selectOneMenu  value="#{documentoVentaBean.tipoTransaccion12}" rendered="#{documentoVentaBean.numMuestraImagen ge 12}">
+										<f:selectItem itemLabel="DEPOSITO EN EFECTIVO" itemValue="DEPOSITO EN EFECTIVO"/>
+										<f:selectItem itemLabel="TRASFERENCIAS BANCARIAS" itemValue="TRASFERENCIAS BANCARIAS"/>
+										<f:selectItem itemLabel="TRASFERENCIA INTERBANCARIA" itemValue="TRASFERENCIA INTERBANCARIA"/>
+										<f:selectItem itemLabel="POS" itemValue="POS"/>
+									</p:selectOneMenu>	
+									
+									<p:fileUpload value="#{documentoVentaBean.file13}" rendered="#{documentoVentaBean.numMuestraImagen ge 13}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 13}"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag13}" timeInput="true" rendered="#{documentoVentaBean.numMuestraImagen ge 13}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm:ss a" showTime="true"/>
+									<h:outputLabel  value="Monto: "  rendered="#{documentoVentaBean.numMuestraImagen ge 13}"/>
+									<p:inputNumber  value="#{documentoVentaBean.montoImag13}" rendered="#{documentoVentaBean.numMuestraImagen ge 13}" style="margin:5px; width:220px" />
+									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 13}" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag13}" rendered="#{documentoVentaBean.numMuestraImagen ge 13}" style="margin:5px; width:220px"  decimalPlaces="0" />	
+									<h:outputLabel value="Cuenta Banc:" rendered="#{documentoVentaBean.numMuestraImagen ge 13}"/>
+									<p:selectOneMenu value="#{documentoVentaBean.ctaBanc13}" converter="#{documentoVentaBean.conversorCuentaBancaria}" rendered="#{documentoVentaBean.numMuestraImagen ge 13}">
+					                    <f:selectItems value="#{documentoVentaBean.lstCuentaBancaria}" var="cb" itemLabel="#{cb.banco.abreviatura} : #{cb.numero}  (#{cb.moneda eq 'D'?'Dólares':'Soles'})" itemValue="#{cb}"/>
+					                </p:selectOneMenu>
+									<h:outputLabel value="Tipo de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 13}"/>
+									<p:selectOneMenu  value="#{documentoVentaBean.tipoTransaccion13}" rendered="#{documentoVentaBean.numMuestraImagen ge 13}">
+										<f:selectItem itemLabel="DEPOSITO EN EFECTIVO" itemValue="DEPOSITO EN EFECTIVO"/>
+										<f:selectItem itemLabel="TRASFERENCIAS BANCARIAS" itemValue="TRASFERENCIAS BANCARIAS"/>
+										<f:selectItem itemLabel="TRASFERENCIA INTERBANCARIA" itemValue="TRASFERENCIA INTERBANCARIA"/>
+										<f:selectItem itemLabel="POS" itemValue="POS"/>
+									</p:selectOneMenu>	
+									
+									<p:fileUpload value="#{documentoVentaBean.file14}" rendered="#{documentoVentaBean.numMuestraImagen ge 14}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 14}"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag14}" timeInput="true" rendered="#{documentoVentaBean.numMuestraImagen ge 14}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm:ss a" showTime="true"/>
+									<h:outputLabel  value="Monto: "  rendered="#{documentoVentaBean.numMuestraImagen ge 14}"/>
+									<p:inputNumber  value="#{documentoVentaBean.montoImag14}" rendered="#{documentoVentaBean.numMuestraImagen ge 14}" style="margin:5px; width:220px" />
+									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 14}" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag14}" rendered="#{documentoVentaBean.numMuestraImagen ge 14}" style="margin:5px; width:220px"  decimalPlaces="0" />	
+									<h:outputLabel value="Cuenta Banc:" rendered="#{documentoVentaBean.numMuestraImagen ge 14}"/>
+									<p:selectOneMenu value="#{documentoVentaBean.ctaBanc14}" converter="#{documentoVentaBean.conversorCuentaBancaria}" rendered="#{documentoVentaBean.numMuestraImagen ge 14}">
+					                    <f:selectItems value="#{documentoVentaBean.lstCuentaBancaria}" var="cb" itemLabel="#{cb.banco.abreviatura} : #{cb.numero}  (#{cb.moneda eq 'D'?'Dólares':'Soles'})" itemValue="#{cb}"/>
+					                </p:selectOneMenu>
+									<h:outputLabel value="Tipo de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 14}"/>
+									<p:selectOneMenu  value="#{documentoVentaBean.tipoTransaccion14}" rendered="#{documentoVentaBean.numMuestraImagen ge 14}">
+										<f:selectItem itemLabel="DEPOSITO EN EFECTIVO" itemValue="DEPOSITO EN EFECTIVO"/>
+										<f:selectItem itemLabel="TRASFERENCIAS BANCARIAS" itemValue="TRASFERENCIAS BANCARIAS"/>
+										<f:selectItem itemLabel="TRASFERENCIA INTERBANCARIA" itemValue="TRASFERENCIA INTERBANCARIA"/>
+										<f:selectItem itemLabel="POS" itemValue="POS"/>
+									</p:selectOneMenu>	
+									
+									<p:fileUpload value="#{documentoVentaBean.file15}" rendered="#{documentoVentaBean.numMuestraImagen ge 15}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+									<h:outputLabel value="Fecha:" rendered="#{documentoVentaBean.numMuestraImagen ge 15}"/>
+									<p:datePicker value="#{documentoVentaBean.fechaImag15}" timeInput="true" rendered="#{documentoVentaBean.numMuestraImagen ge 15}" style="margin:5px; width:220px" pattern="dd/MM/yyyy HH:mm:ss a" showTime="true"/>
+									<h:outputLabel  value="Monto: "  rendered="#{documentoVentaBean.numMuestraImagen ge 15}"/>
+									<p:inputNumber  value="#{documentoVentaBean.montoImag15}" rendered="#{documentoVentaBean.numMuestraImagen ge 15}" style="margin:5px; width:220px" />
+									<h:outputLabel value="Nro. de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 15}" />
+									<p:inputText  value="#{documentoVentaBean.nroOperImag15}" rendered="#{documentoVentaBean.numMuestraImagen ge 15}" style="margin:5px; width:220px"  decimalPlaces="0" />	
+									<h:outputLabel value="Cuenta Banc:" rendered="#{documentoVentaBean.numMuestraImagen ge 15}"/>
+									<p:selectOneMenu value="#{documentoVentaBean.ctaBanc15}" converter="#{documentoVentaBean.conversorCuentaBancaria}" rendered="#{documentoVentaBean.numMuestraImagen ge 15}">
+					                    <f:selectItems value="#{documentoVentaBean.lstCuentaBancaria}" var="cb" itemLabel="#{cb.banco.abreviatura} : #{cb.numero}  (#{cb.moneda eq 'D'?'Dólares':'Soles'})" itemValue="#{cb}"/>
+					                </p:selectOneMenu>
+									<h:outputLabel value="Tipo de Operación:" rendered="#{documentoVentaBean.numMuestraImagen ge 15}"/>
+									<p:selectOneMenu  value="#{documentoVentaBean.tipoTransaccion15}" rendered="#{documentoVentaBean.numMuestraImagen ge 15}">
+										<f:selectItem itemLabel="DEPOSITO EN EFECTIVO" itemValue="DEPOSITO EN EFECTIVO"/>
+										<f:selectItem itemLabel="TRASFERENCIAS BANCARIAS" itemValue="TRASFERENCIAS BANCARIAS"/>
+										<f:selectItem itemLabel="TRASFERENCIA INTERBANCARIA" itemValue="TRASFERENCIA INTERBANCARIA"/>
+										<f:selectItem itemLabel="POS" itemValue="POS"/>
+									</p:selectOneMenu>	
 								</h:panelGrid>
 								
 							</p:row>

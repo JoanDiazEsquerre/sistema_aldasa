@@ -72,7 +72,6 @@
 				<h:panelGrid columns="11">
 					<p:outputLabel value="Sucursal:" style="margin-left: 10px"/>
 					<p:selectOneMenu id="sucursal" value="#{planillaBean.sucursal}" disabled="#{planillaBean.bloqueo}" style="margin:5px;width:250px" converter="#{planillaBean.conversorSucursal}">
-						<f:selectItem itemLabel="[-TODOS-]" itemValue="#{null}"></f:selectItem>
 						<f:selectItems value="#{planillaBean.lstSucursal}" var="suc" itemLabel="#{suc.razonSocial}" itemValue="#{suc}"/> 
 					</p:selectOneMenu>
 					
@@ -110,8 +109,8 @@
                         
                     <p:outputLabel value="Tipo Planilla :" style="margin-left: 15px"/>
                     <p:selectOneMenu value="#{planillaBean.tipoPlanilla}" disabled="#{planillaBean.bloqueo}">
-                        <f:selectItem itemLabel="DEPENDIENTE" itemValue="DEPENDIENTE"/>
-                        <f:selectItem itemLabel="INDEPENDIENTE" itemValue="INDEPENDIENTE"/>
+                        <f:selectItem itemLabel="DEPENDIENTE" itemValue="#{true}"/>
+                        <f:selectItem itemLabel="INDEPENDIENTE" itemValue="#{false}"/>
 <!--                         <p:ajax listener="#{planillaBean.cargarListaPersonal}" update=":form:tabView:customPersonal" /> -->
                     </p:selectOneMenu>
                     
@@ -123,10 +122,50 @@
 				</h:panelGrid>
 				
 				<h:panelGrid columns="4">
-					<p:commandButton value="INICIAR" disabled="#{planillaBean.bloqueo}"/>
-                    <p:commandButton value="CANCELAR" disabled="#{planillaBean.bloqueo eq false}"/>
-                    <p:commandButton value="TERMINAR" disabled="#{planillaBean.bloqueo eq false}"/>
+					<p:commandButton value="GUARDAR" />
+                    <p:commandButton value="CANCELAR" />
+                    <p:commandButton value="TERMINAR" />
 				</h:panelGrid>
+				
+				<p:dataTable var="dp" id="idTableEmpleado" value="#{planillaBean.lstDetallePlanillaTemp}" widgetVar="empleadoTable" rowIndexVar="row" paginator="true" rows="15" size="small"
+					emptyMessage="No se encontraron empleados."	paginatorPosition="bottom" rowKey="#{dp.id}" selectionMode="single">
+					
+				
+					<f:facet name="header">
+						<div class="p-d-flex p-ai-center p-jc-between">
+							<span>Detalle de Planilla</span>
+						</div>
+					</f:facet>
+				
+					<p:column width="25px">
+			                      #{row +1}
+			        </p:column>
+			        
+					<p:column headerText="Empleado" sortBy="#{dp.empleado.person.surnames}" filterBy="#{dp.empleado.person.surnames}" filterMatchMode="contains">
+						<h:outputText value="#{dp.empleado.person.surnames} #{dp.empleado.person.names}" />
+					</p:column>
+				
+					
+					<p:column headerText="Sueldo Básico" filterMatchMode="contains">
+						<h:outputText value="#{dp.empleado.sueldoBasico}" > 
+						 <f:convertNumber currencySymbol="" type="currency"  />
+						 </h:outputText>
+					</p:column>
+					<p:column headerText="Cargo" style="text-align:center;">
+						<h:outputText value="#{dp.empleado.cargo.descripcion}" />
+					</p:column>
+					
+				
+					<p:column headerText="Planilla" sortBy="#{dp.empleado.planilla}" filterMatchMode="contains">
+						<h:outputText value="#{dp.empleado.planilla? 'SI':'NO'}" />
+					</p:column>
+					<p:column headerText="Fondo Pensión" sortBy="#{dp.empleado.fondoPension.nombre}" filterMatchMode="contains">
+						<h:outputText value="#{empleado.fondoPension.nombre}" />
+					</p:column>
+					<p:column headerText="Sucursal" sortBy="#{dp.empleado.sucursal.razonSocial}" filterMatchMode="contains">
+						<h:outputText value="#{dp.empleado.sucursal.razonSocial}" />
+					</p:column>
+				</p:dataTable>
 			</p:tab>
 		</p:tabView>
 	</h:form>

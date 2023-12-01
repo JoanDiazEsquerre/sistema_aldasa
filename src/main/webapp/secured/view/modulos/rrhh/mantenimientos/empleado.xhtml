@@ -93,6 +93,9 @@
 			<p:column headerText="Planilla" sortBy="#{empleado.planilla}" filterMatchMode="contains">
 				<h:outputText value="#{empleado.planilla? 'SI':'NO'}" />
 			</p:column>
+			<p:column headerText="Fondo Pensión" sortBy="#{empleado.fondoPension.nombre}" filterMatchMode="contains">
+				<h:outputText value="#{empleado.fondoPension.nombre}" />
+			</p:column>
 			<p:column headerText="Sucursal" sortBy="#{empleado.sucursal.razonSocial}" filterMatchMode="contains">
 				<h:outputText value="#{empleado.sucursal.razonSocial}" />
 			</p:column>

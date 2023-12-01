@@ -230,7 +230,12 @@
 					<p:fileUpload value="#{plantillaVentaBean.file7}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
 					<p:fileUpload value="#{plantillaVentaBean.file8}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
 					<p:fileUpload value="#{plantillaVentaBean.file9}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
-					<p:fileUpload value="#{plantillaVentaBean.file10}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
+					<p:fileUpload value="#{plantillaVentaBean.file10}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
+					<p:fileUpload value="#{plantillaVentaBean.file11}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
+					<p:fileUpload value="#{plantillaVentaBean.file12}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
+					<p:fileUpload value="#{plantillaVentaBean.file13}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
+					<p:fileUpload value="#{plantillaVentaBean.file14}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>
+					<p:fileUpload value="#{plantillaVentaBean.file15}" mode="simple" skinSimple="true" accept=".jpg,.jpeg,.png"/>	
 				</h:panelGrid>
 				
 				
@@ -323,6 +328,26 @@
 						
 						<p:commandButton value="IMAGEN 10" update=":formPlantillaDialog:tabPlantilla:imagenLoad" process="@this" disabled="#{plantillaVentaBean.imagen10 eq ''}">
 							<f:setPropertyActionListener value="#{plantillaVentaBean.imagen10}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
+						</p:commandButton>
+						
+						<p:commandButton value="IMAGEN 11" update=":formPlantillaDialog:tabPlantilla:imagenLoad" process="@this" disabled="#{plantillaVentaBean.imagen11 eq ''}">
+							<f:setPropertyActionListener value="#{plantillaVentaBean.imagen11}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
+						</p:commandButton>
+						
+						<p:commandButton value="IMAGEN 12" update=":formPlantillaDialog:tabPlantilla:imagenLoad" process="@this" disabled="#{plantillaVentaBean.imagen12 eq ''}">
+							<f:setPropertyActionListener value="#{plantillaVentaBean.imagen12}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
+						</p:commandButton>
+						
+						<p:commandButton value="IMAGEN 13" update=":formPlantillaDialog:tabPlantilla:imagenLoad" process="@this" disabled="#{plantillaVentaBean.imagen13 eq ''}">
+							<f:setPropertyActionListener value="#{plantillaVentaBean.imagen13}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
+						</p:commandButton>
+						
+						<p:commandButton value="IMAGEN 14" update=":formPlantillaDialog:tabPlantilla:imagenLoad" process="@this" disabled="#{plantillaVentaBean.imagen14 eq ''}">
+							<f:setPropertyActionListener value="#{plantillaVentaBean.imagen14}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
+						</p:commandButton>
+						
+						<p:commandButton value="IMAGEN 15" update=":formPlantillaDialog:tabPlantilla:imagenLoad" process="@this" disabled="#{plantillaVentaBean.imagen15 eq ''}">
+							<f:setPropertyActionListener value="#{plantillaVentaBean.imagen15}" target="#{loadImagePlantillaBean.nombreArchivo}"  />
 						</p:commandButton>
 			
 					</h:panelGrid>
