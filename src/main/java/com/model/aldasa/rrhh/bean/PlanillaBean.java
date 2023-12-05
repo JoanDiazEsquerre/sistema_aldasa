@@ -91,6 +91,64 @@ public class PlanillaBean extends BaseBean implements Serializable{
 		iniciarLazy();
 	}
 	
+	public void agregarDetalle() {
+		if(empleado != null) {
+			for(DetallePlanilla detalle : lstDetallePlanillaTemp) {
+				if(detalle.getEmpleado().getId().equals(empleado.getId())){
+					addErrorMessage("El empleado ya esta en la lista.");
+					return;
+				}
+			}
+			
+			
+			DetallePlanilla dt  = new DetallePlanilla();
+			dt.setEmpleado(empleado);
+			dt.setTardanza(BigDecimal.ZERO);
+			dt.setVacaciones(BigDecimal.ZERO);
+			dt.setComisiones(BigDecimal.ZERO);
+			dt.setBono(BigDecimal.ZERO);
+			dt.setTotal(empleado.getSueldoBasico().subtract(dt.getTardanza()).add(dt.getVacaciones()).add(dt.getComisiones()).add(dt.getBono()));
+			
+			dt.setOnp(BigDecimal.ZERO);
+			dt.setAporteObligatorio(BigDecimal.ZERO);
+			dt.setPrimaSeguros(BigDecimal.ZERO);
+			dt.setComisionVariable(BigDecimal.ZERO);
+			
+			
+			if(tipoPlanilla) {
+				if(empleado.getFondoPension()!=null) {
+					
+					if(empleado.getFondoPension().getNombre().equals("ONP")) {
+						
+						dt.setOnp(dt.getTotal().multiply(empleado.getFondoPension().getAporteObligatorio().divide(new BigDecimal(100), 2 , RoundingMode.HALF_UP))); 
+					}else {
+						dt.setAporteObligatorio(dt.getTotal().multiply(empleado.getFondoPension().getAporteObligatorio().divide(new BigDecimal(100), 2 , RoundingMode.HALF_UP)));
+						dt.setPrimaSeguros(dt.getTotal().multiply(empleado.getFondoPension().getPrimaSeguro()));
+						dt.setComisionVariable(BigDecimal.ZERO);
+						
+					}
+				}
+			}
+			
+			dt.setRentaQuinta(BigDecimal.ZERO);
+			dt.setDescMesAnterior(BigDecimal.ZERO);
+			dt.setPagoVacTrunca(BigDecimal.ZERO);
+			dt.setAdelanto(BigDecimal.ZERO);
+			dt.setPrestamo(BigDecimal.ZERO);
+			dt.setTotalDescuento(dt.getOnp().add(dt.getAporteObligatorio()).add(dt.getPrimaSeguros()).add(dt.getComisionVariable()).add(dt.getRentaQuinta()).add(dt.getDescMesAnterior()).add(dt.getPagoVacTrunca()).add(dt.getAdelanto()).add(dt.getPrestamo()));
+			
+			dt.setNetoPagar(dt.getTotal().subtract(dt.getTotalDescuento()));
+			dt.setEsSalud(dt.getTotal().compareTo(new BigDecimal(1025)) == -1? new BigDecimal(92.25) : dt.getTotal().multiply( new BigDecimal(9).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP))); 
+			
+			dt.setAbonado30(BigDecimal.ZERO);
+			dt.setAbonado4(BigDecimal.ZERO); 
+
+			
+			lstDetallePlanillaTemp.add(dt);
+			addInfoMessage("Se agregó correctamente el empleado.");
+		}
+	}
+	
 	public void bloquearPantalla() {
 		bloqueo=false;
 		planillaNew = planillaService.findByEstadoAndTemporal(true, true);

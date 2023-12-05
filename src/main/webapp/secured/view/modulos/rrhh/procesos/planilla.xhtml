@@ -73,6 +73,7 @@
 					<p:outputLabel value="Sucursal:" style="margin-left: 10px"/>
 					<p:selectOneMenu id="sucursal" value="#{planillaBean.sucursal}" disabled="#{planillaBean.bloqueo}" style="margin:5px;width:250px" converter="#{planillaBean.conversorSucursal}">
 						<f:selectItems value="#{planillaBean.lstSucursal}" var="suc" itemLabel="#{suc.razonSocial}" itemValue="#{suc}"/> 
+						<p:ajax update=":form:tabView:idTableEmpleado" listener="#{planillaBean.listarDetallePlantillaTemporal}" />
 					</p:selectOneMenu>
 					
 					<p:outputLabel value="Periodo :" style="margin-left: 15px"/>
@@ -111,14 +112,14 @@
                     <p:selectOneMenu value="#{planillaBean.tipoPlanilla}" disabled="#{planillaBean.bloqueo}">
                         <f:selectItem itemLabel="DEPENDIENTE" itemValue="#{true}"/>
                         <f:selectItem itemLabel="INDEPENDIENTE" itemValue="#{false}"/>
-<!--                         <p:ajax listener="#{planillaBean.cargarListaPersonal}" update=":form:tabView:customPersonal" /> -->
+						<p:ajax update=":form:tabView:idTableEmpleado" listener="#{planillaBean.listarDetallePlantillaTemporal}" />
                     </p:selectOneMenu>
                     
                     <h:outputLabel for="optionPerson" value="Empleado:" style="margin-left: 15px"/>
 					<p:autoComplete scrollHeight="300" styleClass="ui-autocompV" value="#{planillaBean.empleado}" 
 						converter="#{planillaBean.conversorEmpleado}" id="optionPerson" completeMethod="#{planillaBean.completeEmpleado}"  
 	                	var="per" itemLabel="#{per.person.surnames.concat(' ')}#{per.person.names}" itemValue="#{per}" forceSelection="true" />
-					<p:commandButton type="button" icon="pi pi-check" styleClass="rounded-button" />
+					<p:commandButton icon="pi pi-check" styleClass="rounded-button" actionListener="#{planillaBean.agregarDetalle}" update=":form:tabView:idTableEmpleado"/>
 				</h:panelGrid>
 				
 				<h:panelGrid columns="4">
@@ -160,7 +161,7 @@
 						<h:outputText value="#{dp.empleado.planilla? 'SI':'NO'}" />
 					</p:column>
 					<p:column headerText="Fondo Pensión" sortBy="#{dp.empleado.fondoPension.nombre}" filterMatchMode="contains">
-						<h:outputText value="#{empleado.fondoPension.nombre}" />
+						<h:outputText value="#{dp.empleado.fondoPension.nombre}" />
 					</p:column>
 					<p:column headerText="Sucursal" sortBy="#{dp.empleado.sucursal.razonSocial}" filterMatchMode="contains">
 						<h:outputText value="#{dp.empleado.sucursal.razonSocial}" />
