@@ -81,9 +81,9 @@ public class ComprasBean extends BaseBean {
 	private DetalleOrdenCompra detalleOrdenCompraSelected;
 	private Unidad unidadFilter;
 	
-	private String cantidad, descripcionProducto;
+	private String descripcionProducto;
 	private Date fecha;
-	private BigDecimal precio, total;
+	private BigDecimal cantidad, precio, total;
 
 	private String estado = "Pendiente" ;
 	
@@ -184,7 +184,7 @@ public class ComprasBean extends BaseBean {
 		detalle.setPrecio(precio);
 		detalle.setTotal(total);
 		lstDetalleOrdenCompra.add(detalle);
-		cantidad = "";
+		cantidad = null;
 		descripcionProducto="";
 		precio = null;
 		total = null;
@@ -276,10 +276,10 @@ public class ComprasBean extends BaseBean {
 	public void setDetalleOrdenCompraSelected(DetalleOrdenCompra detalleOrdenCompraSelected) {
 		this.detalleOrdenCompraSelected = detalleOrdenCompraSelected;
 	}
-	public String getCantidad() {
+	public BigDecimal getCantidad() {
 		return cantidad;
 	}
-	public void setCantidad(String cantidad) {
+	public void setCantidad(BigDecimal cantidad) {
 		this.cantidad = cantidad;
 	}
 	public String getDescripcionProducto() {

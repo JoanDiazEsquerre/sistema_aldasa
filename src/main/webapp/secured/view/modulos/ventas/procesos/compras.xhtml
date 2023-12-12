@@ -88,8 +88,8 @@
 			<p:tab title="Registrar nueva compra">
 				
 				<h:panelGrid columns="2"> 
-					<h:outputLabel value="Cantidad:" />
-					<p:inputText id="cantidad" value="#{comprasBean.cantidad}" style="margin:10px"/>
+					<h:outputLabel value="Cantidad: " />
+					<p:inputNumber id="cantidad" value="#{comprasBean.cantidad}" style="margin:10px"/> 
 					
 					<p:outputLabel for="unidad" value="Unidad: " />
 					<p:selectOneMenu id="unidad" value="#{comprasBean.unidadFilter}" converter="#{comprasBean.conversorUnidad}" >

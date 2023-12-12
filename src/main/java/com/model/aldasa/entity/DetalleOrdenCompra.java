@@ -24,7 +24,7 @@ public class DetalleOrdenCompra {
 	@JoinColumn(name="idordencompra")
 	private OrdenCompra ordenCompra;
 	
-	private String cantidad;
+	private BigDecimal cantidad;
 	
 	@Column(name="descripcionproducto")
 	private String DescripcionProducto;
@@ -56,10 +56,10 @@ public class DetalleOrdenCompra {
 	public void setOrdenCompra(OrdenCompra ordenCompra) {
 		this.ordenCompra = ordenCompra;
 	}
-	public String getCantidad() {
+	public BigDecimal getCantidad() {
 		return cantidad;
 	}
-	public void setCantidad(String cantidad) {
+	public void setCantidad(BigDecimal cantidad) {
 		this.cantidad = cantidad;
 	}
 	public String getDescripcionProducto() {

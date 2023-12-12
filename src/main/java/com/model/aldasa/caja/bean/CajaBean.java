@@ -100,29 +100,22 @@ public class CajaBean extends BaseBean {
 		
 		int index = 2;
 		
-		BigDecimal saldoAnterior = BigDecimal.ZERO;
-		Caja cajaAnterior = cajaService.findFirstBySucursalAndEstadoOrderByIdDesc(navegacionBean.getSucursalLogin(), "Cerrada");
+		BigDecimal saldoAnterior = cajaSelected.getMontoInicioEfectivo();
+//		Caja cajaAnterior = cajaService.findFirstBySucursalAndEstadoOrderByIdDesc(navegacionBean.getSucursalLogin(), "Cerrada");
 		Row rowDetail = sheet.createRow(1);
+		Cell cellfecha = rowDetail.createCell(0);cellfecha.setCellValue("");cellfecha.setCellStyle(styleBorder);
 		Cell celldesc = rowDetail.createCell(1);celldesc.setCellValue("SALDO ANTERIOR");celldesc.setCellStyle(styleBorder);
 		Cell cellI0 = rowDetail.createCell(2);cellI0.setCellValue("");cellI0.setCellStyle(styleBorder);
 		Cell cellE0 = rowDetail.createCell(3);cellE0.setCellValue("");cellE0.setCellStyle(styleBorder);
+		Cell cellmonto = rowDetail.createCell(4);cellmonto.setCellValue(saldoAnterior +"");cellmonto.setCellStyle(styleBorder);
 		
-		if(cajaAnterior == null) {
-			Cell cellfecha = rowDetail.createCell(0);cellfecha.setCellValue("");cellfecha.setCellStyle(styleBorder);
-			Cell cellmonto = rowDetail.createCell(4);cellmonto.setCellValue("0");cellmonto.setCellStyle(styleBorder);
-		}else {
-			Cell cellfecha = rowDetail.createCell(0);cellfecha.setCellValue(sdf.format(cajaSelected.getFecha()));cellfecha.setCellStyle(styleBorder);
-			Cell cellmonto = rowDetail.createCell(4);cellmonto.setCellValue(cajaSelected.getId() == cajaAnterior.getId()? "0" : cajaAnterior.getMontoFinalEfectivo() + "");cellmonto.setCellStyle(styleBorder);
-			if(cajaSelected.getId() != cajaAnterior.getId()) {
-				saldoAnterior = cajaAnterior.getMontoFinalEfectivo();
-			}
 			
-		}
+		
 		
 		if (!lstDetalleCajaSelected.isEmpty()) {
 			for (DetalleCaja detalle : lstDetalleCajaSelected) {
 				Row rowDetalle = sheet.createRow(index);
-				Cell cellfecha = rowDetalle.createCell(0);cellfecha.setCellValue(sdf.format(detalle.getFecha()));cellfecha.setCellStyle(styleBorder);
+				Cell cellfechah = rowDetalle.createCell(0);cellfechah.setCellValue(sdf.format(detalle.getFecha()));cellfechah.setCellStyle(styleBorder);
 				Cell cellDesc = rowDetalle.createCell(1);cellDesc.setCellValue(detalle.getDescripcion());cellDesc.setCellStyle(styleBorder);
 				Cell cellIngreso = rowDetalle.createCell(2);cellIngreso.setCellValue(detalle.getTipoMovimiento().equals("Ingreso") ? detalle.getMonto()+"" : "");cellIngreso.setCellStyle(styleBorder);
 				Cell cellEgreso = rowDetalle.createCell(3);cellEgreso.setCellValue(detalle.getTipoMovimiento().equals("Egreso") ? detalle.getMonto()+"" : "");cellEgreso.setCellStyle(styleBorder);
