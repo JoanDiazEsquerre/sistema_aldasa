@@ -45,15 +45,15 @@ public class NavegacionBean implements Serializable  {
 	private int idAsistenteVenta = Perfiles.ASISTENTE_VENTA.getId();
 
 	
-	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas, menuAlmacen, menuRRHH;
+	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas, menuAlmacen, menuRRHH, menucaja;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuPlanilla, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
 					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato, subMenuDocumentoVentas, subMenuPlantillaVenta, 
-					subMenuDocumentoVenta, subMenuInventario, subMenuCliente, subMenuMapeoLote, subMenuVoucher;
+					subMenuDocumentoVenta, subMenuInventario, subMenuCliente, subMenuMapeoLote, subMenuVoucher, subMenuCaja, subMenuCompras;
 	
 	private int[] permisoProspectos,permisoProspeccion,permisoAgenda,permisoSimulador,permisoPersonas,permisoUsuarios,permisoPerfiles,permisoProyectos,permisoEquipos, permisoCambiarConstrasenia,
 					permisoReporteAcciones,permisoManzanas,permisoLotes,permisoComisiones,permisoComision,permisoEmpleado,permisoReporteLotes,permisoAsistencia,permisoReporteAsistencia,permisoRequerimientoSeparacion,
 					permisoRankingVentas,permisoContrato,permisoReporteDocumentoVentas,permisoDocumentoVenta,permisoInventario,permisoCliente, permisoPlantillaVenta, permisoMapeoLote, permisoVoucher,
-					permisoPlanilla;
+					permisoPlanilla, permisoCaja, permisoCompras;
 
 	@PostConstruct
 	public void init() {
@@ -98,6 +98,8 @@ public class NavegacionBean implements Serializable  {
 		permisoMapeoLote = obtenerPermisosPorPerfil(28);
 		permisoVoucher = obtenerPermisosPorPerfil(29);
 		permisoPlanilla = obtenerPermisosPorPerfil(30);
+		permisoCaja = obtenerPermisosPorPerfil(31);
+		permisoCompras = obtenerPermisosPorPerfil(32);
 		
 		permisoPantallas();
 		
@@ -165,11 +167,12 @@ public class NavegacionBean implements Serializable  {
 		}
 		
 		//******************************************************************************
+		subMenuCompras= validaPermiso(permisoCompras);
 		subMenuRankingVentas= validaPermiso(permisoRankingVentas);
 		subMenuDocumentoVentas=validaPermiso(permisoDocumentoVenta);
 		subMenuPlantillaVenta = validaPermiso(permisoPlantillaVenta);
 				
-		if(subMenuRankingVentas || subMenuDocumentoVentas || subMenuPlantillaVenta){
+		if(subMenuRankingVentas || subMenuDocumentoVentas || subMenuPlantillaVenta || subMenuCompras){
 			menuVentas=true;
 		}
 		
@@ -188,6 +191,14 @@ public class NavegacionBean implements Serializable  {
 		}
 		
 		//******************************************************************************
+		
+		subMenuCaja= validaPermiso(permisoCaja);
+		
+		if(subMenuCaja) {
+			menucaja=true;
+		}
+		
+		//*******************************************************************************
 		subMenuEmpleado= validaPermiso(permisoEmpleado);
 		subMenuPlanilla = validaPermiso(permisoPlanilla);
 		
@@ -354,6 +365,16 @@ public class NavegacionBean implements Serializable  {
 	public void getContratosPage() {
 		ruta = "modulos/proyecto/mantenimientos/contrato.xhtml";
 	}
+	
+	public void getProcesoCajaPage() {
+		ruta = "modulos/caja/procesos/caja.xhtml";
+	}
+	
+	public void getProcesoComprasPage() {
+		ruta = "modulos/ventas/procesos/compras.xhtml";
+	}
+	
+	
 	
 	public void cerrarSesion() {
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
@@ -848,6 +869,43 @@ public class NavegacionBean implements Serializable  {
 	public void setSubMenuPlanilla(boolean subMenuPlanilla) {
 		this.subMenuPlanilla = subMenuPlanilla;
 	}
+	public boolean isMenucaja() {
+		return menucaja;
+	}
+	public void setMenucaja(boolean menucaja) {
+		this.menucaja = menucaja;
+	}
+	public boolean isSubMenuCaja() {
+		return subMenuCaja;
+	}
+	public void setSubMenuCaja(boolean subMenuCaja) {
+		this.subMenuCaja = subMenuCaja;
+	}
+	public int[] getPermisoPlanilla() {
+		return permisoPlanilla;
+	}
+	public void setPermisoPlanilla(int[] permisoPlanilla) {
+		this.permisoPlanilla = permisoPlanilla;
+	}
+	public int[] getPermisoCaja() {
+		return permisoCaja;
+	}
+	public void setPermisoCaja(int[] permisoCaja) {
+		this.permisoCaja = permisoCaja;
+	}
+	public boolean isSubMenuCompras() {
+		return subMenuCompras;
+	}
+	public void setSubMenuCompras(boolean subMenuCompras) {
+		this.subMenuCompras = subMenuCompras;
+	}
+	public int[] getPermisoCompras() {
+		return permisoCompras;
+	}
+	public void setPermisoCompras(int[] permisoCompras) {
+		this.permisoCompras = permisoCompras;
+	}
+
 	
 	
 }
