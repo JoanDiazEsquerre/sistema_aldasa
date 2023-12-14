@@ -61,11 +61,28 @@
 			            </p:submenu>
 			            
 			            <p:submenu label="Ventas" rendered="#{navegacionBean.menuVentas}">
-			            	<p:menuitem value="Compras" ajax="false" icon="pi pi-chart-line" update=":contenedor" actionListener="#{navegacionBean.getProcesoComprasPage()}" rendered="#{navegacionBean.subMenuCompras}"/>
 			            	<p:menuitem value="Ranking de Ventas" ajax="false" icon="pi pi-chart-line" update=":contenedor" actionListener="#{navegacionBean.getVentasRankingVentasPage()}" rendered="#{navegacionBean.subMenuRankingVentas}"/>
 			            	<p:menuitem value="Documento de Ventas" ajax="false" icon="pi pi-file" update=":contenedor" actionListener="#{navegacionBean.getVentasDocumentoVentasPage()}" rendered="#{navegacionBean.subMenuDocumentoVentas}"/>			            
 							 <p:menuitem value="Plantilla de Ventas" ajax="false" icon="pi pi-file" update=":contenedor" actionListener="#{navegacionBean.getVentasPlantillaVentaPage()}" rendered="#{navegacionBean.subMenuPlantillaVenta}"/>			            
 			            </p:submenu>
+			            
+			            <p:submenu label="Compras" rendered="#{navegacionBean.menuCompra}"> 
+			            	<p:menuitem value="Orden Compras" ajax="false" icon="pi pi-chart-line" update=":contenedor" actionListener="#{navegacionBean.getProcesoOrdenComprasPage()}" rendered="#{navegacionBean.subMenuOrdenCompra}"/>
+			            </p:submenu>
+			            
+						<p:submenu label="Mantenimientos" rendered="#{navegacionBean.menuMantenimiento}">
+							<p:menuitem value="Personas" ajax="false" icon="pi pi-user-plus" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPersonasPage()}"  rendered="#{navegacionBean.subMenuPersonas}"/>						
+							<p:menuitem value="Usuarios" ajax="false" icon="pi pi-users"  actionListener="#{navegacionBean.getMantenimientoUsersPage()}" rendered="#{navegacionBean.subMenuUsuarios}"/>
+							<p:menuitem value="Perfiles" ajax="false" icon="pi pi-unlock" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoProfilePage()}" rendered="#{navegacionBean.subMenuPerfiles}" />
+							<p:menuitem value="Equipos" ajax="false" icon="pi pi-sitemap" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoTeamPage()}" rendered="#{navegacionBean.subMenuEquipos}"/>
+							<p:menuitem value="Clientes" ajax="false" icon="pi pi-sitemap" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoClientePage()}" rendered="#{navegacionBean.subMenuCliente}"/>
+							<p:menuitem value="Config. Comisión" icon="pi pi-dollar" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoComisionPage()}" rendered="#{navegacionBean.subMenuComision}"/>
+							<p:menuitem value="Voucher" icon="pi pi-file" ajax="false" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoVoucherPage()}" rendered="#{navegacionBean.subMenuVoucher}"/>
+							<p:menuitem value="Cambiar Contraseña" ajax="false" icon="pi pi-lock" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoPasswordchangePage()}" rendered="#{navegacionBean.subMenuCambiarContrasenia}" />
+							
+<!-- 							<p:menuitem value="Cuenta Bancaria" ajax="false" icon="pi pi-wallet" update=":contenedor" actionListener="#{navegacionBean.getMantenimientoCuentaBancariaPage()}" rendered="#{navegacionBean.subMenuCuentaBancaria}" /> -->
+						</p:submenu>
+
 						
 						<p:submenu label="Caja" rendered="#{navegacionBean.menucaja}">
 							<p:menuitem value="Caja Chica" ajax="false" icon="pi pi-chart-line" update=":contenedor" actionListener="#{navegacionBean.getProcesoCajaPage}" rendered="#{navegacionBean.subMenuCaja}"/>

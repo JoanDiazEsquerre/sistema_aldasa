@@ -48,6 +48,9 @@ public class Usuario {
 	@Column(name="aprobarrequerimientoseparacion")
 	private boolean aprobarRequerimientoSeparacion;
 	
+	@Column(name="aprobarordencompra")
+	private boolean aprobarOrdenCompra;
+	
 	
 	
 	public Integer getId() {
@@ -121,6 +124,13 @@ public class Usuario {
 	}
 	public void setAprobarRequerimientoSeparacion(boolean aprobarRequerimientoSeparacion) {
 		this.aprobarRequerimientoSeparacion = aprobarRequerimientoSeparacion;
-	}	
+	}
+	public boolean isAprobarOrdenCompra() {
+		return aprobarOrdenCompra;
+	}
+	public void setAprobarOrdenCompra(boolean aprobarOrdenCompra) {
+		this.aprobarOrdenCompra = aprobarOrdenCompra;
+	}
+	
 	
 }

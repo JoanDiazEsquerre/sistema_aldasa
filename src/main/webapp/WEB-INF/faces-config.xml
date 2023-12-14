@@ -1162,8 +1162,8 @@
 	</managed-bean>
 	
 	<managed-bean>
-		<managed-bean-name>comprasBean</managed-bean-name>
-		<managed-bean-class>com.model.aldasa.ventas.bean.ComprasBean</managed-bean-class>
+		<managed-bean-name>ordenCompraBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.compra.bean.OrdenCompraBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope> 
 		<managed-property>
 			<property-name>detalleOrdenCompraService</property-name>
@@ -1176,6 +1176,10 @@
 		<managed-property>
 			<property-name>unidadService</property-name>
 			<value>#{unidadService}</value> 
+		</managed-property>
+		<managed-property>
+			<property-name>navegacionBean</property-name>
+			<value>#{navegacionBean}</value> 
 		</managed-property>
 	</managed-bean>
 	

@@ -1,4 +1,4 @@
-package com.model.aldasa.ventas.bean;
+package com.model.aldasa.compra.bean;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -58,7 +58,7 @@ import com.model.aldasa.util.UtilXls;
 
 @ManagedBean
 @ViewScoped
-public class ComprasBean extends BaseBean {
+public class OrdenCompraBean extends BaseBean {
 	
 	@ManagedProperty(value = "#{detalleOrdenCompraService}")
 	private DetalleOrdenCompraService detalleOrdenCompraService;
@@ -68,6 +68,9 @@ public class ComprasBean extends BaseBean {
 	
 	@ManagedProperty(value = "#{unidadService}")
 	private UnidadService unidadService;
+	
+	@ManagedProperty(value = "#{navegacionBean}")
+	private NavegacionBean navegacionBean;
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -91,11 +94,32 @@ public class ComprasBean extends BaseBean {
 	public void init() {
 		iniciarLazy();
 		lstUnidad= unidadService.findByEstado(true);
+		lstDetalleOrdenCompra = new ArrayList<>();
+	}
+	
+	public void aprobarOrdenCompra() {
+		ordenCompraSelected.setEstado("Aprobado");
+		ordenCompraService.save(ordenCompraSelected);
+		addInfoMessage("Se aprobó la orden compra correctamente."); 
+		PrimeFaces.current().executeScript("PF('ordenCompraDialog').hide();"); 
+	}
+	
+	public void rechazarOrdenCompra() {
+		ordenCompraSelected.setEstado("Rechazado");
+		ordenCompraService.save(ordenCompraSelected);
+		addInfoMessage("Se rechazó la orden compra correctamente."); 
+		PrimeFaces.current().executeScript("PF('ordenCompraDialog').hide();"); 
 	}
 	
 	public void deleteDetalle(DetalleOrdenCompra detalle) {
 		lstDetalleOrdenCompra.remove(detalle);
 		addInfoMessage("Detalle eliminado correctamente.");
+	}
+	
+	public void calcularTotal() {
+		if(cantidad!=null && precio!=null) {
+			total=cantidad.multiply(precio);
+		}
 	}
 	
 	public void iniciarLazy() {
@@ -130,12 +154,7 @@ public class ComprasBean extends BaseBean {
 
 			@Override
 			public List<OrdenCompra> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-//				String names = "%" + (filterBy.get("contrato.personVenta.surnames") != null ? filterBy.get("contrato.personVenta.surnames").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
-//				String dni = "%" + (filterBy.get("contrato.personVenta.dni") != null ? filterBy.get("contrato.personVenta.dni").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
-//				String numLote = "%" + (filterBy.get("contrato.lote.numberLote") != null ? filterBy.get("contrato.lote.numberLote").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
-//				String manzana = "%" + (filterBy.get("contrato.lote.manzana.name") != null ? filterBy.get("contrato.lote.manzana.name").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
-				
-				
+	
                 Sort sort=Sort.by("id").ascending();
                 if(sortBy!=null) {
                 	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
@@ -149,7 +168,8 @@ public class ComprasBean extends BaseBean {
                 }        
                 Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
                
-                Page<OrdenCompra> pageOrdenCompra= ordenCompraService.findByEstado(estado, pageable);
+                Page<OrdenCompra> pageOrdenCompra= null;
+                pageOrdenCompra=ordenCompraService.findByEstado(estado, pageable);
 
 				
                 setRowCount((int) pageOrdenCompra.getTotalElements());
@@ -163,6 +183,12 @@ public class ComprasBean extends BaseBean {
 			addErrorMessage("Ingresar cantidad.");
 			return;
 		}
+		
+		if(unidadFilter==null) {
+			addErrorMessage("Ingresar unidad.");
+			return;
+		}
+		
 		if(descripcionProducto.equals("")) {
 			addErrorMessage("Ingresar descripción del producto.");
 			return;
@@ -189,21 +215,42 @@ public class ComprasBean extends BaseBean {
 		precio = null;
 		total = null;
 		addInfoMessage("Item Agregado.");
-
-		
-		
-//		DetalleOrdenCompra d = detalleOrdenCompraService.save(detalle);
-//		if(d==null) {
-//			addErrorMessage("No se guardó correctamente.");
-//			return;
-//		}else {
-//			addInfoMessage("Se guardó correctamente.");
-//		}
 		
 	}
 	
 	public void saveCompra() {
 		
+		if(!lstDetalleOrdenCompra.isEmpty()) {
+			BigDecimal totalDetalle = BigDecimal.ZERO;
+			for(DetalleOrdenCompra d:lstDetalleOrdenCompra) {
+				totalDetalle = totalDetalle.add(d.getTotal());
+			}
+			OrdenCompra compra = new OrdenCompra();
+			compra.setFechaEmision(new Date());
+			compra.setEstado("Pendiente");
+			compra.setUsuario(navegacionBean.getUsuarioLogin());
+			compra.setFechaRegistro(new Date());
+			compra.setFormaPago("");
+			compra.setObservacion("");
+			compra.setTotal(totalDetalle);
+			compra.setSubTotal(totalDetalle);
+			compra.setIgv(totalDetalle.multiply(new BigDecimal(0.18)));
+			OrdenCompra guardar = ordenCompraService.save(compra);
+
+			if(guardar!= null) {
+				for(DetalleOrdenCompra d:lstDetalleOrdenCompra) {
+					d.setOrdenCompra(guardar);
+					detalleOrdenCompraService.save(d);
+				}
+				lstDetalleOrdenCompra.clear();
+				addInfoMessage("Detalle guardado correctamente.");
+				
+			}else {
+				addErrorMessage("No se pudo guardar el detalle");
+			}
+		}else {
+			addErrorMessage("Lista de detalles esta vacía.");
+		}
 		
 	}
 	
@@ -329,6 +376,12 @@ public class ComprasBean extends BaseBean {
 	}
 	public void setLstUnidad(List<Unidad> lstUnidad) {
 		this.lstUnidad = lstUnidad;
+	}
+	public NavegacionBean getNavegacionBean() {
+		return navegacionBean;
+	}
+	public void setNavegacionBean(NavegacionBean navegacionBean) {
+		this.navegacionBean = navegacionBean;
 	}
 	
 	
