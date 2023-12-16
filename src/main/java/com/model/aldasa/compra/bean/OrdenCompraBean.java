@@ -85,6 +85,7 @@ public class OrdenCompraBean extends BaseBean {
 	private Unidad unidadFilter;
 	
 	private String descripcionProducto;
+	private String formaPago, observacion;
 	private Date fecha;
 	private BigDecimal cantidad, precio, total;
 
@@ -97,15 +98,26 @@ public class OrdenCompraBean extends BaseBean {
 		lstDetalleOrdenCompra = new ArrayList<>();
 	}
 	
+	public void listarListaDetalles() {
+		lstDetalleOrdenCompra = detalleOrdenCompraService.findByOrdenCompraAndEstado(ordenCompraSelected, true);
+	}
+	
 	public void aprobarOrdenCompra() {
+		
 		ordenCompraSelected.setEstado("Aprobado");
+		ordenCompraSelected.setUsuarioAprueba(navegacionBean.getUsuarioLogin());
+		ordenCompraSelected.setFechaAprueba(new Date());
 		ordenCompraService.save(ordenCompraSelected);
+		
 		addInfoMessage("Se aprobó la orden compra correctamente."); 
 		PrimeFaces.current().executeScript("PF('ordenCompraDialog').hide();"); 
 	}
 	
 	public void rechazarOrdenCompra() {
+		
 		ordenCompraSelected.setEstado("Rechazado");
+		ordenCompraSelected.setUsuarioRechaza(navegacionBean.getUsuarioLogin());
+		ordenCompraSelected.setFechaRechaza(new Date());
 		ordenCompraService.save(ordenCompraSelected);
 		addInfoMessage("Se rechazó la orden compra correctamente."); 
 		PrimeFaces.current().executeScript("PF('ordenCompraDialog').hide();"); 
@@ -220,6 +232,11 @@ public class OrdenCompraBean extends BaseBean {
 	
 	public void saveCompra() {
 		
+		if(formaPago.equals("")) {
+			addErrorMessage("Seleccionar forma de pago.");
+			return;
+		}
+		
 		if(!lstDetalleOrdenCompra.isEmpty()) {
 			BigDecimal totalDetalle = BigDecimal.ZERO;
 			for(DetalleOrdenCompra d:lstDetalleOrdenCompra) {
@@ -230,12 +247,12 @@ public class OrdenCompraBean extends BaseBean {
 			compra.setEstado("Pendiente");
 			compra.setUsuario(navegacionBean.getUsuarioLogin());
 			compra.setFechaRegistro(new Date());
-			compra.setFormaPago("");
-			compra.setObservacion("");
+			compra.setFormaPago(formaPago);
+			compra.setObservacion(observacion);
 			compra.setTotal(totalDetalle);
-			compra.setSubTotal(totalDetalle);
-			compra.setIgv(totalDetalle.multiply(new BigDecimal(0.18)));
 			OrdenCompra guardar = ordenCompraService.save(compra);
+			formaPago = "";
+			observacion="";
 
 			if(guardar!= null) {
 				for(DetalleOrdenCompra d:lstDetalleOrdenCompra) {
@@ -382,6 +399,18 @@ public class OrdenCompraBean extends BaseBean {
 	}
 	public void setNavegacionBean(NavegacionBean navegacionBean) {
 		this.navegacionBean = navegacionBean;
+	}
+	public String getFormaPago() {
+		return formaPago;
+	}
+	public void setFormaPago(String formaPago) {
+		this.formaPago = formaPago;
+	}
+	public String getObservacion() {
+		return observacion;
+	}
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
 	}
 	
 	

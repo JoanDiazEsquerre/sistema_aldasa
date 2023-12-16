@@ -88,4 +88,13 @@ public class AsistenciaServiceImpl  implements AsistenciaService  {
 		return asistenciaRepository.findByEmpleadoPersonDniLikeAndTipoLikeAndEmpleadoSucursalAndHoraBetweenAndEstado(dni, tipo, sucursal, fechaIni, fechaFin, estado, pageable);
 	}
 
+	@Override
+	public List<Asistencia> findByEmpleadoAndTipoAndHoraBetweenAndEstadoOrderByHoraAsc(Empleado empleado, String tipo,
+			Date horaIni, Date horaFin, boolean estado) {
+		// TODO Auto-generated method stub
+		return asistenciaRepository.findByEmpleadoAndTipoAndHoraBetweenAndEstadoOrderByHoraAsc(empleado, tipo, horaIni, horaFin, estado);
+	}
+
+
+
 }

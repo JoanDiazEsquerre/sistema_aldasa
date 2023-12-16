@@ -28,6 +28,8 @@ public interface AsistenciaService {
 	List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenAndEstadoOrderByHoraDesc(String dni, String tipo, Date fechaIni, Date fechaFin, boolean estado);
 	List<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndHoraBetweenAndEstadoOrderByHoraAsc(String dni, String tipo, Date fechaIni, Date fechaFin, boolean estado);
 
+	List<Asistencia> findByEmpleadoAndTipoAndHoraBetweenAndEstadoOrderByHoraAsc(Empleado empleado, String tipo, Date horaIni, Date horaFin, boolean estado);
+
 	
 	Page<Asistencia> findByEmpleadoPersonDniLikeAndTipoLikeAndEmpleadoSucursalAndHoraBetweenAndEstado(String dni, String tipo,Sucursal sucursal, Date fechaIni, Date fechaFin, boolean estado, Pageable pageable);
 

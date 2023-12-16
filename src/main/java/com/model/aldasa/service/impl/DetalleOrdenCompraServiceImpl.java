@@ -1,11 +1,13 @@
 package com.model.aldasa.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.DetalleOrdenCompra;
+import com.model.aldasa.entity.OrdenCompra;
 import com.model.aldasa.repository.ContratoRepository;
 import com.model.aldasa.repository.DetalleOrdenCompraRepository;
 import com.model.aldasa.service.ContratoService;
@@ -33,5 +35,11 @@ public class DetalleOrdenCompraServiceImpl implements DetalleOrdenCompraService 
 	public void delete(DetalleOrdenCompra entity) {
 		// TODO Auto-generated method stub
 		detalleOrdenCompraRepository.delete(entity);
+	}
+
+	@Override
+	public List<DetalleOrdenCompra> findByOrdenCompraAndEstado(OrdenCompra ordenCompra, boolean estado) {
+		// TODO Auto-generated method stub
+		return detalleOrdenCompraRepository.findByOrdenCompraAndEstado(ordenCompra, estado);
 	}
 }

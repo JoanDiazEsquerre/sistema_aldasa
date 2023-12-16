@@ -32,7 +32,7 @@
 							<span>Lista de Compras</span>
 						</div>
 					</f:facet>
-					<p:ajax event="rowSelect" update="dialogOrdenCompra" oncomplete="PF('ordenCompraDialog').show();" />
+					<p:ajax event="rowSelect" update="dialogOrdenCompra" listener="#{ordenCompraBean.listarListaDetalles()}" oncomplete="PF('ordenCompraDialog').show();" />
 		
 					<p:column width="25px">
 		                      #{row +1}
@@ -61,21 +61,29 @@
 		            <p:column headerText="Observación">
 		                <h:outputText value="#{compra.observacion}" />
 		            </p:column>
+		            
+		            <p:column headerText="Usuario Aprueba"  filterMatchMode="contains" rendered="#{ordenCompraBean.estado eq 'Aprobado'}">
+						<h:outputText value="#{compra.usuarioAprueba.person.surnames} #{compra.usuarioAprueba.person.names}" />
+					</p:column>
 					
+					<p:column headerText="Fecha Aprueba" style="text-align:center" rendered="#{ordenCompraBean.estado eq 'Aprobado'}">
+						<h:outputText value="#{compra.fechaAprueba}" style="font-size: 14px;"> 
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Usuario Rechaza" filterMatchMode="contains" rendered="#{ordenCompraBean.estado eq 'Rechazado'}">
+						<h:outputText value="#{compra.usuarioRechaza.person.surnames} #{compra.usuarioRechaza.person.names}" />
+					</p:column>
+					
+					<p:column headerText="Fecha Rechaza" style="text-align:center" rendered="#{ordenCompraBean.estado eq 'Rechazado'}">
+						<h:outputText value="#{compra.fechaRechaza}" style="font-size: 14px;"> 
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+				
 					<p:column headerText="Total" filterMatchMode="contains">
 						<h:outputText value="#{compra.total}" >
-			                <f:convertNumber type="currency" currencySymbol=""/>
-			            </h:outputText>
-					</p:column>
-					
-					<p:column headerText="SubTotal" filterMatchMode="contains">
-						<h:outputText value="#{compra.subTotal}" >
-			                <f:convertNumber type="currency" currencySymbol=""/>
-			            </h:outputText>
-					</p:column>
-					
-					<p:column headerText="Igv" filterMatchMode="contains">
-						<h:outputText value="#{compra.igv}" >
 			                <f:convertNumber type="currency" currencySymbol=""/>
 			            </h:outputText>
 					</p:column>
@@ -85,38 +93,40 @@
 			</p:tab>
 			
 			<p:tab title="Registrar nueva compra">
+			
+				<h:panelGrid columns="2" > 
 				
-				<h:panelGrid columns="2"> 
-					<h:outputLabel value="Cantidad: " />
-					<p:inputNumber id="cantidad" value="#{ordenCompraBean.cantidad}" style="margin:10px"> 
-						<p:ajax update="cantidad precio total" listener="#{ordenCompraBean.calcularTotal()}"/>
-					</p:inputNumber> 
-					
-					<p:outputLabel for="unidad" value="Unidad: " />
-					<p:selectOneMenu id="unidad" value="#{ordenCompraBean.unidadFilter}" converter="#{ordenCompraBean.conversorUnidad}" >
-						<f:selectItem itemLabel="[--Seleccionar--]" itemValue="#{null}"/>
-						<f:selectItems value="#{ordenCompraBean.lstUnidad}" var="unidad" itemLabel="#{unidad.descripcion}" itemValue="#{unidad}"/>
-<!-- 						<p:ajax update=":form:idTableLote :form:panelFilter" listener="#{loteBean.listarManzanas}" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/> -->
+					<h:outputLabel value="Forma de Pago: " />
+					<p:selectOneMenu id="formaPago" value="#{ordenCompraBean.formaPago}" >
+						<f:selectItem itemLabel="[- Seleccionar -]" itemValue=""/>
+						<f:selectItem itemLabel="Efectivo" itemValue="Efectivo"/>
+						<f:selectItem itemLabel="Tarjeta" itemValue="Tarjeta"/>
 					</p:selectOneMenu>
 					
-					<h:outputLabel value="Descripción Producto:" />
-					<p:inputText id="descripProd" value="#{ordenCompraBean.descripcionProducto}" style="margin:10px"/>
+					<h:outputLabel value="Observación:" />
+					<p:inputText id="observacion" value="#{ordenCompraBean.observacion}" style="margin:10px"/>
 					
-					<h:outputLabel value="Precio: " />
-					<p:inputNumber id="precio" value="#{ordenCompraBean.precio}" style="margin:10px"> 
-						<p:ajax update="cantidad precio total" listener="#{ordenCompraBean.calcularTotal()}"/>
-					</p:inputNumber>  
-					
-					<h:outputLabel value="Total: " />
-					<p:inputNumber id="total" value="#{ordenCompraBean.total}" style="margin:10px"/> 
-					
-					<p:commandButton value="Agregar Item" actionListener="#{ordenCompraBean.agregarItem()}" update=":form:tabView:idTableDetalle :form:tabView:precio cantidad unidad descripProd precio total"/>
-					<p:commandButton value="Guardar" actionListener="#{ordenCompraBean.saveCompra()}" update=":form:tabView:idTableCompra :form:tabView:idTableDetalle"/>					
+					<p:commandButton value="Guardar" actionListener="#{ordenCompraBean.saveCompra()}" update=":form:tabView:idTableCompra :form:tabView:idTableDetalle"/>
 				
 				</h:panelGrid>
 				
 				<p:dataTable id="idTableDetalle" var="detalle" value="#{ordenCompraBean.lstDetalleOrdenCompra}" style="width:auto" rowIndexVar="row" paginator="true" rows="15" size="small" 
-				emptyMessage="No se agregaron detalles." selection="#{ordenCompraBean.detalleOrdenCompraSelected}">
+				emptyMessage="No se agregaron detalles." selection="#{ordenCompraBean.detalleOrdenCompraSelected}" paginatorPosition="bottom">
+					
+					<f:facet name="header">
+						<div class="p-d-flex p-ai-center p-jc-between">
+							<span>Lista de Detalles</span>
+						</div>
+					</f:facet>
+					<p:column style="width:42px;text-align: left">
+						<f:facet name="header">
+							<p:commandLink  update=":formDetalleDialog " oncomplete="PF('detalleDialog').show();"
+								title="NUEVO DETALLE">
+								<p:graphicImage width="50" value="/recursos/images/anadir.png" />
+			
+							</p:commandLink>
+						</f:facet>
+					</p:column>
 				
 					<p:column headerText="Nro" width="25px">
                       #{row +1}
@@ -154,12 +164,47 @@
 		
 	</h:form>
 	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogDetalle" header="DETALLE ORDEN COMPRA" widgetVar="detalleDialog" resizable="false" closable="true"
+		appendTo="@(body)" style="width:auto">
+		<h:form id="formDetalleDialog">
+		    
+			<h:panelGrid columns="2"> 
+					<h:outputLabel value="Cantidad: " />
+					<p:inputNumber id="cantidad" value="#{ordenCompraBean.cantidad}" style="margin:10px"> 
+						<p:ajax update="cantidad precio total" listener="#{ordenCompraBean.calcularTotal()}"/>
+					</p:inputNumber> 
+					
+					<p:outputLabel for="unidad" value="Unidad: " />
+					<p:selectOneMenu id="unidad" value="#{ordenCompraBean.unidadFilter}" converter="#{ordenCompraBean.conversorUnidad}" >
+						<f:selectItem itemLabel="[--Seleccionar--]" itemValue="#{null}"/>
+						<f:selectItems value="#{ordenCompraBean.lstUnidad}" var="unidad" itemLabel="#{unidad.descripcion}" itemValue="#{unidad}"/>
+					</p:selectOneMenu>
+					
+					<h:outputLabel value="Descripción Producto:" />
+					<p:inputText id="descripProd" value="#{ordenCompraBean.descripcionProducto}" style="margin:10px"/>
+					
+					<h:outputLabel value="Precio: " />
+					<p:inputNumber id="precio" value="#{ordenCompraBean.precio}" style="margin:10px"> 
+						<p:ajax update="cantidad precio total" listener="#{ordenCompraBean.calcularTotal()}"/>
+					</p:inputNumber>  
+					
+					<h:outputLabel value="Total: " />
+					<p:inputNumber id="total" value="#{ordenCompraBean.total}" style="margin:10px"/> 
+					
+					<p:commandButton value="Agregar Item" actionListener="#{ordenCompraBean.agregarItem()}" update=":form:tabView:idTableDetalle cantidad unidad descripProd precio total"/>
+				
+				</h:panelGrid>
+		</h:form>
+	</p:dialog>
+	
 	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogOrdenCompra" header="ORDEN DE COMPRA" widgetVar="ordenCompraDialog" resizable="false" closable="true"
 		appendTo="@(body)"  width="50%" height="500px">
 		<h:form id="formOrdenCompraDialog">
 					
-			<p:commandButton value="APROBAR" actionListener="#{ordenCompraBean.aprobarOrdenCompra}" rendered="#{ordenCompraBean.ordenCompraSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarOrdenCompra}" process="@this" update=":form:tabView:idTableCompra dialogOrdenCompra" style="margin:10px" styleClass="ui-button-success"/>
-			<p:commandButton value="RECHAZAR" onclick="PF('rechazaOrdenCompra').show();" rendered="#{ordenCompraBean.ordenCompraSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarOrdenCompra}" process="@this" update=":form:tabView:idTableCompra dialogOrdenCompra" styleClass="ui-button-warning"/>
+<!-- 			<p:commandButton value="APROBAR" actionListener="#{ordenCompraBean.aprobarOrdenCompra}" rendered="#{ordenCompraBean.ordenCompraSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarOrdenCompra}" process="@this" update=":form:tabView:idTableCompra dialogOrdenCompra" style="margin:10px" styleClass="ui-button-success"/> -->
+			<p:commandButton value="APROBAR" onclick="PF('apruebaOrdenCompra').show();" rendered="#{ordenCompraBean.ordenCompraSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarOrdenCompra}" process="@this" update=":form:tabView:idTableCompra " styleClass="ui-button-success" style="margin:10px"/>
+			
+			<p:commandButton value="RECHAZAR" onclick="PF('rechazaOrdenCompra').show();" rendered="#{ordenCompraBean.ordenCompraSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarOrdenCompra}" process="@this" update=":form:tabView:idTableCompra " styleClass="ui-button-warning"/>
 								
 			<p:dataTable id="idTableDetalle" var="detalle" value="#{ordenCompraBean.lstDetalleOrdenCompra}" style="width:auto" rowIndexVar="row" paginator="true" rows="15" size="small" 
 				emptyMessage="No se agregaron detalles." >
@@ -204,8 +249,6 @@
     <p:confirmDialog id="rechazaOrdenCompra" message="¿Está seguro de rechazar?" header="Confirmación" severity="alert" widgetVar="rechazaOrdenCompra" appendTo="@(body)">
         <h:form id="formRechaza">
         	<h:panelGrid columns="2">
-<!--         		<p:outputLabel value="Motivo:" /> -->
-<!--         		<p:inputText value="#{plantillaVentaBean.plantillaVentaSelected.observacion}" maxlength="200"></p:inputText> -->
         		
         		<p:commandButton value="SI" 
         			onstart="PF('blockUIWidgetRechazaOrdenCompra').block();" 
@@ -214,6 +257,28 @@
             		update=":form:tabView:idTableCompra dialogOrdenCompra"/>
             	
             	<p:commandButton value="NO" oncomplete="PF('rechazaOrdenCompra').hide()"/>
+        	</h:panelGrid>
+            
+        </h:form>
+    </p:confirmDialog>
+    
+    
+    <pe:blockUI target="apruebaOrdenCompra" widgetVar="blockUIWidgetApruebaOrdenCompra">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="apruebaOrdenCompra" message="¿Está seguro de aprobar?" header="Confirmación" severity="alert" widgetVar="apruebaOrdenCompra" appendTo="@(body)">
+        <h:form id="formAprueba">
+        	<h:panelGrid columns="2">
+        		
+        		<p:commandButton value="SI" 
+        			onstart="PF('blockUIWidgetApruebaOrdenCompra').block();" 
+        			oncomplete="PF('blockUIWidgetApruebaOrdenCompra').unblock(); PF('apruebaOrdenCompra').hide(); PF('ordenCompraDialog').hide()"  
+        			action="#{ordenCompraBean.aprobarOrdenCompra()}" 
+            		update=":form:tabView:idTableCompra dialogOrdenCompra"/>
+            	
+            	<p:commandButton value="NO" oncomplete="PF('apruebaOrdenCompra').hide()"/>
         	</h:panelGrid>
             
         </h:form>

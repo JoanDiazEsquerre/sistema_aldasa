@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +27,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.model.aldasa.entity.Asistencia;
 import com.model.aldasa.entity.DetallePlanilla;
 import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Planilla;
 import com.model.aldasa.entity.Sucursal;
+import com.model.aldasa.service.AsistenciaService;
 import com.model.aldasa.service.DetallePlanillaService;
 import com.model.aldasa.service.EmpleadoService;
 import com.model.aldasa.service.PlanillaService;
@@ -55,6 +58,9 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	@ManagedProperty(value = "#{detallePlanillaService}")
 	private DetallePlanillaService detallePlanillaService;
 	
+	@ManagedProperty(value = "#{asistenciaService}")
+	private AsistenciaService asistenciaService;
+	
 	private LazyDataModel<Planilla> lstPlanillaLazy;
 	
 	private Planilla planillaSelected;
@@ -76,6 +82,7 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	
 	SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
 	SimpleDateFormat sdfDay = new SimpleDateFormat("MM");
+	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-aaaa");
 	
 	@PostConstruct
 	public void init() {
@@ -185,9 +192,11 @@ public class PlanillaBean extends BaseBean implements Serializable{
 		
 		
 		for(Empleado e : lstEmpleadoTemp) {
+			
 			DetallePlanilla dt  = new DetallePlanilla();
 			dt.setEmpleado(e);
 			dt.setTardanza(BigDecimal.ZERO);
+			
 			dt.setVacaciones(BigDecimal.ZERO);
 			dt.setComisiones(BigDecimal.ZERO);
 			dt.setBono(BigDecimal.ZERO);
@@ -212,6 +221,65 @@ public class PlanillaBean extends BaseBean implements Serializable{
 						
 					}
 				}
+				
+				Date fechaInicio = new Date();
+				fechaInicio.setDate(1);
+				fechaInicio.setMonth(Integer.parseInt(mes)-1);
+				int anio = Integer.parseInt(periodo);
+				
+				 Calendar calendar2 = Calendar.getInstance();
+			     calendar2.setTime(fechaInicio);
+			     calendar2.set(Calendar.YEAR, anio);
+			     fechaInicio = calendar2.getTime();
+				
+		        // Convierte la fecha a un objeto Calendar
+		        Calendar calendar = Calendar.getInstance();
+		        calendar.setTime(fechaInicio);
+
+		        // Establece la fecha al último día del mes actual
+		        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+		        // Convierte el Calendar de nuevo a un objeto Date
+		        Date fechaFin = calendar.getTime();
+		
+				
+				int contMinutos = 0;
+		        
+				Date fechaActual = fechaInicio;
+		        while (!fechaActual.after(fechaFin)) {
+		        	Date busquedaIni = new Date(fechaActual.getTime());
+		        	busquedaIni.setSeconds(0);
+		        	busquedaIni.setMinutes(0);
+		        	busquedaIni.setHours(0);
+		        	
+		        	Date busquedaFin = new Date(fechaActual.getTime());
+		        	busquedaFin.setSeconds(59);
+		        	busquedaFin.setMinutes(59);
+		        	busquedaFin.setHours(23);
+
+					List<Asistencia> lstAsisEmpleado= asistenciaService.findByEmpleadoAndTipoAndHoraBetweenAndEstadoOrderByHoraAsc(e,"E" ,busquedaIni, busquedaFin, true);
+					
+					if(!lstAsisEmpleado.isEmpty()) {
+						contMinutos = contMinutos + minutosTardanza(lstAsisEmpleado.get(0));
+					}
+		            
+	
+		            // Avanzar a la siguiente fecha
+		            long tiempoEnMilisegundos = fechaActual.getTime();
+		            tiempoEnMilisegundos += 24 * 60 * 60 * 1000; // Agregar un día en milisegundos
+		            fechaActual.setTime(tiempoEnMilisegundos);
+		        }
+		        
+		        if(contMinutos!=0) {
+		        	BigDecimal sueldoDia = e.getSueldoBasico().divide(new BigDecimal(30), 2 , RoundingMode.HALF_UP);
+		        	BigDecimal sueldoHora = sueldoDia.divide(new BigDecimal(8), 2 , RoundingMode.HALF_UP);
+		        	BigDecimal sueldoMinuto = sueldoHora.divide(new BigDecimal(60), 2 , RoundingMode.HALF_UP);
+		        	BigDecimal descuento = sueldoMinuto.multiply(new BigDecimal(contMinutos));
+		        	dt.setTardanza(descuento);
+		        }
+		        
+				
+				
 			}
 			
 			dt.setRentaQuinta(BigDecimal.ZERO);
@@ -233,6 +301,41 @@ public class PlanillaBean extends BaseBean implements Serializable{
 			
 		}
 		
+	}
+	
+	public int minutosTardanza(Asistencia asist) {
+
+		int horaEntrada1 = 8;
+		
+		if(asist.getHora().getDay()==6) {
+			horaEntrada1 = 9; 
+		}
+		
+		int horaAlmuerzo = 13;
+		int horaEntrada2 = 15;
+		int minutosDiferencia = 0;
+
+		if (asist.getTipo().equals("E")) {
+
+			if (asist.getHora().getHours() >= horaEntrada1) {
+				int horasDiferencia = asist.getHora().getHours() - horaEntrada1;
+				minutosDiferencia = asist.getHora().getMinutes() + (horasDiferencia * 60) - 10;
+				if (minutosDiferencia <= 0) {
+					minutosDiferencia = 0;
+				}
+			}
+
+			if (asist.getHora().getHours() >= horaAlmuerzo) {
+				minutosDiferencia = 0;
+			}
+
+			if (asist.getHora().getHours() >= horaEntrada2) {
+				int horasDiferencia = asist.getHora().getHours() - horaEntrada2;
+				minutosDiferencia = asist.getHora().getMinutes() + (horasDiferencia * 60);
+			}
+
+		}
+		return minutosDiferencia;
 	}
 	
 	public void verDetalles() {
@@ -528,6 +631,12 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	}
 	public void setDetallePlanillaService(DetallePlanillaService detallePlanillaService) {
 		this.detallePlanillaService = detallePlanillaService;
+	}
+	public AsistenciaService getAsistenciaService() {
+		return asistenciaService;
+	}
+	public void setAsistenciaService(AsistenciaService asistenciaService) {
+		this.asistenciaService = asistenciaService;
 	}
 	
 	

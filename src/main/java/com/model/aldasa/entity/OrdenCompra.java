@@ -39,11 +39,19 @@ public class OrdenCompra {
 	
 	private BigDecimal total;
 	
-	@Column(name="subtotal")
-	private BigDecimal subTotal;
+	@ManyToOne
+	@JoinColumn(name="idusuarioaprueba")
+	private Usuario usuarioAprueba;
 	
+	@ManyToOne
+	@JoinColumn(name="idusuariorechaza")
+	private Usuario usuarioRechaza;
 	
-	private BigDecimal igv;
+	@Column(name="fechaaprueba")
+	private Date fechaAprueba;
+	
+	@Column(name="fecharechaza")
+	private Date fechaRechaza;
 
 	
 	
@@ -97,17 +105,29 @@ public class OrdenCompra {
 	public void setTotal(BigDecimal total) {
 		this.total = total;
 	}
-	public BigDecimal getIgv() {
-		return igv;
+	public Usuario getUsuarioRechaza() {
+		return usuarioRechaza;
 	}
-	public void setIgv(BigDecimal igv) {
-		this.igv = igv;
+	public void setUsuarioRechaza(Usuario usuarioRechaza) {
+		this.usuarioRechaza = usuarioRechaza;
 	}
-	public BigDecimal getSubTotal() {
-		return subTotal;
+	public Usuario getUsuarioAprueba() {
+		return usuarioAprueba;
 	}
-	public void setSubTotal(BigDecimal subTotal) {
-		this.subTotal = subTotal;
+	public void setUsuarioAprueba(Usuario usuarioAprueba) {
+		this.usuarioAprueba = usuarioAprueba;
+	}
+	public Date getFechaAprueba() {
+		return fechaAprueba;
+	}
+	public void setFechaAprueba(Date fechaAprueba) {
+		this.fechaAprueba = fechaAprueba;
+	}
+	public Date getFechaRechaza() {
+		return fechaRechaza;
+	}
+	public void setFechaRechaza(Date fechaRechaza) {
+		this.fechaRechaza = fechaRechaza;
 	}
 	
 }

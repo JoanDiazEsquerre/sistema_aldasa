@@ -1141,6 +1141,10 @@
 			<property-name>detallePlanillaService</property-name>
 			<value>#{detallePlanillaService}</value>
 		</managed-property>
+		<managed-property>
+            <property-name>asistenciaService</property-name>
+            <value>#{asistenciaService}</value>
+        </managed-property>
 	</managed-bean>
 	
 	<managed-bean>

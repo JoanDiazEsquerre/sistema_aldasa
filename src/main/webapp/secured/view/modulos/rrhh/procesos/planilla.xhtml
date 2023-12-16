@@ -129,7 +129,7 @@
 				</h:panelGrid>
 				
 				<p:dataTable var="dp" id="idTableEmpleado" value="#{planillaBean.lstDetallePlanillaTemp}" widgetVar="empleadoTable" rowIndexVar="row" paginator="true" rows="15" size="small"
-					emptyMessage="No se encontraron empleados."	paginatorPosition="bottom" rowKey="#{dp.id}" selectionMode="single">
+					emptyMessage="No se encontraron empleados." style="font-size: 14px"	paginatorPosition="bottom" rowKey="#{dp.id}" selectionMode="single">
 					
 				
 					<f:facet name="header">
@@ -142,30 +142,49 @@
 			                      #{row +1}
 			        </p:column>
 			        
+			        <p:column headerText="Sucursal" sortBy="#{dp.empleado.sucursal.razonSocial}" filterMatchMode="contains">
+						<h:outputText value="#{dp.empleado.sucursal.razonSocial}" />
+					</p:column>
+			        
 					<p:column headerText="Empleado" sortBy="#{dp.empleado.person.surnames}" filterBy="#{dp.empleado.person.surnames}" filterMatchMode="contains">
 						<h:outputText value="#{dp.empleado.person.surnames} #{dp.empleado.person.names}" />
 					</p:column>
 				
-					
-					<p:column headerText="Sueldo Básico" filterMatchMode="contains">
-						<h:outputText value="#{dp.empleado.sueldoBasico}" > 
-						 <f:convertNumber currencySymbol="" type="currency"  />
-						 </h:outputText>
-					</p:column>
 					<p:column headerText="Cargo" style="text-align:center;">
 						<h:outputText value="#{dp.empleado.cargo.descripcion}" />
 					</p:column>
-					
 				
-					<p:column headerText="Planilla" sortBy="#{dp.empleado.planilla}" filterMatchMode="contains">
+					<p:column headerText="Planilla" sortBy="#{dp.empleado.planilla}" filterMatchMode="contains" rendered="false">
 						<h:outputText value="#{dp.empleado.planilla? 'SI':'NO'}" />
 					</p:column>
 					<p:column headerText="Fondo Pensión" sortBy="#{dp.empleado.fondoPension.nombre}" filterMatchMode="contains">
 						<h:outputText value="#{dp.empleado.fondoPension.nombre}" />
 					</p:column>
-					<p:column headerText="Sucursal" sortBy="#{dp.empleado.sucursal.razonSocial}" filterMatchMode="contains">
-						<h:outputText value="#{dp.empleado.sucursal.razonSocial}" />
+					
+					<p:column headerText="Sueldo Básico" filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.empleado.sueldoBasico}" > 
+						 <f:convertNumber currencySymbol="" type="currency"  />
+						 </h:outputText>
 					</p:column>
+					
+					<p:column headerText="Tardanza" filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.tardanza}" > 
+						 <f:convertNumber currencySymbol="" type="currency"  />
+						 </h:outputText>
+					</p:column>
+					
+					<p:column headerText="Vacaciones" filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.vacaciones}" > 
+						 <f:convertNumber currencySymbol="" type="currency"  />
+						 </h:outputText>
+					</p:column>
+					
+					<p:column headerText="Comisiones" filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.comisiones}" > 
+						 <f:convertNumber currencySymbol="" type="currency"  />
+						 </h:outputText>
+					</p:column>
+					
 				</p:dataTable>
 			</p:tab>
 		</p:tabView>
