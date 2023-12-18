@@ -8,7 +8,7 @@
 
 
 	<h:form id="form">
-		<h2 style="color: #007d4c;">CAJA > CAJA</h2>
+		<h2 style="color: #007d4c;">CAJA > CAJA</h2> 
 		
 		<p:dataTable var="caja" id="idTableCabecera" value="#{cajaBean.lstCajaLazy}" widgetVar="atencionTable" rowIndexVar="row" paginator="true" rows="20" size="small"
 			emptyMessage="No se encontraron resultados." paginatorPosition="bottom" rowKey="#{caja.id}" selection="#{cajaBean.cajaSelected}" selectionMode="single">
@@ -67,8 +67,9 @@
 				
 	</h:form>
 	
-	<p:dialog modal="true" responsive="true" dynamic="true" closeOnEscape="true" id="dialogCajaDetalle" height="80%" header="CAJA" widgetVar="cajaDetalleDialog" 
-		resizable="false" closable="true" appendTo="@(body)" width="70%">
+	<p:dialog modal="true" height="600px" dynamic="true" closeOnEscape="true" id="dialogCajaDetalle" header="CAJA" widgetVar="cajaDetalleDialog" resizable="false" closable="true"
+		appendTo="@(body)"  width="60%">
+	
 		<h:form id="formDialogDetalle">
 			<h:panelGrid columns="2">
 				<p:outputLabel value="Tipo Movimiento: " />
@@ -91,22 +92,29 @@
 				
 			</h:panelGrid>
 			
-			<h:panelGrid columns="3">
+			<h:panelGrid columns="6">
 				
 				<p:commandButton actionListener="#{cajaBean.saveDetalleCaja}" value="Agregar" update=":formDialogDetalle :form:idTableCabecera"/>
 				<p:commandButton value="Cerrar Caja" action="#{cajaBean.validaCerrarCaja()}"/>
-<!-- 				<p:commandButton value="Descargar Excel" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop); PF('blockUIWidgetGeneral').block();" actionListener="#{cajaBean.descargarExcelDetalleCaja}" oncomplete="PF('blockUIWidgetGeneral').unblock();" icon="pi pi-file-excel" styleClass="mr-2"> -->
-<!-- 		           <p:fileDownload value="#{cajaBean.fileDes}"/>  -->
-<!-- 		      	</p:commandButton> -->
-		      	<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{cajaBean.procesarExcel()}"
-		                         icon="pi pi-file-excel" styleClass="mr-2">
-		            	<p:fileDownload value="#{cajaBean.fileDes}"/> 
-		      		</p:commandButton>
+
+		      	<p:commandButton value="Descargar Resumen" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{cajaBean.procesarExcel()}" icon="pi pi-file-excel" styleClass="mr-2">
+	            	<p:fileDownload value="#{cajaBean.fileDes}"/> 
+	      		</p:commandButton>
+	      		
+				<p:datePicker value="#{cajaBean.fechaDescarga}" />
+	      		
+	      		
+	      		<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{cajaBean.procesarExcelPorDia()}" icon="pi pi-file-excel" styleClass="mr-2">
+	            	<p:fileDownload value="#{cajaBean.fileDes}"/> 
+	      		</p:commandButton>
+	      		
 		      	
-			</h:panelGrid>
+			</h:panelGrid> 
 			
 			<p:dataTable reflow="true" var="detalle" id="idTabDetalle" value="#{cajaBean.lstDetalleCajaSelected}" rowIndexVar="row" rows="10" paginator="true" size="small"
-	    				editable="true" editMode="cell" paginatorPosition="bottom" rowKey="#{detalle.id}">
+	    				editable="true" editMode="cell" paginatorPosition="bottom" rowKey="#{detalle.id}"  selection="#{cajaBean.newDetalleCajaSelected}" selectionMode="single">
+	             
+	            
 	            <f:facet name="header">
 	                <div class="p-d-flex p-ai-center p-jc-between">
 	                    <span>LISTA DE MOVIMIENTOS</span>
@@ -132,16 +140,32 @@
 		                <f:convertNumber type="currency" currencySymbol=""/>
 		            </h:outputText>
 	            </p:column>
-	            <p:column headerText="Fecha y Hora" sortBy="#{detalle.fecha}" width="40px" filterMatchMode="contains">
-            		<h:outputText value="#{cajaBean.convertirHoraFull(detalle.fecha)}" />
-	            </p:column>
+	            
+	            <p:column width="40px" headerText="Fecha y Hora" filterMatchMode="contains">
+	                <p:cellEditor>
+	                    <f:facet name="output">
+	                       	<h:outputText value="#{cajaBean.convertirHoraFull(detalle.fecha)}" /> 
+	                    </f:facet>
+	                    <f:facet name="input">
+	                	                    
+	                        <p:datePicker id="dateFecha" value="#{detalle.fecha}" pattern="dd/MM/yyyy HH:mm:ss a" showTime="true" timeInput="true" > 
+	                        	<p:ajax event="change" listener="#{cajaBean.editarFecha(detalle)}" update=":formDialogDetalle:idTabDetalle"/>
+	                        </p:datePicker>
+	                    </f:facet>
+	                </p:cellEditor>
+                </p:column>
+	            
+	            <p:column width="10%" filterMatchMode="contains">
+					<p:commandButton  icon="pi pi-trash" styleClass="rounded-button ui-button-danger" process="@this" oncomplete="PF('deleteDetalleCaja').show()" > 
+						<f:setPropertyActionListener value="#{detalle}" target="#{cajaBean.newDetalleCajaSelected}" />
+					</p:commandButton>
+				</p:column>
 	        </p:dataTable>
 			
 		</h:form>
 	</p:dialog>
 	
-	
-	<p:dialog modal="true" responsive="true" dynamic="true" closeOnEscape="true" id="dialogCaja" height="90%" header="CAJA" widgetVar="cajaDialog" 
+	<p:dialog modal="true" responsive="true" dynamic="true" closeOnEscape="true" id="dialogCaja" height="800px" header="CAJA" widgetVar="cajaDialog" 
 		resizable="false" closable="true" appendTo="@(body)" style="width:auto">
 		<h:form id="formDialog">
 			<h:panelGrid columns="2">
@@ -160,6 +184,16 @@
 			
 		</h:form>
 	</p:dialog>
+	
+	<pe:blockUI target="idDeleteDetalleCaja" widgetVar="blockUIWidgetDeleteProduct">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+	<p:confirmDialog id="idDeleteDetalleCaja" widgetVar="deleteDetalleCaja" showEffect="fade" width="300" message="¿Deseas eliminar el detalle?" header="Confirmación" severity="warn" appendTo="@(body)">
+        <p:commandButton value="Si" onstart="PF('blockUIWidgetDeleteProduct').block();" oncomplete="PF('blockUIWidgetDeleteProduct').unblock();PF('deleteDetalleCaja').hide()" icon="pi pi-check" process="@this" update=":form:idTableCabecera :formDialogDetalle:idTabDetalle" actionListener="#{cajaBean.deleteDetalleCaja()}" />
+        <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('deleteDetalleCaja').hide()" />
+    </p:confirmDialog>
 	
 	<pe:blockUI target="cerrarCaja" widgetVar="blockUIWidgetAnularDoc">
           <h:form style="background: white"> 
