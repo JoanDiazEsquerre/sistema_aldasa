@@ -38,14 +38,20 @@ public class DetalleCajaServiceImpl implements DetalleCajaService {
 	}
 
 	@Override
-	public List<DetalleCaja> findByCajaAndEstado(Caja caja, boolean estado) {
-		// TODO Auto-generated method stub
-		return detalleCajaRepository.findByCajaAndEstado(caja, estado);
-	}
-
-	@Override
 	public Page<DetalleCaja> findByEstado(boolean estado, Pageable pageable) {
 		// TODO Auto-generated method stub
 		return detalleCajaRepository.findByEstado(estado, pageable);
+	}
+
+	@Override
+	public List<DetalleCaja> findByCajaAndEstadoOrderByFechaDesc(Caja caja, boolean estado) {
+		// TODO Auto-generated method stub
+		return detalleCajaRepository.findByCajaAndEstadoOrderByFechaDesc(caja, estado);
+	}
+
+	@Override
+	public List<DetalleCaja> findByCajaAndEstadoOrderByFechaAsc(Caja caja, boolean estado) {
+		// TODO Auto-generated method stub
+		return detalleCajaRepository.findByCajaAndEstadoOrderByFechaAsc(caja, estado);
 	}
 }

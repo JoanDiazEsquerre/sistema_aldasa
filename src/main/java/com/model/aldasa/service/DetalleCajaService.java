@@ -17,7 +17,9 @@ public interface DetalleCajaService {
 	DetalleCaja save(DetalleCaja entity);
 	void delete(DetalleCaja entity);
 	
-	List<DetalleCaja> findByCajaAndEstado(Caja caja, boolean estado);
+	List<DetalleCaja> findByCajaAndEstadoOrderByFechaDesc(Caja caja, boolean estado);
+	List<DetalleCaja> findByCajaAndEstadoOrderByFechaAsc(Caja caja, boolean estado);
+
 	Page<DetalleCaja> findByEstado(boolean estado, Pageable pageable);
 
 }

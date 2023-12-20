@@ -64,11 +64,15 @@
 				<h:outputText value="#{caja.usuario.username}" />
 			</p:column>
 		</p:dataTable>
+		
+		<p:contextMenu id="menuTableCaja" for="idTableCabecera" >
+            <p:menuitem value="Cerrar Caja" icon="pi pi-lock" action="#{cajaBean.validaCerrarCaja()}"  />
+        </p:contextMenu>
 				
 	</h:form>
 	
 	<p:dialog modal="true" height="600px" dynamic="true" closeOnEscape="true" id="dialogCajaDetalle" header="CAJA" widgetVar="cajaDetalleDialog" resizable="false" closable="true"
-		appendTo="@(body)"  width="60%">
+		appendTo="@(body)"  width="80%">
 	
 		<h:form id="formDialogDetalle">
 			<h:panelGrid columns="2">
@@ -90,21 +94,35 @@
 				<p:outputLabel value="Monto: " />
 				<p:inputNumber value="#{cajaBean.detalleCajaSelected.monto}"/>
 				
+				<p:outputLabel value="Sustento Contable: " />
+				<p:selectOneMenu value="#{cajaBean.detalleCajaSelected.sustentoContable}">
+					<f:selectItem itemLabel="[--Seleccionar--]" itemValue="" />
+					<f:selectItem itemLabel="Planilla de movilidad" itemValue="Planilla de movilidad" />
+					<f:selectItem itemLabel="RH" itemValue="RH" />
+					<f:selectItem itemLabel="Factura" itemValue="Factura" />
+					<f:selectItem itemLabel="Boleta" itemValue="Boleta" />
+					<f:selectItem itemLabel="Vale Provicional" itemValue="Vale Provicional" />
+					<f:selectItem itemLabel="Cheque" itemValue="Cheque" />
+					
+				</p:selectOneMenu>
+				
+				<p:outputLabel value="Correlativo: " />
+				<p:inputText rows="3" cols="50" value="#{cajaBean.detalleCajaSelected.correlativo}" maxlength="45"/>
+				
 			</h:panelGrid>
 			
 			<h:panelGrid columns="6">
 				
 				<p:commandButton actionListener="#{cajaBean.saveDetalleCaja}" value="Agregar" update=":formDialogDetalle :form:idTableCabecera"/>
-				<p:commandButton value="Cerrar Caja" action="#{cajaBean.validaCerrarCaja()}"/>
 
-		      	<p:commandButton value="Descargar Resumen" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{cajaBean.procesarExcel()}" icon="pi pi-file-excel" styleClass="mr-2">
+		      	<p:commandButton value="Resumen" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{cajaBean.procesarExcel()}" icon="pi pi-file-excel" styleClass="mr-2">
 	            	<p:fileDownload value="#{cajaBean.fileDes}"/> 
 	      		</p:commandButton>
 	      		
 				<p:datePicker value="#{cajaBean.fechaDescarga}" />
 	      		
 	      		
-	      		<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{cajaBean.procesarExcelPorDia()}" icon="pi pi-file-excel" styleClass="mr-2">
+	      		<p:commandButton value="Resumen Día" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{cajaBean.procesarExcelPorDia()}" icon="pi pi-file-excel" styleClass="mr-2">
 	            	<p:fileDownload value="#{cajaBean.fileDes}"/> 
 	      		</p:commandButton>
 	      		
@@ -128,17 +146,28 @@
 	            <p:column headerText="Tipo" sortBy="#{detalle.tipoMovimiento}" width="20px" filterMatchMode="contains">
 	                <h:outputText value="#{detalle.tipoMovimiento}" style="color:#{detalle.tipoMovimiento eq 'Egreso'?'red':'green'}" />
 	            </p:column>
+	            
 	            <p:column headerText="Origen" sortBy="#{detalle.origen}" width="20px" filterMatchMode="contains">
 	                <h:outputText value="#{detalle.origen}" />
 	            </p:column>
+	            
 	            <p:column headerText="Descripcion" sortBy="#{detalle.descripcion}" width="100px" filterMatchMode="contains">
 	                <h:outputText value="#{detalle.descripcion}" />
 	            </p:column>
+	            
 	            <p:column headerText="Monto" sortBy="#{detalle.monto}" width="20px" filterMatchMode="contains">
 	            	<h:outputText value="#{detalle.tipoMovimiento eq 'Egreso'?'-':''}" />
 	                <h:outputText value="#{detalle.monto}" >
 		                <f:convertNumber type="currency" currencySymbol=""/>
 		            </h:outputText>
+	            </p:column>
+	            
+	            <p:column headerText="Sustento Contable"  width="50px" filterMatchMode="contains">
+	                <h:outputText value="#{detalle.sustentoContable}" />
+	            </p:column>
+	            
+	            <p:column headerText="Correlativo" width="40px" filterMatchMode="contains">
+	                <h:outputText value="#{detalle.correlativo}" />
 	            </p:column>
 	            
 	            <p:column width="40px" headerText="Fecha y Hora" filterMatchMode="contains">
@@ -161,11 +190,15 @@
 					</p:commandButton>
 				</p:column>
 	        </p:dataTable>
-			
+	        
+	      	<p:commandButton value="Descargar Reporte Contable" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{cajaBean.procesarExcelReporteContable()}" icon="pi pi-file-excel" styleClass="mr-2">
+            	<p:fileDownload value="#{cajaBean.fileDes}"/> 
+      		</p:commandButton>
+	      					
 		</h:form>
 	</p:dialog>
 	
-	<p:dialog modal="true" responsive="true" dynamic="true" closeOnEscape="true" id="dialogCaja" height="800px" header="CAJA" widgetVar="cajaDialog" 
+	<p:dialog modal="true" responsive="true" dynamic="true" closeOnEscape="true" id="dialogCaja" height="200px" header="CAJA" widgetVar="cajaDialog" 
 		resizable="false" closable="true" appendTo="@(body)" style="width:auto">
 		<h:form id="formDialog">
 			<h:panelGrid columns="2">

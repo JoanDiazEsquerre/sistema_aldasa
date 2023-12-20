@@ -13,6 +13,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class UtilXls {
 	public static CellStyle styleCell(XSSFWorkbook libro, char tipo) {
 		CellStyle cellStyleDefault = libro.createCellStyle();
+		Font cellFont = libro.createFont();
+		
 		XSSFFont fontRow = libro.createFont();
 		fontRow.setFontHeightInPoints((short) 11);
 		fontRow.setFontName("Calibri");
@@ -31,6 +33,8 @@ public class UtilXls {
 			cellStyleDefault.setVerticalAlignment(CellStyle.ALIGN_CENTER);
 			cellStyleDefault.setWrapText(true);
 			
+			fontRow.setBold(true);
+
 			cellStyleDefault.setBorderBottom(CellStyle.BORDER_THIN);
 			cellStyleDefault.setBorderTop(CellStyle.BORDER_THIN);
 			cellStyleDefault.setBorderRight(CellStyle.BORDER_THIN);

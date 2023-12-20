@@ -34,69 +34,76 @@ public class DetalleCaja {
 	private Date fecha;
 	
 	private boolean estado;
-
+	
+	@Column(name = "sustentocontable")
+	private String sustentoContable;
+	
+	private String correlativo;
+	
+	
+	
+	
+	
+	
 	public Integer getId() {
 		return id;
 	}
-
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
 	public Caja getCaja() {
 		return caja;
 	}
-
 	public void setCaja(Caja caja) {
 		this.caja = caja;
 	}
-
 	public String getTipoMovimiento() {
 		return tipoMovimiento;
 	}
-
 	public void setTipoMovimiento(String tipoMovimiento) {
 		this.tipoMovimiento = tipoMovimiento;
 	}
-
 	public String getDescripcion() {
 		return descripcion;
 	}
-
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-
 	public String getOrigen() {
 		return origen;
 	}
-
 	public void setOrigen(String origen) {
 		this.origen = origen;
 	}
-
 	public BigDecimal getMonto() {
 		return monto;
 	}
-
 	public void setMonto(BigDecimal monto) {
 		this.monto = monto;
 	}
-
 	public Date getFecha() {
 		return fecha;
 	}
-
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
 	}
-
 	public boolean isEstado() {
 		return estado;
 	}
-
 	public void setEstado(boolean estado) {
 		this.estado = estado;
+	}
+	public String getSustentoContable() {
+		return sustentoContable;
+	}
+	public void setSustentoContable(String sustentoContable) {
+		this.sustentoContable = sustentoContable;
+	}
+	public String getCorrelativo() {
+		return correlativo;
+	}
+	public void setCorrelativo(String correlativo) {
+		this.correlativo = correlativo;
 	}
 	
 	

@@ -68,7 +68,7 @@ public class CajaBean extends BaseBean {
 	
 	private LazyDataModel<Caja> lstCajaLazy;
 	
-	private List<DetalleCaja> lstDetalleCajaSelected;
+	private List<DetalleCaja> lstDetalleCajaSelected, lstDetalleCajaSelectedDescarga;
 	
 	private Caja cajaSelected;
 	private DetalleCaja detalleCajaSelected;
@@ -85,6 +85,7 @@ public class CajaBean extends BaseBean {
 	@PostConstruct
 	public void init() {
 		iniciarLazy();
+		fechaDescarga = new Date();
 	}
 	
 	public void deleteDetalleCaja() {
@@ -96,6 +97,82 @@ public class CajaBean extends BaseBean {
 	
 	}
 	
+	public void procesarExcelReporteContable() {
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet sheet = workbook.createSheet("Detalle Caja");
+
+		CellStyle styleBorder = UtilXls.styleCell(workbook, 'B');
+		CellStyle styleTitulo = UtilXls.styleCell(workbook, 'A');
+	
+		Row rowSubTitulo = sheet.createRow(0);
+		Cell cellSubFecha = rowSubTitulo.createCell(0);cellSubFecha.setCellValue("FECHA");cellSubFecha.setCellStyle(styleTitulo);
+		Cell cellSubEmpleado = rowSubTitulo.createCell(1);cellSubEmpleado.setCellValue("NÚMERO DE COMPROBANTE");cellSubEmpleado.setCellStyle(styleTitulo);
+		Cell cellSubEntrada1 = rowSubTitulo.createCell(2);cellSubEntrada1.setCellValue("INGRESO");cellSubEntrada1.setCellStyle(styleTitulo);
+		Cell cellSubSalida1 = rowSubTitulo.createCell(3);cellSubSalida1.setCellValue("EGRESO");cellSubSalida1.setCellStyle(styleTitulo);
+		Cell cellSubEntrada2 = rowSubTitulo.createCell(4);cellSubEntrada2.setCellValue("SALDO");cellSubEntrada2.setCellStyle(styleTitulo);
+		
+		int index = 2;
+		
+		BigDecimal saldoAnterior = cajaSelected.getMontoInicioEfectivo();
+		Row rowDetail = sheet.createRow(1);
+		Cell cellfecha = rowDetail.createCell(0);cellfecha.setCellValue("");cellfecha.setCellStyle(styleTitulo);
+		Cell celldesc = rowDetail.createCell(1);celldesc.setCellValue("SALDO ANTERIOR");celldesc.setCellStyle(styleTitulo);
+		Cell cellI0 = rowDetail.createCell(2);cellI0.setCellValue("");cellI0.setCellStyle(styleTitulo);
+		Cell cellE0 = rowDetail.createCell(3);cellE0.setCellValue("");cellE0.setCellStyle(styleTitulo);
+		Cell cellmonto = rowDetail.createCell(4);cellmonto.setCellValue(saldoAnterior +"");cellmonto.setCellStyle(styleTitulo);
+		
+		if (!lstDetalleCajaSelectedDescarga.isEmpty()) {
+			for (int i = 0; i< lstDetalleCajaSelectedDescarga.size();i++) {	
+				DetalleCaja detalle = lstDetalleCajaSelectedDescarga.get(i);
+				
+				Row rowDetalle = sheet.createRow(index);
+				Cell cellfechah = rowDetalle.createCell(0);cellfechah.setCellValue(sdf.format(detalle.getFecha()));cellfechah.setCellStyle(styleBorder);
+				Cell cellDesc = rowDetalle.createCell(1);cellDesc.setCellValue(detalle.getSustentoContable()+" "+detalle.getCorrelativo());cellDesc.setCellStyle(styleBorder);
+				Cell cellIngreso = rowDetalle.createCell(2);cellIngreso.setCellValue(detalle.getTipoMovimiento().equals("Ingreso") ? detalle.getMonto()+"" : "");cellIngreso.setCellStyle(styleBorder);
+				Cell cellEgreso = rowDetalle.createCell(3);cellEgreso.setCellValue(detalle.getTipoMovimiento().equals("Egreso") ? detalle.getMonto()+"" : "");cellEgreso.setCellStyle(styleBorder);
+				
+				if(detalle.getTipoMovimiento().equals("Ingreso")) {
+					saldoAnterior = saldoAnterior.add(detalle.getMonto());
+					Cell cellE1 = rowDetalle.createCell(4);cellE1.setCellValue(saldoAnterior +"");cellE1.setCellStyle(styleBorder);
+				}else {
+					saldoAnterior = saldoAnterior.subtract(detalle.getMonto());
+					Cell cellE1 = rowDetalle.createCell(4);cellE1.setCellValue(saldoAnterior+"");cellE1.setCellStyle(styleBorder);
+				}
+				index++;
+			}
+		}
+		
+		Row rowDetalle = sheet.createRow(index);
+		Cell cellfechah = rowDetalle.createCell(0);cellfechah.setCellValue(sdf.format(lstDetalleCajaSelectedDescarga.get(lstDetalleCajaSelected.size()-1).getFecha()));cellfechah.setCellStyle(styleTitulo);
+		Cell cellDesc = rowDetalle.createCell(1);cellDesc.setCellValue("SALDO FINAL");cellDesc.setCellStyle(styleTitulo);
+		Cell cellIngreso = rowDetalle.createCell(2);cellIngreso.setCellValue("");cellIngreso.setCellStyle(styleTitulo);
+		Cell cellEgreso = rowDetalle.createCell(3);cellEgreso.setCellValue("");cellEgreso.setCellStyle(styleTitulo);
+		Cell cellE1 = rowDetalle.createCell(4);cellE1.setCellValue(saldoAnterior+"");cellE1.setCellStyle(styleTitulo);
+		
+		for (int j = 0; j <= 4; j++) {
+			sheet.autoSizeColumn(j);
+		}
+		try {
+			ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()
+					.getContext();
+			String filePath = scontext.getRealPath("/WEB-INF/fileAttachments/" + nombreArchivo);
+			File file = new File(filePath);
+			FileOutputStream out = new FileOutputStream(file);
+			workbook.write(out);
+			out.close();
+			fileDes = DefaultStreamedContent.builder().name(nombreArchivo).contentType("aplication/xls")
+					.stream(() -> FacesContext.getCurrentInstance().getExternalContext()
+							.getResourceAsStream("/WEB-INF/fileAttachments/" + nombreArchivo))
+					.build();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
 	public void procesarExcel() {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet sheet = workbook.createSheet("Detalle Caja");
@@ -103,7 +180,6 @@ public class CajaBean extends BaseBean {
 		CellStyle styleBorder = UtilXls.styleCell(workbook, 'B');
 		CellStyle styleTitulo = UtilXls.styleCell(workbook, 'A');
 	
-
 		Row rowSubTitulo = sheet.createRow(0);
 		Cell cellSubFecha = rowSubTitulo.createCell(0);cellSubFecha.setCellValue("FECHA");cellSubFecha.setCellStyle(styleTitulo);
 		Cell cellSubEmpleado = rowSubTitulo.createCell(1);cellSubEmpleado.setCellValue("DESCRIPCION");cellSubEmpleado.setCellStyle(styleTitulo);
@@ -114,40 +190,31 @@ public class CajaBean extends BaseBean {
 		int index = 2;
 		
 		BigDecimal saldoAnterior = cajaSelected.getMontoInicioEfectivo();
-//		Caja cajaAnterior = cajaService.findFirstBySucursalAndEstadoOrderByIdDesc(navegacionBean.getSucursalLogin(), "Cerrada");
 		Row rowDetail = sheet.createRow(1);
-		Cell cellfecha = rowDetail.createCell(0);cellfecha.setCellValue("");cellfecha.setCellStyle(styleBorder);
-		Cell celldesc = rowDetail.createCell(1);celldesc.setCellValue("SALDO ANTERIOR");celldesc.setCellStyle(styleBorder);
-		Cell cellI0 = rowDetail.createCell(2);cellI0.setCellValue("");cellI0.setCellStyle(styleBorder);
-		Cell cellE0 = rowDetail.createCell(3);cellE0.setCellValue("");cellE0.setCellStyle(styleBorder);
-		Cell cellmonto = rowDetail.createCell(4);cellmonto.setCellValue(saldoAnterior +"");cellmonto.setCellStyle(styleBorder);
+		Cell cellfecha = rowDetail.createCell(0);cellfecha.setCellValue("");cellfecha.setCellStyle(styleTitulo);
+		Cell celldesc = rowDetail.createCell(1);celldesc.setCellValue("SALDO ANTERIOR");celldesc.setCellStyle(styleTitulo);
+		Cell cellI0 = rowDetail.createCell(2);cellI0.setCellValue("");cellI0.setCellStyle(styleTitulo);
+		Cell cellE0 = rowDetail.createCell(3);cellE0.setCellValue("");cellE0.setCellStyle(styleTitulo);
+		Cell cellmonto = rowDetail.createCell(4);cellmonto.setCellValue(saldoAnterior +"");cellmonto.setCellStyle(styleTitulo);
 		
-			
-		
-		if (!lstDetalleCajaSelected.isEmpty()) {
-//			for (DetalleCaja detalle : lstDetalleCajaSelected) {
-			for (int i = 0; i< lstDetalleCajaSelected.size();i++) {	
-				DetalleCaja detalle = lstDetalleCajaSelected.get(i);
+		if (!lstDetalleCajaSelectedDescarga.isEmpty()) {
+			for (int i = 0; i< lstDetalleCajaSelectedDescarga.size();i++) {	
+				DetalleCaja detalle = lstDetalleCajaSelectedDescarga.get(i);
 				
 				if(i!=0) {
-					String fechaAnterior = sdf.format(lstDetalleCajaSelected.get(i-1).getFecha());
-					String fechaActual = sdf.format(lstDetalleCajaSelected.get(i).getFecha());
+					String fechaAnterior = sdf.format(lstDetalleCajaSelectedDescarga.get(i-1).getFecha());
+					String fechaActual = sdf.format(lstDetalleCajaSelectedDescarga.get(i).getFecha());
 					
 					if(!fechaAnterior.equals(fechaActual)) {
 						Row rowDetalle = sheet.createRow(index);
-						Cell cellfechah = rowDetalle.createCell(0);cellfechah.setCellValue("");cellfechah.setCellStyle(styleBorder);
-						Cell cellDesc = rowDetalle.createCell(1);cellDesc.setCellValue("");cellDesc.setCellStyle(styleBorder);
-						Cell cellIngreso = rowDetalle.createCell(2);cellIngreso.setCellValue("");cellIngreso.setCellStyle(styleBorder);
-						Cell cellEgreso = rowDetalle.createCell(3);cellEgreso.setCellValue("");cellEgreso.setCellStyle(styleBorder);
-						Cell cellE1 = rowDetalle.createCell(4);cellE1.setCellValue("");cellE1.setCellStyle(styleBorder);
+						Cell cellfechah = rowDetalle.createCell(0);cellfechah.setCellValue(fechaAnterior);cellfechah.setCellStyle(styleTitulo);
+						Cell cellDesc = rowDetalle.createCell(1);cellDesc.setCellValue("SALDO FINAL");cellDesc.setCellStyle(styleTitulo);
+						Cell cellIngreso = rowDetalle.createCell(2);cellIngreso.setCellValue("");cellIngreso.setCellStyle(styleTitulo);
+						Cell cellEgreso = rowDetalle.createCell(3);cellEgreso.setCellValue("");cellEgreso.setCellStyle(styleTitulo);
+						Cell cellE1 = rowDetalle.createCell(4);cellE1.setCellValue(saldoAnterior+"");cellE1.setCellStyle(styleTitulo);
 						index++;
 					}
-					
-					
-
-					
 				}
-				
 				
 				Row rowDetalle = sheet.createRow(index);
 				Cell cellfechah = rowDetalle.createCell(0);cellfechah.setCellValue(sdf.format(detalle.getFecha()));cellfechah.setCellStyle(styleBorder);
@@ -162,19 +229,17 @@ public class CajaBean extends BaseBean {
 					saldoAnterior = saldoAnterior.subtract(detalle.getMonto());
 					Cell cellE1 = rowDetalle.createCell(4);cellE1.setCellValue(saldoAnterior+"");cellE1.setCellStyle(styleBorder);
 				}
-				
-//				Cell cellE1 = rowDetail.createCell(4);cellE1.setCellValue(detalle.getMonto()+"");cellE1.setCellStyle(styleBorder);
-			
-				
-				
-
 				index++;
 			}
 		}
 		
+		Row rowDetalle = sheet.createRow(index);
+		Cell cellfechah = rowDetalle.createCell(0);cellfechah.setCellValue(sdf.format(lstDetalleCajaSelectedDescarga.get(lstDetalleCajaSelected.size()-1).getFecha()));cellfechah.setCellStyle(styleTitulo);
+		Cell cellDesc = rowDetalle.createCell(1);cellDesc.setCellValue("SALDO FINAL");cellDesc.setCellStyle(styleTitulo);
+		Cell cellIngreso = rowDetalle.createCell(2);cellIngreso.setCellValue("");cellIngreso.setCellStyle(styleTitulo);
+		Cell cellEgreso = rowDetalle.createCell(3);cellEgreso.setCellValue("");cellEgreso.setCellStyle(styleTitulo);
+		Cell cellE1 = rowDetalle.createCell(4);cellE1.setCellValue(saldoAnterior+"");cellE1.setCellStyle(styleTitulo);
 		
-			
-
 		for (int j = 0; j <= 4; j++) {
 			sheet.autoSizeColumn(j);
 		}
@@ -200,13 +265,13 @@ public class CajaBean extends BaseBean {
 	}
 	
 	public void procesarExcelPorDia() {
+		
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet sheet = workbook.createSheet("Detalle Caja");
 
 		CellStyle styleBorder = UtilXls.styleCell(workbook, 'B');
 		CellStyle styleTitulo = UtilXls.styleCell(workbook, 'A');
 	
-
 		Row rowSubTitulo = sheet.createRow(0);
 		Cell cellSubFecha = rowSubTitulo.createCell(0);cellSubFecha.setCellValue("FECHA");cellSubFecha.setCellStyle(styleTitulo);
 		Cell cellSubEmpleado = rowSubTitulo.createCell(1);cellSubEmpleado.setCellValue("DESCRIPCION");cellSubEmpleado.setCellStyle(styleTitulo);
@@ -217,41 +282,76 @@ public class CajaBean extends BaseBean {
 		int index = 2;
 		
 		BigDecimal saldoAnterior = cajaSelected.getMontoInicioEfectivo();
-//		Caja cajaAnterior = cajaService.findFirstBySucursalAndEstadoOrderByIdDesc(navegacionBean.getSucursalLogin(), "Cerrada");
 		Row rowDetail = sheet.createRow(1);
-		Cell cellfecha = rowDetail.createCell(0);cellfecha.setCellValue("");cellfecha.setCellStyle(styleBorder);
-		Cell celldesc = rowDetail.createCell(1);celldesc.setCellValue("SALDO ANTERIOR");celldesc.setCellStyle(styleBorder);
-		Cell cellI0 = rowDetail.createCell(2);cellI0.setCellValue("");cellI0.setCellStyle(styleBorder);
-		Cell cellE0 = rowDetail.createCell(3);cellE0.setCellValue("");cellE0.setCellStyle(styleBorder);
-		Cell cellmonto = rowDetail.createCell(4);cellmonto.setCellValue(saldoAnterior +"");cellmonto.setCellStyle(styleBorder);
+		Cell cellfecha = rowDetail.createCell(0);cellfecha.setCellValue(sdf.format(cajaSelected.getFecha()));cellfecha.setCellStyle(styleTitulo);
+		Cell celldesc = rowDetail.createCell(1);celldesc.setCellValue("SALDO ANTERIOR");celldesc.setCellStyle(styleTitulo);
+		Cell cellI0 = rowDetail.createCell(2);cellI0.setCellValue("");cellI0.setCellStyle(styleTitulo);
+		Cell cellE0 = rowDetail.createCell(3);cellE0.setCellValue("");cellE0.setCellStyle(styleTitulo);
+		Cell cellmonto = rowDetail.createCell(4);cellmonto.setCellValue(saldoAnterior +"");cellmonto.setCellStyle(styleTitulo);
 		
-			
-		
-		
-		if (!lstDetalleCajaSelected.isEmpty()) {
-			for (DetalleCaja detalle : lstDetalleCajaSelected) {
-				Row rowDetalle = sheet.createRow(index);
-				Cell cellfechah = rowDetalle.createCell(0);cellfechah.setCellValue(sdf.format(detalle.getFecha()));cellfechah.setCellStyle(styleBorder);
-				Cell cellDesc = rowDetalle.createCell(1);cellDesc.setCellValue(detalle.getDescripcion());cellDesc.setCellStyle(styleBorder);
-				Cell cellIngreso = rowDetalle.createCell(2);cellIngreso.setCellValue(detalle.getTipoMovimiento().equals("Ingreso") ? detalle.getMonto()+"" : "");cellIngreso.setCellStyle(styleBorder);
-				Cell cellEgreso = rowDetalle.createCell(3);cellEgreso.setCellValue(detalle.getTipoMovimiento().equals("Egreso") ? detalle.getMonto()+"" : "");cellEgreso.setCellStyle(styleBorder);
+		if (!lstDetalleCajaSelectedDescarga.isEmpty()) {
+			for (int i = 0; i< lstDetalleCajaSelectedDescarga.size();i++) {	
+				DetalleCaja detalle = lstDetalleCajaSelectedDescarga.get(i);
 				
-				if(detalle.getTipoMovimiento().equals("Ingreso")) {
-					saldoAnterior = saldoAnterior.add(detalle.getMonto());
-					Cell cellE1 = rowDetalle.createCell(4);cellE1.setCellValue(saldoAnterior +"");cellE1.setCellStyle(styleBorder);
+				String fechaDesc = sdf.format(fechaDescarga);
+				String fechaRecorrido = sdf.format(detalle.getFecha());
+				
+				
+				if(!fechaDesc.equals(fechaRecorrido)){
+					if(detalle.getTipoMovimiento().equals("Ingreso")) {
+						saldoAnterior = saldoAnterior.add(detalle.getMonto());
+					}else {
+						saldoAnterior = saldoAnterior.subtract(detalle.getMonto());
+					}
 				}else {
-					saldoAnterior = saldoAnterior.subtract(detalle.getMonto());
-					Cell cellE1 = rowDetalle.createCell(4);cellE1.setCellValue(saldoAnterior+"");cellE1.setCellStyle(styleBorder);
+					if(i!=0) {
+						cellfecha.setCellValue(sdf.format(lstDetalleCajaSelectedDescarga.get(i-1).getFecha()));
+						cellmonto.setCellValue(saldoAnterior+"");
+					}
+					
+					break;
 				}
 				
-//				Cell cellE1 = rowDetail.createCell(4);cellE1.setCellValue(detalle.getMonto()+"");cellE1.setCellStyle(styleBorder);
-				
-
-				index++;
 			}
-		}
+			String capturaFecha = "";
 			
-
+			for (int i = 0; i< lstDetalleCajaSelectedDescarga.size();i++) {	
+				DetalleCaja detalle = lstDetalleCajaSelectedDescarga.get(i);
+				capturaFecha=sdf.format(detalle.getFecha());
+				
+				String fechaDesc = sdf.format(fechaDescarga);
+				String fechaRecorrido = sdf.format(detalle.getFecha());
+				
+				
+				if(fechaDesc.equals(fechaRecorrido)){
+					Row rowDetalle = sheet.createRow(index);
+					Cell cellfechah = rowDetalle.createCell(0);cellfechah.setCellValue(sdf.format(detalle.getFecha()));cellfechah.setCellStyle(styleBorder);
+					Cell cellDesc = rowDetalle.createCell(1);cellDesc.setCellValue(detalle.getDescripcion());cellDesc.setCellStyle(styleBorder);
+					Cell cellIngreso = rowDetalle.createCell(2);cellIngreso.setCellValue(detalle.getTipoMovimiento().equals("Ingreso") ? detalle.getMonto()+"" : "");cellIngreso.setCellStyle(styleBorder);
+					Cell cellEgreso = rowDetalle.createCell(3);cellEgreso.setCellValue(detalle.getTipoMovimiento().equals("Egreso") ? detalle.getMonto()+"" : "");cellEgreso.setCellStyle(styleBorder);
+					
+					if(detalle.getTipoMovimiento().equals("Ingreso")) {
+						saldoAnterior = saldoAnterior.add(detalle.getMonto());
+						Cell cellE1 = rowDetalle.createCell(4);cellE1.setCellValue(saldoAnterior +"");cellE1.setCellStyle(styleBorder);
+					}else {
+						saldoAnterior = saldoAnterior.subtract(detalle.getMonto());
+						Cell cellE1 = rowDetalle.createCell(4);cellE1.setCellValue(saldoAnterior+"");cellE1.setCellStyle(styleBorder);
+					}
+					index++;
+				}
+			}
+			
+			Row rowDetalle = sheet.createRow(index);
+			Cell cellfechah = rowDetalle.createCell(0);cellfechah.setCellValue(capturaFecha);cellfechah.setCellStyle(styleTitulo);
+			Cell cellDesc = rowDetalle.createCell(1);cellDesc.setCellValue("SALDO FINAL");cellDesc.setCellStyle(styleTitulo);
+			Cell cellIngreso = rowDetalle.createCell(2);cellIngreso.setCellValue("");cellIngreso.setCellStyle(styleTitulo);
+			Cell cellEgreso = rowDetalle.createCell(3);cellEgreso.setCellValue("");cellEgreso.setCellStyle(styleTitulo);
+			Cell cellE1 = rowDetalle.createCell(4);cellE1.setCellValue(saldoAnterior+"");cellE1.setCellStyle(styleTitulo);
+			
+		}
+		
+		
+//		
 		for (int j = 0; j <= 4; j++) {
 			sheet.autoSizeColumn(j);
 		}
@@ -276,70 +376,8 @@ public class CajaBean extends BaseBean {
 
 	}
 	
-	public void descargarExcelDetalleCaja() {
-		PrimeFaces.current().executeScript("PF('blockUIWidgetGeneral').show();"); 
-		
-		XSSFWorkbook workbook = new XSSFWorkbook();
-		XSSFSheet sheet = workbook.createSheet("Detalle Caja");
-
-		CellStyle styleBorder = UtilXls.styleCell(workbook, 'B');
-		CellStyle styleTitulo = UtilXls.styleCell(workbook, 'A');
-		
-		Row rowSubTitulo = sheet.createRow(0);
-		Cell cellSub1 = null;
-		cellSub1 = rowSubTitulo.createCell(0);cellSub1.setCellValue("TIPO");cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(1);cellSub1.setCellValue("ORIGEN");cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(2);cellSub1.setCellValue("DESCRIPCION");cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(3);cellSub1.setCellValue("MONTO");cellSub1.setCellStyle(styleTitulo);
-		cellSub1 = rowSubTitulo.createCell(4);cellSub1.setCellValue("FECHA Y HORA");cellSub1.setCellStyle(styleTitulo);
-		
-		
-
-		int index = 1;
-
-		if (!lstDetalleCajaSelected.isEmpty()) {
-			for (DetalleCaja d : lstDetalleCajaSelected) {
-				rowSubTitulo = sheet.createRow(index);
-				cellSub1 = rowSubTitulo.createCell(0);cellSub1.setCellValue(d.getTipoMovimiento());cellSub1.setCellStyle(styleBorder);
-				cellSub1 = rowSubTitulo.createCell(1);cellSub1.setCellValue(d.getOrigen());cellSub1.setCellStyle(styleBorder);
-				cellSub1 = rowSubTitulo.createCell(2);cellSub1.setCellValue(d.getDescripcion());cellSub1.setCellStyle(styleBorder);
-				cellSub1 = rowSubTitulo.createCell(3);cellSub1.setCellValue(d.getMonto()+"");cellSub1.setCellStyle(styleBorder);
-				cellSub1 = rowSubTitulo.createCell(4);cellSub1.setCellValue(sdf.format(d.getFecha()));cellSub1.setCellStyle(styleBorder);
-			
-				index++;
-			}
-		}
-		
-		
-		for (int j = 0; j <= 5; j++) {
-			sheet.autoSizeColumn(j);
-		}
-		try {
-			ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()
-					.getContext();
-			String filePath = scontext.getRealPath("/WEB-INF/fileAttachments/" + nombreArchivo);
-			File file = new File(filePath);
-			FileOutputStream out = new FileOutputStream(file);
-			workbook.write(out);
-			out.close();
-			fileDes = DefaultStreamedContent.builder().name(nombreArchivo).contentType("aplication/xls")
-					.stream(() -> FacesContext.getCurrentInstance().getExternalContext()
-							.getResourceAsStream("/WEB-INF/fileAttachments/" + nombreArchivo))
-					.build();
-			
-			PrimeFaces.current().executeScript("PF('blockUIWidgetGeneral').hide();"); 
-
-
-		} catch (FileNotFoundException e) {
-			PrimeFaces.current().executeScript("PF('blockUIWidgetGeneral').hide();"); 
-
-			e.printStackTrace();
-		} catch (IOException e) {
-			PrimeFaces.current().executeScript("PF('blockUIWidgetGeneral').hide();"); 
-
-			e.printStackTrace();
-		}
-	}
+	
+	
 	
 	public void validaCerrarCaja() {
 		if(cajaSelected.getEstado().equals("Cerrada")) {
@@ -351,7 +389,7 @@ public class CajaBean extends BaseBean {
 	
 	public void cerrarCaja() {
 		BigDecimal totalEfectivo = cajaSelected.getMontoInicioEfectivo();
-		List<DetalleCaja> lstdetalle = detalleCajaService.findByCajaAndEstado(cajaSelected, true);
+		List<DetalleCaja> lstdetalle = detalleCajaService.findByCajaAndEstadoOrderByFechaDesc(cajaSelected, true);
 		for(DetalleCaja detalle: lstdetalle) {
 			if(detalle.getOrigen().equals("Efectivo")) {
 				if(detalle.getTipoMovimiento().equals("Ingreso")) {
@@ -363,7 +401,7 @@ public class CajaBean extends BaseBean {
 			
 		}
 		BigDecimal totalPos = cajaSelected.getMontoInicioPos();
-		lstdetalle = detalleCajaService.findByCajaAndEstado(cajaSelected, true);
+		lstdetalle = detalleCajaService.findByCajaAndEstadoOrderByFechaDesc(cajaSelected, true);
 		for(DetalleCaja detalle: lstdetalle) {
 			if(detalle.getOrigen().equals("POS")) {
 				if(detalle.getTipoMovimiento().equals("Ingreso")) {
@@ -375,7 +413,6 @@ public class CajaBean extends BaseBean {
 			
 		}
 		
-		
 		cajaSelected.setMontoFinalEfectivo(totalEfectivo);
 		cajaSelected.setMontoFinalPos(totalPos);
 		cajaSelected.setEstado("Cerrada");
@@ -385,7 +422,7 @@ public class CajaBean extends BaseBean {
 	
 	public BigDecimal calcularFinalEfectivo(Caja caja) {
 		BigDecimal total = caja.getMontoInicioEfectivo();
-		List<DetalleCaja> lstdetalle = detalleCajaService.findByCajaAndEstado(caja, true);
+		List<DetalleCaja> lstdetalle = detalleCajaService.findByCajaAndEstadoOrderByFechaDesc(caja, true);
 		for(DetalleCaja detalle: lstdetalle) {
 			if(detalle.getOrigen().equals("Efectivo")) {
 				if(detalle.getTipoMovimiento().equals("Ingreso")) {
@@ -397,13 +434,12 @@ public class CajaBean extends BaseBean {
 			
 		}
 		
-		
 		return total;
 	}
 	
 	public BigDecimal calcularFinalPos(Caja caja) {
 		BigDecimal total = caja.getMontoInicioPos();
-		List<DetalleCaja> lstdetalle = detalleCajaService.findByCajaAndEstado(caja, true);
+		List<DetalleCaja> lstdetalle = detalleCajaService.findByCajaAndEstadoOrderByFechaDesc(caja, true);
 		for(DetalleCaja detalle: lstdetalle) {
 			if(detalle.getOrigen().equals("POS")) {
 				if(detalle.getTipoMovimiento().equals("Ingreso")) {
@@ -412,7 +448,6 @@ public class CajaBean extends BaseBean {
 					total = total.subtract(detalle.getMonto());
 				}
 			}
-			
 		}
 		return total;
 	}
@@ -428,6 +463,7 @@ public class CajaBean extends BaseBean {
 			return;
 		}
 		
+		
 		detalleCajaSelected.setCaja(cajaSelected);
 		detalleCajaSelected.setFecha(new Date());
 		detalleCajaSelected.setEstado(true);
@@ -440,7 +476,8 @@ public class CajaBean extends BaseBean {
 	}
 	
 	public void listarDetallesCajaSelected() {
-		lstDetalleCajaSelected = detalleCajaService.findByCajaAndEstado(cajaSelected, true);
+		lstDetalleCajaSelected = detalleCajaService.findByCajaAndEstadoOrderByFechaDesc(cajaSelected, true);
+		lstDetalleCajaSelectedDescarga = detalleCajaService.findByCajaAndEstadoOrderByFechaAsc(cajaSelected, true);
 		detalleCajaSelected = new DetalleCaja();
 		detalleCajaSelected.setTipoMovimiento("Ingreso");
 		detalleCajaSelected.setOrigen("Efectivo");
@@ -679,6 +716,12 @@ public class CajaBean extends BaseBean {
 	}
 	public void setFechaDescarga(Date fechaDescarga) {
 		this.fechaDescarga = fechaDescarga;
+	}
+	public List<DetalleCaja> getLstDetalleCajaSelectedDescarga() {
+		return lstDetalleCajaSelectedDescarga;
+	}
+	public void setLstDetalleCajaSelectedDescarga(List<DetalleCaja> lstDetalleCajaSelectedDescarga) {
+		this.lstDetalleCajaSelectedDescarga = lstDetalleCajaSelectedDescarga;
 	}
 
 	
