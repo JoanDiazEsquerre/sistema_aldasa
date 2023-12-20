@@ -162,13 +162,39 @@
 		            </h:outputText>
 	            </p:column>
 	            
-	            <p:column headerText="Sustento Contable"  width="50px" filterMatchMode="contains">
-	                <h:outputText value="#{detalle.sustentoContable}" />
-	            </p:column>
+	            <p:column headerText="Sustento Contable" id="idSustentoContable" width="60px" filterMatchMode="contains" >
+					<p:cellEditor>
+	                    <f:facet name="output">
+	                       	<h:outputText  value="#{detalle.sustentoContable}" /> 
+	                    </f:facet>
+	                    <f:facet name="input">
+	                    
+	                    	<p:selectOneMenu id="idSustCont" value="#{detalle.sustentoContable}" >
+								<f:selectItem itemLabel="Planilla de movilidad" itemValue="Planilla de movilidad" />
+								<f:selectItem itemLabel="RH" itemValue="RH" />
+								<f:selectItem itemLabel="Factura" itemValue="Factura" />
+								<f:selectItem itemLabel="Boleta" itemValue="Boleta" />
+								<f:selectItem itemLabel="Vale Provicional" itemValue="Vale Provicional" />
+								<f:selectItem itemLabel="Cheque" itemValue="Cheque" />
+	                        	<p:ajax listener="#{cajaBean.editarSustentoContable(detalle)}" update=":formDialogDetalle:idTabDetalle:idSustCont"/>
+							</p:selectOneMenu>
+	                    </f:facet>
+	                </p:cellEditor>
+				</p:column>
+				
+				 <p:column headerText="Correlativo" id="idCorrelativo" width="50px" filterMatchMode="contains" >
+					<p:cellEditor>
+	                    <f:facet name="output">
+	                       	<h:outputText  value="#{detalle.correlativo}" /> 
+	                    </f:facet>
+	                    <f:facet name="input">
+	                        <p:inputText id="idCorrelat" value="#{detalle.correlativo}" modifyValueOnWheel="false" > 
+	                        	<p:ajax listener="#{cajaBean.editarCorrelativo(detalle)}" update=":formDialogDetalle:idTabDetalle:idCorrelat"/>
+	                        </p:inputText>
+	                    </f:facet>
+	                </p:cellEditor>
+				</p:column>
 	            
-	            <p:column headerText="Correlativo" width="40px" filterMatchMode="contains">
-	                <h:outputText value="#{detalle.correlativo}" />
-	            </p:column>
 	            
 	            <p:column width="40px" headerText="Fecha y Hora" filterMatchMode="contains">
 	                <p:cellEditor>

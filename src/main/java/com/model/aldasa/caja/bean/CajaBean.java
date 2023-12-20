@@ -88,6 +88,22 @@ public class CajaBean extends BaseBean {
 		fechaDescarga = new Date();
 	}
 	
+	public void editarCorrelativo(DetalleCaja detalle) {
+		if(detalle.getCorrelativo()!=null) {
+			detalleCajaService.save(detalle);
+			
+            addInfoMessage("Se cambió el correlativo correctamente.");
+		}
+	}
+	
+	public void editarSustentoContable(DetalleCaja detalle) {
+		if(detalle.getSustentoContable()!=null) {
+			detalleCajaService.save(detalle);
+			
+            addInfoMessage("Se cambió el sustento contable correctamente.");
+		}
+	}
+	
 	public void deleteDetalleCaja() {
 			newDetalleCajaSelected.setEstado(false);
 			detalleCajaService.save(newDetalleCajaSelected);
