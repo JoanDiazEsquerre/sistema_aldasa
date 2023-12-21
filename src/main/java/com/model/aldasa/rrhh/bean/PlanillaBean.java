@@ -200,7 +200,6 @@ public class PlanillaBean extends BaseBean implements Serializable{
 			dt.setVacaciones(BigDecimal.ZERO);
 			dt.setComisiones(BigDecimal.ZERO);
 			dt.setBono(BigDecimal.ZERO);
-			dt.setTotal(e.getSueldoBasico().subtract(dt.getTardanza()).add(dt.getVacaciones()).add(dt.getComisiones()).add(dt.getBono()));
 			
 			dt.setOnp(BigDecimal.ZERO);
 			dt.setAporteObligatorio(BigDecimal.ZERO);
@@ -209,18 +208,7 @@ public class PlanillaBean extends BaseBean implements Serializable{
 			
 			
 			if(tipoPlanilla) {
-				if(e.getFondoPension()!=null) {
-					
-					if(e.getFondoPension().getNombre().equals("ONP")) {
-						
-						dt.setOnp(dt.getTotal().multiply(e.getFondoPension().getAporteObligatorio().divide(new BigDecimal(100), 2 , RoundingMode.HALF_UP))); 
-					}else {
-						dt.setAporteObligatorio(dt.getTotal().multiply(e.getFondoPension().getAporteObligatorio().divide(new BigDecimal(100), 2 , RoundingMode.HALF_UP)));
-						dt.setPrimaSeguros(dt.getTotal().multiply(e.getFondoPension().getPrimaSeguro()));
-						dt.setComisionVariable(BigDecimal.ZERO);
-						
-					}
-				}
+				
 				
 				Date fechaInicio = new Date();
 				fechaInicio.setDate(1);
@@ -278,9 +266,29 @@ public class PlanillaBean extends BaseBean implements Serializable{
 		        	dt.setTardanza(descuento);
 		        }
 		        
+		        
+		        BigDecimal suma1 = e.getSueldoBasico().subtract(dt.getTardanza());
+				BigDecimal suma2 = suma1.add(dt.getVacaciones());
+				BigDecimal suma3 = suma2.add(dt.getComisiones());
+				BigDecimal suma4 = suma3.add(dt.getBono());
 				
 				
+				dt.setTotal(suma4);
+		        
+		        
+		        if(e.getFondoPension()!=null) {
+					if(e.getFondoPension().getNombre().equals("ONP")) {
+						dt.setOnp(dt.getTotal().multiply(e.getFondoPension().getAporteObligatorio().divide(new BigDecimal(100), 2 , RoundingMode.HALF_UP))); 
+					}else {
+						dt.setAporteObligatorio(dt.getTotal().multiply(e.getFondoPension().getAporteObligatorio().divide(new BigDecimal(100), 2 , RoundingMode.HALF_UP)));
+						dt.setPrimaSeguros(dt.getTotal().multiply(e.getFondoPension().getPrimaSeguro().divide(new BigDecimal(100), 2 , RoundingMode.HALF_UP)));
+						dt.setComisionVariable(BigDecimal.ZERO);
+					}
+				}
+		        			
 			}
+			
+			
 			
 			dt.setRentaQuinta(BigDecimal.ZERO);
 			dt.setDescMesAnterior(BigDecimal.ZERO);

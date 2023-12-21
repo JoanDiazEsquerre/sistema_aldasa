@@ -162,7 +162,7 @@
 					</p:column>
 					
 					<p:column headerText="Sueldo Básico" filterMatchMode="contains" style="text-align: center">
-						<h:outputText value="#{dp.empleado.sueldoBasico}" > 
+						<h:outputText value="#{dp.empleado.sueldoBasico}" style="font-weight: bold"> 
 						 <f:convertNumber currencySymbol="" type="currency"  />
 						 </h:outputText>
 					</p:column>
@@ -183,6 +183,84 @@
 						<h:outputText value="#{dp.comisiones}" > 
 						 <f:convertNumber currencySymbol="" type="currency"  />
 						 </h:outputText>
+					</p:column>
+					
+					<p:column headerText="Bono" filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.bono}" > 
+						 <f:convertNumber currencySymbol="" type="currency"  />
+						 </h:outputText>
+					</p:column>
+					
+					<p:column headerText="Total" filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.total}" style="font-weight: bold" > 
+						 <f:convertNumber currencySymbol="" type="currency"  />
+						 </h:outputText>
+					</p:column>
+					
+					<p:column headerText="ONP SNP" filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.onp}" > 
+						 <f:convertNumber currencySymbol="" type="currency"  />
+						 </h:outputText>
+					</p:column>
+					
+					<p:column headerText="AP. OBLIG." filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.aporteObligatorio}" > 
+						 <f:convertNumber currencySymbol="" type="currency"  />
+						 </h:outputText>
+					</p:column>
+					
+					<p:column headerText="SEG. INV." filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.primaSeguros}" > 
+							<f:convertNumber currencySymbol="" type="currency"  />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="COM. VAR." filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.comisionVariable}" > 
+							<f:convertNumber currencySymbol="" type="currency"  />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="REN. 5TA." filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.rentaQuinta}" > 
+						 	<f:convertNumber currencySymbol="" type="currency"  />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="DESC. MES ANT." filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.descMesAnterior}" > 
+							<f:convertNumber currencySymbol="" type="currency"  />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="PAGO VAC. TRUN." filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.pagoVacTrunca}" > 
+						 	<f:convertNumber currencySymbol="" type="currency"  />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="ADELANTO" filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.adelanto}" > 
+							<f:convertNumber currencySymbol="" type="currency"  />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="PRÉSTAMO" filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.prestamo}" > 
+							<f:convertNumber currencySymbol="" type="currency"  />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="TOTAL DESC." filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.totalDescuento}" style="font-weight: bold"> 
+							<f:convertNumber currencySymbol="" type="currency"  />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="NETO A PAGAR." filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.netoPagar}" style="font-weight: bold"> 
+							<f:convertNumber currencySymbol="" type="currency"  />
+						</h:outputText>
 					</p:column>
 					
 				</p:dataTable>
