@@ -104,6 +104,14 @@ public class CajaBean extends BaseBean {
 		}
 	}
 	
+	public void editarDescripcion(DetalleCaja detalle) {
+		if(detalle.getDescripcion()!=null) {
+			detalleCajaService.save(detalle);
+			
+            addInfoMessage("Se cambió la descripción correctamente.");
+		}
+	}
+	
 	public void deleteDetalleCaja() {
 			newDetalleCajaSelected.setEstado(false);
 			detalleCajaService.save(newDetalleCajaSelected);

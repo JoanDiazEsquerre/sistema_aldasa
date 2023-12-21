@@ -143,19 +143,30 @@
 	                      #{row +1}
 	       		</p:column>
 	
-	            <p:column headerText="Tipo" sortBy="#{detalle.tipoMovimiento}" width="20px" filterMatchMode="contains">
+	            <p:column headerText="Tipo"  width="20px" filterMatchMode="contains">
 	                <h:outputText value="#{detalle.tipoMovimiento}" style="color:#{detalle.tipoMovimiento eq 'Egreso'?'red':'green'}" />
 	            </p:column>
 	            
-	            <p:column headerText="Origen" sortBy="#{detalle.origen}" width="20px" filterMatchMode="contains">
+	            <p:column headerText="Origen" width="20px" filterMatchMode="contains">
 	                <h:outputText value="#{detalle.origen}" />
 	            </p:column>
 	            
-	            <p:column headerText="Descripcion" sortBy="#{detalle.descripcion}" width="100px" filterMatchMode="contains">
-	                <h:outputText value="#{detalle.descripcion}" />
-	            </p:column>
+<!-- 	             sortBy="#{detalle.origen}" -->
 	            
-	            <p:column headerText="Monto" sortBy="#{detalle.monto}" width="20px" filterMatchMode="contains">
+	            <p:column headerText="Descripcion" id="idDescripcion" width="100px" filterMatchMode="contains" >
+					<p:cellEditor>
+	                    <f:facet name="output">
+	                       	<h:outputText  value="#{detalle.descripcion}" /> 
+	                    </f:facet>
+	                    <f:facet name="input">
+	                        <p:inputText id="idDet" value="#{detalle.descripcion}" modifyValueOnWheel="false" > 
+	                        	<p:ajax listener="#{cajaBean.editarDescripcion(detalle)}" update=":formDialogDetalle:idTabDetalle:idDet"/>
+	                        </p:inputText>
+	                    </f:facet>
+	                </p:cellEditor>
+				</p:column>
+	            
+	            <p:column headerText="Monto"  width="20px" filterMatchMode="contains">
 	            	<h:outputText value="#{detalle.tipoMovimiento eq 'Egreso'?'-':''}" />
 	                <h:outputText value="#{detalle.monto}" >
 		                <f:convertNumber type="currency" currencySymbol=""/>
@@ -170,6 +181,7 @@
 	                    <f:facet name="input">
 	                    
 	                    	<p:selectOneMenu id="idSustCont" value="#{detalle.sustentoContable}" >
+	                    		<f:selectItem itemLabel="[--Seleccionar--]" itemValue="" />
 								<f:selectItem itemLabel="Planilla de movilidad" itemValue="Planilla de movilidad" />
 								<f:selectItem itemLabel="RH" itemValue="RH" />
 								<f:selectItem itemLabel="Factura" itemValue="Factura" />
@@ -182,7 +194,7 @@
 	                </p:cellEditor>
 				</p:column>
 				
-				 <p:column headerText="Correlativo" id="idCorrelativo" width="50px" filterMatchMode="contains" >
+				<p:column headerText="Correlativo" id="idCorrelativo" width="50px" filterMatchMode="contains" >
 					<p:cellEditor>
 	                    <f:facet name="output">
 	                       	<h:outputText  value="#{detalle.correlativo}" /> 
