@@ -48,12 +48,12 @@ public class NavegacionBean implements Serializable  {
 	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas, menuAlmacen, menuRRHH, menucaja, menuCompra;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuPlanilla, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
 					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato, subMenuDocumentoVentas, subMenuPlantillaVenta, 
-					subMenuDocumentoVenta, subMenuInventario, subMenuCliente, subMenuMapeoLote, subMenuVoucher, subMenuCaja, subMenuOrdenCompra;
+					subMenuDocumentoVenta, subMenuInventario, subMenuCliente, subMenuMapeoLote, subMenuVoucher, subMenuCaja, subMenuOrdenCompra, subMenuDocumentoCompra;
 	
 	private int[] permisoProspectos,permisoProspeccion,permisoAgenda,permisoSimulador,permisoPersonas,permisoUsuarios,permisoPerfiles,permisoProyectos,permisoEquipos, permisoCambiarConstrasenia,
 					permisoReporteAcciones,permisoManzanas,permisoLotes,permisoComisiones,permisoComision,permisoEmpleado,permisoReporteLotes,permisoAsistencia,permisoReporteAsistencia,permisoRequerimientoSeparacion,
 					permisoRankingVentas,permisoContrato,permisoReporteDocumentoVentas,permisoDocumentoVenta,permisoInventario,permisoCliente, permisoPlantillaVenta, permisoMapeoLote, permisoVoucher,
-					permisoPlanilla, permisoCaja, permisoOrdenCompra;
+					permisoPlanilla, permisoCaja, permisoOrdenCompra, permisoDocumentoCompra;
 
 	@PostConstruct
 	public void init() {
@@ -100,6 +100,8 @@ public class NavegacionBean implements Serializable  {
 		permisoPlanilla = obtenerPermisosPorPerfil(30);
 		permisoCaja = obtenerPermisosPorPerfil(31);
 		permisoOrdenCompra = obtenerPermisosPorPerfil(32);
+		permisoDocumentoCompra = obtenerPermisosPorPerfil(33);
+
 		
 		permisoPantallas();
 		
@@ -178,9 +180,9 @@ public class NavegacionBean implements Serializable  {
 		//******************************************************************************
 		
 		subMenuOrdenCompra= validaPermiso(permisoOrdenCompra);
-		
+		subMenuDocumentoCompra=validaPermiso(permisoDocumentoCompra);
 				
-		if(subMenuOrdenCompra){
+		if(subMenuOrdenCompra || subMenuDocumentoCompra){
 			menuCompra=true;
 		}
 		
@@ -382,6 +384,10 @@ public class NavegacionBean implements Serializable  {
 		ruta = "modulos/compra/procesos/ordenCompra.xhtml";
 	}
 	
+	public void getProcesoDocumentoCompraPage() {
+		ruta = "modulos/compra/procesos/documentoCompra.xhtml";
+	}
+	
 	
 	
 	public void cerrarSesion() {
@@ -389,6 +395,11 @@ public class NavegacionBean implements Serializable  {
 	}
 	
 
+	
+	
+	
+	
+	
 
 	public String getRuta() {
 		return ruta;
@@ -918,6 +929,18 @@ public class NavegacionBean implements Serializable  {
 	}
 	public void setSubMenuOrdenCompra(boolean subMenuOrdenCompra) {
 		this.subMenuOrdenCompra = subMenuOrdenCompra;
+	}
+	public boolean isSubMenuDocumentoCompra() {
+		return subMenuDocumentoCompra;
+	}
+	public void setSubMenuDocumentoCompra(boolean subMenuDocumentoCompra) {
+		this.subMenuDocumentoCompra = subMenuDocumentoCompra;
+	}
+	public int[] getPermisoDocumentoCompra() {
+		return permisoDocumentoCompra;
+	}
+	public void setPermisoDocumentoCompra(int[] permisoDocumentoCompra) {
+		this.permisoDocumentoCompra = permisoDocumentoCompra;
 	}
 
 	

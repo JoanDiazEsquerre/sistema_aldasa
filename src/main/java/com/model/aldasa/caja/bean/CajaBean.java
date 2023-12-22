@@ -242,7 +242,7 @@ public class CajaBean extends BaseBean {
 				
 				Row rowDetalle = sheet.createRow(index);
 				Cell cellfechah = rowDetalle.createCell(0);cellfechah.setCellValue(sdf.format(detalle.getFecha()));cellfechah.setCellStyle(styleBorder);
-				Cell cellDesc = rowDetalle.createCell(1);cellDesc.setCellValue(detalle.getDescripcion());cellDesc.setCellStyle(styleBorder);
+				Cell cellDesc = rowDetalle.createCell(1);cellDesc.setCellValue( detalle.getSustentoContable().concat(!detalle.getSustentoContable().equals("") ? " " : "")+ detalle.getCorrelativo().concat(!detalle.getCorrelativo().equals("") ? " / " : "")  + detalle.getDescripcion());cellDesc.setCellStyle(styleBorder);
 				Cell cellIngreso = rowDetalle.createCell(2);cellIngreso.setCellValue(detalle.getTipoMovimiento().equals("Ingreso") ? detalle.getMonto()+"" : "");cellIngreso.setCellStyle(styleBorder);
 				Cell cellEgreso = rowDetalle.createCell(3);cellEgreso.setCellValue(detalle.getTipoMovimiento().equals("Egreso") ? detalle.getMonto()+"" : "");cellEgreso.setCellStyle(styleBorder);
 				
@@ -350,7 +350,7 @@ public class CajaBean extends BaseBean {
 				if(fechaDesc.equals(fechaRecorrido)){
 					Row rowDetalle = sheet.createRow(index);
 					Cell cellfechah = rowDetalle.createCell(0);cellfechah.setCellValue(sdf.format(detalle.getFecha()));cellfechah.setCellStyle(styleBorder);
-					Cell cellDesc = rowDetalle.createCell(1);cellDesc.setCellValue(detalle.getDescripcion());cellDesc.setCellStyle(styleBorder);
+					Cell cellDesc = rowDetalle.createCell(1);cellDesc.setCellValue( detalle.getSustentoContable().concat(!detalle.getSustentoContable().equals("") ? " " : "")+ detalle.getCorrelativo().concat(!detalle.getCorrelativo().equals("") ? " / " : "")  + detalle.getDescripcion());cellDesc.setCellStyle(styleBorder);
 					Cell cellIngreso = rowDetalle.createCell(2);cellIngreso.setCellValue(detalle.getTipoMovimiento().equals("Ingreso") ? detalle.getMonto()+"" : "");cellIngreso.setCellStyle(styleBorder);
 					Cell cellEgreso = rowDetalle.createCell(3);cellEgreso.setCellValue(detalle.getTipoMovimiento().equals("Egreso") ? detalle.getMonto()+"" : "");cellEgreso.setCellStyle(styleBorder);
 					
