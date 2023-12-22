@@ -114,7 +114,7 @@
 			
 			<h:panelGrid columns="6">
 				
-				<p:commandButton actionListener="#{cajaBean.saveDetalleCaja}" value="Agregar" update=":formDialogDetalle :form:idTableCabecera"/>
+				<p:commandButton actionListener="#{cajaBean.saveDetalleCaja}" value="Agregar" disabled="#{cajaBean.cajaSelected.estado eq 'Cerrada' ? true : false}" update=":formDialogDetalle :form:idTableCabecera"/>
 
 		      	<p:commandButton value="Resumen" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{cajaBean.procesarExcel()}" icon="pi pi-file-excel" styleClass="mr-2">
 	            	<p:fileDownload value="#{cajaBean.fileDes}"/> 
@@ -160,7 +160,7 @@
 	                       	<h:outputText  value="#{detalle.descripcion}" /> 
 	                    </f:facet>
 	                    <f:facet name="input">
-	                        <p:inputText id="idDet" value="#{detalle.descripcion}" modifyValueOnWheel="false" > 
+	                        <p:inputText disabled="#{cajaBean.cajaSelected.estado eq 'Cerrada' ? true : false}" id="idDet" value="#{detalle.descripcion}" modifyValueOnWheel="false" > 
 	                        	<p:ajax listener="#{cajaBean.editarDescripcion(detalle)}" update=":formDialogDetalle:idTabDetalle:idDet"/>
 	                        </p:inputText>
 	                    </f:facet>
@@ -179,9 +179,9 @@
 	                    <f:facet name="output">
 	                       	<h:outputText  value="#{detalle.sustentoContable}" /> 
 	                    </f:facet>
-	                    <f:facet name="input">
+	                    <f:facet  name="input">
 	                    
-	                    	<p:selectOneMenu id="idSustCont" value="#{detalle.sustentoContable}" >
+	                    	<p:selectOneMenu disabled="#{cajaBean.cajaSelected.estado eq 'Cerrada' ? true : false}" id="idSustCont" value="#{detalle.sustentoContable}" >
 	                    		<f:selectItem itemLabel="[--Seleccionar--]" itemValue="" />
 								<f:selectItem itemLabel="Planilla de movilidad" itemValue="Planilla de movilidad" />
 								<f:selectItem itemLabel="RH" itemValue="RH" />
@@ -201,7 +201,7 @@
 	                       	<h:outputText  value="#{detalle.correlativo}" /> 
 	                    </f:facet>
 	                    <f:facet name="input">
-	                        <p:inputText id="idCorrelat" value="#{detalle.correlativo}" modifyValueOnWheel="false" > 
+	                        <p:inputText disabled="#{cajaBean.cajaSelected.estado eq 'Cerrada' ? true : false}" id="idCorrelat" value="#{detalle.correlativo}" modifyValueOnWheel="false" > 
 	                        	<p:ajax listener="#{cajaBean.editarCorrelativo(detalle)}" update=":formDialogDetalle:idTabDetalle:idCorrelat"/>
 	                        </p:inputText>
 	                    </f:facet>
@@ -209,14 +209,14 @@
 				</p:column>
 	            
 	            
-	            <p:column width="40px" headerText="Fecha y Hora" filterMatchMode="contains">
+	            <p:column  width="40px" headerText="Fecha y Hora" filterMatchMode="contains">
 	                <p:cellEditor>
 	                    <f:facet name="output">
 	                       	<h:outputText value="#{cajaBean.convertirHoraFull(detalle.fecha)}" /> 
 	                    </f:facet>
 	                    <f:facet name="input">
 	                	                    
-	                        <p:datePicker id="dateFecha" value="#{detalle.fecha}" pattern="dd/MM/yyyy HH:mm:ss a" showTime="true" timeInput="true" > 
+	                        <p:datePicker disabled="#{cajaBean.cajaSelected.estado eq 'Cerrada' ? true : false}" id="dateFecha" value="#{detalle.fecha}" pattern="dd/MM/yyyy HH:mm:ss a" showTime="true" timeInput="true" > 
 	                        	<p:ajax event="change" listener="#{cajaBean.editarFecha(detalle)}" update=":formDialogDetalle:idTabDetalle"/>
 	                        </p:datePicker>
 	                    </f:facet>
@@ -224,7 +224,7 @@
                 </p:column>
 	            
 	            <p:column width="10%" filterMatchMode="contains">
-					<p:commandButton  icon="pi pi-trash" styleClass="rounded-button ui-button-danger" process="@this" oncomplete="PF('deleteDetalleCaja').show()" > 
+					<p:commandButton disabled="#{cajaBean.cajaSelected.estado eq 'Cerrada' ? true : false}" icon="pi pi-trash" styleClass="rounded-button ui-button-danger" process="@this" oncomplete="PF('deleteDetalleCaja').show()" > 
 						<f:setPropertyActionListener value="#{detalle}" target="#{cajaBean.newDetalleCajaSelected}" />
 					</p:commandButton>
 				</p:column>
