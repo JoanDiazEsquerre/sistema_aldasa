@@ -45,7 +45,7 @@
 	            </h:outputText>
 			</p:column>
 			<p:column headerText="Monto Final Efectivo" filterMatchMode="contains">
-				<h:outputText value="#{cajaBean.calcularFinalEfectivo(caja)}" >   
+				<h:outputText value="#{caja.montoFinalEfectivo}" >   
 	                <f:convertNumber type="currency" currencySymbol=""/>
 	            </h:outputText>
 			</p:column>
@@ -55,7 +55,7 @@
 	            </h:outputText>
 			</p:column>
 			<p:column headerText="Monto Final POS" filterMatchMode="contains">
-				<h:outputText value="#{cajaBean.calcularFinalPos(caja)}" >   
+				<h:outputText value="#{caja.montoFinalPos}" >   
 	                <f:convertNumber type="currency" currencySymbol=""/>
 	            </h:outputText>
 			</p:column>

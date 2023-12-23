@@ -1,5 +1,6 @@
 package com.model.aldasa.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -10,8 +11,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.Caja;
+import com.model.aldasa.entity.DetalleCaja;
 import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.repository.CajaRepository;
+import com.model.aldasa.repository.DetalleCajaRepository;
 import com.model.aldasa.service.CajaService;
 
 @Service("cajaService")
@@ -27,6 +30,34 @@ public class CajaServiceImpl implements CajaService {
 	}
 
 	@Override
+	public Caja save(Caja entity, List<DetalleCaja> lstDetalle) {
+		// TODO Auto-generated method stub
+		
+		BigDecimal totalEfectivo = entity.getMontoInicioEfectivo();
+		BigDecimal totalPOS = entity.getMontoInicioPos();
+		for(DetalleCaja detalle: lstDetalle) {
+			if(detalle.getOrigen().equals("Efectivo")) {
+				if(detalle.getTipoMovimiento().equals("Ingreso")) {
+					totalEfectivo = totalEfectivo.add(detalle.getMonto());
+				}else {
+					totalEfectivo = totalEfectivo.subtract(detalle.getMonto());
+				}
+			}else {
+				if(detalle.getTipoMovimiento().equals("Ingreso")) {
+					totalPOS = totalPOS.add(detalle.getMonto());
+				}else {
+					totalPOS = totalPOS.subtract(detalle.getMonto());
+				}
+			}
+			
+		}
+		
+		entity.setMontoFinalEfectivo(totalEfectivo);
+		entity.setMontoFinalPos(totalPOS);
+		
+		return cajaRepository.save(entity);
+	}
+	
 	public Caja save(Caja entity) {
 		// TODO Auto-generated method stub
 		return cajaRepository.save(entity);

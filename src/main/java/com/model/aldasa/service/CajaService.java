@@ -8,11 +8,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.model.aldasa.entity.Caja;
+import com.model.aldasa.entity.DetalleCaja;
 import com.model.aldasa.entity.Sucursal;
 
 public interface CajaService {
 
 	Optional<Caja> findById(Integer id);
+	Caja save(Caja entity, List<DetalleCaja> lstDetalle);
 	Caja save(Caja entity);
 	void delete(Caja entity);
 	

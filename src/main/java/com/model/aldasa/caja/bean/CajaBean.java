@@ -115,9 +115,12 @@ public class CajaBean extends BaseBean {
 	public void deleteDetalleCaja() {
 			newDetalleCajaSelected.setEstado(false);
 			detalleCajaService.save(newDetalleCajaSelected);
-			addInfoMessage("Detalle Eliminado.");
+			
 			
 			listarDetallesCajaSelected();
+			
+			cajaService.save(cajaSelected, lstDetalleCajaSelected);
+			addInfoMessage("Detalle Eliminado.");
 	
 	}
 	
@@ -444,22 +447,6 @@ public class CajaBean extends BaseBean {
 		addInfoMessage("Caja cerrada correctamente.");
 	}
 	
-	public BigDecimal calcularFinalEfectivo(Caja caja) {
-		BigDecimal total = caja.getMontoInicioEfectivo();
-		List<DetalleCaja> lstdetalle = detalleCajaService.findByCajaAndEstadoOrderByFechaDesc(caja, true);
-		for(DetalleCaja detalle: lstdetalle) {
-			if(detalle.getOrigen().equals("Efectivo")) {
-				if(detalle.getTipoMovimiento().equals("Ingreso")) {
-					total = total.add(detalle.getMonto());
-				}else {
-					total = total.subtract(detalle.getMonto());
-				}
-			}
-			
-		}
-		
-		return total;
-	}
 	
 	public BigDecimal calcularFinalPos(Caja caja) {
 		BigDecimal total = caja.getMontoInicioPos();
@@ -493,9 +480,12 @@ public class CajaBean extends BaseBean {
 		detalleCajaSelected.setEstado(true);
 
 		detalleCajaService.save(detalleCajaSelected);
-		addInfoMessage("Se guardó el movimiento de caja correctamente."); 
+		
 		
 		listarDetallesCajaSelected();
+		
+		cajaService.save(cajaSelected, lstDetalleCajaSelected);
+		addInfoMessage("Se guardó el movimiento de caja correctamente."); 
 		
 	}
 	
