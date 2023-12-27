@@ -1145,6 +1145,10 @@
             <property-name>asistenciaService</property-name>
             <value>#{asistenciaService}</value>
         </managed-property>
+        <managed-property>
+            <property-name>fondoPensionService</property-name>
+            <value>#{fondoPensionService}</value>
+        </managed-property>
 	</managed-bean>
 	
 	<managed-bean>
@@ -1185,6 +1189,13 @@
 			<property-name>navegacionBean</property-name>
 			<value>#{navegacionBean}</value> 
 		</managed-property>
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>documentoCompraBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.compra.bean.DocumentoCompraBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope> 
+		
 	</managed-bean>
 	
 </faces-config>

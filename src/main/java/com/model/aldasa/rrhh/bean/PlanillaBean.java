@@ -28,14 +28,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Asistencia;
+import com.model.aldasa.entity.DetalleCaja;
 import com.model.aldasa.entity.DetallePlanilla;
 import com.model.aldasa.entity.Empleado;
+import com.model.aldasa.entity.FondoPension;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Planilla;
 import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.service.AsistenciaService;
 import com.model.aldasa.service.DetallePlanillaService;
 import com.model.aldasa.service.EmpleadoService;
+import com.model.aldasa.service.FondoPensionService;
 import com.model.aldasa.service.PlanillaService;
 import com.model.aldasa.service.SucursalService;
 import com.model.aldasa.util.BaseBean;
@@ -61,6 +64,9 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	@ManagedProperty(value = "#{asistenciaService}")
 	private AsistenciaService asistenciaService;
 	
+	@ManagedProperty(value = "#{fondoPensionService}")
+	private FondoPensionService fondoPensionService;
+	
 	private LazyDataModel<Planilla> lstPlanillaLazy;
 	
 	private Planilla planillaSelected;
@@ -72,6 +78,7 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	private List<Empleado> lstEmpleadoCombo;
 	private List<DetallePlanilla> lstDetallePlanillaTemp;
 	private List<Empleado> lstEmpleadoTemp;
+	private List<FondoPension> lstFondoPension;
 	
 	private SelectItem[] cboMes;
     private SelectItem[] cboTipoPlanilla;
@@ -89,6 +96,7 @@ public class PlanillaBean extends BaseBean implements Serializable{
 		tipoPlanilla = true;
 		lstEmpleadoCombo = empleadoService.findByEstado(true);
 		lstSucursal =sucursalService.findByEstado(true);
+		lstFondoPension = fondoPensionService.findByEstado(true);
 		sucursal = lstSucursal.get(0);
 		crearFiltroMes();
 		crearFiltroTipoPlanilla();
@@ -96,6 +104,66 @@ public class PlanillaBean extends BaseBean implements Serializable{
 		bloquearPantalla();
 		
 		iniciarLazy();
+	}
+	
+	public void editarRemuneracionMaxima(FondoPension fondoPension) {
+		if(fondoPension.getRemuneracionMaxima()!=null) {
+			fondoPensionService.save(fondoPension);
+			
+            addInfoMessage("Se cambió la remuneración máxima correctamente.");
+		}
+	}
+	
+	public void editarComisionAnualSobreSaldo(FondoPension fondoPension) {
+		if(fondoPension.getComisionAnualSobreSaldo()!=null) {
+			fondoPensionService.save(fondoPension);
+			
+            addInfoMessage("Se cambió la comisión sanual sobre saldo correctamente.");
+		}
+	}
+	
+	public void editarComisionSobreFlujo(FondoPension fondoPension) {
+		if(fondoPension.getComisionSobreFlujo1()!=null) {
+			fondoPensionService.save(fondoPension);
+			
+            addInfoMessage("Se cambió la comisión sobre flujo correctamente.");
+		}
+	}
+	
+	public void editarPrimaSeguro(FondoPension fondoPension) {
+		if(fondoPension.getPrimaSeguro()!=null) {
+			fondoPensionService.save(fondoPension);
+			
+            addInfoMessage("Se cambió la prima seguro correctamente.");
+		}
+	}
+	
+	public void editarTabla(DetallePlanilla dt) {
+				
+		if(dt.getTardanza()==null) {
+			dt.setTardanza(BigDecimal.ZERO);
+		}
+		
+		if(dt.getVacaciones()==null) {
+			dt.setVacaciones(BigDecimal.ZERO);
+		}
+		
+		if(dt.getComisiones()==null) {
+			dt.setComisiones(BigDecimal.ZERO);
+		}
+		
+		if(dt.getBono()==null) {
+			dt.setBono(BigDecimal.ZERO);
+		}
+		
+		BigDecimal suma1 = dt.getEmpleado().getSueldoBasico().subtract(dt.getTardanza());
+		BigDecimal suma2 = suma1.add(dt.getVacaciones());
+		BigDecimal suma3 = suma2.add(dt.getComisiones());
+		BigDecimal suma4 = suma3.add(dt.getBono());
+		
+		dt.setTotal(suma4);
+		addInfoMessage("Se calculó el total correctamente.");
+
 	}
 	
 	public void agregarDetalle() {
@@ -205,7 +273,7 @@ public class PlanillaBean extends BaseBean implements Serializable{
 			dt.setAporteObligatorio(BigDecimal.ZERO);
 			dt.setPrimaSeguros(BigDecimal.ZERO);
 			dt.setComisionVariable(BigDecimal.ZERO);
-			
+			dt.setTotal(e.getSueldoBasico());
 			
 			if(tipoPlanilla) {
 				
@@ -645,6 +713,24 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	}
 	public void setAsistenciaService(AsistenciaService asistenciaService) {
 		this.asistenciaService = asistenciaService;
+	}
+	public FondoPensionService getFondoPensionService() {
+		return fondoPensionService;
+	}
+	public void setFondoPensionService(FondoPensionService fondoPensionService) {
+		this.fondoPensionService = fondoPensionService;
+	}
+	public List<FondoPension> getLstFondoPension() {
+		return lstFondoPension;
+	}
+	public void setLstFondoPension(List<FondoPension> lstFondoPension) {
+		this.lstFondoPension = lstFondoPension;
+	}
+	public SimpleDateFormat getSdf() {
+		return sdf;
+	}
+	public void setSdf(SimpleDateFormat sdf) {
+		this.sdf = sdf;
 	}
 	
 	

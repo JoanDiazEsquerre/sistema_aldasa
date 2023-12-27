@@ -11,10 +11,22 @@ import com.model.aldasa.util.BaseBean;
 @ViewScoped
 public class DocumentoCompraBean extends BaseBean {
 	
+	private boolean estado;
 	
 	@PostConstruct
 	public void init() {
 		
+	}
+
+	
+	
+	
+	
+	public boolean isEstado() {
+		return estado;
+	}
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 		
 	

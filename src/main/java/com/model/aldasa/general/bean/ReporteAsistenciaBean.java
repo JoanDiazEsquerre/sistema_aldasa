@@ -579,6 +579,8 @@ public class ReporteAsistenciaBean extends BaseBean implements Serializable {
 			asistenciaSelected.setFechaCrea(new Date());
 		}
 		
+		asistenciaSelected.setEstado(true);
+		
 		Asistencia asistencia = asistenciaService.save(asistenciaSelected);
 
 		
