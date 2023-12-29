@@ -16,6 +16,10 @@
 					<f:selectItem itemLabel="Anulados" itemValue="#{false}" />
 					<p:ajax  update="idTableContrato"/>
 				</p:selectOneButton> 
+				
+				<p:commandButton value="ACTUALIZAR" style="display:none;" onclick="PrimeFaces.monitorDownload(start, stop);" id="btnAct" styleClass="ui-button-success" icon="pi pi-check"> 
+                	<p:fileDownload value="#{contratoBean.fileDes}"/> 
+                </p:commandButton>
                 
                 <p:commandButton value="Descargar" rendered="#{navegacionBean.usuarioLogin.profile.id eq 1}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{contratoBean.procesarExcel}" icon="pi pi-file-excel" styleClass="ui-button-success" style="margin-left:20px">
 		           <p:fileDownload value="#{contratoBean.fileDes}"/> 

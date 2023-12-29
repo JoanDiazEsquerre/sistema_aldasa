@@ -183,29 +183,22 @@ public class LoteBean extends BaseBean implements Serializable{
 	@PostConstruct
 	public void init() {
 		usuarioLogin = navegacionBean.getUsuarioLogin();
-		listarProject();
-		listarManzanas();
-		listarPersonas();
+		lstProject= projectService.findByStatusAndSucursal(true, navegacionBean.getSucursalLogin());;
+		lstManzana = manzanaService.findByStatusOrderByNameAsc(true);
+		lstPerson=personService.findByStatus(true);
+
 		iniciarLazy();
 //		cargarAsesorPorEquipo();
 		lstTeam=teamService.findByStatus(true);
 		
 	}	  
 	
-	public void listarPersonas() {
-		lstPerson=personService.findByStatus(true);
-	}
-
 	public void newLote() {
 		nombreLoteSelected="";
 		tituloDialog="NUEVO LOTE";
 		
 		loteSelected=new Lote();
 		loteSelected.setStatus("Disponible");
-		
-		listarManzanas();
-		listarProject();
-		listarPersonas();
 	}
 	
 	public void modifyLote( ) {
@@ -231,9 +224,7 @@ public class LoteBean extends BaseBean implements Serializable{
 		cargarAsesorPorEquipo();
 		loteSelected.setPersonAssessor(personAsesor);
 				
-		listarManzanas();
-		listarProject();
-		listarPersonas();
+		
 	}
 	
 	
@@ -251,24 +242,7 @@ public class LoteBean extends BaseBean implements Serializable{
 	      return calendar.getTime(); 
 	}
 	
-	public void listarManzanas (){
-		if(projectFilter == null) {
-			lstManzana = manzanaService.findByStatusOrderByNameAsc(true);
-		}else {
-			lstManzana= manzanaService.findByProject(projectFilter.getId());
-		}
-		
-		manzanaFilterMapeo = null;
-		if(!lstManzana.isEmpty() && lstManzana != null) {
-			manzanaFilterMapeo = lstManzana.get(0);
-		}
-		
-	}
-	
-	public void listarProject(){
-		lstProject= projectService.findByStatusAndSucursal(true, navegacionBean.getSucursalLogin());
-	}
-	
+
 	public void listarLotes(){	
 		lstLotes = new ArrayList<>();
 		if(!lstManzana.isEmpty()) {

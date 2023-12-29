@@ -24,7 +24,7 @@
 			<p:selectOneMenu id="optionProject" value="#{loteBean.projectFilter}" converter="#{loteBean.conversorProject}" >
 				<f:selectItem itemLabel="[--Todos--]" itemValue="#{null}"/>
 				<f:selectItems value="#{loteBean.lstProject}" var="proy" itemLabel="#{proy.name}" itemValue="#{proy}"/>
-				<p:ajax update=":form:idTableLote :form:panelFilter" listener="#{loteBean.listarManzanas}" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
+				<p:ajax update="idTableLote" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
 			</p:selectOneMenu>
 			
 			<p:outputLabel for="optionManzana" value="Manzana: "/>
@@ -36,19 +36,9 @@
 		
 		
 
-		<p:dataTable var="lote" id="idTableLote" value="#{loteBean.lstLoteLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="15" style="width:120%"
+		<p:dataTable var="lote" id="idTableLote" value="#{loteBean.lstLoteLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="15" style="width:100%; font-size: 14px"
 			size="small" emptyMessage="No se encontraron lotes." paginatorPosition="bottom" rowKey="#{lote.id}" selection="#{loteBean.loteSelected}" selectionMode="single">
-			<f:facet name="header">
-				<div class="p-d-flex p-ai-center p-jc-between">
-					<span>
-						<p:commandButton id="images" icon="pi pi-image" rendered="#{loteBean.projectFilter != null}" style="margin-right:10px" title="Descargar maqueta" actionListener="#{loteBean.fileDownloadView}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
-				            <p:fileDownload value="#{loteBean.fileImg}"/>
-				        </p:commandButton>
-			            
-			            <p:commandButton id="mapeo" icon="pi pi-th-large" rendered="#{loteBean.projectFilter != null}" oncomplete="PF('mapeoDialog').show();" update="dialogMapeo" actionListener="#{loteBean.listarLotes()}"/>
-					</span>
-				</div>
-			</f:facet>
+			
 			<p:ajax event="rowSelect" listener="#{loteBean.modifyLote()}" update=":formLoteDialog :dialogLote :form:idTableLote " onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('loteDialog').show();" />
 			<p:column style="width:42px;text-align: left">
 				<f:facet name="header">
