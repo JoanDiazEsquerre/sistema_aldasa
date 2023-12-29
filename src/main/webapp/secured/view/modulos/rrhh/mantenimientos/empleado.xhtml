@@ -177,6 +177,17 @@
 					<f:selectItems value="#{empleadoBean.lstFondoPension}" var="fondoPen" itemLabel="#{fondoPen.nombre}" itemValue="#{fondoPen}"/> 
 				</p:selectOneMenu>
 				
+				<h:outputLabel value="Comisión Variable:" />
+				<p:selectOneMenu value="#{empleadoBean.empleadoSelected.comisionVariable}" style="margin:10px">
+					<f:selectItem itemLabel="NO" itemValue="#{false}" />
+					<f:selectItem itemLabel="SI" itemValue="#{true}" />
+<!-- 					<p:ajax listener="#{empleadoBean.cambiarPlanilla()}" update="fondoPension" /> -->
+				</p:selectOneMenu>	
+				
+				<h:outputLabel value="Cuspp:" />
+				<p:inputText value="#{empleadoBean.empleadoSelected.cuspp}" style="margin:10px">
+				</p:inputText>	
+				
 			</h:panelGrid>
 			<p:commandButton value="Guardar" action="#{empleadoBean.saveEmpleado()}" update=":form:idTableEmpleado :formEmpleadoDialog" 
 			onstart="PF('blockUIWidgetDialogEmpleado').block();" oncomplete="PF('blockUIWidgetDialogEmpleado').unblock();"/>

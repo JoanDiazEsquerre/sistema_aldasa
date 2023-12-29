@@ -45,6 +45,9 @@ public class DetallePlanilla {
 	@Column(name="descmesanterior")
 	private BigDecimal descMesAnterior;
 	
+	@Column(name="fesalud")
+	private BigDecimal feSalud;
+	
 	@Column(name="pagovactrunca")
 	private BigDecimal pagoVacTrunca;
 	
@@ -64,6 +67,10 @@ public class DetallePlanilla {
 	private BigDecimal abonado4;
 	
 	private boolean estado;
+	
+	
+	
+	
 	
 	public Integer getId() {
 		return id;
@@ -197,13 +204,21 @@ public class DetallePlanilla {
 	public void setEsSalud(BigDecimal esSalud) {
 		this.esSalud = esSalud;
 	}
-
 	public boolean isEstado() {
 		return estado;
 	}
 	public void setEstado(boolean estado) {
 		this.estado = estado;
 	}
+	public BigDecimal getFeSalud() {
+		return feSalud;
+	}
+	public void setFeSalud(BigDecimal feSalud) {
+		this.feSalud = feSalud;
+	}
+	
+	
+	
 	
 	
 	@Override

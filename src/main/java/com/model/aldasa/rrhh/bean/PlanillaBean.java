@@ -106,40 +106,8 @@ public class PlanillaBean extends BaseBean implements Serializable{
 		iniciarLazy();
 	}
 	
-	public void editarRemuneracionMaxima(FondoPension fondoPension) {
-		if(fondoPension.getRemuneracionMaxima()!=null) {
-			fondoPensionService.save(fondoPension);
-			
-            addInfoMessage("Se cambió la remuneración máxima correctamente.");
-		}
-	}
-	
-	public void editarComisionAnualSobreSaldo(FondoPension fondoPension) {
-		if(fondoPension.getComisionAnualSobreSaldo()!=null) {
-			fondoPensionService.save(fondoPension);
-			
-            addInfoMessage("Se cambió la comisión sanual sobre saldo correctamente.");
-		}
-	}
-	
-	public void editarComisionSobreFlujo(FondoPension fondoPension) {
-		if(fondoPension.getComisionSobreFlujo1()!=null) {
-			fondoPensionService.save(fondoPension);
-			
-            addInfoMessage("Se cambió la comisión sobre flujo correctamente.");
-		}
-	}
-	
-	public void editarPrimaSeguro(FondoPension fondoPension) {
-		if(fondoPension.getPrimaSeguro()!=null) {
-			fondoPensionService.save(fondoPension);
-			
-            addInfoMessage("Se cambió la prima seguro correctamente.");
-		}
-	}
-	
 	public void editarTabla(DetallePlanilla dt) {
-				
+		
 		if(dt.getTardanza()==null) {
 			dt.setTardanza(BigDecimal.ZERO);
 		}
@@ -162,6 +130,172 @@ public class PlanillaBean extends BaseBean implements Serializable{
 		BigDecimal suma4 = suma3.add(dt.getBono());
 		
 		dt.setTotal(suma4);
+		
+		if(dt.getEmpleado().isPlanilla()) {
+			if(dt.getEmpleado().getFondoPension().getNombre().equals("ONP")) {
+				dt.setOnp(dt.getTotal().multiply(dt.getEmpleado().getFondoPension().getAporteObligatorio().divide(new BigDecimal(100), 4 , RoundingMode.HALF_UP))); 
+			}else {
+				dt.setAporteObligatorio(dt.getTotal().multiply(dt.getEmpleado().getFondoPension().getAporteObligatorio().divide(new BigDecimal(100), 4 , RoundingMode.HALF_UP)));		
+				dt.setPrimaSeguros(dt.getTotal().multiply(dt.getEmpleado().getFondoPension().getPrimaSeguro().divide(new BigDecimal(100), 4 , RoundingMode.HALF_UP)));
+				dt.setComisionVariable(BigDecimal.ZERO);
+				
+				if(dt.getEmpleado().isComisionVariable()) {
+					BigDecimal calculo1 =dt.getEmpleado().getFondoPension().getComisionSobreFlujo1().divide(new BigDecimal(100), 4, RoundingMode.HALF_UP);
+					dt.setComisionVariable(calculo1.multiply(dt.getTotal()));
+				}
+			}
+			
+			dt.setTotalDescuento(dt.getOnp().add(dt.getAporteObligatorio()).add(dt.getPrimaSeguros()).add(dt.getComisionVariable()).add(dt.getRentaQuinta()).add(dt.getDescMesAnterior()).add(dt.getFeSalud()).add(dt.getPagoVacTrunca()).add(dt.getAdelanto()).add(dt.getPrestamo()));
+			dt.setNetoPagar(dt.getTotal().subtract(dt.getTotalDescuento()));
+			dt.setEsSalud(dt.getTotal().compareTo(new BigDecimal(1025)) == -1? new BigDecimal(92.25) : dt.getTotal().multiply( new BigDecimal(9).divide(new BigDecimal(100), 4, RoundingMode.HALF_UP))); 
+
+		}
+		
+		addInfoMessage("Se calculó el total correctamente.");
+
+	}
+	
+	public void editarRemuneracionMaxima(FondoPension fondoPension) {
+		if(fondoPension.getRemuneracionMaxima()!=null) {
+			fondoPensionService.save(fondoPension);
+			
+            addInfoMessage("Se cambió la remuneración máxima correctamente.");
+		}
+	}
+	
+	public void editarComisionAnualSobreSaldo(FondoPension fondoPension) {
+		if(fondoPension.getComisionAnualSobreSaldo()!=null) {
+			fondoPensionService.save(fondoPension);
+			
+            addInfoMessage("Se cambió la comisión sanual sobre saldo correctamente.");
+		}
+	}
+	
+	public void editarComisionSobreFlujo(FondoPension fondoPension) {
+		if(fondoPension.getComisionSobreFlujo1()!=null) {
+			fondoPensionService.save(fondoPension);
+			
+			for(DetallePlanilla d : lstDetallePlanillaTemp) {
+            	
+            	if(d.getEmpleado().getFondoPension()!=null) {
+            		if(fondoPension.getNombre().equals(d.getEmpleado().getFondoPension().getNombre())) {
+                		if(d.getEmpleado().isPlanilla()) {
+                    		if(!d.getEmpleado().getFondoPension().getNombre().equals("ONP")) {
+                    			d.setComisionVariable(BigDecimal.ZERO);
+                    			
+                    			if(d.getEmpleado().isComisionVariable()) {
+                					BigDecimal calculo1 =fondoPension.getComisionSobreFlujo1().divide(new BigDecimal(100), 4, RoundingMode.HALF_UP);
+                					d.setComisionVariable(calculo1.multiply(d.getTotal()));
+                				}
+                    		}
+                    	}
+                	}
+            	}	
+    			d.setTotalDescuento(d.getOnp().add(d.getAporteObligatorio()).add(d.getPrimaSeguros()).add(d.getComisionVariable()).add(d.getRentaQuinta()).add(d.getDescMesAnterior()).add(d.getFeSalud()).add(d.getPagoVacTrunca()).add(d.getAdelanto()).add(d.getPrestamo()));
+    			d.setNetoPagar(d.getTotal().subtract(d.getTotalDescuento()));
+            }
+			
+            addInfoMessage("Se cambió la comisión sobre flujo correctamente.");
+		}
+	}
+	
+	public void editarPrimaSeguro(FondoPension fondoPension) {
+		if(fondoPension.getPrimaSeguro()!=null) {
+			fondoPensionService.save(fondoPension);
+			
+			for(DetallePlanilla d : lstDetallePlanillaTemp) {
+            	
+            	if(d.getEmpleado().getFondoPension()!=null) {
+            		if(fondoPension.getNombre().equals(d.getEmpleado().getFondoPension().getNombre())) {
+                		if(d.getEmpleado().isPlanilla()) {
+                    		if(!d.getEmpleado().getFondoPension().getNombre().equals("ONP")) {
+                				d.setPrimaSeguros(d.getTotal().multiply(fondoPension.getPrimaSeguro().divide(new BigDecimal(100), 4 , RoundingMode.HALF_UP)));
+                    			
+                    		}
+                    	}
+                	}
+            	}	
+    			d.setTotalDescuento(d.getOnp().add(d.getAporteObligatorio()).add(d.getPrimaSeguros()).add(d.getComisionVariable()).add(d.getRentaQuinta()).add(d.getDescMesAnterior()).add(d.getFeSalud()).add(d.getPagoVacTrunca()).add(d.getAdelanto()).add(d.getPrestamo()));
+    			d.setNetoPagar(d.getTotal().subtract(d.getTotalDescuento()));
+
+            }
+			
+            addInfoMessage("Se cambió la prima seguro correctamente.");
+		}
+	}
+	
+	public void editarAporteObligatorio(FondoPension fondoPension) {
+		if(fondoPension.getAporteObligatorio()!=null) {
+			fondoPensionService.save(fondoPension);
+			
+            for(DetallePlanilla d : lstDetallePlanillaTemp) {
+            	
+            	if(d.getEmpleado().getFondoPension()!=null) {
+            		if(fondoPension.getNombre().equals(d.getEmpleado().getFondoPension().getNombre())) {
+                		if(d.getEmpleado().isPlanilla()) {
+                    		if(d.getEmpleado().getFondoPension().getNombre().equals("ONP")) {
+                    			d.setOnp(d.getTotal().multiply(fondoPension.getAporteObligatorio().divide(new BigDecimal(100), 4 , RoundingMode.HALF_UP))); 
+                    		}else {
+                    			d.setAporteObligatorio(d.getTotal().multiply(fondoPension.getAporteObligatorio().divide(new BigDecimal(100), 4 , RoundingMode.HALF_UP)));		
+                    			
+                    		}
+                    	}
+                	}
+            	}	
+    			d.setTotalDescuento(d.getOnp().add(d.getAporteObligatorio()).add(d.getPrimaSeguros()).add(d.getComisionVariable()).add(d.getRentaQuinta()).add(d.getDescMesAnterior()).add(d.getFeSalud()).add(d.getPagoVacTrunca()).add(d.getAdelanto()).add(d.getPrestamo()));
+    			d.setNetoPagar(d.getTotal().subtract(d.getTotalDescuento()));
+
+            }
+            addInfoMessage("Se cambió el aporte obligatorio correctamente.");
+		}
+	}
+	
+		
+	public void editarTabla2(DetallePlanilla dt) {
+				
+		if(dt.getOnp()==null) {
+			dt.setOnp(BigDecimal.ZERO);
+		}
+		
+		if(dt.getAporteObligatorio()==null) {
+			dt.setAporteObligatorio(BigDecimal.ZERO);
+		}
+		
+		if(dt.getPrimaSeguros()==null) {
+			dt.setPrimaSeguros(BigDecimal.ZERO);
+		}
+		
+		if(dt.getComisionVariable()==null) {
+			dt.setComisionVariable(BigDecimal.ZERO);
+		}
+		
+		if(dt.getRentaQuinta()==null) {
+			dt.setRentaQuinta(BigDecimal.ZERO);
+		}
+		
+		if(dt.getDescMesAnterior()==null) {
+			dt.setDescMesAnterior(BigDecimal.ZERO);
+		}
+		
+		if(dt.getFeSalud()==null) {
+			dt.setFeSalud(BigDecimal.ZERO);
+		}
+		
+		if(dt.getPagoVacTrunca()==null) {
+			dt.setPagoVacTrunca(BigDecimal.ZERO);
+		}
+		
+		if(dt.getAdelanto()==null) {
+			dt.setAdelanto(BigDecimal.ZERO);
+		}
+		
+		if(dt.getPrestamo()==null) {
+			dt.setPrestamo(BigDecimal.ZERO);
+		}
+		
+		dt.setTotalDescuento(dt.getOnp().add(dt.getAporteObligatorio()).add(dt.getPrimaSeguros()).add(dt.getComisionVariable()).add(dt.getRentaQuinta()).add(dt.getDescMesAnterior()).add(dt.getFeSalud()).add(dt.getPagoVacTrunca()).add(dt.getAdelanto()).add(dt.getPrestamo()));
+		dt.setNetoPagar(dt.getTotal().subtract(dt.getTotalDescuento()));
+
 		addInfoMessage("Se calculó el total correctamente.");
 
 	}
@@ -207,13 +341,14 @@ public class PlanillaBean extends BaseBean implements Serializable{
 			
 			dt.setRentaQuinta(BigDecimal.ZERO);
 			dt.setDescMesAnterior(BigDecimal.ZERO);
+			dt.setFeSalud(BigDecimal.ZERO);
 			dt.setPagoVacTrunca(BigDecimal.ZERO);
 			dt.setAdelanto(BigDecimal.ZERO);
 			dt.setPrestamo(BigDecimal.ZERO);
-			dt.setTotalDescuento(dt.getOnp().add(dt.getAporteObligatorio()).add(dt.getPrimaSeguros()).add(dt.getComisionVariable()).add(dt.getRentaQuinta()).add(dt.getDescMesAnterior()).add(dt.getPagoVacTrunca()).add(dt.getAdelanto()).add(dt.getPrestamo()));
+			dt.setTotalDescuento(dt.getOnp().add(dt.getAporteObligatorio()).add(dt.getPrimaSeguros()).add(dt.getComisionVariable()).add(dt.getRentaQuinta()).add(dt.getDescMesAnterior()).add(dt.getFeSalud()).add(dt.getPagoVacTrunca()).add(dt.getAdelanto()).add(dt.getPrestamo()));
 			
 			dt.setNetoPagar(dt.getTotal().subtract(dt.getTotalDescuento()));
-			dt.setEsSalud(dt.getTotal().compareTo(new BigDecimal(1025)) == -1? new BigDecimal(92.25) : dt.getTotal().multiply( new BigDecimal(9).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP))); 
+			dt.setEsSalud(dt.getTotal().compareTo(new BigDecimal(1025)) == -1? new BigDecimal(92.25) : dt.getTotal().multiply( new BigDecimal(9).divide(new BigDecimal(100), 4, RoundingMode.HALF_UP))); 
 			
 			dt.setAbonado30(BigDecimal.ZERO);
 			dt.setAbonado4(BigDecimal.ZERO); 
@@ -223,7 +358,7 @@ public class PlanillaBean extends BaseBean implements Serializable{
 			addInfoMessage("Se agregó correctamente el empleado.");
 		}
 	}
-	
+		
 	public void bloquearPantalla() {
 		bloqueo=false;
 		planillaNew = planillaService.findByEstadoAndTemporal(true, true);
@@ -272,6 +407,8 @@ public class PlanillaBean extends BaseBean implements Serializable{
 			dt.setOnp(BigDecimal.ZERO);
 			dt.setAporteObligatorio(BigDecimal.ZERO);
 			dt.setPrimaSeguros(BigDecimal.ZERO);
+			
+			
 			dt.setComisionVariable(BigDecimal.ZERO);
 			dt.setTotal(e.getSueldoBasico());
 			
@@ -346,11 +483,16 @@ public class PlanillaBean extends BaseBean implements Serializable{
 		        
 		        if(e.getFondoPension()!=null) {
 					if(e.getFondoPension().getNombre().equals("ONP")) {
-						dt.setOnp(dt.getTotal().multiply(e.getFondoPension().getAporteObligatorio().divide(new BigDecimal(100), 2 , RoundingMode.HALF_UP))); 
+						dt.setOnp(dt.getTotal().multiply(e.getFondoPension().getAporteObligatorio().divide(new BigDecimal(100), 4 , RoundingMode.HALF_UP))); 
 					}else {
-						dt.setAporteObligatorio(dt.getTotal().multiply(e.getFondoPension().getAporteObligatorio().divide(new BigDecimal(100), 2 , RoundingMode.HALF_UP)));
-						dt.setPrimaSeguros(dt.getTotal().multiply(e.getFondoPension().getPrimaSeguro().divide(new BigDecimal(100), 2 , RoundingMode.HALF_UP)));
+						dt.setAporteObligatorio(dt.getTotal().multiply(e.getFondoPension().getAporteObligatorio().divide(new BigDecimal(100), 4 , RoundingMode.HALF_UP)));
+						dt.setPrimaSeguros(dt.getTotal().multiply(e.getFondoPension().getPrimaSeguro().divide(new BigDecimal(100), 4 , RoundingMode.HALF_UP)));
 						dt.setComisionVariable(BigDecimal.ZERO);
+						
+						if(e.isComisionVariable()) {
+							BigDecimal calculo1 =e.getFondoPension().getComisionSobreFlujo1().divide(new BigDecimal(100), 4, RoundingMode.HALF_UP);
+							dt.setComisionVariable(calculo1.multiply(dt.getTotal()));
+						}
 					}
 				}
 		        			
@@ -360,10 +502,11 @@ public class PlanillaBean extends BaseBean implements Serializable{
 			
 			dt.setRentaQuinta(BigDecimal.ZERO);
 			dt.setDescMesAnterior(BigDecimal.ZERO);
+			dt.setFeSalud(BigDecimal.ZERO);
 			dt.setPagoVacTrunca(BigDecimal.ZERO);
 			dt.setAdelanto(BigDecimal.ZERO);
 			dt.setPrestamo(BigDecimal.ZERO);
-			dt.setTotalDescuento(dt.getOnp().add(dt.getAporteObligatorio()).add(dt.getPrimaSeguros()).add(dt.getComisionVariable()).add(dt.getRentaQuinta()).add(dt.getDescMesAnterior()).add(dt.getPagoVacTrunca()).add(dt.getAdelanto()).add(dt.getPrestamo()));
+			dt.setTotalDescuento(dt.getOnp().add(dt.getAporteObligatorio()).add(dt.getPrimaSeguros()).add(dt.getComisionVariable()).add(dt.getRentaQuinta()).add(dt.getDescMesAnterior()).add(dt.getFeSalud()).add(dt.getPagoVacTrunca()).add(dt.getAdelanto()).add(dt.getPrestamo()));
 			
 			dt.setNetoPagar(dt.getTotal().subtract(dt.getTotalDescuento()));
 			dt.setEsSalud(dt.getTotal().compareTo(new BigDecimal(1025)) == -1? new BigDecimal(92.25) : dt.getTotal().multiply( new BigDecimal(9).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP))); 

@@ -131,7 +131,7 @@
 				</h:panelGrid>
 				
 				<p:dataTable reflow="true" var="dp" id="idTableEmpleado" value="#{planillaBean.lstDetallePlanillaTemp}" widgetVar="empleadoTable" rowIndexVar="row" paginator="true" rows="15" size="small"
-					emptyMessage="No se encontraron empleados." editable="true" editMode="cell" style="font-size: 14px; width:130%"	paginatorPosition="bottom" rowKey="#{dp.id}" selectionMode="single">
+					emptyMessage="No se encontraron empleados." editable="true" editMode="cell" style="font-size: 14px; width:140%"	paginatorPosition="bottom" rowKey="#{dp.id}" selectionMode="single">
 					
 				
 					<f:facet name="header">
@@ -235,58 +235,155 @@
 						 </h:outputText>
 					</p:column>
 					
-					<p:column headerText="ONP SNP" filterMatchMode="contains" style="text-align: center">
-						<h:outputText value="#{dp.onp}" > 
-						 <f:convertNumber currencySymbol="" type="currency"  />
-						 </h:outputText>
+					<p:column headerText="ONP SNP"  width="70px" style="text-align: center" filterMatchMode="contains" >
+						<p:cellEditor>
+		                    <f:facet name="output">
+		                       	<h:outputText value="#{dp.onp}" > 
+								 <f:convertNumber currencySymbol="" type="currency"  />
+								</h:outputText> 
+		                    </f:facet>
+		                    <f:facet name="input">
+		                        <p:inputNumber value="#{dp.onp}" modifyValueOnWheel="false" > 
+		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        </p:inputNumber>
+		                    </f:facet>
+		                </p:cellEditor>
 					</p:column>
 					
-					<p:column headerText="AP. OBLIG." filterMatchMode="contains" style="text-align: center">
-						<h:outputText value="#{dp.aporteObligatorio}" > 
-						 <f:convertNumber currencySymbol="" type="currency"  />
-						 </h:outputText>
+					
+					<p:column headerText="AP. OBLIG."  width="70px" style="text-align: center" filterMatchMode="contains" >
+						<p:cellEditor>
+		                    <f:facet name="output">
+		                       	<h:outputText value="#{dp.aporteObligatorio}" > 
+								 <f:convertNumber currencySymbol="" type="currency"  />
+								</h:outputText> 
+		                    </f:facet>
+		                    <f:facet name="input">
+		                        <p:inputNumber value="#{dp.aporteObligatorio}" modifyValueOnWheel="false" > 
+		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        </p:inputNumber>
+		                    </f:facet>
+		                </p:cellEditor>
 					</p:column>
 					
-					<p:column headerText="SEG. INV." filterMatchMode="contains" style="text-align: center">
-						<h:outputText value="#{dp.primaSeguros}" > 
-							<f:convertNumber currencySymbol="" type="currency"  />
-						</h:outputText>
+					<p:column headerText="SEG. INV."  width="70px" style="text-align: center" filterMatchMode="contains" >
+						<p:cellEditor>
+		                    <f:facet name="output">
+		                       	<h:outputText value="#{dp.primaSeguros}" > 
+								 <f:convertNumber currencySymbol="" type="currency"  />
+								</h:outputText> 
+		                    </f:facet>
+		                    <f:facet name="input">
+		                        <p:inputNumber value="#{dp.primaSeguros}" modifyValueOnWheel="false" > 
+		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        </p:inputNumber>
+		                    </f:facet>
+		                </p:cellEditor>
 					</p:column>
 					
-					<p:column headerText="COM. VAR." filterMatchMode="contains" style="text-align: center">
-						<h:outputText value="#{dp.comisionVariable}" > 
-							<f:convertNumber currencySymbol="" type="currency"  />
-						</h:outputText>
+					<p:column headerText="COM. VAR."  width="70px" style="text-align: center" filterMatchMode="contains" >
+						<p:cellEditor>
+		                    <f:facet name="output">
+		                       	<h:outputText value="#{dp.comisionVariable}" > 
+								 <f:convertNumber currencySymbol="" type="currency"  />
+								</h:outputText> 
+		                    </f:facet>
+		                    <f:facet name="input">
+		                        <p:inputNumber value="#{dp.comisionVariable}" modifyValueOnWheel="false" > 
+		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        </p:inputNumber>
+		                    </f:facet>
+		                </p:cellEditor>
 					</p:column>
 					
-					<p:column headerText="REN. 5TA." filterMatchMode="contains" style="text-align: center">
-						<h:outputText value="#{dp.rentaQuinta}" > 
-						 	<f:convertNumber currencySymbol="" type="currency"  />
-						</h:outputText>
+					<p:column headerText="REN. 5TA."  width="70px" style="text-align: center" filterMatchMode="contains" >
+						<p:cellEditor>
+		                    <f:facet name="output">
+		                       	<h:outputText value="#{dp.rentaQuinta}" > 
+								 <f:convertNumber currencySymbol="" type="currency"  />
+								</h:outputText> 
+		                    </f:facet>
+		                    <f:facet name="input">
+		                        <p:inputNumber value="#{dp.rentaQuinta}" modifyValueOnWheel="false" > 
+		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        </p:inputNumber>
+		                    </f:facet>
+		                </p:cellEditor>
 					</p:column>
 					
-					<p:column headerText="DESC. MES ANT." filterMatchMode="contains" style="text-align: center">
-						<h:outputText value="#{dp.descMesAnterior}" > 
-							<f:convertNumber currencySymbol="" type="currency"  />
-						</h:outputText>
+					<p:column headerText="DESC. MES ANT."  width="70px" style="text-align: center" filterMatchMode="contains" >
+						<p:cellEditor>
+		                    <f:facet name="output">
+		                       	<h:outputText value="#{dp.descMesAnterior}" > 
+								 <f:convertNumber currencySymbol="" type="currency"  />
+								</h:outputText> 
+		                    </f:facet>
+		                    <f:facet name="input">
+		                        <p:inputNumber value="#{dp.descMesAnterior}" modifyValueOnWheel="false" > 
+		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        </p:inputNumber>
+		                    </f:facet>
+		                </p:cellEditor>
 					</p:column>
 					
-					<p:column headerText="PAGO VAC. TRUN." filterMatchMode="contains" style="text-align: center">
-						<h:outputText value="#{dp.pagoVacTrunca}" > 
-						 	<f:convertNumber currencySymbol="" type="currency"  />
-						</h:outputText>
+					<p:column headerText="FE SALUD"  width="70px" style="text-align: center" filterMatchMode="contains" >
+						<p:cellEditor>
+		                    <f:facet name="output">
+		                       	<h:outputText value="#{dp.feSalud}" > 
+								 <f:convertNumber currencySymbol="" type="currency"  />
+								</h:outputText> 
+		                    </f:facet>
+		                    <f:facet name="input">
+		                        <p:inputNumber value="#{dp.feSalud}" modifyValueOnWheel="false" > 
+		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        </p:inputNumber>
+		                    </f:facet>
+		                </p:cellEditor>
 					</p:column>
 					
-					<p:column headerText="ADELANTO" filterMatchMode="contains" style="text-align: center">
-						<h:outputText value="#{dp.adelanto}" > 
-							<f:convertNumber currencySymbol="" type="currency"  />
-						</h:outputText>
+					<p:column headerText="PAGO VAC. TRUN."  width="70px" style="text-align: center" filterMatchMode="contains" >
+						<p:cellEditor>
+		                    <f:facet name="output">
+		                       	<h:outputText value="#{dp.pagoVacTrunca}" > 
+								 <f:convertNumber currencySymbol="" type="currency"  />
+								</h:outputText> 
+		                    </f:facet>
+		                    <f:facet name="input">
+		                        <p:inputNumber value="#{dp.pagoVacTrunca}" modifyValueOnWheel="false" > 
+		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        </p:inputNumber>
+		                    </f:facet>
+		                </p:cellEditor>
 					</p:column>
 					
-					<p:column headerText="PRÉSTAMO" filterMatchMode="contains" style="text-align: center">
-						<h:outputText value="#{dp.prestamo}" > 
-							<f:convertNumber currencySymbol="" type="currency"  />
-						</h:outputText>
+					<p:column headerText="ADELANTO"  width="70px" style="text-align: center" filterMatchMode="contains" >
+						<p:cellEditor>
+		                    <f:facet name="output">
+		                       	<h:outputText value="#{dp.adelanto}" > 
+								 <f:convertNumber currencySymbol="" type="currency"  />
+								</h:outputText> 
+		                    </f:facet>
+		                    <f:facet name="input">
+		                        <p:inputNumber value="#{dp.adelanto}" modifyValueOnWheel="false" > 
+		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        </p:inputNumber>
+		                    </f:facet>
+		                </p:cellEditor>
+					</p:column>
+				
+					<p:column headerText="PRÉSTAMO"  width="70px" style="text-align: center" filterMatchMode="contains" >
+						<p:cellEditor>
+		                    <f:facet name="output">
+		                       	<h:outputText value="#{dp.prestamo}" > 
+								 <f:convertNumber currencySymbol="" type="currency"  />
+								</h:outputText> 
+		                    </f:facet>
+		                    <f:facet name="input">
+		                        <p:inputNumber value="#{dp.prestamo}" modifyValueOnWheel="false" > 
+		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        </p:inputNumber>
+		                    </f:facet>
+		                </p:cellEditor>
 					</p:column>
 					
 					<p:column headerText="TOTAL DESC." filterMatchMode="contains" style="text-align: center">
@@ -301,34 +398,49 @@
 						</h:outputText>
 					</p:column>
 					
+					<p:column headerText="EsSalud" filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.esSalud}"  > 
+						 <f:convertNumber currencySymbol="" type="currency"  />
+						 </h:outputText>
+					</p:column>
+					
 				</p:dataTable>
 				
-				<p:panel header="CONFIGURACIÓN DE FONDO PENSIÓN" style="margin: 20px; width: 40%">
+				<p:panel header="CONFIGURACIÓN DE FONDO PENSIÓN" style="margin: 20px; width: 45%">
 				
 				
 					<p:dataTable reflow="true" var="fondoPension" id="idTableFondoPension" value="#{planillaBean.lstFondoPension}" widgetVar="fondoPensionTable" rowIndexVar="row" paginator="true" rows="15" size="small"
 						emptyMessage="No se encontraron datos." editable="true" editMode="cell" style="font-size: 12px" paginatorPosition="bottom" rowKey="#{fondoPension.id}" selectionMode="single"> 
 						
-				        <p:column headerText="Nombre"  filterMatchMode="contains" >
+				        <p:column headerText="Nombre"  filterMatchMode="contains" width="60px">
 							<h:outputText value="#{fondoPension.nombre}" />
 						</p:column>
 						
-						<p:column headerText="Aprote Obligatorio" filterMatchMode="contains" style="text-align:center;width: 100px;">
-							<h:outputText value="#{fondoPension.aporteObligatorio}" > 
-								<f:convertNumber type="currency" currencySymbol=""/>
-							</h:outputText>
+						<p:column headerText="Aprote Obligatorio" id="idAporOblig" style="text-align:center;width: 100px;" filterMatchMode="contains" >
+							<p:cellEditor>
+			                    <f:facet name="output">
+			                       	<h:outputText value="#{fondoPension.aporteObligatorio}" > 
+									 <f:convertNumber currencySymbol="%" type="currency"  />
+									</h:outputText> 
+			                    </f:facet>
+			                    <f:facet name="input">
+			                        <p:inputNumber value="#{fondoPension.aporteObligatorio}" modifyValueOnWheel="false" > 
+			                        	<p:ajax listener="#{planillaBean.editarAporteObligatorio(fondoPension)}" update=":form:tabView:idTableFondoPension :form:tabView:idTableEmpleado"/>
+			                        </p:inputNumber>
+			                    </f:facet>
+			                </p:cellEditor>
 						</p:column>
 						
 						<p:column headerText="Prima Seguro" id="idSegPrima" style="text-align:center;width: 100px;" filterMatchMode="contains" >
 							<p:cellEditor>
 			                    <f:facet name="output">
 			                       	<h:outputText value="#{fondoPension.primaSeguro}" > 
-									 <f:convertNumber currencySymbol="" type="currency"  />
+									 <f:convertNumber currencySymbol="%" type="currency"  />
 									</h:outputText> 
 			                    </f:facet>
 			                    <f:facet name="input">
 			                        <p:inputNumber value="#{fondoPension.primaSeguro}" modifyValueOnWheel="false" > 
-			                        	<p:ajax listener="#{planillaBean.editarPrimaSeguro(fondoPension)}" update=":form:tabView:idTableFondoPension"/>
+			                        	<p:ajax listener="#{planillaBean.editarPrimaSeguro(fondoPension)}" update=":form:tabView:idTableFondoPension :form:tabView:idTableEmpleado"/>
 			                        </p:inputNumber>
 			                    </f:facet>
 			                </p:cellEditor>
@@ -338,12 +450,12 @@
 							<p:cellEditor>
 			                    <f:facet name="output">
 			                       	<h:outputText value="#{fondoPension.comisionSobreFlujo1}" > 
-									 <f:convertNumber currencySymbol="" type="currency"  />
+									 <f:convertNumber currencySymbol="%" type="currency"  />
 									</h:outputText> 
 			                    </f:facet>
 			                    <f:facet name="input">
 			                        <p:inputNumber value="#{fondoPension.comisionSobreFlujo1}" modifyValueOnWheel="false" > 
-			                        	<p:ajax listener="#{planillaBean.editarComisionSobreFlujo(fondoPension)}" update=":form:tabView:idTableFondoPension"/>
+			                        	<p:ajax listener="#{planillaBean.editarComisionSobreFlujo(fondoPension)}" update=":form:tabView:idTableFondoPension :form:tabView:idTableEmpleado"/>
 			                        </p:inputNumber>
 			                    </f:facet>
 			                </p:cellEditor>
@@ -365,18 +477,18 @@
 							<p:cellEditor>
 			                    <f:facet name="output">
 			                       	<h:outputText value="#{fondoPension.comisionAnualSobreSaldo}" > 
-									 <f:convertNumber currencySymbol="" type="currency"  />
+									 <f:convertNumber currencySymbol="%" type="currency"  />
 									</h:outputText> 
 			                    </f:facet>
 			                    <f:facet name="input">
 			                        <p:inputNumber value="#{fondoPension.comisionAnualSobreSaldo}" modifyValueOnWheel="false" > 
-			                        	<p:ajax listener="#{planillaBean.editarComisionAnualSobreSaldo(fondoPension)}" update=":form:tabView:idTableFondoPension"/>
+			                        	<p:ajax listener="#{planillaBean.editarComisionAnualSobreSaldo(fondoPension)}" update=":form:tabView:idTableFondoPension :form:tabView:idTableEmpleado"/>
 			                        </p:inputNumber>
 			                    </f:facet>
 			                </p:cellEditor>
 						</p:column>
 				        
-						<p:column headerText="Remuneración Máxima" id="idRemunMax" style="text-align:center;width: 100px;" filterMatchMode="contains" >
+						<p:column headerText="Remuneración Máxima" id="idRemunMax" style="text-align:center" width="100px" filterMatchMode="contains" >
 							<p:cellEditor>
 			                    <f:facet name="output">
 			                       	<h:outputText value="#{fondoPension.remuneracionMaxima}" > 
@@ -385,7 +497,7 @@
 			                    </f:facet>
 			                    <f:facet name="input">
 			                        <p:inputNumber value="#{fondoPension.remuneracionMaxima}" modifyValueOnWheel="false" > 
-			                        	<p:ajax listener="#{planillaBean.editarRemuneracionMaxima(fondoPension)}" update=":form:tabView:idTableFondoPension"/>
+			                        	<p:ajax listener="#{planillaBean.editarRemuneracionMaxima(fondoPension)}" update=":form:tabView:idTableFondoPension :form:tabView:idTableEmpleado"/>
 			                        </p:inputNumber>
 			                    </f:facet>
 			                </p:cellEditor>

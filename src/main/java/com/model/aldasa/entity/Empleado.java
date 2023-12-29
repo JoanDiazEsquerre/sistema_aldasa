@@ -61,8 +61,16 @@ public class Empleado {
 	@JoinColumn(name="idfondopension")
 	private FondoPension fondoPension;
 	
-	
 	private transient String nivel;
+	
+	private String cuspp;
+	
+	@Column(name="comisionvariable")
+	private boolean comisionVariable;
+	
+	
+	
+	
 	
 	public Integer getId() {
 		return id;
@@ -148,6 +156,18 @@ public class Empleado {
 	}
 	public void setFondoPension(FondoPension fondoPension) {
 		this.fondoPension = fondoPension;
+	}
+	public String getCuspp() {
+		return cuspp;
+	}
+	public void setCuspp(String cuspp) {
+		this.cuspp = cuspp;
+	}
+	public boolean isComisionVariable() {
+		return comisionVariable;
+	}
+	public void setComisionVariable(boolean comisionVariable) {
+		this.comisionVariable = comisionVariable;
 	}
 
 	
