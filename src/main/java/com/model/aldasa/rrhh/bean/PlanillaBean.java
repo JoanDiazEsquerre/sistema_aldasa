@@ -106,6 +106,10 @@ public class PlanillaBean extends BaseBean implements Serializable{
 		iniciarLazy();
 	}
 	
+	public void savePlanillaTemporal() {
+		
+	}
+	
 	public void editarTabla(DetallePlanilla dt) {
 		
 		if(dt.getTardanza()==null) {
@@ -249,7 +253,6 @@ public class PlanillaBean extends BaseBean implements Serializable{
             addInfoMessage("Se cambió el aporte obligatorio correctamente.");
 		}
 	}
-	
 		
 	public void editarTabla2(DetallePlanilla dt) {
 				
