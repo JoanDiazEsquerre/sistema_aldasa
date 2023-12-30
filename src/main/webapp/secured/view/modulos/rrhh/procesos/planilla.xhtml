@@ -125,7 +125,7 @@
 				</h:panelGrid>
 				
 				<h:panelGrid columns="4">
-					<p:commandButton value="GUARDAR" />
+					<p:commandButton value="GUARDAR" onclick="PF('saveConfirmaTemp').show()" />
                     <p:commandButton value="CANCELAR" />
                     <p:commandButton value="TERMINAR" />
 				</h:panelGrid>
@@ -546,6 +546,19 @@
 	    </h:form>
     </pe:blockUI>
 	
+	
+	<pe:blockUI target="saveConfirmaTemp" widgetVar="blockUIWidgetTemp">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="saveConfirmaTemp" message="¿Está seguro de guardar la planilla temporalmente?" header="Confirmación"
+                      severity="alert" widgetVar="saveConfirmaTemp" appendTo="@(body)">
+        <h:form >
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetTemp').block();" oncomplete="PF('blockUIWidgetTemp').unblock();PF('saveConfirmaTemp').hide()" actionListener="#{contratoBean.cambiarEstadoEscritura(contratoBean.contratoSelected)}" update=":form:tabView:idTableContrato" />
+            <p:commandButton value="NO" oncomplete="PF('saveConfirmaTemp').hide()"/>
+        </h:form>
+    </p:confirmDialog>
 
 
 </ui:composition>
