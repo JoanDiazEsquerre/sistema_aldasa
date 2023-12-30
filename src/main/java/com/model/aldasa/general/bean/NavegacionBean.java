@@ -48,12 +48,12 @@ public class NavegacionBean implements Serializable  {
 	private boolean menuProspeccion, menuProyecto, menuMantenimiento,menuReporte, menuAsistencia, menuVentas, menuAlmacen, menuRRHH, menucaja, menuCompra;
 	private boolean subMenuReporteLotes, subMenuEmpleado, subMenuPlanilla, subMenuComision, subMenuComisiones, subMenuManzanas, subMenuLotes, subMenuProspectos, subMenuProspeccion,subMenuAgenda, subMenuSimulador, subMenuPersonas,subMenuUsuarios,subMenuPerfiles, 
 					subMenuProyectos,subMenuEquipos,subMenuCambiarContrasenia, subMenuReporteAcciones, subMenuAsistencia, subMenuReporteAsistencia, subMenuRequerimientoSeparacion, subMenuRankingVentas, subMenuContrato, subMenuDocumentoVentas, subMenuPlantillaVenta, 
-					subMenuDocumentoVenta, subMenuInventario, subMenuCliente, subMenuMapeoLote, subMenuVoucher, subMenuCaja, subMenuOrdenCompra, subMenuDocumentoCompra;
+					subMenuDocumentoVenta, subMenuInventario, subMenuCliente, subMenuMapeoLote, subMenuVoucher, subMenuCaja, subMenuRequerimientoCompra, subMenuDocumentoCompra;
 	
 	private int[] permisoProspectos,permisoProspeccion,permisoAgenda,permisoSimulador,permisoPersonas,permisoUsuarios,permisoPerfiles,permisoProyectos,permisoEquipos, permisoCambiarConstrasenia,
 					permisoReporteAcciones,permisoManzanas,permisoLotes,permisoComisiones,permisoComision,permisoEmpleado,permisoReporteLotes,permisoAsistencia,permisoReporteAsistencia,permisoRequerimientoSeparacion,
 					permisoRankingVentas,permisoContrato,permisoReporteDocumentoVentas,permisoDocumentoVenta,permisoInventario,permisoCliente, permisoPlantillaVenta, permisoMapeoLote, permisoVoucher,
-					permisoPlanilla, permisoCaja, permisoOrdenCompra, permisoDocumentoCompra;
+					permisoPlanilla, permisoCaja, permisoRequerimientoCompra, permisoDocumentoCompra;
 
 	@PostConstruct
 	public void init() {
@@ -99,7 +99,7 @@ public class NavegacionBean implements Serializable  {
 		permisoVoucher = obtenerPermisosPorPerfil(29);
 		permisoPlanilla = obtenerPermisosPorPerfil(30);
 		permisoCaja = obtenerPermisosPorPerfil(31);
-		permisoOrdenCompra = obtenerPermisosPorPerfil(32);
+		permisoRequerimientoCompra = obtenerPermisosPorPerfil(32);
 		permisoDocumentoCompra = obtenerPermisosPorPerfil(33);
 
 		
@@ -179,10 +179,10 @@ public class NavegacionBean implements Serializable  {
 		
 		//******************************************************************************
 		
-		subMenuOrdenCompra= validaPermiso(permisoOrdenCompra);
+		subMenuRequerimientoCompra= validaPermiso(permisoRequerimientoCompra);
 		subMenuDocumentoCompra=validaPermiso(permisoDocumentoCompra);
 				
-		if(subMenuOrdenCompra || subMenuDocumentoCompra){
+		if(subMenuRequerimientoCompra || subMenuDocumentoCompra){
 			menuCompra=true;
 		}
 		
@@ -380,8 +380,8 @@ public class NavegacionBean implements Serializable  {
 		ruta = "modulos/caja/procesos/caja.xhtml";
 	}
 	
-	public void getProcesoOrdenComprasPage() {
-		ruta = "modulos/compra/procesos/ordenCompra.xhtml";
+	public void getProcesoRequerimientoComprasPage() {
+		ruta = "modulos/compra/procesos/requerimientoCompra.xhtml";
 	}
 	
 	public void getProcesoDocumentoCompraPage() {
@@ -912,11 +912,11 @@ public class NavegacionBean implements Serializable  {
 	public void setPermisoCaja(int[] permisoCaja) {
 		this.permisoCaja = permisoCaja;
 	}
-	public int[] getPermisoOrdenCompra() {
-		return permisoOrdenCompra;
+	public int[] getPermisoRequerimientoCompra() {
+		return permisoRequerimientoCompra;
 	}
-	public void setPermisoOrdenCompra(int[] permisoOrdenCompra) {
-		this.permisoOrdenCompra = permisoOrdenCompra;
+	public void setPermisoRequerimientoCompra(int[] permisoRequerimientoCompra) {
+		this.permisoRequerimientoCompra = permisoRequerimientoCompra;
 	}
 	public boolean isMenuCompra() {
 		return menuCompra;
@@ -924,11 +924,11 @@ public class NavegacionBean implements Serializable  {
 	public void setMenuCompra(boolean menuCompra) {
 		this.menuCompra = menuCompra;
 	}
-	public boolean isSubMenuOrdenCompra() {
-		return subMenuOrdenCompra;
+	public boolean isSubMenuRequerimientoCompra() {
+		return subMenuRequerimientoCompra;
 	}
-	public void setSubMenuOrdenCompra(boolean subMenuOrdenCompra) {
-		this.subMenuOrdenCompra = subMenuOrdenCompra;
+	public void setSubMenuRequerimientoCompra(boolean subMenuRequerimientoCompra) {
+		this.subMenuRequerimientoCompra = subMenuRequerimientoCompra;
 	}
 	public boolean isSubMenuDocumentoCompra() {
 		return subMenuDocumentoCompra;

@@ -13,16 +13,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "detalleordencompra")
-public class DetalleOrdenCompra {
+@Table(name = "detallerequerimientocompra")
+public class DetalleRequerimientoCompra {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name="idordencompra")
-	private OrdenCompra ordenCompra;
+	@JoinColumn(name="idrequerimientocompra")
+	private RequerimientoCompra requerimientoCompra;
 	
 	private BigDecimal cantidad;
 	
@@ -50,11 +50,11 @@ public class DetalleOrdenCompra {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public OrdenCompra getOrdenCompra() {
-		return ordenCompra;
+	public RequerimientoCompra getRequerimientoCompra() {
+		return requerimientoCompra;
 	}
-	public void setOrdenCompra(OrdenCompra ordenCompra) {
-		this.ordenCompra = ordenCompra;
+	public void setRequerimientoCompra(RequerimientoCompra requerimientoCompra) {
+		this.requerimientoCompra = requerimientoCompra;
 	}
 	public BigDecimal getCantidad() {
 		return cantidad;

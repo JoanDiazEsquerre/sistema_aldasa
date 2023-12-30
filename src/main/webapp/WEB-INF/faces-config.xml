@@ -1149,6 +1149,10 @@
             <property-name>fondoPensionService</property-name>
             <value>#{fondoPensionService}</value>
         </managed-property>
+<!--         <managed-property> -->
+<!--             <property-name>navegacionBean</property-name> -->
+<!--             <value>#{navegacionBean}</value> -->
+<!--         </managed-property> -->
 	</managed-bean>
 	
 	<managed-bean>
@@ -1170,16 +1174,16 @@
 	</managed-bean>
 	
 	<managed-bean>
-		<managed-bean-name>ordenCompraBean</managed-bean-name>
-		<managed-bean-class>com.model.aldasa.compra.bean.OrdenCompraBean</managed-bean-class>
+		<managed-bean-name>requerimientoCompraBean</managed-bean-name>
+		<managed-bean-class>com.model.aldasa.compra.bean.RequerimientoCompraBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope> 
 		<managed-property>
-			<property-name>detalleOrdenCompraService</property-name>
-			<value>#{detalleOrdenCompraService}</value> 
+			<property-name>detalleRequerimientoCompraService</property-name>
+			<value>#{detalleRequerimientoCompraService}</value> 
 		</managed-property>
 		<managed-property>
-			<property-name>ordenCompraService</property-name>
-			<value>#{ordenCompraService}</value> 
+			<property-name>requerimientoCompraService</property-name>
+			<value>#{requerimientoCompraService}</value> 
 		</managed-property>
 		<managed-property>
 			<property-name>unidadService</property-name>

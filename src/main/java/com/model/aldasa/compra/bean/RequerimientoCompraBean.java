@@ -41,15 +41,15 @@ import com.model.aldasa.entity.Caja;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleCaja;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
-import com.model.aldasa.entity.DetalleOrdenCompra;
-import com.model.aldasa.entity.OrdenCompra;
+import com.model.aldasa.entity.DetalleRequerimientoCompra;
+import com.model.aldasa.entity.RequerimientoCompra;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Unidad;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.CajaService;
 import com.model.aldasa.service.DetalleCajaService;
-import com.model.aldasa.service.DetalleOrdenCompraService;
-import com.model.aldasa.service.OrdenCompraService;
+import com.model.aldasa.service.DetalleRequerimientoCompraService;
+import com.model.aldasa.service.RequerimientoCompraService;
 import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.SerieDocumentoService;
 import com.model.aldasa.service.UnidadService;
@@ -58,13 +58,13 @@ import com.model.aldasa.util.UtilXls;
 
 @ManagedBean
 @ViewScoped
-public class OrdenCompraBean extends BaseBean {
+public class RequerimientoCompraBean extends BaseBean {
 	
-	@ManagedProperty(value = "#{detalleOrdenCompraService}")
-	private DetalleOrdenCompraService detalleOrdenCompraService;
+	@ManagedProperty(value = "#{detalleRequerimientoCompraService}")
+	private DetalleRequerimientoCompraService detalleRequerimientoCompraService;
 	
-	@ManagedProperty(value = "#{ordenCompraService}")
-	private OrdenCompraService ordenCompraService;
+	@ManagedProperty(value = "#{requerimientoCompraService}")
+	private RequerimientoCompraService requerimientoCompraService;
 	
 	@ManagedProperty(value = "#{unidadService}")
 	private UnidadService unidadService;
@@ -74,14 +74,14 @@ public class OrdenCompraBean extends BaseBean {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private LazyDataModel<OrdenCompra> lstOrdenCompraLazy;
+	private LazyDataModel<RequerimientoCompra> lstRequerimientoCompraLazy;
 	
-	private List<DetalleOrdenCompra>  lstDetalleOrdenCompra;
+	private List<DetalleRequerimientoCompra>  lstDetalleRequerimientoCompra;
 	private List<Unidad> lstUnidad = new ArrayList<>();
 
 
-	private OrdenCompra ordenCompraSelected;
-	private DetalleOrdenCompra detalleOrdenCompraSelected;
+	private RequerimientoCompra requerimientoCompraSelected;
+	private DetalleRequerimientoCompra detalleRequerimientoCompraSelected;
 	private Unidad unidadFilter;
 	
 	private String descripcionProducto;
@@ -95,36 +95,36 @@ public class OrdenCompraBean extends BaseBean {
 	public void init() {
 		iniciarLazy();
 		lstUnidad= unidadService.findByEstado(true);
-		lstDetalleOrdenCompra = new ArrayList<>();
+		lstDetalleRequerimientoCompra = new ArrayList<>();
 	}
 	
 	public void listarListaDetalles() {
-		lstDetalleOrdenCompra = detalleOrdenCompraService.findByOrdenCompraAndEstado(ordenCompraSelected, true);
+		lstDetalleRequerimientoCompra = detalleRequerimientoCompraService.findByRequerimientoCompraAndEstado(requerimientoCompraSelected, true);
 	}
 	
 	public void aprobarOrdenCompra() {
 		
-		ordenCompraSelected.setEstado("Aprobado");
-		ordenCompraSelected.setUsuarioAprueba(navegacionBean.getUsuarioLogin());
-		ordenCompraSelected.setFechaAprueba(new Date());
-		ordenCompraService.save(ordenCompraSelected);
+		requerimientoCompraSelected.setEstado("Aprobado");
+		requerimientoCompraSelected.setUsuarioAprueba(navegacionBean.getUsuarioLogin());
+		requerimientoCompraSelected.setFechaAprueba(new Date());
+		requerimientoCompraService.save(requerimientoCompraSelected);
 		
-		addInfoMessage("Se aprobó la orden compra correctamente."); 
+		addInfoMessage("Se aprobó el requerimiento compra correctamente."); 
 		PrimeFaces.current().executeScript("PF('ordenCompraDialog').hide();"); 
 	}
 	
 	public void rechazarOrdenCompra() {
 		
-		ordenCompraSelected.setEstado("Rechazado");
-		ordenCompraSelected.setUsuarioRechaza(navegacionBean.getUsuarioLogin());
-		ordenCompraSelected.setFechaRechaza(new Date());
-		ordenCompraService.save(ordenCompraSelected);
-		addInfoMessage("Se rechazó la orden compra correctamente."); 
+		requerimientoCompraSelected.setEstado("Rechazado");
+		requerimientoCompraSelected.setUsuarioRechaza(navegacionBean.getUsuarioLogin());
+		requerimientoCompraSelected.setFechaRechaza(new Date());
+		requerimientoCompraService.save(requerimientoCompraSelected);
+		addInfoMessage("Se rechazó el requerimiento compra correctamente."); 
 		PrimeFaces.current().executeScript("PF('ordenCompraDialog').hide();"); 
 	}
 	
-	public void deleteDetalle(DetalleOrdenCompra detalle) {
-		lstDetalleOrdenCompra.remove(detalle);
+	public void deleteDetalle(DetalleRequerimientoCompra detalle) {
+		lstDetalleRequerimientoCompra.remove(detalle);
 		addInfoMessage("Detalle eliminado correctamente.");
 	}
 	
@@ -136,8 +136,8 @@ public class OrdenCompraBean extends BaseBean {
 	
 	public void iniciarLazy() {
 
-		lstOrdenCompraLazy = new LazyDataModel<OrdenCompra>() {
-			private List<OrdenCompra> datasource;
+		lstRequerimientoCompraLazy = new LazyDataModel<RequerimientoCompra>() {
+			private List<RequerimientoCompra> datasource;
 
             @Override
             public void setRowIndex(int rowIndex) {
@@ -149,9 +149,9 @@ public class OrdenCompraBean extends BaseBean {
             }
 
             @Override
-            public OrdenCompra getRowData(String rowKey) {
+            public RequerimientoCompra getRowData(String rowKey) {
                 int intRowKey = Integer.parseInt(rowKey);
-                for (OrdenCompra ordenCompra : datasource) {
+                for (RequerimientoCompra ordenCompra : datasource) {
                     if (ordenCompra.getId() == intRowKey) {
                         return ordenCompra;
                     }
@@ -160,12 +160,12 @@ public class OrdenCompraBean extends BaseBean {
             }
 
             @Override
-            public String getRowKey(OrdenCompra ordenCompra) {
+            public String getRowKey(RequerimientoCompra ordenCompra) {
                 return String.valueOf(ordenCompra.getId());
             }
 
 			@Override
-			public List<OrdenCompra> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+			public List<RequerimientoCompra> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
 	
                 Sort sort=Sort.by("id").ascending();
                 if(sortBy!=null) {
@@ -180,8 +180,8 @@ public class OrdenCompraBean extends BaseBean {
                 }        
                 Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
                
-                Page<OrdenCompra> pageOrdenCompra= null;
-                pageOrdenCompra=ordenCompraService.findByEstado(estado, pageable);
+                Page<RequerimientoCompra> pageOrdenCompra= null;
+                pageOrdenCompra=requerimientoCompraService.findByEstado(estado, pageable);
 
 				
                 setRowCount((int) pageOrdenCompra.getTotalElements());
@@ -214,14 +214,14 @@ public class OrdenCompraBean extends BaseBean {
 			return;
 		}
 		
-		DetalleOrdenCompra detalle = new DetalleOrdenCompra();
+		DetalleRequerimientoCompra detalle = new DetalleRequerimientoCompra();
 		detalle.setCantidad(cantidad);
 		detalle.setDescripcionProducto(descripcionProducto);
 		detalle.setUnidad(unidadFilter);
 		detalle.setEstado(true);
 		detalle.setPrecio(precio);
 		detalle.setTotal(total);
-		lstDetalleOrdenCompra.add(detalle);
+		lstDetalleRequerimientoCompra.add(detalle);
 		cantidad = null;
 		descripcionProducto="";
 		precio = null;
@@ -237,12 +237,12 @@ public class OrdenCompraBean extends BaseBean {
 			return;
 		}
 		
-		if(!lstDetalleOrdenCompra.isEmpty()) {
+		if(!lstDetalleRequerimientoCompra.isEmpty()) {
 			BigDecimal totalDetalle = BigDecimal.ZERO;
-			for(DetalleOrdenCompra d:lstDetalleOrdenCompra) {
+			for(DetalleRequerimientoCompra d:lstDetalleRequerimientoCompra) {
 				totalDetalle = totalDetalle.add(d.getTotal());
 			}
-			OrdenCompra compra = new OrdenCompra();
+			RequerimientoCompra compra = new RequerimientoCompra();
 			compra.setFechaEmision(new Date());
 			compra.setEstado("Pendiente");
 			compra.setUsuario(navegacionBean.getUsuarioLogin());
@@ -250,16 +250,16 @@ public class OrdenCompraBean extends BaseBean {
 			compra.setFormaPago(formaPago);
 			compra.setObservacion(observacion);
 			compra.setTotal(totalDetalle);
-			OrdenCompra guardar = ordenCompraService.save(compra);
+			RequerimientoCompra guardar = requerimientoCompraService.save(compra);
 			formaPago = "";
 			observacion="";
 
 			if(guardar!= null) {
-				for(DetalleOrdenCompra d:lstDetalleOrdenCompra) {
-					d.setOrdenCompra(guardar);
-					detalleOrdenCompraService.save(d);
+				for(DetalleRequerimientoCompra d:lstDetalleRequerimientoCompra) {
+					d.setRequerimientoCompra(guardar);
+					detalleRequerimientoCompraService.save(d);
 				}
-				lstDetalleOrdenCompra.clear();
+				lstDetalleRequerimientoCompra.clear();
 				addInfoMessage("Detalle guardado correctamente.");
 				
 			}else {
@@ -304,17 +304,12 @@ public class OrdenCompraBean extends BaseBean {
 	
 	
 	
-	public LazyDataModel<OrdenCompra> getLstOrdenCompraLazy() {
-		return lstOrdenCompraLazy;
+
+	public LazyDataModel<RequerimientoCompra> getLstRequerimientoCompraLazy() {
+		return lstRequerimientoCompraLazy;
 	}
-	public void setLstOrdenCompraLazy(LazyDataModel<OrdenCompra> lstOrdenCompraLazy) {
-		this.lstOrdenCompraLazy = lstOrdenCompraLazy;
-	}
-	public OrdenCompra getOrdenCompraSelected() {
-		return ordenCompraSelected;
-	}
-	public void setOrdenCompraSelected(OrdenCompra ordenCompraSelected) {
-		this.ordenCompraSelected = ordenCompraSelected;
+	public void setLstRequerimientoCompraLazy(LazyDataModel<RequerimientoCompra> lstRequerimientoCompraLazy) {
+		this.lstRequerimientoCompraLazy = lstRequerimientoCompraLazy;
 	}
 	public String getEstado() {
 		return estado;
@@ -327,18 +322,6 @@ public class OrdenCompraBean extends BaseBean {
 	}
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
-	}
-	public List<DetalleOrdenCompra> getLstDetalleOrdenCompra() {
-		return lstDetalleOrdenCompra;
-	}
-	public void setLstDetalleOrdenCompra(List<DetalleOrdenCompra> lstDetalleOrdenCompra) {
-		this.lstDetalleOrdenCompra = lstDetalleOrdenCompra;
-	}
-	public DetalleOrdenCompra getDetalleOrdenCompraSelected() {
-		return detalleOrdenCompraSelected;
-	}
-	public void setDetalleOrdenCompraSelected(DetalleOrdenCompra detalleOrdenCompraSelected) {
-		this.detalleOrdenCompraSelected = detalleOrdenCompraSelected;
 	}
 	public BigDecimal getCantidad() {
 		return cantidad;
@@ -363,18 +346,6 @@ public class OrdenCompraBean extends BaseBean {
 	}
 	public void setTotal(BigDecimal total) {
 		this.total = total;
-	}
-	public DetalleOrdenCompraService getDetalleOrdenCompraService() {
-		return detalleOrdenCompraService;
-	}
-	public void setDetalleOrdenCompraService(DetalleOrdenCompraService detalleOrdenCompraService) {
-		this.detalleOrdenCompraService = detalleOrdenCompraService;
-	}
-	public OrdenCompraService getOrdenCompraService() {
-		return ordenCompraService;
-	}
-	public void setOrdenCompraService(OrdenCompraService ordenCompraService) {
-		this.ordenCompraService = ordenCompraService;
 	}
 	public Unidad getUnidadFilter() {
 		return unidadFilter;
@@ -411,6 +382,36 @@ public class OrdenCompraBean extends BaseBean {
 	}
 	public void setObservacion(String observacion) {
 		this.observacion = observacion;
+	}
+	public DetalleRequerimientoCompraService getDetalleRequerimientoCompraService() {
+		return detalleRequerimientoCompraService;
+	}
+	public void setDetalleRequerimientoCompraService(DetalleRequerimientoCompraService detalleRequerimientoCompraService) {
+		this.detalleRequerimientoCompraService = detalleRequerimientoCompraService;
+	}
+	public RequerimientoCompraService getRequerimientoCompraService() {
+		return requerimientoCompraService;
+	}
+	public void setRequerimientoCompraService(RequerimientoCompraService requerimientoCompraService) {
+		this.requerimientoCompraService = requerimientoCompraService;
+	}
+	public List<DetalleRequerimientoCompra> getLstDetalleRequerimientoCompra() {
+		return lstDetalleRequerimientoCompra;
+	}
+	public void setLstDetalleRequerimientoCompra(List<DetalleRequerimientoCompra> lstDetalleRequerimientoCompra) {
+		this.lstDetalleRequerimientoCompra = lstDetalleRequerimientoCompra;
+	}
+	public RequerimientoCompra getRequerimientoCompraSelected() {
+		return requerimientoCompraSelected;
+	}
+	public void setRequerimientoCompraSelected(RequerimientoCompra requerimientoCompraSelected) {
+		this.requerimientoCompraSelected = requerimientoCompraSelected;
+	}
+	public DetalleRequerimientoCompra getDetalleRequerimientoCompraSelected() {
+		return detalleRequerimientoCompraSelected;
+	}
+	public void setDetalleRequerimientoCompraSelected(DetalleRequerimientoCompra detalleRequerimientoCompraSelected) {
+		this.detalleRequerimientoCompraSelected = detalleRequerimientoCompraSelected;
 	}
 	
 	

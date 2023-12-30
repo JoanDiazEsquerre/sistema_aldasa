@@ -5,10 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.model.aldasa.entity.CuentaBancaria;
-import com.model.aldasa.entity.OrdenCompra;
+import com.model.aldasa.entity.RequerimientoCompra;
 
-public interface OrdenCompraRepository extends JpaRepository<OrdenCompra, Integer> {
+public interface RequerimientoCompraRepository extends JpaRepository<RequerimientoCompra, Integer> {
 
-	Page<OrdenCompra> findByEstado(String estado, Pageable pageable);
+	Page<RequerimientoCompra> findByEstado(String estado, Pageable pageable);
 
 }

@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import com.model.aldasa.entity.Caja;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleCaja;
-import com.model.aldasa.entity.OrdenCompra;
+import com.model.aldasa.entity.RequerimientoCompra;
 
 public interface DetalleCajaService {
 
