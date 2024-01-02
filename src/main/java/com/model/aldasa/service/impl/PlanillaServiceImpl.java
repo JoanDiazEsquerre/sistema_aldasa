@@ -11,10 +11,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.CuentaBancaria;
+import com.model.aldasa.entity.DetallePlanilla;
 import com.model.aldasa.entity.Planilla;
 import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.Voucher;
 import com.model.aldasa.repository.CuentaBancariaRepository;
+import com.model.aldasa.repository.DetallePlanillaRepository;
 import com.model.aldasa.repository.PlanillaRepository;
 import com.model.aldasa.repository.VoucherRepository;
 import com.model.aldasa.service.PlanillaService;
@@ -26,6 +28,9 @@ public class PlanillaServiceImpl implements PlanillaService {
 
 	@Autowired
 	private PlanillaRepository planillaRepository;
+	
+	@Autowired
+	private DetallePlanillaRepository detallePlanillaRepository;
 
 	@Override
 	public Optional<Planilla> findById(Integer id) {
@@ -37,6 +42,20 @@ public class PlanillaServiceImpl implements PlanillaService {
 	public Planilla save(Planilla entity) {
 		// TODO Auto-generated method stub
 		return planillaRepository.save(entity);
+	}
+	
+	@Override
+	public Planilla save(Planilla entity, List<DetallePlanilla> lstDetalle) {
+		// TODO Auto-generated method stub
+		planillaRepository.save(entity);
+		
+		for(DetallePlanilla dp : lstDetalle) {
+			dp.setPlanilla(entity);
+			detallePlanillaRepository.save(dp);
+		}
+		
+		
+		return entity;
 	}
 
 	@Override

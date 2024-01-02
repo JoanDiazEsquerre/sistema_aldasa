@@ -35,6 +35,7 @@ import com.model.aldasa.entity.FondoPension;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Planilla;
 import com.model.aldasa.entity.Sucursal;
+import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.AsistenciaService;
 import com.model.aldasa.service.DetallePlanillaService;
 import com.model.aldasa.service.EmpleadoService;
@@ -66,6 +67,9 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	
 	@ManagedProperty(value = "#{fondoPensionService}")
 	private FondoPensionService fondoPensionService;
+	
+	@ManagedProperty(value = "#{navegacionBean}")
+	private NavegacionBean navegacionBean;
 	
 	private LazyDataModel<Planilla> lstPlanillaLazy;
 	
@@ -107,6 +111,24 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	}
 	
 	public void savePlanillaTemporal() {
+		planillaNew = planillaService.findByEstadoAndTemporal(true, true);
+		if(planillaNew == null) {
+			planillaNew = new Planilla();
+			planillaNew.setSucursal(sucursal);
+			planillaNew.setPeriodo(periodo);
+			planillaNew.setMes(mes);
+			if(tipoPlanilla) {
+				planillaNew.setTipoPlanilla("DEPENDIENTE");
+			}else {
+				planillaNew.setTipoPlanilla("INDEPENDIENTE");
+			}
+			planillaNew.setEstado(true);
+			planillaNew.setFechaRegistro(new Date());
+			planillaNew.setUsuario(navegacionBean.getUsuarioLogin());
+			planillaNew.setTemporal(true); 
+			
+			planillaService.save(planillaNew, lstDetallePlanillaTemp);
+		}
 		
 	}
 	
@@ -517,6 +539,7 @@ public class PlanillaBean extends BaseBean implements Serializable{
 			dt.setAbonado30(BigDecimal.ZERO);
 			dt.setAbonado4(BigDecimal.ZERO); 
 
+			dt.setEstado(true);
 			
 			lstDetallePlanillaTemp.add(dt);
 			
@@ -877,6 +900,12 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	}
 	public void setSdf(SimpleDateFormat sdf) {
 		this.sdf = sdf;
+	}
+	public NavegacionBean getNavegacionBean() {
+		return navegacionBean;
+	}
+	public void setNavegacionBean(NavegacionBean navegacionBean) {
+		this.navegacionBean = navegacionBean;
 	}
 	
 	
