@@ -64,16 +64,18 @@ public class PlanillaServiceImpl implements PlanillaService {
 		planillaRepository.delete(entity);
 	}
 
-	@Override
-	public Page<Planilla> findByEstado(boolean estado, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return planillaRepository.findByEstado(estado, pageable); 
-	}
+
 
 	@Override
 	public Planilla findByEstadoAndTemporal(boolean estado, boolean temporal) {
 		// TODO Auto-generated method stub
 		return planillaRepository.findByEstadoAndTemporal(estado, temporal);
+	}
+
+	@Override
+	public Page<Planilla> findByEstadoAndTemporal(boolean estado, boolean temporal, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return planillaRepository.findByEstadoAndTemporal(estado, temporal, pageable);
 	}
 
 	

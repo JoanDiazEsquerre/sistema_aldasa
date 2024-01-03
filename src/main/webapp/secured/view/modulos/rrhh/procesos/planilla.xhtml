@@ -21,7 +21,7 @@
 				<p:dataTable var="pl" id="idTable" value="#{planillaBean.lstPlanillaLazy}" widgetVar="planillaTable" rowIndexVar="row" paginator="true" rows="15" size="small"
 					emptyMessage="No se encontraron resultados"	paginatorPosition="bottom" rowKey="#{pl.id}" selection="#{planillaBean.planillaSelected}" selectionMode="single">
 					
-					<p:ajax event="rowSelect" listener="#{planillaBean.verDetalles}" update=":formDP" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('DPDialog').show();" />
+					<p:ajax event="rowSelect" listener="#{planillaBean.listarDetallesPlanillaSelected}" update=":formDP" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();PF('DPDialog').show();" />
 				
 					<f:facet name="header">
 						<div class="p-d-flex p-ai-center p-jc-between">
@@ -69,7 +69,7 @@
 			</p:tab>
 			
 			<p:tab title="Nueva Planilla" id="tabListDoc"> 
-				<h:panelGrid columns="11">
+				<h:panelGrid id="idFiltros" columns="11">
 					<p:outputLabel value="Sucursal:" style="margin-left: 10px"/>
 					<p:selectOneMenu id="sucursal" value="#{planillaBean.sucursal}" disabled="#{planillaBean.bloqueo}" style="margin:5px;width:250px" converter="#{planillaBean.conversorSucursal}">
 						<f:selectItems value="#{planillaBean.lstSucursal}" var="suc" itemLabel="#{suc.razonSocial}" itemValue="#{suc}"/> 
@@ -124,10 +124,10 @@
 					<p:commandButton icon="pi pi-check" styleClass="rounded-button" actionListener="#{planillaBean.agregarDetalle}" update=":form:tabView:idTableEmpleado"/>
 				</h:panelGrid>
 				
-				<h:panelGrid columns="4">
+				<h:panelGrid id="gridBotones" columns="4">
 					<p:commandButton value="GUARDAR" onclick="PF('saveConfirmaTemp').show()" />
-                    <p:commandButton value="CANCELAR" />
-                    <p:commandButton value="TERMINAR" />
+                    <p:commandButton value="CANCELAR" onclick="PF('cancelarPlanilla').show()" rendered="#{planillaBean.bloqueo}"/>
+                    <p:commandButton value="TERMINAR" onclick="PF('terminarPlanilla').show()" />
 				</h:panelGrid>
 				
 				<p:dataTable reflow="true" var="dp" id="idTableEmpleado" value="#{planillaBean.lstDetallePlanillaTemp}" widgetVar="empleadoTable" rowIndexVar="row" paginator="true" rows="15" size="small"
@@ -178,7 +178,7 @@
 		                    </f:facet>
 		                    <f:facet name="input">
 		                        <p:inputNumber value="#{dp.tardanza}" modifyValueOnWheel="false" > 
-		                        	<p:ajax listener="#{planillaBean.editarTabla(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        	<p:ajax listener="#{planillaBean.editarTablaTemporal(dp)}" update=":form:tabView:idTableEmpleado"/>
 		                        </p:inputNumber>
 		                    </f:facet>
 		                </p:cellEditor>
@@ -193,7 +193,7 @@
 		                    </f:facet>
 		                    <f:facet name="input">
 		                        <p:inputNumber value="#{dp.vacaciones}" modifyValueOnWheel="false" > 
-		                        	<p:ajax listener="#{planillaBean.editarTabla(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        	<p:ajax listener="#{planillaBean.editarTablaTemporal(dp)}" update=":form:tabView:idTableEmpleado"/>
 		                        </p:inputNumber>
 		                    </f:facet>
 		                </p:cellEditor>
@@ -208,7 +208,7 @@
 		                    </f:facet>
 		                    <f:facet name="input">
 		                        <p:inputNumber value="#{dp.comisiones}" modifyValueOnWheel="false" > 
-		                        	<p:ajax listener="#{planillaBean.editarTabla(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        	<p:ajax listener="#{planillaBean.editarTablaTemporal(dp)}" update=":form:tabView:idTableEmpleado"/>
 		                        </p:inputNumber>
 		                    </f:facet>
 		                </p:cellEditor>
@@ -223,7 +223,7 @@
 		                    </f:facet>
 		                    <f:facet name="input">
 		                        <p:inputNumber value="#{dp.bono}" modifyValueOnWheel="false" > 
-		                        	<p:ajax listener="#{planillaBean.editarTabla(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        	<p:ajax listener="#{planillaBean.editarTablaTemporal(dp)}" update=":form:tabView:idTableEmpleado"/>
 		                        </p:inputNumber>
 		                    </f:facet>
 		                </p:cellEditor>
@@ -244,7 +244,7 @@
 		                    </f:facet>
 		                    <f:facet name="input">
 		                        <p:inputNumber value="#{dp.onp}" modifyValueOnWheel="false" > 
-		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        	<p:ajax listener="#{planillaBean.editarTablaTemporalDatosPension(dp)}" update=":form:tabView:idTableEmpleado"/>
 		                        </p:inputNumber>
 		                    </f:facet>
 		                </p:cellEditor>
@@ -260,7 +260,7 @@
 		                    </f:facet>
 		                    <f:facet name="input">
 		                        <p:inputNumber value="#{dp.aporteObligatorio}" modifyValueOnWheel="false" > 
-		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        	<p:ajax listener="#{planillaBean.editarTablaTemporalDatosPension(dp)}" update=":form:tabView:idTableEmpleado"/>
 		                        </p:inputNumber>
 		                    </f:facet>
 		                </p:cellEditor>
@@ -275,7 +275,7 @@
 		                    </f:facet>
 		                    <f:facet name="input">
 		                        <p:inputNumber value="#{dp.primaSeguros}" modifyValueOnWheel="false" > 
-		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        	<p:ajax listener="#{planillaBean.editarTablaTemporalDatosPension(dp)}" update=":form:tabView:idTableEmpleado"/>
 		                        </p:inputNumber>
 		                    </f:facet>
 		                </p:cellEditor>
@@ -290,7 +290,7 @@
 		                    </f:facet>
 		                    <f:facet name="input">
 		                        <p:inputNumber value="#{dp.comisionVariable}" modifyValueOnWheel="false" > 
-		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        	<p:ajax listener="#{planillaBean.editarTablaTemporalDatosPension(dp)}" update=":form:tabView:idTableEmpleado"/>
 		                        </p:inputNumber>
 		                    </f:facet>
 		                </p:cellEditor>
@@ -305,7 +305,7 @@
 		                    </f:facet>
 		                    <f:facet name="input">
 		                        <p:inputNumber value="#{dp.rentaQuinta}" modifyValueOnWheel="false" > 
-		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        	<p:ajax listener="#{planillaBean.editarTablaTemporalDatosPension(dp)}" update=":form:tabView:idTableEmpleado"/>
 		                        </p:inputNumber>
 		                    </f:facet>
 		                </p:cellEditor>
@@ -320,7 +320,7 @@
 		                    </f:facet>
 		                    <f:facet name="input">
 		                        <p:inputNumber value="#{dp.descMesAnterior}" modifyValueOnWheel="false" > 
-		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        	<p:ajax listener="#{planillaBean.editarTablaTemporalDatosPension(dp)}" update=":form:tabView:idTableEmpleado"/>
 		                        </p:inputNumber>
 		                    </f:facet>
 		                </p:cellEditor>
@@ -335,7 +335,7 @@
 		                    </f:facet>
 		                    <f:facet name="input">
 		                        <p:inputNumber value="#{dp.feSalud}" modifyValueOnWheel="false" > 
-		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        	<p:ajax listener="#{planillaBean.editarTablaTemporalDatosPension(dp)}" update=":form:tabView:idTableEmpleado"/>
 		                        </p:inputNumber>
 		                    </f:facet>
 		                </p:cellEditor>
@@ -350,7 +350,7 @@
 		                    </f:facet>
 		                    <f:facet name="input">
 		                        <p:inputNumber value="#{dp.pagoVacTrunca}" modifyValueOnWheel="false" > 
-		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        	<p:ajax listener="#{planillaBean.editarTablaTemporalDatosPension(dp)}" update=":form:tabView:idTableEmpleado"/>
 		                        </p:inputNumber>
 		                    </f:facet>
 		                </p:cellEditor>
@@ -365,7 +365,7 @@
 		                    </f:facet>
 		                    <f:facet name="input">
 		                        <p:inputNumber value="#{dp.adelanto}" modifyValueOnWheel="false" > 
-		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        	<p:ajax listener="#{planillaBean.editarTablaTemporalDatosPension(dp)}" update=":form:tabView:idTableEmpleado"/>
 		                        </p:inputNumber>
 		                    </f:facet>
 		                </p:cellEditor>
@@ -380,7 +380,7 @@
 		                    </f:facet>
 		                    <f:facet name="input">
 		                        <p:inputNumber value="#{dp.prestamo}" modifyValueOnWheel="false" > 
-		                        	<p:ajax listener="#{planillaBean.editarTabla2(dp)}" update=":form:tabView:idTableEmpleado"/>
+		                        	<p:ajax listener="#{planillaBean.editarTablaTemporalDatosPension(dp)}" update=":form:tabView:idTableEmpleado"/>
 		                        </p:inputNumber>
 		                    </f:facet>
 		                </p:cellEditor>
@@ -400,6 +400,12 @@
 					
 					<p:column headerText="EsSalud" filterMatchMode="contains" style="text-align: center">
 						<h:outputText value="#{dp.esSalud}"  > 
+						 <f:convertNumber currencySymbol="" type="currency"  />
+						 </h:outputText>
+					</p:column>
+					
+					<p:column headerText="Abonado 30" filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{dp.abonado30}"  > 
 						 <f:convertNumber currencySymbol="" type="currency"  />
 						 </h:outputText>
 					</p:column>
@@ -531,11 +537,182 @@
                         <p:outputLabel style="font-size: 13px;font-weight: bold;color: #036fab;" value="TIPO PLANILLA :"/>
                     </p:column>
                     <p:column>
-                        <p:outputLabel style="font-size: 17px;font-weight: bold;color: black;" value="#{(fn:escapeXml(planillaBean.planillaSelected.tipoPlanilla)) eq 'D'?'Dependiente':'Independiente'}"/>
+                        <p:outputLabel style="font-size: 17px;font-weight: bold;color: black;" value="#{planillaBean.planillaSelected.tipoPlanilla}"/>
                     </p:column>
                   
                 </p:row>
             </p:panelGrid>
+            
+            <p:dataTable reflow="true" var="detallePlanilla" id="idTabDetallePlanilla" value="#{planillaBean.lstDetallePlanillaTemp}" rowIndexVar="row" rows="10" paginator="true" size="small"
+	    				editable="true" editMode="cell" paginatorPosition="bottom" rowKey="#{detallePlanilla.id}"  selectionMode="single" style="font-size: 14px; width:140%">
+	             
+	            
+	            <f:facet name="header">
+	                <div class="p-d-flex p-ai-center p-jc-between">
+	                    <span>LISTA DE PLANILLAS</span>
+	                </div>
+	            </f:facet>
+	            
+	            <p:column width="25px">
+	                      #{row +1}
+	       		</p:column>
+	       		
+	       		 <p:column headerText="Sucursal" sortBy="#{detallePlanilla.empleado.sucursal.razonSocial}" filterMatchMode="contains" width="150px">
+					<h:outputText value="#{detallePlanilla.empleado.sucursal.razonSocial}" />
+				</p:column>
+		        
+				<p:column headerText="Empleado" sortBy="#{detallePlanilla.empleado.person.surnames}" filterBy="#{detallePlanilla.empleado.person.surnames}" filterMatchMode="contains" width="200px">
+					<h:outputText value="#{detallePlanilla.empleado.person.surnames} #{detallePlanilla.empleado.person.names}" />
+				</p:column>
+			
+				<p:column headerText="Cargo" style="text-align:center;">
+					<h:outputText value="#{detallePlanilla.empleado.cargo.descripcion}" />
+				</p:column>
+			
+				<p:column headerText="Planilla" sortBy="#{detallePlanilla.empleado.planilla}" filterMatchMode="contains" rendered="false">
+					<h:outputText value="#{detallePlanilla.empleado.planilla? 'SI':'NO'}" />
+				</p:column>
+				<p:column headerText="Fondo Pensión" sortBy="#{detallePlanilla.empleado.fondoPension.nombre}" filterMatchMode="contains">
+					<h:outputText value="#{detallePlanilla.empleado.fondoPension.nombre}" />
+				</p:column>
+				
+				<p:column headerText="Sueldo Básico" filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.empleado.sueldoBasico}" style="font-weight: bold"> 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="Tardanza" filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.tardanza}" style="font-weight: bold"> 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="Vacaciones" filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.vacaciones}" style="font-weight: bold"> 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="Comisiones"  width="70px" style="text-align: center" filterMatchMode="contains" >
+					<p:cellEditor>
+	                    <f:facet name="output">
+	                       	<h:outputText value="#{detallePlanilla.comisiones}" > 
+							 <f:convertNumber currencySymbol="" type="currency"  />
+							</h:outputText> 
+	                    </f:facet>
+	                    <f:facet name="input">
+	                        <p:inputNumber value="#{detallePlanilla.comisiones}" modifyValueOnWheel="false" > 
+	                        	<p:ajax listener="#{planillaBean.editarTabla(detallePlanilla)}" update=":formDP:idTabDetallePlanilla"/>
+	                        </p:inputNumber>
+	                    </f:facet>
+	                </p:cellEditor>
+				</p:column>
+				
+				<p:column headerText="Bono" filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.bono}" style="font-weight: bold"> 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="Total" filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.total}" style="font-weight: bold" > 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="ONP SNP" filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.onp}" style="font-weight: bold"> 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="AP. OBLIG." filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.aporteObligatorio}" style="font-weight: bold"> 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="SEG. INV." filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.primaSeguros}" style="font-weight: bold"> 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="COM. VAR." filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.comisionVariable}" style="font-weight: bold"> 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="REN. 5TA." filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.rentaQuinta}" style="font-weight: bold"> 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="DESC. MES ANT." filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.descMesAnterior}" style="font-weight: bold"> 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="FE SALUD" filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.feSalud}" style="font-weight: bold"> 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="PAGO VAC. TRUN." filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.pagoVacTrunca}" style="font-weight: bold"> 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="ADELANTO" filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.adelanto}" style="font-weight: bold"> 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="PRÉSTAMO" filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.prestamo}" style="font-weight: bold"> 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="TOTAL DESC." filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.totalDescuento}" style="font-weight: bold"> 
+						<f:convertNumber currencySymbol="" type="currency"  />
+					</h:outputText>
+				</p:column>
+				
+				<p:column headerText="NETO A PAGAR." filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.netoPagar}" style="font-weight: bold"> 
+						<f:convertNumber currencySymbol="" type="currency"  />
+					</h:outputText>
+				</p:column>
+				
+				<p:column headerText="EsSalud" filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.esSalud}"  > 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="Abonado 30" filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.abonado30}"  > 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+				
+				<p:column headerText="Abonado 4" filterMatchMode="contains" style="text-align: center">
+					<h:outputText value="#{detallePlanilla.abonado4}"  > 
+					 <f:convertNumber currencySymbol="" type="currency"  />
+					 </h:outputText>
+				</p:column>
+      	
+	            
+	        </p:dataTable>
             
         </h:form>
     </p:dialog>
@@ -555,8 +732,34 @@
     <p:confirmDialog id="saveConfirmaTemp" message="¿Está seguro de guardar la planilla temporalmente?" header="Confirmación"
                       severity="alert" widgetVar="saveConfirmaTemp" appendTo="@(body)">
         <h:form >
-            <p:commandButton value="SI" onstart="PF('blockUIWidgetTemp').block();" oncomplete="PF('blockUIWidgetTemp').unblock();PF('saveConfirmaTemp').hide()" actionListener="#{contratoBean.cambiarEstadoEscritura(contratoBean.contratoSelected)}" update=":form:tabView:idTableContrato" />
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetTemp').block();" oncomplete="PF('blockUIWidgetTemp').unblock();PF('saveConfirmaTemp').hide()" actionListener="#{planillaBean.savePlanillaTemporal}" update=":form:tabView:idFiltros :form:tabView:idTableEmpleado :form:tabView:gridBotones"/>
             <p:commandButton value="NO" oncomplete="PF('saveConfirmaTemp').hide()"/>
+        </h:form>
+    </p:confirmDialog>
+    
+    <pe:blockUI target="cancelarPlanilla" widgetVar="blockUIWidgetcancelarPlanilla">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="cancelarPlanilla" message="¿Está seguro de cancelar la planilla temporalmente?" header="Confirmación"
+                      severity="alert" widgetVar="cancelarPlanilla" appendTo="@(body)">
+        <h:form >
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetcancelarPlanilla').block();" oncomplete="PF('blockUIWidgetcancelarPlanilla').unblock();PF('cancelarPlanilla').hide()" actionListener="#{planillaBean.cancelarPlanilla()}" update=":form:tabView:idFiltros :form:tabView:idTableEmpleado "/>
+            <p:commandButton value="NO" oncomplete="PF('cancelarPlanilla').hide()"/>
+        </h:form>
+    </p:confirmDialog>
+    
+     <pe:blockUI target="terminarPlanilla" widgetVar="blockUIWidgetterminarPlanilla">
+          <h:form style="background: white"> 
+          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
+          </h:form>
+    </pe:blockUI>
+    <p:confirmDialog id="terminarPlanilla" message="¿Está seguro de terminar la planilla temporalmente?" header="Confirmación"
+                      severity="alert" widgetVar="terminarPlanilla" appendTo="@(body)">
+        <h:form >
+            <p:commandButton value="SI" onstart="PF('blockUIWidgetterminarPlanilla').block();" oncomplete="PF('blockUIWidgetterminarPlanilla').unblock();PF('terminarPlanilla').hide()" actionListener="#{planillaBean.terminarPlanilla()}" update=":form:tabView:idFiltros :form:tabView:idTableEmpleado :form:tabView:idTable"/>
+            <p:commandButton value="NO" oncomplete="PF('terminarPlanilla').hide()"/>
         </h:form>
     </p:confirmDialog>
 

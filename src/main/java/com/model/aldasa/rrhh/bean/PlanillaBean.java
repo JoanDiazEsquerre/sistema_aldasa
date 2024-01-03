@@ -110,8 +110,29 @@ public class PlanillaBean extends BaseBean implements Serializable{
 		iniciarLazy();
 	}
 	
+	public void listarDetallesPlanillaSelected() {
+		lstDetallePlanillaTemp = detallePlanillaService.findByEstadoAndPlanilla(true, planillaSelected);
+		
+		
+	} 
+	
+	public void terminarPlanilla() {
+		planillaNew.setEstado(true);
+		planillaNew.setTemporal(false);
+		planillaService.save(planillaNew);
+		bloquearPantalla();
+		addInfoMessage("Se terminó la planilla correctamente.");
+	}
+	
+	public void cancelarPlanilla() {
+		planillaNew.setEstado(false);
+		planillaService.save(planillaNew);
+		bloquearPantalla();
+		addInfoMessage("Se canceló la planilla correctamente.");
+	}
+	
 	public void savePlanillaTemporal() {
-		planillaNew = planillaService.findByEstadoAndTemporal(true, true);
+//		planillaNew = planillaService.findByEstadoAndTemporal(true, true);
 		if(planillaNew == null) {
 			planillaNew = new Planilla();
 			planillaNew.setSucursal(sucursal);
@@ -128,9 +149,66 @@ public class PlanillaBean extends BaseBean implements Serializable{
 			planillaNew.setTemporal(true); 
 			
 			planillaService.save(planillaNew, lstDetallePlanillaTemp);
+			bloquearPantalla();
+			
+		}else {
+			planillaService.save(planillaNew, lstDetallePlanillaTemp);
+			bloquearPantalla();
 		}
+		addInfoMessage("Se guardó correctamente.");
 		
 	}
+	
+	public void editarTablaTemporal(DetallePlanilla dt) {
+		
+		if(dt.getTardanza()==null) {
+			dt.setTardanza(BigDecimal.ZERO);
+		}
+		
+		if(dt.getVacaciones()==null) {
+			dt.setVacaciones(BigDecimal.ZERO);
+		}
+		
+		if(dt.getComisiones()==null) {
+			dt.setComisiones(BigDecimal.ZERO);
+		}
+		
+		if(dt.getBono()==null) {
+			dt.setBono(BigDecimal.ZERO);
+		}
+		
+		BigDecimal suma1 = dt.getEmpleado().getSueldoBasico().subtract(dt.getTardanza());
+		BigDecimal suma2 = suma1.add(dt.getVacaciones());
+		BigDecimal suma3 = suma2.add(dt.getComisiones());
+		BigDecimal suma4 = suma3.add(dt.getBono());
+		
+		dt.setTotal(suma4);
+		
+		if(dt.getEmpleado().isPlanilla()) {
+			if(dt.getEmpleado().getFondoPension().getNombre().equals("ONP")) {
+				dt.setOnp(dt.getTotal().multiply(dt.getEmpleado().getFondoPension().getAporteObligatorio().divide(new BigDecimal(100), 4 , RoundingMode.HALF_UP))); 
+			}else {
+				dt.setAporteObligatorio(dt.getTotal().multiply(dt.getEmpleado().getFondoPension().getAporteObligatorio().divide(new BigDecimal(100), 4 , RoundingMode.HALF_UP)));		
+				dt.setPrimaSeguros(dt.getTotal().multiply(dt.getEmpleado().getFondoPension().getPrimaSeguro().divide(new BigDecimal(100), 4 , RoundingMode.HALF_UP)));
+				dt.setComisionVariable(BigDecimal.ZERO);
+				
+				if(dt.getEmpleado().isComisionVariable()) {
+					BigDecimal calculo1 =dt.getEmpleado().getFondoPension().getComisionSobreFlujo1().divide(new BigDecimal(100), 4, RoundingMode.HALF_UP);
+					dt.setComisionVariable(calculo1.multiply(dt.getTotal()));
+				}
+			}
+			
+			dt.setTotalDescuento(dt.getOnp().add(dt.getAporteObligatorio()).add(dt.getPrimaSeguros()).add(dt.getComisionVariable()).add(dt.getRentaQuinta()).add(dt.getDescMesAnterior()).add(dt.getFeSalud()).add(dt.getPagoVacTrunca()).add(dt.getAdelanto()).add(dt.getPrestamo()));
+			dt.setNetoPagar(dt.getTotal().subtract(dt.getTotalDescuento()));
+			dt.setEsSalud(dt.getTotal().compareTo(new BigDecimal(1025)) == -1? new BigDecimal(92.25) : dt.getTotal().multiply( new BigDecimal(9).divide(new BigDecimal(100), 4, RoundingMode.HALF_UP))); 
+			dt.setAbonado30(dt.getNetoPagar());
+		}
+		
+		addInfoMessage("Se calculó el total correctamente.");
+
+	}
+	
+	
 	
 	public void editarTabla(DetallePlanilla dt) {
 		
@@ -174,7 +252,10 @@ public class PlanillaBean extends BaseBean implements Serializable{
 			dt.setTotalDescuento(dt.getOnp().add(dt.getAporteObligatorio()).add(dt.getPrimaSeguros()).add(dt.getComisionVariable()).add(dt.getRentaQuinta()).add(dt.getDescMesAnterior()).add(dt.getFeSalud()).add(dt.getPagoVacTrunca()).add(dt.getAdelanto()).add(dt.getPrestamo()));
 			dt.setNetoPagar(dt.getTotal().subtract(dt.getTotalDescuento()));
 			dt.setEsSalud(dt.getTotal().compareTo(new BigDecimal(1025)) == -1? new BigDecimal(92.25) : dt.getTotal().multiply( new BigDecimal(9).divide(new BigDecimal(100), 4, RoundingMode.HALF_UP))); 
-
+			
+			
+//			dt.setAbonado30(dt.getNetoPagar());
+			dt.setAbonado4(dt.getNetoPagar().subtract(dt.getAbonado30()));
 		}
 		
 		addInfoMessage("Se calculó el total correctamente.");
@@ -219,7 +300,8 @@ public class PlanillaBean extends BaseBean implements Serializable{
             	}	
     			d.setTotalDescuento(d.getOnp().add(d.getAporteObligatorio()).add(d.getPrimaSeguros()).add(d.getComisionVariable()).add(d.getRentaQuinta()).add(d.getDescMesAnterior()).add(d.getFeSalud()).add(d.getPagoVacTrunca()).add(d.getAdelanto()).add(d.getPrestamo()));
     			d.setNetoPagar(d.getTotal().subtract(d.getTotalDescuento()));
-            }
+    			d.setAbonado30(d.getNetoPagar());
+			}
 			
             addInfoMessage("Se cambió la comisión sobre flujo correctamente.");
 		}
@@ -243,7 +325,7 @@ public class PlanillaBean extends BaseBean implements Serializable{
             	}	
     			d.setTotalDescuento(d.getOnp().add(d.getAporteObligatorio()).add(d.getPrimaSeguros()).add(d.getComisionVariable()).add(d.getRentaQuinta()).add(d.getDescMesAnterior()).add(d.getFeSalud()).add(d.getPagoVacTrunca()).add(d.getAdelanto()).add(d.getPrestamo()));
     			d.setNetoPagar(d.getTotal().subtract(d.getTotalDescuento()));
-
+    			d.setAbonado30(d.getNetoPagar());
             }
 			
             addInfoMessage("Se cambió la prima seguro correctamente.");
@@ -270,13 +352,13 @@ public class PlanillaBean extends BaseBean implements Serializable{
             	}	
     			d.setTotalDescuento(d.getOnp().add(d.getAporteObligatorio()).add(d.getPrimaSeguros()).add(d.getComisionVariable()).add(d.getRentaQuinta()).add(d.getDescMesAnterior()).add(d.getFeSalud()).add(d.getPagoVacTrunca()).add(d.getAdelanto()).add(d.getPrestamo()));
     			d.setNetoPagar(d.getTotal().subtract(d.getTotalDescuento()));
-
+    			d.setAbonado30(d.getNetoPagar());
             }
             addInfoMessage("Se cambió el aporte obligatorio correctamente.");
 		}
 	}
 		
-	public void editarTabla2(DetallePlanilla dt) {
+	public void editarTablaTemporalDatosPension(DetallePlanilla dt) {
 				
 		if(dt.getOnp()==null) {
 			dt.setOnp(BigDecimal.ZERO);
@@ -320,7 +402,7 @@ public class PlanillaBean extends BaseBean implements Serializable{
 		
 		dt.setTotalDescuento(dt.getOnp().add(dt.getAporteObligatorio()).add(dt.getPrimaSeguros()).add(dt.getComisionVariable()).add(dt.getRentaQuinta()).add(dt.getDescMesAnterior()).add(dt.getFeSalud()).add(dt.getPagoVacTrunca()).add(dt.getAdelanto()).add(dt.getPrestamo()));
 		dt.setNetoPagar(dt.getTotal().subtract(dt.getTotalDescuento()));
-
+		dt.setAbonado30(dt.getNetoPagar());
 		addInfoMessage("Se calculó el total correctamente.");
 
 	}
@@ -375,7 +457,7 @@ public class PlanillaBean extends BaseBean implements Serializable{
 			dt.setNetoPagar(dt.getTotal().subtract(dt.getTotalDescuento()));
 			dt.setEsSalud(dt.getTotal().compareTo(new BigDecimal(1025)) == -1? new BigDecimal(92.25) : dt.getTotal().multiply( new BigDecimal(9).divide(new BigDecimal(100), 4, RoundingMode.HALF_UP))); 
 			
-			dt.setAbonado30(BigDecimal.ZERO);
+			dt.setAbonado30(dt.getNetoPagar());
 			dt.setAbonado4(BigDecimal.ZERO); 
 
 			
@@ -536,7 +618,7 @@ public class PlanillaBean extends BaseBean implements Serializable{
 			dt.setNetoPagar(dt.getTotal().subtract(dt.getTotalDescuento()));
 			dt.setEsSalud(dt.getTotal().compareTo(new BigDecimal(1025)) == -1? new BigDecimal(92.25) : dt.getTotal().multiply( new BigDecimal(9).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP))); 
 			
-			dt.setAbonado30(BigDecimal.ZERO);
+			dt.setAbonado30(dt.getNetoPagar());
 			dt.setAbonado4(BigDecimal.ZERO); 
 
 			dt.setEstado(true);
@@ -590,15 +672,15 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	private void crearFiltroMes() {
         cboMes = new SelectItem[13];
         cboMes[0] = new SelectItem("", "Todos");
-        cboMes[1] = new SelectItem("1", "Enero");
-        cboMes[2] = new SelectItem("2", "Febrero");
-        cboMes[3] = new SelectItem("3", "Marzo");
-        cboMes[4] = new SelectItem("4", "Abril");
-        cboMes[5] = new SelectItem("5", "Mayo");
-        cboMes[6] = new SelectItem("6", "Junio");
-        cboMes[7] = new SelectItem("7", "Julio");
-        cboMes[8] = new SelectItem("8", "Agosto");
-        cboMes[9] = new SelectItem("9", "Septiembre");
+        cboMes[1] = new SelectItem("01", "Enero");
+        cboMes[2] = new SelectItem("02", "Febrero");
+        cboMes[3] = new SelectItem("03", "Marzo");
+        cboMes[4] = new SelectItem("04", "Abril");
+        cboMes[5] = new SelectItem("05", "Mayo");
+        cboMes[6] = new SelectItem("06", "Junio");
+        cboMes[7] = new SelectItem("07", "Julio");
+        cboMes[8] = new SelectItem("08", "Agosto");
+        cboMes[9] = new SelectItem("09", "Septiembre");
         cboMes[10] = new SelectItem("10", "Octubre");
         cboMes[11] = new SelectItem("11", "Noviembre");
         cboMes[12] = new SelectItem("12", "Diciembre");
@@ -659,15 +741,12 @@ public class PlanillaBean extends BaseBean implements Serializable{
                 	}
                 }
                 
-        
-                
-               
                 Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
                
                 Page<Planilla> pagePlanilla=null;
                
                 
-                pagePlanilla= planillaService.findByEstado(estado, pageable);
+                pagePlanilla= planillaService.findByEstadoAndTemporal(estado, false, pageable);
                 
                 setRowCount((int) pagePlanilla.getTotalElements());
                 return datasource = pagePlanilla.getContent();

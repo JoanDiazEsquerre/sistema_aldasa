@@ -1149,10 +1149,10 @@
             <property-name>fondoPensionService</property-name>
             <value>#{fondoPensionService}</value>
         </managed-property>
-<!--         <managed-property> -->
-<!--             <property-name>navegacionBean</property-name> -->
-<!--             <value>#{navegacionBean}</value> -->
-<!--         </managed-property> -->
+        <managed-property>
+            <property-name>navegacionBean</property-name>
+            <value>#{navegacionBean}</value>
+        </managed-property>
 	</managed-bean>
 	
 	<managed-bean>

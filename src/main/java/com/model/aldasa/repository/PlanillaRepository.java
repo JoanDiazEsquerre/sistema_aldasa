@@ -18,7 +18,7 @@ public interface PlanillaRepository extends JpaRepository<Planilla, Integer>{
 	
 	Planilla findByEstadoAndTemporal(boolean estado, boolean temporal);
 	
-	Page<Planilla> findByEstado(boolean estado, Pageable pageable);
+	Page<Planilla> findByEstadoAndTemporal(boolean estado, boolean temporal, Pageable pageable);
 	
 	
 
