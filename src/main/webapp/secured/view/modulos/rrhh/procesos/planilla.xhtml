@@ -523,27 +523,18 @@
 	<p:dialog modal="true"  closeOnEscape="true" header="DETALLES PLANILLA" hideEffect="drop" showEffect="drop" id="dialogDP"  widgetVar="DPDialog" 
 		resizable="false"  width="100%" appendTo="@(body)" style="width:auto">  
         <h:form id="formDP" >
-            <p:panelGrid style="font-size: 12px;" styleClass="companyHeaderGrid" >
-                <p:row>
-                    <p:column>
-                        <p:outputLabel style="font-size: 13px;font-weight: bold;color: #036fab;" value="PERIODO :"/>
-                    </p:column>
-                    <p:column>
-                        <p:outputLabel style="font-size: 17px;font-weight: bold;color: black;" value="#{planillaBean.planillaSelected.periodo} - #{(planillaBean.planillaSelected.mes eq 1?'Enero':(planillaBean.planillaSelected.mes eq 2?'Febrero':(planillaBean.planillaSelected.mes eq 3?'Marzo':(planillaBean.planillaSelected.mes eq 4?'Abril':(planillaBean.planillaSelected.mes eq 5?'Mayo':(planillaBean.planillaSelected.mes eq 6?'Junio':(planillaBean.planillaSelected.mes eq 7?'Julio':(planillaBean.planillaSelected.mes eq 8?'Agosto':(planillaBean.planillaSelected.mes eq 9?'Septiembre':(planillaBean.planillaSelected.mes eq 10?'Octubre':(planillaBean.planillaSelected.mes eq 11?'Noviembre':(planillaBean.planillaSelected.mes eq 12?'Diciembre':''))))))))))))}"/>
-                    </p:column>
-                </p:row>
-                <p:row>
-                    <p:column>
-                        <p:outputLabel style="font-size: 13px;font-weight: bold;color: #036fab;" value="TIPO PLANILLA :"/>
-                    </p:column>
-                    <p:column>
-                        <p:outputLabel style="font-size: 17px;font-weight: bold;color: black;" value="#{planillaBean.planillaSelected.tipoPlanilla}"/>
-                    </p:column>
+            <h:panelGrid columns="2" style="font-size: 12px;"  >
+               
+                <p:outputLabel style="font-size: 13px;font-weight: bold;color: #036fab;" value="PERIODO :"/>
+                <p:outputLabel style="font-size: 17px;font-weight: bold;color: black;" value="#{planillaBean.planillaSelected.periodo} - #{(planillaBean.planillaSelected.mes eq 1?'Enero':(planillaBean.planillaSelected.mes eq 2?'Febrero':(planillaBean.planillaSelected.mes eq 3?'Marzo':(planillaBean.planillaSelected.mes eq 4?'Abril':(planillaBean.planillaSelected.mes eq 5?'Mayo':(planillaBean.planillaSelected.mes eq 6?'Junio':(planillaBean.planillaSelected.mes eq 7?'Julio':(planillaBean.planillaSelected.mes eq 8?'Agosto':(planillaBean.planillaSelected.mes eq 9?'Septiembre':(planillaBean.planillaSelected.mes eq 10?'Octubre':(planillaBean.planillaSelected.mes eq 11?'Noviembre':(planillaBean.planillaSelected.mes eq 12?'Diciembre':''))))))))))))}"/>
+                <p:outputLabel style="font-size: 13px;font-weight: bold;color: #036fab;" value="TIPO PLANILLA :"/>
+                <p:outputLabel style="font-size: 17px;font-weight: bold;color: black;" value="#{planillaBean.planillaSelected.tipoPlanilla}"/>
                   
-                </p:row>
-            </p:panelGrid>
+                <p:commandButton value="GUARDAR" action="#{planillaBean.saveDetallePlanilla()}" />
+                
+            </h:panelGrid>
             
-            <p:dataTable reflow="true" var="detallePlanilla" id="idTabDetallePlanilla" value="#{planillaBean.lstDetallePlanillaTemp}" rowIndexVar="row" rows="10" paginator="true" size="small"
+            <p:dataTable reflow="true" var="detallePlanilla" id="idTabDetallePlanilla" value="#{planillaBean.lstDetallePlanillaSelected}" rowIndexVar="row" rows="10" paginator="true" size="small"
 	    				editable="true" editMode="cell" paginatorPosition="bottom" rowKey="#{detallePlanilla.id}"  selectionMode="single" style="font-size: 14px; width:140%">
 	             
 	            

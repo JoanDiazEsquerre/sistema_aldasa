@@ -81,6 +81,8 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	private List<Sucursal> lstSucursal;
 	private List<Empleado> lstEmpleadoCombo;
 	private List<DetallePlanilla> lstDetallePlanillaTemp;
+	private List<DetallePlanilla> lstDetallePlanillaSelected;
+
 	private List<Empleado> lstEmpleadoTemp;
 	private List<FondoPension> lstFondoPension;
 	
@@ -110,8 +112,14 @@ public class PlanillaBean extends BaseBean implements Serializable{
 		iniciarLazy();
 	}
 	
+	public void saveDetallePlanilla() {
+		planillaService.save(planillaSelected, lstDetallePlanillaSelected);
+		
+		addInfoMessage("Se guardó correctamente.");
+	}
+	
 	public void listarDetallesPlanillaSelected() {
-		lstDetallePlanillaTemp = detallePlanillaService.findByEstadoAndPlanilla(true, planillaSelected);
+		lstDetallePlanillaSelected = detallePlanillaService.findByEstadoAndPlanilla(true, planillaSelected);
 		
 		
 	} 
@@ -985,6 +993,12 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	}
 	public void setNavegacionBean(NavegacionBean navegacionBean) {
 		this.navegacionBean = navegacionBean;
+	}
+	public List<DetallePlanilla> getLstDetallePlanillaSelected() {
+		return lstDetallePlanillaSelected;
+	}
+	public void setLstDetallePlanillaSelected(List<DetallePlanilla> lstDetallePlanillaSelected) {
+		this.lstDetallePlanillaSelected = lstDetallePlanillaSelected;
 	}
 	
 	
