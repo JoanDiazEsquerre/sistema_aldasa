@@ -197,16 +197,22 @@
 		</h:form>
 	</p:dialog>
 	
-	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogOrdenCompra" header="ORDEN DE COMPRA" widgetVar="ordenCompraDialog" resizable="false" closable="true"
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogOrdenCompra" header="REQUERIMIENTO DE COMPRA" widgetVar="ordenCompraDialog" resizable="false" closable="true"
 		appendTo="@(body)"  width="50%" height="500px">
 		<h:form id="formOrdenCompraDialog">
 					
-<!-- 			<p:commandButton value="APROBAR" actionListener="#{requerimientoCompraBean.aprobarOrdenCompra}" rendered="#{requerimientoCompraBean.ordenCompraSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarOrdenCompra}" process="@this" update=":form:tabView:idTableCompra dialogOrdenCompra" style="margin:10px" styleClass="ui-button-success"/> -->
 			<p:commandButton value="APROBAR" onclick="PF('apruebaOrdenCompra').show();" rendered="#{requerimientoCompraBean.requerimientoCompraSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarOrdenCompra}" process="@this" update=":form:tabView:idTableCompra " styleClass="ui-button-success" style="margin:10px"/>
 			
 			<p:commandButton value="RECHAZAR" onclick="PF('rechazaOrdenCompra').show();" rendered="#{requerimientoCompraBean.requerimientoCompraSelected.estado eq 'Pendiente' and navegacionBean.usuarioLogin.aprobarOrdenCompra}" process="@this" update=":form:tabView:idTableCompra " styleClass="ui-button-warning"/>
-								
-			<p:dataTable id="idTableDetalle" var="detalle" value="#{requerimientoCompraBean.lstDetalleRequerimientoCompra}" style="width:auto" rowIndexVar="row" paginator="true" rows="15" size="small" 
+			
+			<h:panelGrid columns="2"> 
+				 <p:outputLabel style="font-size: 13px;font-weight: bold;color: #036fab;" value="USUARIO REGISTRO :"/>
+	             <p:outputLabel style="font-size: 17px;font-weight: bold;color: black;" value="#{requerimientoCompraBean.requerimientoCompraSelected.usuario.person.surnames}  #{requerimientoCompraBean.requerimientoCompraSelected.usuario.person.names}"/>
+	             <p:outputLabel style="font-size: 13px;font-weight: bold;color: #036fab;" value="FECHA REGISTRO :"/>
+	             <p:outputLabel style="font-size: 17px;font-weight: bold;color: black;" value="#{requerimientoCompraBean.requerimientoCompraSelected.fechaRegistro}"/>
+			</h:panelGrid>	
+						
+			<p:dataTable id="idTableDetalle" var="detalle" value="#{requerimientoCompraBean.lstDetalleRequerimientoCompra}" paginatorPosition="bottom" style="width:auto" rowIndexVar="row" paginator="true" rows="15" size="small" 
 				emptyMessage="No se agregaron detalles." >
 				
 					<p:column headerText="Nro" width="25px">

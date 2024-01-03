@@ -579,10 +579,19 @@
 					 </h:outputText>
 				</p:column>
 				
-				<p:column headerText="Vacaciones" filterMatchMode="contains" style="text-align: center">
-					<h:outputText value="#{detallePlanilla.vacaciones}" style="font-weight: bold"> 
-					 <f:convertNumber currencySymbol="" type="currency"  />
-					 </h:outputText>
+				<p:column headerText="Vacaciones"  width="70px" style="text-align: center" filterMatchMode="contains" >
+					<p:cellEditor>
+	                    <f:facet name="output">
+	                       	<h:outputText value="#{detallePlanilla.vacaciones}" > 
+							 <f:convertNumber currencySymbol="" type="currency"  />
+							</h:outputText> 
+	                    </f:facet>
+	                    <f:facet name="input">
+	                        <p:inputNumber value="#{detallePlanilla.vacaciones}" modifyValueOnWheel="false" > 
+	                        	<p:ajax listener="#{planillaBean.editarTabla(detallePlanilla)}" update=":formDP:idTabDetallePlanilla"/>
+	                        </p:inputNumber>
+	                    </f:facet>
+	                </p:cellEditor>
 				</p:column>
 				
 				<p:column headerText="Comisiones"  width="70px" style="text-align: center" filterMatchMode="contains" >
@@ -600,10 +609,19 @@
 	                </p:cellEditor>
 				</p:column>
 				
-				<p:column headerText="Bono" filterMatchMode="contains" style="text-align: center">
-					<h:outputText value="#{detallePlanilla.bono}" style="font-weight: bold"> 
-					 <f:convertNumber currencySymbol="" type="currency"  />
-					 </h:outputText>
+				<p:column headerText="Bono"  width="70px" style="text-align: center" filterMatchMode="contains" >
+					<p:cellEditor>
+	                    <f:facet name="output">
+	                       	<h:outputText value="#{detallePlanilla.bono}" > 
+							 <f:convertNumber currencySymbol="" type="currency"  />
+							</h:outputText> 
+	                    </f:facet>
+	                    <f:facet name="input">
+	                        <p:inputNumber value="#{detallePlanilla.bono}" modifyValueOnWheel="false" > 
+	                        	<p:ajax listener="#{planillaBean.editarTabla(detallePlanilla)}" update=":formDP:idTabDetallePlanilla"/>
+	                        </p:inputNumber>
+	                    </f:facet>
+	                </p:cellEditor>
 				</p:column>
 				
 				<p:column headerText="Total" filterMatchMode="contains" style="text-align: center">
