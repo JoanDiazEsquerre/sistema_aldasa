@@ -59,5 +59,11 @@ public class TeamServiceImpl implements TeamService {
 		// TODO Auto-generated method stub
 		return teamRepository.findByNameLikeAndStatus(name, status, pageable); 
 	}
+
+	@Override
+	public Page<Team> findByStatus(boolean status, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return teamRepository.findByStatus(status, pageable);
+	}
 	
 }

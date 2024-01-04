@@ -14,7 +14,7 @@
 			<p:ajax update=":form:idTableTeam"
 				listener="#{teamBean.listarTeam()}" />
 		</p:selectOneButton>      
-		<p:dataTable var="team" id="idTableTeam" value="#{teamBean.listTeam}" widgetVar="teamTable" rowIndexVar="row" paginator="true" rows="15" size="small"
+		<p:dataTable var="team" id="idTableTeam" value="#{teamBean.lstTeamLazy}" widgetVar="teamTable" rowIndexVar="row" paginator="true" rows="15" size="small"
 			emptyMessage="No se encontraron equipos."	paginatorPosition="bottom" rowKey="#{team.id}" selection="#{teamBean.teamSelected}" selectionMode="single">
 			<f:facet name="header">
 				<div class="p-d-flex p-ai-center p-jc-between">

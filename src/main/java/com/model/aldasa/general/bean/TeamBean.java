@@ -4,6 +4,7 @@ package com.model.aldasa.general.bean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -16,6 +17,13 @@ import javax.faces.convert.Converter;
 
 import org.eclipse.jdt.internal.compiler.env.IUpdatableModule.AddExports;
 import org.primefaces.PrimeFaces;
+import org.primefaces.model.FilterMeta;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Team;
@@ -35,6 +43,8 @@ public class TeamBean extends BaseBean implements Serializable {
 	@ManagedProperty(value = "#{personService}")
 	private PersonService personService; 
 	
+	private LazyDataModel<Team> lstTeamLazy;
+	
 	private List<Team> listTeam;
 	private List<Person> lstPerson;
 	private Team teamSelected;
@@ -44,8 +54,67 @@ public class TeamBean extends BaseBean implements Serializable {
 	
 	@PostConstruct
 	public void init() {
-		listarTeam();
+		iniciarLazy();
 		listarPersonas();
+	}
+	
+	public void iniciarLazy() {
+
+		lstTeamLazy = new LazyDataModel<Team>() {
+			private List<Team> datasource;
+
+            @Override
+            public void setRowIndex(int rowIndex) {
+                if (rowIndex == -1 || getPageSize() == 0) {
+                    super.setRowIndex(-1);
+                } else {
+                    super.setRowIndex(rowIndex % getPageSize());
+                }
+            }
+
+            @Override
+            public Team getRowData(String rowKey) {
+                int intRowKey = Integer.parseInt(rowKey);
+                for (Team team : datasource) {
+                    if (team.getId() == intRowKey) {
+                        return team;
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public String getRowKey(Team team) {
+                return String.valueOf(team.getId());
+            }
+
+			@Override
+			public List<Team> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+               
+//				String names = "%" + (filterBy.get("name") != null ? filterBy.get("name").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+
+                Sort sort=Sort.by("id").ascending();
+                if(sortBy!=null) {
+                	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
+                	   if(entry.getValue().getOrder().isAscending()) {
+                		   sort = Sort.by(entry.getKey()).descending();
+                	   }else {
+                		   sort = Sort.by(entry.getKey()).ascending();
+                		   
+                	   }
+                	}
+                }          
+                Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
+               
+                Page<Team> pageTeam=null;
+               
+                
+                pageTeam= teamService.findByStatus(estado, pageable);
+                
+                setRowCount((int) pageTeam.getTotalElements());
+                return datasource = pageTeam.getContent();
+            }
+		};
 	}
 	
 	public void listarTeam (){
@@ -180,6 +249,12 @@ public class TeamBean extends BaseBean implements Serializable {
 	}
 	public void setTituloDialog(String tituloDialog) {
 		this.tituloDialog = tituloDialog;
+	}
+	public LazyDataModel<Team> getLstTeamLazy() {
+		return lstTeamLazy;
+	}
+	public void setLstTeamLazy(LazyDataModel<Team> lstTeamLazy) {
+		this.lstTeamLazy = lstTeamLazy;
 	}
 
 	

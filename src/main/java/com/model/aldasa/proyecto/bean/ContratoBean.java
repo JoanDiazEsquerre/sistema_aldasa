@@ -81,6 +81,7 @@ import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.ObservacionContrato;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.PlantillaVenta;
+import com.model.aldasa.entity.Profile;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.RequerimientoSeparacion;
 import com.model.aldasa.entity.Simulador;
@@ -166,8 +167,9 @@ public class ContratoBean extends BaseBean implements Serializable{
 	private String meses[]= {"ENERO","FEBRERO","MARZO","ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE","DICIEMBRE"};
 	
 	private LazyDataModel<Contrato> lstContratoLazy;
+	private LazyDataModel<Lote> lstLotesSinContratoLazy;
+
 	
-	private List<Lote> lstLotesSinContrato;
 	private List<Person> lstPerson;
 	private List<CuentaBancaria> lstCuentaBancaria = new ArrayList<>();
 	private List<Simulador> lstSimulador = new ArrayList<>();
@@ -181,6 +183,8 @@ public class ContratoBean extends BaseBean implements Serializable{
 	private Contrato contratoSelected;
 	private ObservacionContrato obsSelected;
 	private Project projectFilter;
+	private Project projectFilterLote;
+
 	
 	private StreamedContent fileDes;
 	private String nombreArchivo = "Contrato.docx";
@@ -8921,16 +8925,72 @@ public class ContratoBean extends BaseBean implements Serializable{
 	}  
 	
 	
-	public void listarLotesSinContrato() {
-		lstLotesSinContrato = new ArrayList<>();
-		List<Lote> lstLotesVendidos = loteService.findByStatusAndProjectSucursal(EstadoLote.VENDIDO.getName(), navegacionBean.getSucursalLogin());
-		if(!lstLotesVendidos.isEmpty()) {
-			for(Lote lote:lstLotesVendidos) {
-				if(lote.getRealizoContrato().equals("N")) {
-					lstLotesSinContrato.add(lote);
+	public void iniciarLotesSinContratoLazy() {
+
+		lstLotesSinContratoLazy = new LazyDataModel<Lote>() {
+			private List<Lote> datasource;
+
+            @Override
+            public void setRowIndex(int rowIndex) {
+                if (rowIndex == -1 || getPageSize() == 0) {
+                    super.setRowIndex(-1);
+                } else {
+                    super.setRowIndex(rowIndex % getPageSize());
+                }
+            }
+
+            @Override
+            public Lote getRowData(String rowKey) {
+                int intRowKey = Integer.parseInt(rowKey);
+                for (Lote lote : datasource) {
+                    if (lote.getId() == intRowKey) {
+                        return lote;
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public String getRowKey(Lote lote) {
+                return String.valueOf(lote.getId());
+            }
+
+			@Override
+			public List<Lote> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+               
+				String lote = "%" + (filterBy.get("numberLote") != null ? filterBy.get("numberLote").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+				String manzana = "%" + (filterBy.get("manzana.name") != null ? filterBy.get("manzana.name").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+				String project = "%" + (filterBy.get("project.name") != null ? filterBy.get("project.nema").getFilterValue().toString().trim().replaceAll(" ", "%") : "") + "%";
+
+				
+                Sort sort=Sort.by("id").ascending();
+                if(sortBy!=null) {
+                	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
+                	   if(entry.getValue().getOrder().isAscending()) {
+                		   sort = Sort.by(entry.getKey()).descending();
+                	   }else {
+                		   sort = Sort.by(entry.getKey()).ascending();
+                		   
+                	   }
+                	}
+                }          
+                Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
+               
+                Page<Lote> pageLote=null;
+                
+                
+                if(projectFilterLote != null) {
+                    pageLote= loteService.findByStatusAndProjectSucursalAndRealizoContratoAndNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndProject(EstadoLote.VENDIDO.getName(), navegacionBean.getSucursalLogin(), "N", lote, manzana, project, projectFilterLote, pageable);
+
+				}else {
+	                pageLote= loteService.findByStatusAndProjectSucursalAndRealizoContratoAndNumberLoteLikeAndManzanaNameLikeAndProjectNameLike(EstadoLote.VENDIDO.getName(), navegacionBean.getSucursalLogin(), "N", lote, manzana, project, pageable);
+	                
 				}
-			}
-		}
+                
+                setRowCount((int) pageLote.getTotalElements());
+                return datasource = pageLote.getContent();
+            }
+		};
 	}
 	
 	public void seleccionarLote() {
@@ -10044,12 +10104,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 	public void setLoteService(LoteService loteService) {
 		this.loteService = loteService;
 	}
-	public List<Lote> getLstLotesSinContrato() {
-		return lstLotesSinContrato;
-	}
-	public void setLstLotesSinContrato(List<Lote> lstLotesSinContrato) {
-		this.lstLotesSinContrato = lstLotesSinContrato;
-	}
+	
 	public Lote getLoteSelected() {
 		return loteSelected;
 	}
@@ -10383,13 +10438,23 @@ public class ContratoBean extends BaseBean implements Serializable{
 	public void setLstProject(List<Project> lstProject) {
 		this.lstProject = lstProject;
 	}
-
 	public ProjectService getProjectService() {
 		return projectService;
 	}
-
 	public void setProjectService(ProjectService projectService) {
 		this.projectService = projectService;
+	}
+	public LazyDataModel<Lote> getLstLotesSinContratoLazy() {
+		return lstLotesSinContratoLazy;
+	}
+	public void setLstLotesSinContratoLazy(LazyDataModel<Lote> lstLotesSinContratoLazy) {
+		this.lstLotesSinContratoLazy = lstLotesSinContratoLazy;
+	}
+	public Project getProjectFilterLote() {
+		return projectFilterLote;
+	}
+	public void setProjectFilterLote(Project projectFilterLote) {
+		this.projectFilterLote = projectFilterLote;
 	}
 		
 	

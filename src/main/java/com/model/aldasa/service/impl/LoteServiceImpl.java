@@ -122,5 +122,26 @@ public class LoteServiceImpl implements LoteService {
 		return loteRepository.findByProjectAndStatusLikeOrderByManzanaNameAscNumberLoteAsc(project, Status);
 	}
 
+	@Override
+	public Page<Lote> findByStatusAndProjectSucursalAndRealizoContratoAndNumberLoteLikeAndManzanaNameLikeAndProjectNameLike(
+			String status, Sucursal sucursal, String realizoContrato, String numberLote, String nameManzana,
+			String proyecto, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return loteRepository.findByStatusAndProjectSucursalAndRealizoContratoAndNumberLoteLikeAndManzanaNameLikeAndProjectNameLike(status, sucursal, realizoContrato, numberLote, nameManzana, proyecto, pageable);
+	}
+
+	@Override
+	public Page<Lote> findByStatusAndProjectSucursalAndRealizoContratoAndNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndProject(
+			String status, Sucursal sucursal, String realizoContrato, String numberLote, String nameManzana,
+			String proyecto, Project project, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return loteRepository.findByStatusAndProjectSucursalAndRealizoContratoAndNumberLoteLikeAndManzanaNameLikeAndProjectNameLikeAndProject(status, sucursal, realizoContrato, numberLote, nameManzana, proyecto, project, pageable);
+	}
+
+
+
+	
+
+
 	
 }

@@ -22,6 +22,7 @@ public interface TeamRepository extends PagingAndSortingRepository<Team, Integer
 	Team findByPersonSupervisor(Person personSupervisor);
 	
 	Page<Team> findByNameLikeAndStatus(String name, boolean status, Pageable pageable);
+	Page<Team> findByStatus(boolean status, Pageable pageable);
 
 
 }
