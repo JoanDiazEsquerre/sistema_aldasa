@@ -1451,6 +1451,11 @@ public class DocumentoVentaBean extends BaseBean {
 			if(fechaImag2==null) {
 				addErrorMessage("Ingresar fecha del segundo voucher");
 				return true;
+			}else {
+				if(fechaImag2.after(new Date())) {
+					addErrorMessage("La fecha del segundo voucher es incorrecta.");
+					return true;
+				}
 			}
 			if(montoImag2==null) {
 				addErrorMessage("Ingresar monto del segundo voucher");
@@ -1474,6 +1479,11 @@ public class DocumentoVentaBean extends BaseBean {
 			if(fechaImag3==null) {
 				addErrorMessage("Ingresar fecha del tercer voucher");
 				return true;
+			}else {
+				if(fechaImag3.after(new Date())) {
+					addErrorMessage("La fecha del tercer voucher es incorrecta.");
+					return true;
+				}
 			}
 			if(montoImag3==null) {
 				addErrorMessage("Ingresar monto del tercer voucher");
@@ -1497,6 +1507,11 @@ public class DocumentoVentaBean extends BaseBean {
 			if(fechaImag4==null) {
 				addErrorMessage("Ingresar fecha del cuarto voucher");
 				return true;
+			}else {
+				if(fechaImag4.after(new Date())) {
+					addErrorMessage("La fecha del cuarto voucher es incorrecta.");
+					return true;
+				}
 			}
 			if(montoImag4==null) {
 				addErrorMessage("Ingresar monto del cuarto voucher");
@@ -1519,6 +1534,11 @@ public class DocumentoVentaBean extends BaseBean {
 			if(fechaImag5==null) {
 				addErrorMessage("Ingresar fecha del quinto voucher");
 				return true;
+			}else {
+				if(fechaImag5.after(new Date())) {
+					addErrorMessage("La fecha del quinto voucher es incorrecta.");
+					return true;
+				}
 			}
 			if(montoImag5==null) {
 				addErrorMessage("Ingresar monto del quinto voucher");
@@ -1541,6 +1561,11 @@ public class DocumentoVentaBean extends BaseBean {
 			if(fechaImag6==null) {
 				addErrorMessage("Ingresar fecha del sexto voucher");
 				return true;
+			}else {
+				if(fechaImag6.after(new Date())) {
+					addErrorMessage("La fecha del sexto voucher es incorrecta.");
+					return true;
+				}
 			}
 			if(montoImag6==null) {
 				addErrorMessage("Ingresar monto del sexto voucher");
@@ -1563,6 +1588,11 @@ public class DocumentoVentaBean extends BaseBean {
 			if(fechaImag7==null) {
 				addErrorMessage("Ingresar fecha del séptimo voucher");
 				return true;
+			}else {
+				if(fechaImag7.after(new Date())) {
+					addErrorMessage("La fecha del séptimo voucher es incorrecta.");
+					return true;
+				}
 			}
 			if(montoImag7==null) {
 				addErrorMessage("Ingresar monto del séptimo voucher");
@@ -1585,6 +1615,11 @@ public class DocumentoVentaBean extends BaseBean {
 			if(fechaImag8==null) {
 				addErrorMessage("Ingresar fecha del octavo voucher");
 				return true;
+			}else {
+				if(fechaImag8.after(new Date())) {
+					addErrorMessage("La fecha del octavo voucher es incorrecta.");
+					return true;
+				}
 			}
 			if(montoImag8==null) {
 				addErrorMessage("Ingresar monto del octavo voucher");
@@ -1607,6 +1642,11 @@ public class DocumentoVentaBean extends BaseBean {
 			if(fechaImag9==null) {
 				addErrorMessage("Ingresar fecha del noveno voucher");
 				return true;
+			}else {
+				if(fechaImag9.after(new Date())) {
+					addErrorMessage("La fecha del noveno voucher es incorrecta.");
+					return true;
+				}
 			}
 			if(montoImag9==null) {
 				addErrorMessage("Ingresar monto del noveno voucher");
@@ -1629,6 +1669,11 @@ public class DocumentoVentaBean extends BaseBean {
 			if(fechaImag10==null) {
 				addErrorMessage("Ingresar fecha del décimo voucher");
 				return true;
+			}else {
+				if(fechaImag10.after(new Date())) {
+					addErrorMessage("La fecha del décimo voucher es incorrecta.");
+					return true;
+				}
 			}
 			if(montoImag10==null) {
 				addErrorMessage("Ingresar monto del décimo voucher");
@@ -1789,7 +1834,13 @@ public class DocumentoVentaBean extends BaseBean {
 			if(fechaImag1==null) {
 				addErrorMessage("Ingresar fecha del primer voucher");
 				return;
+			}else {
+				if(fechaImag1.after(new Date())) {
+					addErrorMessage("La fecha del voucher es incorrecta.");
+					return;
+				}
 			}
+			
 			if(montoImag1==null) {
 				addErrorMessage("Ingresar monto del primer voucher");
 				return;
