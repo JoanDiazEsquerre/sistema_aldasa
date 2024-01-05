@@ -1,5 +1,9 @@
 package com.model.aldasa.rrhh.bean;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -18,10 +22,18 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
+import javax.servlet.ServletContext;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
+import org.primefaces.model.StreamedContent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +55,7 @@ import com.model.aldasa.service.FondoPensionService;
 import com.model.aldasa.service.PlanillaService;
 import com.model.aldasa.service.SucursalService;
 import com.model.aldasa.util.BaseBean;
+import com.model.aldasa.util.UtilXls;
 
 @ManagedBean
 @ViewScoped
@@ -73,6 +86,8 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	
 	private LazyDataModel<Planilla> lstPlanillaLazy;
 	
+	private StreamedContent fileDes;
+	
 	private Planilla planillaSelected;
 	private Sucursal sucursal;
 	private Planilla planillaNew;
@@ -93,6 +108,8 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	private boolean estado = true;
 	private boolean bloqueo, tipoPlanilla;
 	
+	private String nombreArchivo = "Detalle Planilla.xlsx";
+	
 	SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
 	SimpleDateFormat sdfDay = new SimpleDateFormat("MM");
 	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-aaaa");
@@ -110,6 +127,108 @@ public class PlanillaBean extends BaseBean implements Serializable{
 		bloquearPantalla();
 		
 		iniciarLazy();
+	}
+	
+	public void procesarExcel() {
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet sheet = workbook.createSheet("Detalle Planilla");
+
+		CellStyle styleBorder = UtilXls.styleCell(workbook, 'B');
+		CellStyle styleTitulo = UtilXls.styleCell(workbook, 'A');
+	
+		Row rowSubTitulo = sheet.createRow(0);
+		Cell cellTitulo = null;
+		cellTitulo = rowSubTitulo.createCell(0);cellTitulo.setCellValue("SUCURSAl");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(1);cellTitulo.setCellValue("EMPLEADO");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(2);cellTitulo.setCellValue("CARGO");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(3);cellTitulo.setCellValue("FONDO PENSIÓN");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(4);cellTitulo.setCellValue("SUELDO BASICO");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(5);cellTitulo.setCellValue("TARDANZA");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(6);cellTitulo.setCellValue("VACACIONES");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(7);cellTitulo.setCellValue("COMISIONES");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(8);cellTitulo.setCellValue("BONO");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(9);cellTitulo.setCellValue("TOTAL");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(10);cellTitulo.setCellValue("ONS SNP");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(11);cellTitulo.setCellValue("AP. OBLIG.");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(12);cellTitulo.setCellValue("SEG. INV.");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(13);cellTitulo.setCellValue("COM. VAR.");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(14);cellTitulo.setCellValue("REN. 5TA.");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(15);cellTitulo.setCellValue("DESC. MES ANT.");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(16);cellTitulo.setCellValue("FE SALUD");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(17);cellTitulo.setCellValue("PAGO VAC. TRUN.");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(18);cellTitulo.setCellValue("ADELANTO");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(19);cellTitulo.setCellValue("PRESTAMO");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(20);cellTitulo.setCellValue("TOTAL DESC.");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(21);cellTitulo.setCellValue("NETO A PAGAR");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(22);cellTitulo.setCellValue("ESSALUD");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(23);cellTitulo.setCellValue("ABONADO 30");cellTitulo.setCellStyle(styleTitulo);
+		cellTitulo = rowSubTitulo.createCell(24);cellTitulo.setCellValue("ABONADO 4");cellTitulo.setCellStyle(styleTitulo);
+
+		
+		
+		int index = 1;
+		
+	
+		if (!lstDetallePlanillaSelected.isEmpty()) {
+			for (DetallePlanilla detalle : lstDetallePlanillaSelected) {	
+				
+				
+				Row rowDetalle = sheet.createRow(index);
+				Cell cellSucursal = rowDetalle.createCell(0);cellSucursal.setCellValue(detalle.getEmpleado().getSucursal().getRazonSocial());cellSucursal.setCellStyle(styleBorder);
+				Cell cellEmpleado = rowDetalle.createCell(1);cellEmpleado.setCellValue(detalle.getEmpleado().getPerson().getNames() + detalle.getEmpleado().getPerson().getSurnames());cellEmpleado.setCellStyle(styleBorder);
+				Cell cellCargo= rowDetalle.createCell(2);cellCargo.setCellValue(detalle.getEmpleado().getCargo().getDescripcion());cellCargo.setCellStyle(styleBorder);
+				Cell cellEgreso = rowDetalle.createCell(3);cellEgreso.setCellValue(detalle.getEmpleado().getFondoPension().getNombre());cellEgreso.setCellStyle(styleBorder);
+				Cell cellSueldoBasico = rowDetalle.createCell(4);cellSueldoBasico.setCellValue(detalle.getEmpleado().getSueldoBasico() + "");cellSueldoBasico.setCellStyle(styleBorder);
+				Cell cellTardanza = rowDetalle.createCell(5);cellTardanza.setCellValue(detalle.getTardanza() + "");cellTardanza.setCellStyle(styleBorder);
+				Cell cellVacaciones = rowDetalle.createCell(6);cellVacaciones.setCellValue(detalle.getVacaciones() + "");cellVacaciones.setCellStyle(styleBorder);
+				Cell cellComisiones = rowDetalle.createCell(7);cellComisiones.setCellValue(detalle.getComisiones() + "");cellComisiones.setCellStyle(styleBorder);
+				Cell cellBono = rowDetalle.createCell(8);cellBono.setCellValue(detalle.getBono() + "");cellBono.setCellStyle(styleBorder);
+				Cell cellTotal = rowDetalle.createCell(9);cellTotal.setCellValue(detalle.getTotal() + "");cellTotal.setCellStyle(styleBorder);
+				Cell cellOnpSnp = rowDetalle.createCell(10);cellOnpSnp.setCellValue(detalle.getOnp()+"");cellOnpSnp.setCellStyle(styleBorder);
+				Cell cellApOblig = rowDetalle.createCell(11);cellApOblig.setCellValue(detalle.getAporteObligatorio()+"");cellApOblig.setCellStyle(styleBorder);
+				Cell cellSegInv = rowDetalle.createCell(12);cellSegInv.setCellValue(detalle.getPrimaSeguros()+"");cellSegInv.setCellStyle(styleBorder);
+				Cell cellComVar = rowDetalle.createCell(13);cellComVar.setCellValue(detalle.getComisionVariable() +"");cellComVar.setCellStyle(styleBorder);
+				Cell cellRentaQuinta = rowDetalle.createCell(14);cellRentaQuinta.setCellValue(detalle.getRentaQuinta()+"");cellRentaQuinta.setCellStyle(styleBorder);
+				Cell cellDescMesAnterior = rowDetalle.createCell(15);cellDescMesAnterior.setCellValue(detalle.getDescMesAnterior()+"");cellDescMesAnterior.setCellStyle(styleBorder);
+				Cell cellFeSalud = rowDetalle.createCell(16);cellFeSalud.setCellValue(detalle.getFeSalud()+"");cellFeSalud.setCellStyle(styleBorder);
+				Cell cellPagoVacTrun = rowDetalle.createCell(17);cellPagoVacTrun.setCellValue(detalle.getPagoVacTrunca()+"");cellPagoVacTrun.setCellStyle(styleBorder);
+				Cell cellAdelanto = rowDetalle.createCell(18);cellAdelanto.setCellValue(detalle.getAdelanto()+"");cellAdelanto.setCellStyle(styleBorder);
+				Cell cellPrestamo = rowDetalle.createCell(19);cellPrestamo.setCellValue(detalle.getPrestamo()+"");cellPrestamo.setCellStyle(styleBorder);
+				Cell cellTotalDesc = rowDetalle.createCell(20);cellTotalDesc.setCellValue(detalle.getTotalDescuento()+"");cellTotalDesc.setCellStyle(styleBorder);
+				Cell cellNetoPagar = rowDetalle.createCell(21);cellNetoPagar.setCellValue(detalle.getNetoPagar()+"");cellNetoPagar.setCellStyle(styleBorder);
+				Cell cellEsSalud = rowDetalle.createCell(22);cellEsSalud.setCellValue(detalle.getEsSalud()+"");cellEsSalud.setCellStyle(styleBorder);
+				Cell cellAbonado30 = rowDetalle.createCell(23);cellAbonado30.setCellValue(detalle.getAbonado30()+"");cellAbonado30.setCellStyle(styleBorder);
+				Cell cellAbonado4 = rowDetalle.createCell(24);cellAbonado4.setCellValue(detalle.getAbonado4()+"");cellAbonado4.setCellStyle(styleBorder);
+
+				
+				index++;
+			}
+		}
+		
+		
+		
+		for (int j = 0; j <= 25; j++) {
+			sheet.autoSizeColumn(j);
+		}
+		try {
+			ServletContext scontext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()
+					.getContext();
+			String filePath = scontext.getRealPath("/WEB-INF/fileAttachments/" + nombreArchivo);
+			File file = new File(filePath);
+			FileOutputStream out = new FileOutputStream(file);
+			workbook.write(out);
+			out.close();
+			fileDes = DefaultStreamedContent.builder().name(nombreArchivo).contentType("aplication/xls")
+					.stream(() -> FacesContext.getCurrentInstance().getExternalContext()
+							.getResourceAsStream("/WEB-INF/fileAttachments/" + nombreArchivo))
+					.build();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 	
 	public void saveDetallePlanilla() {
@@ -999,6 +1118,18 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	}
 	public void setLstDetallePlanillaSelected(List<DetallePlanilla> lstDetallePlanillaSelected) {
 		this.lstDetallePlanillaSelected = lstDetallePlanillaSelected;
+	}
+	public StreamedContent getFileDes() {
+		return fileDes;
+	}
+	public void setFileDes(StreamedContent fileDes) {
+		this.fileDes = fileDes;
+	}
+	public String getNombreArchivo() {
+		return nombreArchivo;
+	}
+	public void setNombreArchivo(String nombreArchivo) {
+		this.nombreArchivo = nombreArchivo;
 	}
 	
 	

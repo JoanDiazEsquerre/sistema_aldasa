@@ -532,6 +532,10 @@
                   
                 <p:commandButton value="GUARDAR" action="#{planillaBean.saveDetallePlanilla()}" />
                 
+                <p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{planillaBean.procesarExcel()}" icon="pi pi-file-excel" styleClass="mr-2">
+	            	<p:fileDownload value="#{planillaBean.fileDes}"/> 
+	      		</p:commandButton>
+                
             </h:panelGrid>
             
             <p:dataTable reflow="true" var="detallePlanilla" id="idTabDetallePlanilla" value="#{planillaBean.lstDetallePlanillaSelected}" rowIndexVar="row" rows="10" paginator="true" size="small"
@@ -771,6 +775,68 @@
             <p:commandButton value="NO" oncomplete="PF('terminarPlanilla').hide()"/>
         </h:form>
     </p:confirmDialog>
+    
+    
+    <script>
+	    PrimeFaces.locales['es'] = {
+	        closeText: 'Cerrar',
+	        prevText: 'Anterior',
+	        nextText: 'Siguiente',
+	        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+	        monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+	        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+	        dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+	        dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+	        weekHeader: 'Semana',
+	        firstDay: 1,
+	        isRTL: false,
+	        showMonthAfterYear: false,
+	        yearSuffix: '',
+	        timeOnlyTitle: 'Sólo hora',
+	        timeText: 'Tiempo',
+	        hourText: 'Hora',
+	        minuteText: 'Minuto',
+	        secondText: 'Segundo',
+	        millisecondText: 'Milisegundo',
+	        currentText: 'Fecha actual',
+	        ampm: false,
+	        month: 'Mes',
+	        week: 'Semana',
+	        day: 'Día',
+	        allDayText: 'Todo el día',
+	        today: 'Hoy',
+	        clear: 'Claro'
+	    };
+	    PrimeFaces.locales ['de'] = {
+	        closeText: 'Schließen',
+	        prevText: 'Zurück',
+	        nextText: 'Weiter',
+	        monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+	        monthNamesShort: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+	        dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+	        dayNamesShort: ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam'],
+	        dayNamesMin: ['S', 'M', 'D', 'M ', 'D', 'F ', 'S'],
+	        weekHeader: 'Woche',
+	        firstDay: 1,
+	        isRTL: false,
+	        showMonthAfterYear: false,
+	        yearSuffix: '',
+	        timeOnlyTitle: 'Nur Zeit',
+	        timeText: 'Zeit',
+	        hourText: 'Stunde',
+	        minuteText: 'Minute',
+	        secondText: 'Sekunde',
+	        millisecondText: 'Millisekunde',
+	        currentText: 'Aktuelles Datum',
+	        ampm: false,
+	        month: 'Monat',
+	        week: 'Woche',
+	        day: 'Tag',
+	        allDayText: 'Ganzer Tag',
+	        today: 'Heute',
+	        clear: 'Löschen'
+	    };
+	</script>
 
 
 </ui:composition>
