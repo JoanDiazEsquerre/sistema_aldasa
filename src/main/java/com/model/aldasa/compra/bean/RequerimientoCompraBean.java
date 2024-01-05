@@ -10,14 +10,25 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletContext;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -43,8 +54,11 @@ import com.model.aldasa.entity.DetalleCaja;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DetalleRequerimientoCompra;
 import com.model.aldasa.entity.RequerimientoCompra;
+import com.model.aldasa.entity.SerieDocumento;
+import com.model.aldasa.entity.TipoDocumento;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Unidad;
+import com.model.aldasa.general.bean.EmailController;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.CajaService;
 import com.model.aldasa.service.DetalleCajaService;
@@ -72,6 +86,9 @@ public class RequerimientoCompraBean extends BaseBean {
 	@ManagedProperty(value = "#{navegacionBean}")
 	private NavegacionBean navegacionBean;
 	
+	@ManagedProperty(value = "#{serieDocumentoService}")
+	private SerieDocumentoService serieDocumentoService;
+	
 	private static final long serialVersionUID = 1L;
 	
 	private LazyDataModel<RequerimientoCompra> lstRequerimientoCompraLazy;
@@ -83,6 +100,7 @@ public class RequerimientoCompraBean extends BaseBean {
 	private RequerimientoCompra requerimientoCompraSelected;
 	private DetalleRequerimientoCompra detalleRequerimientoCompraSelected;
 	private Unidad unidadFilter;
+	private SerieDocumento serieDocumentoReq;
 	
 	private String descripcionProducto;
 	private String formaPago, observacion;
@@ -96,6 +114,9 @@ public class RequerimientoCompraBean extends BaseBean {
 		iniciarLazy();
 		lstUnidad= unidadService.findByEstado(true);
 		lstDetalleRequerimientoCompra = new ArrayList<>();
+		
+		Optional<SerieDocumento> op = serieDocumentoService.findById(13);
+		serieDocumentoReq = op.get();
 	}
 	
 	public void listarListaDetalles() {
@@ -230,7 +251,7 @@ public class RequerimientoCompraBean extends BaseBean {
 		
 	}
 	
-	public void saveCompra() {
+	public void saveRequerimientoCompra() {
 		
 		if(formaPago.equals("")) {
 			addErrorMessage("Seleccionar forma de pago.");
@@ -250,17 +271,14 @@ public class RequerimientoCompraBean extends BaseBean {
 			compra.setFormaPago(formaPago);
 			compra.setObservacion(observacion);
 			compra.setTotal(totalDetalle);
-			RequerimientoCompra guardar = requerimientoCompraService.save(compra);
+			RequerimientoCompra guardar = requerimientoCompraService.save(compra, lstDetalleRequerimientoCompra, serieDocumentoReq);
 			formaPago = "";
 			observacion="";
 
 			if(guardar!= null) {
-				for(DetalleRequerimientoCompra d:lstDetalleRequerimientoCompra) {
-					d.setRequerimientoCompra(guardar);
-					detalleRequerimientoCompraService.save(d);
-				}
 				lstDetalleRequerimientoCompra.clear();
-				addInfoMessage("Detalle guardado correctamente.");
+				enviarCorreo("contabilidad@aldasainmobiliaria.com;joanjesusanthony@gmail.com", "PRUEBA DE ENVIO PARA REQUERIMIENTOS DE COMPRA", "Esto es una prueba");
+				addInfoMessage("Requerimiento guardado correctamente.");
 				
 			}else {
 				addErrorMessage("No se pudo guardar el detalle");
@@ -301,7 +319,48 @@ public class RequerimientoCompraBean extends BaseBean {
 	
 	
 	
-	
+	public void enviarCorreo(String destinatario, String asunto, String cuerpo) {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.office365.com"); // Servidor SMTP de Outlook para Office 365
+        props.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(props, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("sistemas@aldasainmobiliaria.com", "2022@@sisinfor");
+            }
+        });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("sistemas@aldasainmobiliaria.com"));
+            
+         // Dividir las direcciones de correo electrónico
+            String[] toAddresses = destinatario.split(";");
+            InternetAddress[] recipients = new InternetAddress[toAddresses.length];
+            for (int i = 0; i < toAddresses.length; i++) {
+                recipients[i] = new InternetAddress(toAddresses[i].trim());
+            }
+
+            // Establecer destinatarios
+            message.setRecipients(Message.RecipientType.TO, recipients);
+            
+            
+            message.setSubject(asunto);
+            message.setText(cuerpo);
+
+            Transport.send(message);
+
+            FacesMessage facesMessage = new FacesMessage("Correo enviado con éxito");
+            FacesContext.getCurrentInstance().addMessage(null, facesMessage);
+
+        } catch (MessagingException e) {
+            FacesMessage facesMessage = new FacesMessage("Error al enviar el correo: " + e.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, facesMessage);
+            e.printStackTrace();
+        }
+    }
 	
 	
 
@@ -412,6 +471,18 @@ public class RequerimientoCompraBean extends BaseBean {
 	}
 	public void setDetalleRequerimientoCompraSelected(DetalleRequerimientoCompra detalleRequerimientoCompraSelected) {
 		this.detalleRequerimientoCompraSelected = detalleRequerimientoCompraSelected;
+	}
+	public SerieDocumentoService getSerieDocumentoService() {
+		return serieDocumentoService;
+	}
+	public void setSerieDocumentoService(SerieDocumentoService serieDocumentoService) {
+		this.serieDocumentoService = serieDocumentoService;
+	}
+	public SerieDocumento getSerieDocumentoReq() {
+		return serieDocumentoReq;
+	}
+	public void setSerieDocumentoReq(SerieDocumento serieDocumentoReq) {
+		this.serieDocumentoReq = serieDocumentoReq;
 	}
 	
 	

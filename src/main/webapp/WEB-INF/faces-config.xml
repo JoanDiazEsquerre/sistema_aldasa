@@ -1193,6 +1193,10 @@
 			<property-name>navegacionBean</property-name>
 			<value>#{navegacionBean}</value> 
 		</managed-property>
+		<managed-property>
+			<property-name>serieDocumentoService</property-name>
+			<value>#{serieDocumentoService}</value> 
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>

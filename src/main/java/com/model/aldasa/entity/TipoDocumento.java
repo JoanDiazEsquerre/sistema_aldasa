@@ -21,9 +21,6 @@ public class TipoDocumento {
 	private boolean estado;
 	
 	
-	
-	
-	
 	public Integer getId() {
 		return id;
 	}

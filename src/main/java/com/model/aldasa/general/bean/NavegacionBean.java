@@ -107,8 +107,10 @@ public class NavegacionBean implements Serializable  {
 		
 		if(sucursalLogin.getId().toString().equals("1")) {
 			rutaLogo = "/recursos/images/LOGO.png";
-		}else {
+		}else if(sucursalLogin.getId().toString().equals("2")){
 			rutaLogo = "/recursos/images/LOGO_ABARCA.png";
+		}else {
+			rutaLogo = "/recursos/images/LOGO_CONSORCIO.png";
 		}
 	}
 	

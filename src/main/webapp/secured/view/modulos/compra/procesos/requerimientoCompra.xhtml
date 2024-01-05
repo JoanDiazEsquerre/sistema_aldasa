@@ -38,6 +38,10 @@
 		                      #{row +1}
 		        	</p:column>
 		        	
+		        	<p:column headerText="Número"  filterMatchMode="contains">
+						<h:outputText value="#{compra.numero}" />
+					</p:column>
+		        	
 					<p:column headerText="Fecha Emision" filterMatchMode="contains">
 						<h:outputText value="#{compra.fechaEmision}" > 
 							<f:convertDateTime pattern="dd/MM/yyyy" />
@@ -106,7 +110,7 @@
 					<h:outputLabel value="Observación:" />
 					<p:inputText id="observacion" value="#{requerimientoCompraBean.observacion}" style="margin:10px"/>
 					
-					<p:commandButton value="Guardar" actionListener="#{requerimientoCompraBean.saveCompra()}" update=":form:tabView:idTableCompra :form:tabView:idTableDetalle"/>
+					<p:commandButton value="Guardar" actionListener="#{requerimientoCompraBean.saveRequerimientoCompra()}" update=":form:tabView:idTableCompra :form:tabView:idTableDetalle"/>
 				
 				</h:panelGrid>
 				

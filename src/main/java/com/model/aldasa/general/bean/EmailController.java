@@ -1,12 +1,14 @@
 package com.model.aldasa.general.bean;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
+@ManagedBean
 public class EmailController {
 
     private final String username = "sistemas@aldasainmobiliaria.com";  // Reemplaza con tu dirección de correo electrónico de Outlook

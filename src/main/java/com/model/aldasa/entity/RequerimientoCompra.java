@@ -23,7 +23,7 @@ public class RequerimientoCompra {
 	@Column(name="fechaemision")
 	private Date fechaEmision;
 	
-	private String estado;
+	private String estado, numero;
 	
 	@ManyToOne
 	@JoinColumn(name="idusuario")
@@ -128,6 +128,12 @@ public class RequerimientoCompra {
 	}
 	public void setFechaRechaza(Date fechaRechaza) {
 		this.fechaRechaza = fechaRechaza;
+	}
+	public String getNumero() {
+		return numero;
+	}
+	public void setNumero(String numero) {
+		this.numero = numero;
 	}
 	
 }
