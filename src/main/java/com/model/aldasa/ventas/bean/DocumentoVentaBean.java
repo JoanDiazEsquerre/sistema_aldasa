@@ -315,7 +315,7 @@ public class DocumentoVentaBean extends BaseBean {
 		lstPerson=personService.findByStatus(true);
 		lstProject= projectService.findByStatusAndSucursal(true, navegacionBean.getSucursalLogin());
 		lstProducto = productoService.findByEstado(true);
-		lstCuentaBancaria=cuentaBancariaService.findByEstadoAndSucursal(true, navegacionBean.getSucursalLogin());
+		lstCuentaBancaria=cuentaBancariaService.findByEstado(true);
 	}
 	
 	public String convertirHora(Date hora) {

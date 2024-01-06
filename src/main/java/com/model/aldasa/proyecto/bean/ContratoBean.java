@@ -220,7 +220,7 @@ public class ContratoBean extends BaseBean implements Serializable{
 		lstUsuarioCobranza = usuarioService.findByProfileIdAndStatus(Perfiles.ASISTENTE_COBRANZA.getId(), true);
 		iniciarLazy();
 		listarPersonas();
-		lstCuentaBancaria = cuentaBancariaService.findByEstadoAndSucursal(true, navegacionBean.getSucursalLogin());
+		lstCuentaBancaria = cuentaBancariaService.findByEstado(true);
 		verCronogramaPago();
 		observacion="";
 		

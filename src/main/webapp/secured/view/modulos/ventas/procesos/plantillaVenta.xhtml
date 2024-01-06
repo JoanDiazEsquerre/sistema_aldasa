@@ -358,7 +358,7 @@
 						<h:outputLabel  value="Cuenta Bancaria:" />
 						<p:selectOneMenu value="#{plantillaVentaBean.cuentaBancariaSelected}" converter="#{plantillaVentaBean.conversorCuentaBancaria}" >
 		                    <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
-		                    <f:selectItems value="#{plantillaVentaBean.lstCuentaBancaria}" var="cb" itemLabel="#{cb.banco.abreviatura} : #{cb.numero}  (#{cb.moneda eq 'D'?'Dólares':'Soles'})" itemValue="#{cb}"/>
+		                    <f:selectItems value="#{plantillaVentaBean.lstCuentaBancaria}" var="cb" itemLabel="#{cb.banco.abreviatura} : #{cb.numero}  (#{cb.moneda eq 'D'?'Dól':'Sol'}) #{cb.sucursal.prenombre}" itemValue="#{cb}"/>
 		                </p:selectOneMenu>
 						
 						<h:outputLabel value="Monto:" />
@@ -398,7 +398,7 @@
 						</f:facet>   
 		
 						<p:column headerText="Cuenta Banc." filterMatchMode="contains" >
-							<h:outputText value="#{temp.cuentaBancaria.banco.abreviatura} : #{temp.cuentaBancaria.numero}  (#{temp.cuentaBancaria.moneda eq 'D'?'Dólares':'Soles'})"/>
+							<h:outputText value="#{temp.cuentaBancaria.banco.abreviatura} : #{temp.cuentaBancaria.numero}  (#{temp.cuentaBancaria.moneda eq 'D'?'Dólares':'Soles'}) #{temp.cuentaBancaria.sucursal.prenombre}"/>
 						</p:column>
 						
 						

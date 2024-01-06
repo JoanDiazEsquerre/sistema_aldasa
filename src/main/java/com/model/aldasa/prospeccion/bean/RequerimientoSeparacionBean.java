@@ -182,7 +182,7 @@ public class RequerimientoSeparacionBean extends BaseBean implements Serializabl
 		lstPerson = personService.findByStatus(true);
 		lstTeam=teamService.findByStatus(true);
 		lstProject=projectService.findByStatusAndSucursal(true, navegacionBean.getSucursalLogin());
-		lstCuentaBancaria=cuentaBancariaService.findByEstadoAndSucursal(true, navegacionBean.getSucursalLogin());
+		lstCuentaBancaria=cuentaBancariaService.findByEstado(true);
 
 		
 		permisosAprobaciones();

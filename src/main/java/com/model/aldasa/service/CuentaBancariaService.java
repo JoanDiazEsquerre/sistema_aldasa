@@ -12,7 +12,7 @@ public interface CuentaBancariaService {
 	CuentaBancaria save(CuentaBancaria entity);
 	void delete(CuentaBancaria entity);
 	
-	List<CuentaBancaria> findByEstadoAndSucursal(boolean estado, Sucursal sucursal);
+	List<CuentaBancaria> findByEstado(boolean estado);
 
 
 }

@@ -20,7 +20,7 @@ public class Sucursal {
 	@Column(name="razonsocial")
 	private String razonSocial;
 	
-	private String direccion;
+	private String direccion, prenombre;
 	
 	private boolean estado;
 
@@ -70,7 +70,12 @@ public class Sucursal {
 	public void setRuc(String ruc) {
 		this.ruc = ruc;
 	}
-	
+	public String getPrenombre() {
+		return prenombre;
+	}
+	public void setPrenombre(String prenombre) {
+		this.prenombre = prenombre;
+	}
 	
 	
 	@Override

@@ -191,7 +191,7 @@ public class PlantillaVentaBean extends BaseBean {
 		iniciarPlantillaLazy();
 		iniciarDatosPlantilla();
 		lstProject=projectService.findByStatusAndSucursal(true, navegacionBean.getSucursalLogin());
-		lstCuentaBancaria=cuentaBancariaService.findByEstadoAndSucursal(true, navegacionBean.getSucursalLogin());
+		lstCuentaBancaria=cuentaBancariaService.findByEstado(true);
 		lstPerson = personService.findByStatus(true);
 		lstTeam=teamService.findByStatus(true);
 	}

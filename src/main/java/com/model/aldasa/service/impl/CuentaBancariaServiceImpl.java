@@ -36,9 +36,9 @@ public class CuentaBancariaServiceImpl  implements CuentaBancariaService {
 	}
 
 	@Override
-	public List<CuentaBancaria> findByEstadoAndSucursal(boolean estado, Sucursal sucursal){
+	public List<CuentaBancaria> findByEstado(boolean estado){
 		// TODO Auto-generated method stub
-		return cuentaBancariaRepository.findByEstadoAndSucursal(estado, sucursal);
+		return cuentaBancariaRepository.findByEstado(estado);
 	}
 
 

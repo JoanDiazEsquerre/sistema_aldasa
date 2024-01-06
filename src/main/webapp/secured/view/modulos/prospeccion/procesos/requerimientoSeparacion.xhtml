@@ -325,7 +325,7 @@
 						</f:facet>   
 		
 						<p:column headerText="Cuenta Banc." filterMatchMode="contains" >
-							<h:outputText value="#{temp.cuentaBancaria.banco.abreviatura} : #{temp.cuentaBancaria.numero}  (#{temp.cuentaBancaria.moneda eq 'D'?'Dólares':'Soles'})"/>
+							<h:outputText value="#{temp.cuentaBancaria.banco.abreviatura} : #{temp.cuentaBancaria.numero}  (#{temp.cuentaBancaria.moneda eq 'D'?'Dól':'Sol'}) #{temp.cuentaBancaria.sucursal.prenombre}"/>
 						</p:column>
 						
 						<p:column headerText="Monto" filterMatchMode="contains" >

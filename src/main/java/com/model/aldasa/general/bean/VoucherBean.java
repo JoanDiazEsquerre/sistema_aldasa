@@ -509,7 +509,7 @@ public class VoucherBean extends BaseBean implements Serializable {
 		lstCuentaBancaria = new ArrayList<>();
 		
 		if(sucursalDialog!= null) {
-			lstCuentaBancaria=cuentaBancariaService.findByEstadoAndSucursal(true, sucursalDialog);
+			lstCuentaBancaria=cuentaBancariaService.findByEstado(true);
 			if(!lstCuentaBancaria.isEmpty()) {
 				imagenSelected.setCuentaBancaria(lstCuentaBancaria.get(0));
 			}
@@ -521,7 +521,7 @@ public class VoucherBean extends BaseBean implements Serializable {
 		lstCuentaBancariaFilter = new ArrayList<>();
 		
 		if(sucursal != null) {
-			lstCuentaBancariaFilter=cuentaBancariaService.findByEstadoAndSucursal(true, sucursal);
+			lstCuentaBancariaFilter=cuentaBancariaService.findByEstado(true);
 		}
 		
 	}
