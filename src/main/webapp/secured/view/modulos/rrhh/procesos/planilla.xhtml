@@ -532,9 +532,13 @@
                   
                 <p:commandButton value="GUARDAR" action="#{planillaBean.saveDetallePlanilla()}" />
                 
-                <p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{planillaBean.procesarExcel()}" icon="pi pi-file-excel" styleClass="mr-2">
-	            	<p:fileDownload value="#{planillaBean.fileDes}"/> 
-	      		</p:commandButton>
+<!--                 <p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{planillaBean.procesarExcel()}" icon="pi pi-file-excel" styleClass="mr-2"> -->
+<!-- 	            	<p:fileDownload value="#{planillaBean.fileDes}"/>  -->
+<!-- 	      		</p:commandButton> -->
+	      		
+	      		<p:commandButton value="Descargar"  ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{planillaBean.procesarExcel()}" icon="pi pi-file-excel" styleClass="ui-button-success" style="margin-left:20px">
+		           <p:fileDownload value="#{planillaBean.fileDes}"/> 
+		      	</p:commandButton>
                 
             </h:panelGrid>
             

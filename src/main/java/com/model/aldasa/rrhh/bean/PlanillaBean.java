@@ -171,8 +171,7 @@ public class PlanillaBean extends BaseBean implements Serializable{
 	
 		if (!lstDetallePlanillaSelected.isEmpty()) {
 			for (DetallePlanilla detalle : lstDetallePlanillaSelected) {	
-				
-				
+			
 				Row rowDetalle = sheet.createRow(index);
 				Cell cellSucursal = rowDetalle.createCell(0);cellSucursal.setCellValue(detalle.getEmpleado().getSucursal().getRazonSocial());cellSucursal.setCellStyle(styleBorder);
 				Cell cellEmpleado = rowDetalle.createCell(1);cellEmpleado.setCellValue(detalle.getEmpleado().getPerson().getNames() + detalle.getEmpleado().getPerson().getSurnames());cellEmpleado.setCellStyle(styleBorder);
@@ -205,9 +204,7 @@ public class PlanillaBean extends BaseBean implements Serializable{
 			}
 		}
 		
-		
-		
-		for (int j = 0; j <= 25; j++) {
+		for (int j = 0; j <= 24; j++) {
 			sheet.autoSizeColumn(j);
 		}
 		try {
