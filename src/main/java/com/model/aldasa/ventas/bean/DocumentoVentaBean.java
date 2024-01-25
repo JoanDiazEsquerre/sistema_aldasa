@@ -3356,7 +3356,7 @@ public class DocumentoVentaBean extends BaseBean {
             parametros.put("BARCODESTRING", bar);
             parametros.put("RUCEMPRESA", navegacionBean.getSucursalLogin().getRuc());
             
-            parametros.put("RUTAIMAGEN", getRutaGrafico(navegacionBean.getSucursalLogin().getId() == 1?"/recursos/images/LOGO.png":"/recursos/images/LOGO_ABARCA.png"));
+            parametros.put("RUTAIMAGEN", getRutaGrafico(navegacionBean.getRutaLogo()));
             
             String path = "secured/view/modulos/ventas/reportes/jasper/repDocumentoFacturaElectronica.jasper"; 
             reportGenBo.exportByFormatNotConnectDb(dt, path, "pdf", parametros, "DOCUMENTO " , "hh");
