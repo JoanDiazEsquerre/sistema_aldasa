@@ -46,8 +46,8 @@ public class Comisiones {
 	private String tipoEmpleado;
 	
 	@ManyToOne
-    @JoinColumn(name="idcomision")
-    private Comision comision;
+    @JoinColumn(name="idconfiguracioncomision")
+    private ConfiguracionComision configuracionComision;
 	
 	@ManyToOne
     @JoinColumn(name="idcontrato")
@@ -95,11 +95,11 @@ public class Comisiones {
 	public void setTipoEmpleado(String tipoEmpleado) {
 		this.tipoEmpleado = tipoEmpleado;
 	}
-	public Comision getComision() {
-		return comision;
+	public ConfiguracionComision getConfiguracionComision() {
+		return configuracionComision;
 	}
-	public void setComision(Comision comision) {
-		this.comision = comision;
+	public void setConfiguracionComision(ConfiguracionComision configuracionComision) {
+		this.configuracionComision = configuracionComision;
 	}
 	public Person getPersonAsesor() {
 		return personAsesor;

@@ -43,8 +43,8 @@ import org.springframework.data.domain.Sort;
 import com.model.aldasa.entity.Area;
 import com.model.aldasa.entity.Asistencia;
 import com.model.aldasa.entity.Cargo;
-import com.model.aldasa.entity.Comision;
 import com.model.aldasa.entity.Comisiones;
+import com.model.aldasa.entity.ConfiguracionComision;
 import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Meta;
@@ -55,8 +55,8 @@ import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.service.AreaService;
 import com.model.aldasa.service.CargoService;
-import com.model.aldasa.service.ComisionService;
 import com.model.aldasa.service.ComisionesService;
+import com.model.aldasa.service.ConfiguracionComisionService;
 import com.model.aldasa.service.EmpleadoService;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.MetaSupervisorService;
@@ -83,8 +83,8 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	@ManagedProperty(value = "#{loteService}")
 	private LoteService loteService;
 	
-	@ManagedProperty(value = "#{comisionService}")
-	private ComisionService comisionService;
+	@ManagedProperty(value = "#{configuracionComisionService}")
+	private ConfiguracionComisionService configuracionComisionService;
 	
 	@ManagedProperty(value = "#{comisionesService}")
 	private ComisionesService comisionesService;
@@ -110,21 +110,21 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 //	private LazyDataModel<Lote> lstLoteVendidoLazy;
 	
 	private Team teamSelected;
-	private Comision comisionSelected;
+	private ConfiguracionComision comisionSelected;
 	private Comisiones comisionesSelected;
 	private Lote loteSelected;
 	private Person personSupervisorSelected, personSupervisorResumen;
 	private Cargo cargoFilter;
 	private Area areaFilter;
 	private Team teamFilter;
-	private Comision comision1, comision2, comision3;
+	private ConfiguracionComision comision1, comision2, comision3;
 	
 	private String fecha1, fecha2, fecha3;
 	private String nombreArchivo = "Reporte de Comisiones.xlsx";
 
 	private Date fechaIni,fechaFin;
-	private Integer comisionContado=8;
-	private Integer comisionCredito=4;
+	private Integer cantidadMeta=0;
+	private Integer cantidadVendidos=0;
 	private int index=0;
 		
 	private BigDecimal totalSolesContado = BigDecimal.ZERO;
@@ -133,7 +133,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	private BigDecimal totalComisionSupervisor;
 	
 //	private List<Person> lstPersonAsesor;
-	private List<Comision> lstComision;
+	private List<ConfiguracionComision> lstComision;
 	private List<Comisiones> lstComisiones;
 	private List<Lote> lstLotesVendidos;
 	private List<Meta> lstMeta;
@@ -142,7 +142,6 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	private List<Cargo> lstCargo;
 	private List<Area> lstArea;
 	private List<Team> lstTeam;
-	private List<Person> lstPersonAsesor;
 	private List<ResumenComisionAsesor> lstResumenMuestra;
 	
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");  
@@ -159,7 +158,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 		lstCargo=cargoService.findByEstadoOrderByDescripcionAsc(true);
 		lstArea=areaService.findByEstadoOrderByNombreAsc(true);
 		lstTeam=teamService.findByStatus(true);
-		lstComision = comisionService.findByEstadoOrderByCodigoDesc(true);
+		lstComision = configuracionComisionService.findByEstadoOrderByCodigoDesc(true);
 		comisionSelected = lstComision.get(0);
 		cambiarComision();
 		iniciarLazyComisiones();
@@ -172,52 +171,52 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 		totalComisionSupervisor = BigDecimal.ZERO;
 		
 		if(!lstComisiones.isEmpty()) {
-			for(Person asesor : lstPersonAsesor) {
-				int contadorVenta = 0;
-				ResumenComisionAsesor resumen = new ResumenComisionAsesor();
-				resumen.setPersonAsesor(asesor);
-				resumen.setComision(BigDecimal.ZERO);
-				resumen.setComisionSupervisor(BigDecimal.ZERO);
-				resumen.setBono(BigDecimal.ZERO);
-				resumen.setTotalLotesVendidos(0);
-				
-				for(Comisiones comision : lstComisiones) {
-					if(personSupervisorResumen == null) {
-						if(asesor.getId().equals(comision.getPersonAsesor().getId())) {
-							resumen.setComision(resumen.getComision().add(comision.getComisionAsesor()));
-							resumen.setComisionSupervisor(resumen.getComisionSupervisor().add(comision.getComisionSupervisor()));
-							contadorVenta++;
-						}
-					}else {
-						if(asesor.getId().equals(comision.getPersonAsesor().getId()) && comision.getPersonSupervisor().getId().equals(personSupervisorResumen.getId())) {
-							resumen.setComision(resumen.getComision().add(comision.getComisionAsesor()));
-							resumen.setComisionSupervisor(resumen.getComisionSupervisor().add(comision.getComisionSupervisor()));
-							
-							totalComisionSupervisor = totalComisionSupervisor.add(comision.getComisionSupervisor());
-							
-							contadorVenta++;
-						}
-					}
-					
-					
-				}
-				resumen.setTotalLotesVendidos(contadorVenta); 
-				
-				if(contadorVenta >= 2 && contadorVenta <= 4) {
-					resumen.setBono(comisionSelected.getBonoJunior());
-				}
-				
-				if(contadorVenta >= 5 && contadorVenta <= 8) {
-					resumen.setBono(comisionSelected.getBonoSenior());
-				}
-				
-				if(contadorVenta >= 9) {
-					resumen.setBono(comisionSelected.getBonoMaster());
-				}
-				
-				lstResumenMuestra.add(resumen);
-				
-			}
+//			for(Person asesor : lstPersonAsesor) {
+//				int contadorVenta = 0;
+//				ResumenComisionAsesor resumen = new ResumenComisionAsesor();
+//				resumen.setPersonAsesor(asesor);
+//				resumen.setComision(BigDecimal.ZERO);
+//				resumen.setComisionSupervisor(BigDecimal.ZERO);
+//				resumen.setBono(BigDecimal.ZERO);
+//				resumen.setTotalLotesVendidos(0);
+//				
+//				for(Comisiones comision : lstComisiones) {
+//					if(personSupervisorResumen == null) {
+//						if(asesor.getId().equals(comision.getPersonAsesor().getId())) {
+//							resumen.setComision(resumen.getComision().add(comision.getComisionAsesor()));
+//							resumen.setComisionSupervisor(resumen.getComisionSupervisor().add(comision.getComisionSupervisor()));
+//							contadorVenta++;
+//						}
+//					}else {
+//						if(asesor.getId().equals(comision.getPersonAsesor().getId()) && comision.getPersonSupervisor().getId().equals(personSupervisorResumen.getId())) {
+//							resumen.setComision(resumen.getComision().add(comision.getComisionAsesor()));
+//							resumen.setComisionSupervisor(resumen.getComisionSupervisor().add(comision.getComisionSupervisor()));
+//							
+//							totalComisionSupervisor = totalComisionSupervisor.add(comision.getComisionSupervisor());
+//							
+//							contadorVenta++;
+//						}
+//					}
+//					
+//					
+//				}
+//				resumen.setTotalLotesVendidos(contadorVenta); 
+//				
+//				if(contadorVenta >= 2 && contadorVenta <= 4) {
+//					resumen.setBono(comisionSelected.getBonoJunior());
+//				}
+//				
+//				if(contadorVenta >= 5 && contadorVenta <= 8) {
+//					resumen.setBono(comisionSelected.getBonoSenior());
+//				}
+//				
+//				if(contadorVenta >= 9) {
+//					resumen.setBono(comisionSelected.getBonoMaster());
+//				}
+//				
+//				lstResumenMuestra.add(resumen);
+//				
+//			}
 		}
 	}
 
@@ -329,11 +328,11 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 		return promedio;
 	}
 	
-	public int buscarLotesVendidos(Empleado empleado, Comision comision) {
+	public int buscarLotesVendidos(Empleado empleado, ConfiguracionComision comision) {
 		int total = 0;
 		
 		if(comision != null) {
-			List<Comisiones> lstCom = comisionesService.findByEstadoAndComisionAndPersonAsesor(true, comision, empleado.getPerson());
+			List<Comisiones> lstCom = comisionesService.findByEstadoAndConfiguracionComisionAndPersonAsesor(true, comision, empleado.getPerson());
 			if(!lstCom.isEmpty()) {
 				total = lstCom.size();
 			}
@@ -353,40 +352,40 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 		fecha3 = "No Registrado";
 		
 		if(comision1!=null) {
-			fecha1 = sdfMesAnio.format(comision1.getFechaIni());
+			fecha1 = sdfMesAnio.format(comision1.getFechaInicio());
 		}
 		if(comision2!=null) {
-			fecha2 = sdfMesAnio.format(comision2.getFechaIni());
+			fecha2 = sdfMesAnio.format(comision2.getFechaInicio());
 		}
 		if(comision3!=null) {
-			fecha3 = sdfMesAnio.format(comision3.getFechaIni());
+			fecha3 = sdfMesAnio.format(comision3.getFechaInicio());
 		}
 		
 	}
 	
 	public void verMesSiguiente() {
-		index--;
-		if(index<=0) {
-			index=0;
-			comision1 = lstComision.get(index);
-			comision2 = lstComision.get(index+1);
-			comision3 = lstComision.get(index+2);
-			
-			fecha1 = "No Registrado";
-			fecha2 = "No Registrado";
-			fecha3 = "No Registrado";
-			
-			if(comision1!=null) {
-				fecha1 = sdfMesAnio.format(comision1.getFechaIni());
-			}
-			if(comision2!=null) {
-				fecha2 = sdfMesAnio.format(comision2.getFechaIni());
-			}
-			if(comision3!=null) {
-				fecha3 = sdfMesAnio.format(comision3.getFechaIni());
-			}
-		}
-		
+//		index--;
+//		if(index<=0) {
+//			index=0;
+//			comision1 = lstComision.get(index);
+//			comision2 = lstComision.get(index+1);
+//			comision3 = lstComision.get(index+2);
+//			
+//			fecha1 = "No Registrado";
+//			fecha2 = "No Registrado";
+//			fecha3 = "No Registrado";
+//			
+//			if(comision1!=null) {
+//				fecha1 = sdfMesAnio.format(comision1.getFechaInicio());
+//			}
+//			if(comision2!=null) {
+//				fecha2 = sdfMesAnio.format(comision2.getFechaInicio());
+//			}
+//			if(comision3!=null) {
+//				fecha3 = sdfMesAnio.format(comision3.getFechaInicio());
+//			}
+//		}
+//		
 		
 		
 	}
@@ -471,23 +470,23 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	}
 	
 	public void aplicarComisionMeta(MetaSupervisor metaSupervisor) {
-		for(Comisiones c : lstComisiones) {
-			if(c.getPersonSupervisor().getId().equals(metaSupervisor.getPersonSupervisor().getId())) {
-				BigDecimal multiplicaSup = c.getLote().getMontoVenta().multiply(new BigDecimal(metaSupervisor.getComision().getComisionMetaSupervisor())); 
-				c.setComisionSupervisor(multiplicaSup.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
-				comisionesService.save(c);
-			}	
-		}
-		addInfoMessage("Se aplicó el cambio de porcentaje correctamente."); 
+//		for(Comisiones c : lstComisiones) {
+//			if(c.getPersonSupervisor().getId().equals(metaSupervisor.getPersonSupervisor().getId())) {
+//				BigDecimal multiplicaSup = c.getLote().getMontoVenta().multiply(new BigDecimal(metaSupervisor.getConfiguracionComision().getComisionMetaSupervisor())); 
+//				c.setComisionSupervisor(multiplicaSup.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+//				comisionesService.save(c);
+//			}	
+//		}
+//		addInfoMessage("Se aplicó el cambio de porcentaje correctamente."); 
 	}
 	
 	public void listarLotesVendidosPorTeam() {
-		Date fechaIni = comisionSelected.getFechaIni();
+		Date fechaIni = comisionSelected.getFechaInicio();
 		fechaIni.setHours(0);
 		fechaIni.setMinutes(0);
 		fechaIni.setSeconds(0);
 		
-		Date fechaFin = comisionSelected.getFechaCierre();
+		Date fechaFin = comisionSelected.getFechaFin();
 		fechaFin.setHours(23);
 		fechaFin.setMinutes(59);
 		fechaFin.setSeconds(59);
@@ -506,131 +505,6 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 		}
 		
 	}
-	
-//	public void iniciarLazyLotesVendidos() {
-//		lstLoteVendidoLazy = new LazyDataModel<Lote>() {
-//			private List<Lote> datasource;
-//
-//            @Override
-//            public void setRowIndex(int rowIndex) {
-//                if (rowIndex == -1 || getPageSize() == 0) {
-//                    super.setRowIndex(-1);
-//                } else {
-//                    super.setRowIndex(rowIndex % getPageSize());
-//                }
-//            }
-//
-//            @Override
-//            public Lote getRowData(String rowKey) {
-//                int intRowKey = Integer.parseInt(rowKey);
-//                for (Lote lote : datasource) {
-//                    if (lote.getId() == intRowKey) {
-//                        return lote;
-//                    }
-//                }
-//                return null;
-//            }
-//
-//            @Override
-//            public String getRowKey(Lote lote) {
-//                return String.valueOf(lote.getId());
-//            }
-//
-//			@Override
-//			public List<Lote> load(int first, int pageSize, Map<String, SortMeta> sortBy,Map<String, FilterMeta> filterBy) {
-//				
-//				
-//                                
-//                Sort sort=Sort.by("numberLote").ascending();
-//                if(sortBy!=null) {
-//                	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
-//                	    System.out.println(entry.getKey() + "/" + entry.getValue());
-//                	   if(entry.getValue().getOrder().isAscending()) {
-//                		   sort = Sort.by(entry.getKey()).descending();
-//                	   }else {
-//                		   sort = Sort.by(entry.getKey()).ascending();
-//                	   }
-//                	}
-//                }
-//                
-//                Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
-//                
-//				Page<Lote> pageLote;
-//				
-//				Date fechaIni = comisionSelected.getFechaIni();
-//				fechaIni.setHours(0);
-//				fechaIni.setMinutes(0);
-//				fechaIni.setSeconds(0);
-//				
-//				Date fechaFin = comisionSelected.getFechaCierre();
-//				fechaFin.setHours(23);
-//				fechaFin.setMinutes(59);
-//				fechaFin.setSeconds(59);
-//
-//				pageLote= loteService.findAllByStatusLikeAndPersonSupervisorDniLikeAndPersonAssessorDniLikeAndFechaVendidoBetween("%"+EstadoLote.VENDIDO.getName()+"%","%"+teamSelected.getPersonSupervisor().getDni()+"%", "%%", fechaIni, fechaFin, pageable);
-//				
-//				setRowCount((int) pageLote.getTotalElements());
-//				return datasource = pageLote.getContent();
-//			}
-//		};
-//	}
-	
-//	public void verDetalleAsesores() {
-//		lstPersonAsesor = new ArrayList<>();
-//		List<Lote> lstLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), teamSelected.getPersonSupervisor(), "%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
-//		int contador = 0;
-//		if(!lstLotes.isEmpty()) {
-//			for(Lote lote : lstLotes) {
-//				Person personAsesor = lote.getPersonAssessor();
-//				
-//				if(contador == 0) {
-//					lstPersonAsesor.add(personAsesor);
-//				}else {
-//					boolean encuentra = false;
-//					for(Person asesor:lstPersonAsesor) {
-//						if(asesor.equals(lote.getPersonAssessor())) {
-//							encuentra=true;
-//						}
-//					}
-//					
-//					if(!encuentra) {
-//						lstPersonAsesor.add(personAsesor);
-//					}
-//				}
-//				contador++;
-//			}
-//			
-//			for(Person asesor:lstPersonAsesor) {
-//				int nroContado = 0;
-//				int nroCredito = 0;
-//				double comisionContado = 0.0;
-//				double comisionCredito = 0.0;
-//				double totalComision = 0.0;
-//				
-//				for(Lote lote : lstLotes) {
-//					if(asesor.equals(lote.getPersonAssessor())) {
-//						int nro = asesor.getLotesVendidos()+1;
-//						if(lote.getTipoPago().equals("Contado")) {
-//							nroContado = nroContado+1;
-//							totalComision = totalComision + calcularComisionAsesor(lote);
-//							comisionContado = comisionContado+ calcularComisionAsesor(lote);
-//						}else {
-//							nroCredito = nroCredito+1;
-//							totalComision = totalComision + calcularComisionAsesor(lote);
-//							comisionCredito = comisionCredito+ calcularComisionAsesor(lote);
-//						}
-//						
-//						asesor.setLotesVendidos(nro); 
-//						asesor.setLotesContado(nroContado);
-//						asesor.setLotesCredito(nroCredito);
-//						asesor.setTotalComision(totalComision); 
-//						asesor.setComisionContado(comisionContado);
-//						asesor.setComisionCredito(comisionCredito); 
-//					}
-//				}
-//			}
-//		}
-//	}
 	
 	public String asignarTipoBono(Person asesor) {
 		String tipoBono = "Ninguno";
@@ -660,15 +534,15 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	
 	public BigDecimal obtenerSueldoBasicoAsesorBono(Person asesor) {
 		BigDecimal sueldo = BigDecimal.ZERO;
-		if(asesor.getLotesVendidos()>=2 && asesor.getLotesVendidos()<=4) {
-			sueldo = comisionSelected.getBasicoJunior();
-		}
-		if(asesor.getLotesVendidos()>=5 && asesor.getLotesVendidos()<=8) {
-			sueldo = comisionSelected.getBasicoSenior();
-		}
-		if(asesor.getLotesVendidos()>=9) {
-			sueldo = comisionSelected.getBasicoMaster();
-		}
+//		if(asesor.getLotesVendidos()>=2 && asesor.getLotesVendidos()<=4) {
+//			sueldo = comisionSelected.getBasicoJunior();
+//		}
+//		if(asesor.getLotesVendidos()>=5 && asesor.getLotesVendidos()<=8) {
+//			sueldo = comisionSelected.getBasicoSenior();
+//		}
+//		if(asesor.getLotesVendidos()>=9) {
+//			sueldo = comisionSelected.getBasicoMaster();
+//		}
 	
 		return sueldo;
 	}
@@ -727,9 +601,8 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	}
 	
 	public void cambiarComision() {
-		lstComisiones = comisionesService.findByEstadoAndComision(true, comisionSelected);
+		lstComisiones = comisionesService.findByEstadoAndConfiguracionComision(true, comisionSelected);
 		lstPersonSupervisor = new ArrayList<>();
-		lstPersonAsesor = new ArrayList<>();
 		personSupervisorSelected=null;
 		
 		if(!lstComisiones.isEmpty()) {
@@ -749,33 +622,39 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 						lstPersonSupervisor.add(c.getPersonSupervisor());
 					}
 				}
-				
-				//para listar asesores
-				if(lstPersonAsesor.isEmpty()) {
-					lstPersonAsesor.add(c.getPersonAsesor());
-				}else {
-					boolean encuentra=false;
-					for(Person p:lstPersonAsesor) {
-						
-						if(p.getId().equals(c.getPersonAsesor().getId())) { 
-							encuentra=true;
-						}
-					}
-					if(!encuentra) {
-						lstPersonAsesor.add(c.getPersonAsesor());						
-					}
-				}
 			}
 			
 		}
 		
-//		lstPersonSupervisor = personService.getPersonSupervisor(EstadoLote.VENDIDO.getName(), comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+		
+		for(Team equipo :lstTeam) {
+
+			if(lstPersonSupervisor.isEmpty()) { 
+				lstPersonSupervisor.add(equipo.getPersonSupervisor());
+			}else {
+				boolean encuentra=false;
+				for(Person p:lstPersonSupervisor) {
+					
+					if(p.getId().equals(equipo.getPersonSupervisor().getId())) { 
+						encuentra=true;
+					}
+				}
+				if(!encuentra) {
+					lstPersonSupervisor.add(equipo.getPersonSupervisor());
+				}
+			}
+			
+			
+		}
+			
+		
+		
 		
 	}
 
 	public List<Lote> listaLotesVendidoPorAsesor(Person asesor){
 		List<Lote> listaLotes = new ArrayList<>();
-		listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), teamSelected.getPersonSupervisor(), asesor.getDni(), comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+		listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), teamSelected.getPersonSupervisor(), asesor.getDni(), comisionSelected.getFechaInicio(), comisionSelected.getFechaFin());
 		
 		return listaLotes;
 		
@@ -790,7 +669,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 			List<Usuario> listUsuInternos = usuarioService.findByTeam(team);
 			if(!listUsuInternos.isEmpty()) {
 				for(Usuario usuInt : listUsuInternos) {
-					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaInicio(), comisionSelected.getFechaFin());
 					if(!listLotesVendidoInt.isEmpty()) {
 						for(Lote lote : listLotesVendidoInt) {
 							listLotesVendido.add(lote);
@@ -814,7 +693,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 			List<Usuario> listUsuInternos = usuarioService.findByTeam(team);
 			if(!listUsuInternos.isEmpty()) {
 				for(Usuario usuInt : listUsuInternos) {
-					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaInicio(), comisionSelected.getFechaFin());
 					if(!listLotesVendidoInt.isEmpty()) {
 						for(Lote lote : listLotesVendidoInt) {
 							listLotesVendido.add(lote);
@@ -833,7 +712,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 			totalSolesContado = totalSolesContado.add(solesContado);
 			
 		}else {
-			List<Lote> listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(),"%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+			List<Lote> listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(),"%%",comisionSelected.getFechaInicio(), comisionSelected.getFechaFin());
 			if(!listaLotes.isEmpty()) {
 				for(Lote lote : listaLotes){
 					if(lote.getTipoPago().equals("Contado")) {
@@ -857,7 +736,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 			List<Usuario> listUsuInternos = usuarioService.findByTeam(team);
 			if(!listUsuInternos.isEmpty()) {
 				for(Usuario usuInt : listUsuInternos) {
-					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaInicio(), comisionSelected.getFechaFin());
 					if(!listLotesVendidoInt.isEmpty()) {
 						for(Lote lote : listLotesVendidoInt) {
 							listLotesVendido.add(lote);
@@ -881,7 +760,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 			List<Usuario> listUsuInternos = usuarioService.findByTeam(team);
 			if(!listUsuInternos.isEmpty()) {
 				for(Usuario usuInt : listUsuInternos) {
-					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaInicio(), comisionSelected.getFechaFin());
 					if(!listLotesVendidoInt.isEmpty()) {
 						for(Lote lote : listLotesVendidoInt) {
 							listLotesVendido.add(lote);
@@ -900,7 +779,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 			totalSolesInicial = totalSolesInicial.add(solesCredito);
 			
 		}else {
-			List<Lote> listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(),"%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+			List<Lote> listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(),"%%",comisionSelected.getFechaInicio(), comisionSelected.getFechaFin());
 			if(!listaLotes.isEmpty()) {
 				for(Lote lote : listaLotes){
 					if(lote.getTipoPago().equals("Crédito")) {
@@ -924,7 +803,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 			List<Usuario> listUsuInternos = usuarioService.findByTeam(team);
 			if(!listUsuInternos.isEmpty()) {
 				for(Usuario usuInt : listUsuInternos) {
-					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaInicio(), comisionSelected.getFechaFin());
 					if(!listLotesVendidoInt.isEmpty()) {
 						for(Lote lote : listLotesVendidoInt) {
 							listLotesVendido.add(lote);
@@ -949,7 +828,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 			List<Usuario> listUsuInternos = usuarioService.findByTeam(team);
 			if(!listUsuInternos.isEmpty()) {
 				for(Usuario usuInt : listUsuInternos) {
-					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+					List<Lote> listLotesVendidoInt = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), usuInt.getPerson().getDni(),comisionSelected.getFechaInicio(), comisionSelected.getFechaFin());
 					if(!listLotesVendidoInt.isEmpty()) {
 						for(Lote lote : listLotesVendidoInt) {
 							listLotesVendido.add(lote);
@@ -969,7 +848,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 			totalSolesPendiente = totalSolesPendiente.add(solesPendiente);
 			
 		}else {
-			List<Lote> listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(),"%%",comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+			List<Lote> listaLotes = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), team.getPersonSupervisor(),"%%",comisionSelected.getFechaInicio(), comisionSelected.getFechaFin());
 			if(!listaLotes.isEmpty()) {
 				for(Lote lote : listaLotes){
 					if(lote.getTipoPago().equals("Crédito")) {
@@ -1016,11 +895,11 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 		totalSolesContado=BigDecimal.ZERO;
 		totalSolesInicial=BigDecimal.ZERO;
 		totalSolesPendiente=BigDecimal.ZERO;
-		lstMetaSupervisor = metaSupervisorService.findByComisionAndEstado(comisionSelected, true);
-//		List<Person> lstSupervisoresCampo = personService.getPersonSupervisorCampo(comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+		lstMetaSupervisor = metaSupervisorService.findByConfiguracionComisionAndEstado(comisionSelected, true);
+//		List<Person> lstSupervisoresCampo = personService.getPersonSupervisorCampo(comisionSelected.getFechaIni(), comisionSelected.getFechaFin());
 //		if (!lstSupervisoresCampo.isEmpty()) {
 //			for(Person persona : lstSupervisoresCampo) {
-//				List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), persona, "%%", comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+//				List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), persona, "%%", comisionSelected.getFechaIni(), comisionSelected.getFechaFin());
 //				
 //				Meta meta = new Meta();
 //				meta.setSupervisor(persona.getSurnames() + " " + persona.getNames());
@@ -1059,7 +938,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 //			}
 //		}
 //		
-//		List<Comisiones> lstInternos = comisionesService.findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(true, EstadoLote.VENDIDO.getName(), "I", comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+//		List<Comisiones> lstInternos = comisionesService.findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(true, EstadoLote.VENDIDO.getName(), "I", comisionSelected.getFechaIni(), comisionSelected.getFechaFin());
 //		if(!lstInternos.isEmpty()) {
 //		
 //			Meta meta = new Meta() ;
@@ -1092,7 +971,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 //			lstMeta.add(meta);
 //		}
 //		
-//		List<Comisiones> lstExternos = comisionesService.findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(true, EstadoLote.VENDIDO.getName(), "E", comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+//		List<Comisiones> lstExternos = comisionesService.findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(true, EstadoLote.VENDIDO.getName(), "E", comisionSelected.getFechaIni(), comisionSelected.getFechaFin());
 //		if(!lstExternos.isEmpty()) {
 //		
 //			Meta meta = new Meta() ;
@@ -1123,7 +1002,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 //			lstMeta.add(meta);
 //		}
 //		
-//		List<Comisiones> lstOnline = comisionesService.findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(true, EstadoLote.VENDIDO.getName(), "O", comisionSelected.getFechaIni(), comisionSelected.getFechaCierre());
+//		List<Comisiones> lstOnline = comisionesService.findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(true, EstadoLote.VENDIDO.getName(), "O", comisionSelected.getFechaIni(), comisionSelected.getFechaFin());
 //		if(!lstOnline.isEmpty()) {
 //		
 //			Meta meta = new Meta() ;
@@ -1277,26 +1156,26 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 				Page<Comisiones> pageComisiones = null;
 				
 				if(personSupervisorSelected==null) {
-					pageComisiones= comisionesService.findByEstadoAndComision(true, comisionSelected, pageable);
+					pageComisiones= comisionesService.findByEstadoAndConfiguracionComision(true, comisionSelected, pageable);
 				}else {
-					pageComisiones= comisionesService.findByEstadoAndComisionAndPersonSupervisor(true, comisionSelected, personSupervisorSelected,pageable);
+					pageComisiones= comisionesService.findByEstadoAndConfiguracionComisionAndPersonSupervisor(true, comisionSelected, personSupervisorSelected,pageable);
 				}
 				
 				
 				
 //				if(opcionAsesor.equals("")) {
-//					pageComisiones= comisionesService.findByEstadoAndLoteStatusAndLotePersonAssessorDniLikeAndLoteFechaVendidoBetween(true,EstadoLote.VENDIDO.getName(), "%%", comisionSelected.getFechaIni(), comisionSelected.getFechaCierre(), pageable);
+//					pageComisiones= comisionesService.findByEstadoAndLoteStatusAndLotePersonAssessorDniLikeAndLoteFechaVendidoBetween(true,EstadoLote.VENDIDO.getName(), "%%", comisionSelected.getFechaIni(), comisionSelected.getFechaFin(), pageable);
 //
 //				}else if(opcionAsesor.equals("I")) {
-//					pageComisiones = comisionesService.findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(true, EstadoLote.VENDIDO.getName(), "I", comisionSelected.getFechaIni(), comisionSelected.getFechaCierre(), pageable);
+//					pageComisiones = comisionesService.findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(true, EstadoLote.VENDIDO.getName(), "I", comisionSelected.getFechaIni(), comisionSelected.getFechaFin(), pageable);
 //				}else if(opcionAsesor.equals("E")) {
-//					pageComisiones = comisionesService.findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(true, EstadoLote.VENDIDO.getName(), "E", comisionSelected.getFechaIni(), comisionSelected.getFechaCierre(), pageable);
+//					pageComisiones = comisionesService.findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(true, EstadoLote.VENDIDO.getName(), "E", comisionSelected.getFechaIni(), comisionSelected.getFechaFin(), pageable);
 //
 //				}else {
 //					Person personaSupervisor = new Person();
 //					int id = Integer.parseInt(opcionAsesor) ;
 //					personaSupervisor.setId(id);
-//					pageComisiones= comisionesService.findByEstadoAndLoteStatusAndLotePersonSupervisorAndLotePersonAssessorDniLikeAndLoteFechaVendidoBetween(true,EstadoLote.VENDIDO.getName(), personaSupervisor , "%%" , comisionSelected.getFechaIni(), comisionSelected.getFechaCierre(), pageable);
+//					pageComisiones= comisionesService.findByEstadoAndLoteStatusAndLotePersonSupervisorAndLotePersonAssessorDniLikeAndLoteFechaVendidoBetween(true,EstadoLote.VENDIDO.getName(), personaSupervisor , "%%" , comisionSelected.getFechaIni(), comisionSelected.getFechaFin(), pageable);
 //
 //				}
 				setRowCount((int) pageComisiones.getTotalElements());
@@ -1305,15 +1184,15 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 		};
 	}
 	
-	public Converter getConversorComision() {
+	public Converter getConversorConfiguracionComision() {
         return new Converter() {
             @Override
             public Object getAsObject(FacesContext context, UIComponent component, String value) {
                 if (value.trim().equals("") || value == null || value.trim().equals("null")) {
                     return null;
                 } else {
-                    Comision c = null;
-                    for (Comision si : lstComision) {
+                	ConfiguracionComision c = null;
+                    for (ConfiguracionComision si : lstComision) {
                         if (si.getId().toString().equals(value)) {
                             c = si;
                         }
@@ -1327,7 +1206,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
                 if (value == null || value.equals("")) {
                     return "";
                 } else {
-                    return ((Comision) value).getId() + "";
+                    return ((ConfiguracionComision) value).getId() + "";
                 }
             }
         };
@@ -1457,17 +1336,17 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	public void setFechaFin(Date fechaFin) {
 		this.fechaFin = fechaFin;
 	}
-	public Integer getComisionContado() {
-		return comisionContado;
+	public Integer getCantidadMeta() {
+		return cantidadMeta;
 	}
-	public void setComisionContado(Integer comisionContado) {
-		this.comisionContado = comisionContado;
+	public void setCantidadMeta(Integer cantidadMeta) {
+		this.cantidadMeta = cantidadMeta;
 	}
-	public Integer getComisionCredito() {
-		return comisionCredito;
+	public Integer getCantidadVendidos() {
+		return cantidadVendidos;
 	}
-	public void setComisionCredito(Integer comisionCredito) {
-		this.comisionCredito = comisionCredito;
+	public void setCantidadVendidos(Integer cantidadVendidos) {
+		this.cantidadVendidos = cantidadVendidos;
 	}
 	public SimpleDateFormat getSdf() {
 		return sdf;
@@ -1511,25 +1390,30 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	public void setLoteService(LoteService loteService) {
 		this.loteService = loteService;
 	}
-	public ComisionService getComisionService() {
-		return comisionService;
+	public ConfiguracionComisionService getConfiguracionComisionService() {
+		return configuracionComisionService;
 	}
-	public void setComisionService(ComisionService comisionService) {
-		this.comisionService = comisionService;
+	public void setConfiguracionComisionService(ConfiguracionComisionService configuracionComisionService) {
+		this.configuracionComisionService = configuracionComisionService;
 	}
-	public List<Comision> getLstComision() {
+	public List<ConfiguracionComision> getLstComision() {
 		return lstComision;
 	}
-	public void setLstComision(List<Comision> lstComision) {
-		this.lstComision = lstComision;
-	}
-	public Comision getComisionSelected() {
-		return comisionSelected;
-	}
-	public void setComisionSelected(Comision comisionSelected) {
+	public void setComisionSelected(ConfiguracionComision comisionSelected) {
 		this.comisionSelected = comisionSelected;
 	}
 
+	public void setComision1(ConfiguracionComision comision1) {
+		this.comision1 = comision1;
+	}
+
+	public void setComision2(ConfiguracionComision comision2) {
+		this.comision2 = comision2;
+	}
+
+	public void setComision3(ConfiguracionComision comision3) {
+		this.comision3 = comision3;
+	}
 	public LazyDataModel<Comisiones> getLstComisionesLazy() {
 		return lstComisionesLazy;
 	}
@@ -1702,24 +1586,6 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 	public void setLstTeam(List<Team> lstTeam) {
 		this.lstTeam = lstTeam;
 	}
-	public Comision getComision1() {
-		return comision1;
-	}
-	public void setComision1(Comision comision1) {
-		this.comision1 = comision1;
-	}
-	public Comision getComision2() {
-		return comision2;
-	}
-	public void setComision2(Comision comision2) {
-		this.comision2 = comision2;
-	}
-	public Comision getComision3() {
-		return comision3;
-	}
-	public void setComision3(Comision comision3) {
-		this.comision3 = comision3;
-	}
 	public String getFecha1() {
 		return fecha1;
 	}
@@ -1763,14 +1629,6 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 		this.nombreArchivo = nombreArchivo;
 	}
 
-	public List<Person> getLstPersonAsesor() {
-		return lstPersonAsesor;
-	}
-
-	public void setLstPersonAsesor(List<Person> lstPersonAsesor) {
-		this.lstPersonAsesor = lstPersonAsesor;
-	}
-
 	public List<ResumenComisionAsesor> getLstResumenMuestra() {
 		return lstResumenMuestra;
 	}
@@ -1793,6 +1651,26 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 
 	public void setTotalComisionSupervisor(BigDecimal totalComisionSupervisor) {
 		this.totalComisionSupervisor = totalComisionSupervisor;
+	}
+
+	public ConfiguracionComision getComisionSelected() {
+		return comisionSelected;
+	}
+
+	public ConfiguracionComision getComision1() {
+		return comision1;
+	}
+
+	public ConfiguracionComision getComision2() {
+		return comision2;
+	}
+
+	public ConfiguracionComision getComision3() {
+		return comision3;
+	}
+
+	public void setLstComision(List<ConfiguracionComision> lstComision) {
+		this.lstComision = lstComision;
 	}
 	
 }

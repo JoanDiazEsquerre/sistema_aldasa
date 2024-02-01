@@ -20,6 +20,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
@@ -28,14 +29,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import com.model.aldasa.entity.Comision;
 import com.model.aldasa.entity.ComisionProyecto;
+import com.model.aldasa.entity.ConfiguracionComision;
 import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.MetaSupervisor;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.service.ComisionProyectoService;
-import com.model.aldasa.service.ComisionService;
+import com.model.aldasa.service.ConfiguracionComisionService;
 import com.model.aldasa.service.MetaSupervisorService;
 import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.TeamService;
@@ -47,8 +48,8 @@ public class ComisionBean extends BaseBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	@ManagedProperty(value = "#{comisionService}")
-	private ComisionService comisionService;
+	@ManagedProperty(value = "#{configuracionComisionService}")
+	private ConfiguracionComisionService configuracionComisionService;
 	
 	@ManagedProperty(value = "#{teamService}")
 	private TeamService teamService;
@@ -65,14 +66,14 @@ public class ComisionBean extends BaseBean implements Serializable{
 	@ManagedProperty(value = "#{navegacionBean}")
 	private NavegacionBean navegacionBean;
 	
-	private LazyDataModel<Comision> lstComisionLazy;
+	private LazyDataModel<ConfiguracionComision> lstComisionLazy;
 	
 	private List<Team> lstTeam;
 	private List<MetaSupervisor> lstMetaSupervisor;
 	private List<ComisionProyecto> lstComisionProyecto;
 	private List<Project> lstProyecto;
 	
-	private Comision comisionSelected;
+	private ConfiguracionComision comisionSelected;
 	private Team teamSelected;
 	private MetaSupervisor metaSupervisorSelected;
 	private ComisionProyecto comisionProyectoNew, comisionProyectoSelected;
@@ -109,7 +110,7 @@ public class ComisionBean extends BaseBean implements Serializable{
 			addErrorMessage("Seleccionar un Proyecto");
 			return;
 		}else {
-			ComisionProyecto cp = comisionProyectoService.findByComisionAndProyectoAndEstado(comisionSelected, comisionProyectoNew.getProyecto(), true);
+			ComisionProyecto cp = comisionProyectoService.findByConfiguracionComisionAndProyectoAndEstado(comisionSelected, comisionProyectoNew.getProyecto(), true);
 			if(cp!=null) {
 				addErrorMessage("Ya se agregó el proyecto.");
 				return;
@@ -137,12 +138,12 @@ public class ComisionBean extends BaseBean implements Serializable{
 	public void iniciarComisionProyecto() {
 		comisionProyectoNew = new ComisionProyecto();
 		comisionProyectoNew.setEstado(true);
-		comisionProyectoNew.setComision(comisionSelected); 
+		comisionProyectoNew.setConfiguracionComision(comisionSelected); 
 	}
 	
 	public void listarComisionProyecto() {
 		iniciarComisionProyecto();
-		lstComisionProyecto = comisionProyectoService.findByComisionAndEstado(comisionSelected, true);
+		lstComisionProyecto = comisionProyectoService.findByConfiguracionComisionAndEstado(comisionSelected, true);
 	}
 	
 	public void getListaLazyComision() {
@@ -163,52 +164,74 @@ public class ComisionBean extends BaseBean implements Serializable{
 	}
 	
 	public void saveComision() {
-		if(comisionSelected.getFechaIni()==null || comisionSelected.getFechaCierre()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar todos los datos generales."));
+		if(comisionSelected.getFechaInicio()==null || comisionSelected.getFechaFin()==null) {
+			addErrorMessage("Completar todos los datos generales.");
 			return ;
 		}
 		
-		comisionSelected.setCodigo(sdfM.format(comisionSelected.getFechaIni())+""+sdfY2.format(comisionSelected.getFechaIni())); 
-		
-		if(comisionSelected.getComisionContado()==null || comisionSelected.getComisionCredito()==null || comisionSelected.getBasicoJunior()==null || comisionSelected.getBonoJunior()==null || comisionSelected.getBasicoSenior()==null || comisionSelected.getBonoSenior()==null || comisionSelected.getBasicoMaster()==null || comisionSelected.getBonoMaster()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar los datos del asesor."));
-			return ;
-		}
-		if(comisionSelected.getComisionSupervisor()==null || comisionSelected.getComisionMetaSupervisor()==null || comisionSelected.getBonoMetaSupervisor()==null ) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar los datos del supervisor."));
-			return ;
-		}
-		if(comisionSelected.getMetaOnline()==null || comisionSelected.getPrimeraVentaContadoOnline()==null || comisionSelected.getPrimeraVentaCreditoOnline()==null || comisionSelected.getBonoContadoOnline()==null || comisionSelected.getBonoCreditoOnline()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar los datos Online."));
+		comisionSelected.setCodigo(sdfM.format(comisionSelected.getFechaInicio())+""+sdfY2.format(comisionSelected.getFechaInicio()));
+				
+		if(comisionSelected.getComisionContado()==null || comisionSelected.getComisionCredito()==null || comisionSelected.getVentasMetaContado()==null || 
+				comisionSelected.getComisionContadoMeta()==null || comisionSelected.getMinimoVentaJunior()==null || comisionSelected.getMaximoVentaJunior()==null || 
+				comisionSelected.getBonoJunior()==null || comisionSelected.getMinimoVentaSenior()==null || comisionSelected.getMaximoVentaSenior()==null || 
+				comisionSelected.getBonoSenior()==null || comisionSelected.getMinimoVentaMaster()==null || comisionSelected.getMaximoVentaMaster()==null || 
+				comisionSelected.getBonoMaster()==null){
+			
+			addErrorMessage("Completar los datos de Asesores Planilla.");
 			return ;
 		}
 		
-		if(comisionSelected.getMetaAsesorExterno()==null || comisionSelected.getBasicoAsesorExterno()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar los datos Externos."));
+		if(comisionSelected.getComisionContadoExt()==null || comisionSelected.getComisionCreditoExt()==null || comisionSelected.getMinimoVentasExt()==null ||
+				comisionSelected.getBonoVentaExt()==null || comisionSelected.getVentasMetaContadoExt()==null || comisionSelected.getComisionContadoMetaExt()==null) {
+			
+			addErrorMessage("Completar los datos de Asesores Externos.");			
 			return ;
 		}
 		
-		if(comisionSelected.getSubgerente()==null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Completar los datos del subgerente."));
+		if(comisionSelected.getComisionContadoEmp()==null || comisionSelected.getComisionCreditoEmp()==null || comisionSelected.getMinimoVentasEmp()==null ||
+				comisionSelected.getBonoVentaEmp()==null || comisionSelected.getVentasMetaContadoEmp()==null || comisionSelected.getComisionContadoMetaEmp()==null) {
+			
+			addErrorMessage("Completar los datos de Trabajadores Empresa.");			
 			return ;
 		}
 		
-		if (tituloDialog.equals("NUEVA COMISIÓN")) {
-			Comision validarExistencia = comisionService.findByEstadoAndCodigo(true, comisionSelected.getCodigo());
+		if(comisionSelected.getBonoSupervisor()==null || comisionSelected.getComisionSupervisor()==null) {
+			addErrorMessage("Completar los datos de Supervisores.");			
+			return ;
+		}
+		
+		if(comisionSelected.getComisionJefeVenta()==null || comisionSelected.getPorcentajeBono()==null || comisionSelected.getBonoJefeVenta()==null || comisionSelected.getComisionJefeVentaMeta()==null) {
+			addErrorMessage("Completar los datos de Jefe de Ventas.");			
+			return ;
+		}
+		
+		if(comisionSelected.getBonoCoordinador()==null) {
+			addErrorMessage("Completar los datos de Coordinador.");			
+			return ;
+		}
+		
+		if(comisionSelected.getComisionSubgerente()==null) {
+			addErrorMessage("Completar los datos de Subgerente.");			
+			return ;
+		}
+		
+		if (comisionSelected.getId() == null) {
+			ConfiguracionComision validarExistencia = configuracionComisionService.findByEstadoAndCodigo(true, comisionSelected.getCodigo());
 			if (validarExistencia == null) {
-				comisionService.save(comisionSelected);
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
-				newComision();
+				configuracionComisionService.save(comisionSelected);
+				addInfoMessage("Se guardo correctamente.");
+				PrimeFaces.current().executeScript("PF('comisionDialog').hide();"); 
 			}else { 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya se programado una comision con el mismo rango de fechas."));
+				addErrorMessage("Ya se programado una comision con el mismo mes y año(Fecha Inicio)."); 
 			}
 		} else {
-			Comision validarExistencia = comisionService.findByCodigoAndIdException(comisionSelected.getCodigo(), comisionSelected.getId());
+			ConfiguracionComision validarExistencia = configuracionComisionService.findByCodigoAndIdException(comisionSelected.getCodigo(), comisionSelected.getId());
 			if (validarExistencia == null) {
-				comisionService.save(comisionSelected);
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se guardo correctamente."));
+				configuracionComisionService.save(comisionSelected);
+				addInfoMessage("Se guardo correctamente.");
+				PrimeFaces.current().executeScript("PF('comisionDialog').hide();"); 
 			} else { 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ya se programado una comision con el mismo rango de fechas."));
+				addErrorMessage("Ya se programado una comision con el mismo mes y año(Fecha Inicio)."); 
 			}
 		}
 		
@@ -222,7 +245,7 @@ public class ComisionBean extends BaseBean implements Serializable{
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El equipo no tiene supervisor."));
 			return;
 		}else {
-			MetaSupervisor supervisor = metaSupervisorService.findByComisionAndEstadoAndPersonSupervisor(comisionSelected, true, teamSelected.getPersonSupervisor());
+			MetaSupervisor supervisor = metaSupervisorService.findByConfiguracionComisionAndEstadoAndPersonSupervisor(comisionSelected, true, teamSelected.getPersonSupervisor());
 			if(supervisor != null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El supervisor ya esta registrado."));
 				return;
@@ -234,7 +257,7 @@ public class ComisionBean extends BaseBean implements Serializable{
 		}
 		
 		MetaSupervisor guardaMeta = new MetaSupervisor();
-		guardaMeta.setComision(comisionSelected);
+		guardaMeta.setConfiguracionComision(comisionSelected);
 		guardaMeta.setPersonSupervisor(teamSelected.getPersonSupervisor());
 		guardaMeta.setMeta(meta);
 		guardaMeta.setEstado(true);
@@ -253,29 +276,49 @@ public class ComisionBean extends BaseBean implements Serializable{
 	
 	public void newComision() {
 		tituloDialog="NUEVA COMISIÓN";
-		comisionSelected=new Comision();
+		comisionSelected=new ConfiguracionComision();
 		setfechaInicioFin();
-		comisionSelected.setComisionContado(8);
-		comisionSelected.setComisionCredito(4);
-		comisionSelected.setBasicoJunior(new BigDecimal(1025.00));
-		comisionSelected.setBonoJunior(new BigDecimal(200.00));
-		comisionSelected.setBasicoSenior(new BigDecimal(1200.00));
-		comisionSelected.setBonoSenior(new BigDecimal(300.00));
-		comisionSelected.setBasicoMaster(new BigDecimal(1500.00));
-		comisionSelected.setBonoMaster(new BigDecimal(500.00));
-		comisionSelected.setComisionSupervisor(1);
-		comisionSelected.setComisionMetaSupervisor(2); 
-		comisionSelected.setBonoMetaSupervisor(new BigDecimal(500.00));
-		comisionSelected.setSubgerente(1);
-		comisionSelected.setMetaOnline(10);
-		comisionSelected.setPrimeraVentaCreditoOnline(new BigDecimal(300.00));
-		comisionSelected.setPrimeraVentaContadoOnline(new BigDecimal(500.00));
-		comisionSelected.setBonoCreditoOnline(new BigDecimal(400.00)); 
-		comisionSelected.setBonoContadoOnline(new BigDecimal(400.00));
-		comisionSelected.setEstado(true);
-		comisionSelected.setMetaAsesorExterno(5); 
-		comisionSelected.setBasicoAsesorExterno(new BigDecimal(1025.00)); 
-		comisionSelected.setComisionSupervisorOnline(new BigDecimal(0.5));
+		
+	
+		comisionSelected.setComisionContado(new BigDecimal(8));
+		comisionSelected.setComisionCredito(new BigDecimal(4));
+		comisionSelected.setMinimoVentaJunior(2);
+		comisionSelected.setMaximoVentaJunior(4); 
+		comisionSelected.setBonoJunior(new BigDecimal(200));
+		comisionSelected.setMinimoVentaSenior(5);
+		comisionSelected.setMaximoVentaSenior(9);; 
+		comisionSelected.setBonoSenior(new BigDecimal(500));
+		comisionSelected.setMinimoVentaMaster(10);
+		comisionSelected.setMaximoVentaMaster(100); 
+		comisionSelected.setBonoMaster(new BigDecimal(100));
+		comisionSelected.setVentasMetaContado(5);
+		comisionSelected.setComisionContadoMeta(new BigDecimal(10));
+		
+		comisionSelected.setComisionContadoExt(new BigDecimal(8));
+		comisionSelected.setComisionCreditoExt(new BigDecimal(4));
+		comisionSelected.setMinimoVentasExt(3);
+		comisionSelected.setBonoVentaExt(new BigDecimal(1000));
+		comisionSelected.setVentasMetaContadoExt(5); 
+		comisionSelected.setComisionContadoMetaExt(new BigDecimal(10));
+		
+		comisionSelected.setComisionContadoEmp(new BigDecimal(8));
+		comisionSelected.setComisionCreditoEmp(new BigDecimal(4));
+		comisionSelected.setMinimoVentasEmp(3);
+		comisionSelected.setBonoVentaEmp(BigDecimal.ZERO);
+		comisionSelected.setVentasMetaContadoEmp(5); 
+		comisionSelected.setComisionContadoMetaEmp(new BigDecimal(10));
+		
+		comisionSelected.setBonoSupervisor(new BigDecimal(2000));
+		comisionSelected.setComisionSupervisor(BigDecimal.ONE); 
+		
+		comisionSelected.setComisionJefeVenta(new BigDecimal(0.50));  
+		comisionSelected.setPorcentajeBono(new BigDecimal(70));
+		comisionSelected.setBonoJefeVenta(new BigDecimal(2000)); 
+		comisionSelected.setComisionJefeVentaMeta(BigDecimal.ONE);
+		
+		comisionSelected.setBonoCoordinador(new BigDecimal(2000));
+		comisionSelected.setComisionSubgerente(BigDecimal.ONE);
+		comisionSelected.setEstado(true); 
 	}
 	
 	public void modifyComision( ) {
@@ -289,7 +332,7 @@ public class ComisionBean extends BaseBean implements Serializable{
 
 			//A la fecha actual le pongo el día 1
 			calendar.set(Calendar.DAY_OF_MONTH,1);
-			comisionSelected.setFechaIni(calendar.getTime());
+			comisionSelected.setFechaInicio(calendar.getTime());
 
 			calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH));
 			
@@ -297,7 +340,7 @@ public class ComisionBean extends BaseBean implements Serializable{
 			int mesActual = Integer.parseInt(sdfM.format(new Date())) ;
 			int anioActual = Integer.parseInt(sdfY.format(new Date())) ;
 			String fechaFinn=ultimoDiaMes + "/"+mesActual+"/"+anioActual;
-			comisionSelected.setFechaCierre(sdf.parse(fechaFinn)); 
+			comisionSelected.setFechaFin(sdf.parse(fechaFinn)); 
 			
 		} catch (Exception e) {
 			System.out.println("Error: "+e);
@@ -306,8 +349,8 @@ public class ComisionBean extends BaseBean implements Serializable{
 
 	public void iniciarLazy() {
 
-		lstComisionLazy = new LazyDataModel<Comision>() {
-			private List<Comision> datasource;
+		lstComisionLazy = new LazyDataModel<ConfiguracionComision>() {
+			private List<ConfiguracionComision> datasource;
 
             @Override
             public void setRowIndex(int rowIndex) {
@@ -319,9 +362,9 @@ public class ComisionBean extends BaseBean implements Serializable{
             }
 
             @Override
-            public Comision getRowData(String rowKey) {
+            public ConfiguracionComision getRowData(String rowKey) {
                 int intRowKey = Integer.parseInt(rowKey);
-                for (Comision comision : datasource) {
+                for (ConfiguracionComision comision : datasource) {
                     if (comision.getId() == intRowKey) {
                         return comision;
                     }
@@ -330,14 +373,14 @@ public class ComisionBean extends BaseBean implements Serializable{
             }
 
             @Override
-            public String getRowKey(Comision comision) {
+            public String getRowKey(ConfiguracionComision comision) {
                 return String.valueOf(comision.getId());
             }
 
 			@Override
-			public List<Comision> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+			public List<ConfiguracionComision> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                
-                Sort sort=Sort.by("fechaIni").ascending();
+                Sort sort=Sort.by("fechaInicio").ascending();
                 if(sortBy!=null) {
                 	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
                 	   if(entry.getValue().getOrder().isAscending()) {
@@ -350,10 +393,10 @@ public class ComisionBean extends BaseBean implements Serializable{
                 }          
                 Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
                
-                Page<Comision> pageComision=null;
+                Page<ConfiguracionComision> pageComision=null;
                
                 
-                pageComision= comisionService.findByEstadoAndFechaIniBetween(true, fechaIniFilter,fechaFinFilter, pageable);
+                pageComision= configuracionComisionService.findByEstadoAndFechaInicioBetween(true, fechaIniFilter,fechaFinFilter, pageable);
                 
                 setRowCount((int) pageComision.getTotalElements());
                 return datasource = pageComision.getContent();
@@ -365,7 +408,7 @@ public class ComisionBean extends BaseBean implements Serializable{
 		lstTeam = teamService.findByStatus(true);
 		teamSelected = null;
 		meta = null;
-		lstMetaSupervisor = metaSupervisorService.findByComisionAndEstado(comisionSelected, true);
+		lstMetaSupervisor = metaSupervisorService.findByConfiguracionComisionAndEstado(comisionSelected, true);
 	}
 	
 	public void eliminarMetaSupervisor() {
@@ -441,24 +484,30 @@ public class ComisionBean extends BaseBean implements Serializable{
 	public void setTituloDialog(String tituloDialog) {
 		this.tituloDialog = tituloDialog;
 	}
-	public Comision getComisionSelected() {
-		return comisionSelected;
+	public ConfiguracionComisionService getConfiguracionComisionService() {
+		return configuracionComisionService;
 	}
-	public void setComisionSelected(Comision comisionSelected) {
-		this.comisionSelected = comisionSelected;
+
+	public void setConfiguracionComisionService(ConfiguracionComisionService configuracionComisionService) {
+		this.configuracionComisionService = configuracionComisionService;
 	}
-	public ComisionService getComisionService() {
-		return comisionService;
-	}
-	public void setComisionService(ComisionService comisionService) {
-		this.comisionService = comisionService;
-	}
-	public LazyDataModel<Comision> getLstComisionLazy() {
+
+	public LazyDataModel<ConfiguracionComision> getLstComisionLazy() {
 		return lstComisionLazy;
 	}
-	public void setLstComisionLazy(LazyDataModel<Comision> lstComisionLazy) {
+
+	public ConfiguracionComision getComisionSelected() {
+		return comisionSelected;
+	}
+
+	public void setComisionSelected(ConfiguracionComision comisionSelected) {
+		this.comisionSelected = comisionSelected;
+	}
+
+	public void setLstComisionLazy(LazyDataModel<ConfiguracionComision> lstComisionLazy) {
 		this.lstComisionLazy = lstComisionLazy;
 	}
+
 	public String getAnio() {
 		return anio;
 	}

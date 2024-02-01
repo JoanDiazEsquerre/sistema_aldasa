@@ -36,6 +36,12 @@
 						<h:outputText value="#{plantilla.person.surnames} #{plantilla.person.names}" />
 					</p:column>
 					
+					<p:column headerText="Fecha Venta" style="text-align:center">
+						<h:outputText value="#{plantilla.fechaVenta}" style="font-size: 14px;"> 
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					
 					<p:column headerText="Proyecto" sortBy="#{plantilla.lote.project.name}"
 						filterBy="#{plantilla.lote.project.name}" filterMatchMode="contains">
 						<h:outputText value="#{plantilla.lote.project.name}" />
@@ -118,7 +124,7 @@
 					</p:column>
 					
 					<p:column headerText="Realizó boleta inicial?" sortBy="#{plantilla.realizoBoletaInicial} " filterMatchMode="contains">
-						<h:outputText value="#{plantilla.realizoBoletaInicial ? 'SI':'NO'}" style="font-weight:bold;color:#{plantilla.realizoContrato ? 'blue':'black'}" />
+						<h:outputText value="#{plantilla.realizoBoletaInicial ? 'SI':'NO'}" style="font-weight:bold;color:#{plantilla.realizoBoletaInicial ? 'blue':'black'}" />
 					</p:column>
 					
 					<p:column headerText="Boleta/Factura" filterMatchMode="contains">
@@ -138,9 +144,12 @@
 			<p:tab title=" Nueva Plantilla de Venta" id="idTab4"> 
 				<h:panelGrid columns="4" id="idPanelPlantilla" >
 				
+					<h:outputLabel  value="Fecha de venta: " />
+					<p:datePicker  value="#{plantillaVentaBean.fechaVenta}"  />
+				
 					<h:outputLabel value="Cliente:" />
 					<p:autoComplete  scrollHeight="500" styleClass="ui-autocompV" value="#{plantillaVentaBean.personCliente}" converter="#{plantillaVentaBean.conversorPerson}" completeMethod="#{plantillaVentaBean.completePerson}"  
-					     var="pros" itemLabel="#{pros.surnames.concat(' ')}#{pros.names}" itemValue="#{pros}" forceSelection="true" style="margin:5px; width:220px" >
+					     var="pros" itemLabel="#{pros.surnames.concat(' ')}#{pros.names}" itemValue="#{pros}" forceSelection="true" >
 					<p:column width="400px">
 					   	<h:outputLabel value="#{pros.surnames} #{pros.names}" /> 
 					   </p:column>
@@ -150,7 +159,7 @@
 					</p:autoComplete>
 					
 					<h:outputLabel for="optionTeam" value="Equipo:" />
-	                <p:selectOneMenu id="optionTeam" value="#{plantillaVentaBean.team}" converter="#{plantillaVentaBean.conversorTeam}" style="margin:10px" >
+	                <p:selectOneMenu id="optionTeam" value="#{plantillaVentaBean.team}" converter="#{plantillaVentaBean.conversorTeam}" >
 	             	   <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
 	                   <f:selectItems value="#{plantillaVentaBean.lstTeam}" var="prof" itemLabel="#{prof.name} / #{prof.personSupervisor.surnames} #{prof.personSupervisor.names}" itemValue="#{prof}"/>
 	                	<p:ajax listener="#{plantillaVentaBean.listarAsesores}" update="acAsesor"/>
@@ -158,7 +167,7 @@
 	                
 	                <h:outputLabel value="Asesor:" />
 	                <p:autoComplete id="acAsesor"  scrollHeight="500" styleClass="ui-autocompV" value="#{plantillaVentaBean.personAsesor}" converter="#{plantillaVentaBean.conversorPersonAsesor}" completeMethod="#{plantillaVentaBean.completePersonAsesor}"  
-					     var="pros" itemLabel="#{pros.surnames.concat(' ')}#{pros.names}" itemValue="#{pros}" forceSelection="true" style="margin:5px; width:220px" >
+					     var="pros" itemLabel="#{pros.surnames.concat(' ')}#{pros.names}" itemValue="#{pros}" forceSelection="true" >
 					<p:column width="400px">
 					   	<h:outputLabel value="#{pros.surnames} #{pros.names}" />  
 					   </p:column>
@@ -168,21 +177,21 @@
 					</p:autoComplete>
 					 
 					 <h:outputLabel value="Proyecto:" />
-					 <p:selectOneMenu value="#{plantillaVentaBean.proyectoPlantilla}" converter="#{plantillaVentaBean.conversorProject}" style="margin:5px; width:220px" > 
+					 <p:selectOneMenu value="#{plantillaVentaBean.proyectoPlantilla}" converter="#{plantillaVentaBean.conversorProject}" > 
 						<f:selectItem itemLabel="[-Seleccionar-]" itemValue="#{null}"/> 
 						<f:selectItems value="#{plantillaVentaBean.lstProject}" var="pro" itemLabel="#{pro.name}" itemValue="#{pro}"/> 
 						<p:ajax update="form:tabView:manzana form:tabView:lote" listener="#{plantillaVentaBean.listarManzanaPlantilla}"/>
 					</p:selectOneMenu>
 					
 					<h:outputLabel id="idManzanaPlantilla" for="manzana" value="Manzana: " />
-					<p:selectOneMenu style="margin:5px; width:205px" id="manzana" value="#{plantillaVentaBean.manzanaPlantilla}" converter="#{plantillaVentaBean.conversorManzanaPlantilla}" > 
+					<p:selectOneMenu id="manzana" value="#{plantillaVentaBean.manzanaPlantilla}" converter="#{plantillaVentaBean.conversorManzanaPlantilla}" > 
 						<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
 						<f:selectItems value="#{plantillaVentaBean.lstManzanaPlantilla}" var="manz" itemLabel="#{manz.name}" itemValue="#{manz}"/>
 						<p:ajax update="form:tabView:lote" listener="#{plantillaVentaBean.listarLotesPlantilla}"/>
 					</p:selectOneMenu>
 					
 					<h:outputLabel id="idLotePlantilla" for="lote" value="Lote: " />
-					<p:selectOneMenu style="margin:5px; width:220px" id="lote" value="#{plantillaVentaBean.lotePlantilla}" converter="#{plantillaVentaBean.conversorLotePlantilla}" > 
+					<p:selectOneMenu id="lote" value="#{plantillaVentaBean.lotePlantilla}" converter="#{plantillaVentaBean.conversorLotePlantilla}" > 
 						<f:selectItem itemLabel="[-- Selecionar --]" itemValue="#{null}"/>
 						<f:selectItems value="#{plantillaVentaBean.lstLotePlantilla}" var="manz" itemLabel="#{manz.numberLote}" itemValue="#{manz}"/>
 						<p:ajax listener="#{plantillaVentaBean.consultarSeparacion()}" update="mensajeSeparacion"/>
@@ -194,7 +203,7 @@
 				<h:panelGrid columns="4" id="panelPlantilla2"> 
 				
 					<h:outputLabel value="Tipo de Pago:" />
-					<p:selectOneMenu value="#{plantillaVentaBean.tipoPagoPlantilla}" style="margin:5px; width:183px" >  
+					<p:selectOneMenu value="#{plantillaVentaBean.tipoPagoPlantilla}" >  
 						<f:selectItem itemLabel="Contado" itemValue="Contado"/> 
 						<f:selectItem itemLabel="Crédito" itemValue="Crédito"/>
 						<p:ajax update="form:tabView:panelPlantilla2" />
@@ -210,7 +219,8 @@
 					<p:inputText value="#{plantillaVentaBean.numeroCuotaPlantilla}" rendered="#{plantillaVentaBean.tipoPagoPlantilla eq 'Crédito'}"/>
 					 
 					<h:outputLabel value="Interés:" rendered="#{plantillaVentaBean.tipoPagoPlantilla eq 'Crédito'}"/>
-					<p:inputNumber value="#{plantillaVentaBean.interesPlantilla}" rendered="#{plantillaVentaBean.tipoPagoPlantilla eq 'Crédito'}"/>
+					<p:inputNumber value="#{plantillaVentaBean.interesPlantilla}" rendered="#{plantillaVentaBean.tipoPagoPlantilla eq 'Crédito'}" symbol="%"
+                                symbolPosition="s"/>
 				
 					
 				</h:panelGrid>

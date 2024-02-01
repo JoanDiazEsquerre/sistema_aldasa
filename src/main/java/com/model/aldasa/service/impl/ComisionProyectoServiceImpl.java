@@ -9,13 +9,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.model.aldasa.entity.Comision;
 import com.model.aldasa.entity.ComisionProyecto;
+import com.model.aldasa.entity.ConfiguracionComision;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.repository.ComisionProyectoRepository;
-import com.model.aldasa.repository.ComisionRepository;
 import com.model.aldasa.service.ComisionProyectoService;
-import com.model.aldasa.service.ComisionService;
 
 @Service("comisionProyectoService")
 public class ComisionProyectoServiceImpl  implements ComisionProyectoService {
@@ -42,16 +40,16 @@ public class ComisionProyectoServiceImpl  implements ComisionProyectoService {
 	}
 
 	@Override
-	public ComisionProyecto findByComisionAndProyectoAndEstado(Comision comision, Project proyecto,
+	public ComisionProyecto findByConfiguracionComisionAndProyectoAndEstado(ConfiguracionComision comision, Project proyecto,
 			boolean estado) {
 		// TODO Auto-generated method stub
-		return comisionProyectoRepository.findByComisionAndProyectoAndEstado(comision, proyecto, estado);
+		return comisionProyectoRepository.findByConfiguracionComisionAndProyectoAndEstado(comision, proyecto, estado);
 	}
 
 	@Override
-	public List<ComisionProyecto> findByComisionAndEstado(Comision comision, boolean estado) {
+	public List<ComisionProyecto> findByConfiguracionComisionAndEstado(ConfiguracionComision comision, boolean estado) {
 		// TODO Auto-generated method stub
-		return comisionProyectoRepository.findByComisionAndEstado(comision, estado);
+		return comisionProyectoRepository.findByConfiguracionComisionAndEstado(comision, estado);
 	}
 
 	

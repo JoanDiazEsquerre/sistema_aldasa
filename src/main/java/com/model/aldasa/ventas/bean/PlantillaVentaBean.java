@@ -150,6 +150,9 @@ public class PlantillaVentaBean extends BaseBean {
 	@ManagedProperty(value = "#{documentoVentaService}")
 	private DocumentoVentaService documentoVentaService;
 	
+	@ManagedProperty(value = "#{contratoService}")
+	private ContratoService contratoService;
+	
 
 	private LazyDataModel<PlantillaVenta> lstPlantillaLazy;
 	
@@ -179,6 +182,7 @@ public class PlantillaVentaBean extends BaseBean {
 	private String tipoTransaccion, numeroTransaccion, tipoPagoPlantilla;
 	private Integer numeroCuotaPlantilla;
 	private boolean valida;
+	private Date fechaVenta;
 	
 	private UploadedFile file1,file2,file3,file4,file5,file6,file7,file8,file9,file10,file11,file12,file13,file14,file15;
 	
@@ -270,6 +274,12 @@ public class PlantillaVentaBean extends BaseBean {
 			}
 		}
 		
+		Contrato contrato = contratoService.findByLoteAndEstado(plantillaVentaSelected.getLote(), true);
+		if(contrato!=null) {
+			addErrorMessage("Primero debe anular el contrato.");
+			return;
+		}
+		
 		PrimeFaces.current().executeScript("PF('anulaPlantilla').show();");
 	}
 	
@@ -296,6 +306,7 @@ public class PlantillaVentaBean extends BaseBean {
 	}
 	
 	public void iniciarDatosPlantilla() {
+		fechaVenta = new Date();
 		personCliente=null;
 		team = null;
 		personAsesor = null;
@@ -638,6 +649,7 @@ public class PlantillaVentaBean extends BaseBean {
 		}
 		
 		PlantillaVenta plantillaVentaNew = new PlantillaVenta();
+		plantillaVentaNew.setFechaVenta(fechaVenta); 
 		plantillaVentaNew.setPerson(personCliente);
 		if(team.getPersonSupervisor()!=null)plantillaVentaNew.setPersonSupervisor(team.getPersonSupervisor());
 		plantillaVentaNew.setPersonAsesor(personAsesor);
@@ -671,6 +683,14 @@ public class PlantillaVentaBean extends BaseBean {
 	}
 
 	public void validaDatosPlantilla() {
+		if(fechaVenta == null) {
+			addErrorMessage("Debes seleccionar una fecha de venta.");
+			return;
+		}else if(fechaVenta.after(new Date())) {
+			addErrorMessage("La fecha es inválida.");
+			return;
+		}
+		
 		if(personCliente==null) {
 			addErrorMessage("Debes seleccionar una persona.");
 			return;
@@ -1592,6 +1612,18 @@ public class PlantillaVentaBean extends BaseBean {
 	}
 	public void setObservacion(String observacion) {
 		this.observacion = observacion;
+	}
+	public Date getFechaVenta() {
+		return fechaVenta;
+	}
+	public void setFechaVenta(Date fechaVenta) {
+		this.fechaVenta = fechaVenta;
+	}
+	public ContratoService getContratoService() {
+		return contratoService;
+	}
+	public void setContratoService(ContratoService contratoService) {
+		this.contratoService = contratoService;
 	}
 
 	

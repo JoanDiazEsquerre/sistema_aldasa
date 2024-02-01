@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.model.aldasa.entity.Comision;
+import com.model.aldasa.entity.ConfiguracionComision;
 import com.model.aldasa.entity.Comisiones;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
@@ -24,12 +24,12 @@ public interface ComisionesService {
 	Page<Comisiones> findByEstadoAndLoteStatusAndLotePersonAssessorDniLikeAndLoteFechaVendidoBetween(boolean estado, String Status,String dniAsesor, Date fechaIni, Date fechaFin, Pageable pageable);
 	Page<Comisiones> findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(boolean estado, String Status,String tipoEmnpleado, Date fechaIni, Date fechaFin, Pageable pageable);
 
-	Page<Comisiones> findByEstadoAndComision(boolean estado, Comision comision, Pageable pageable);
-	Page<Comisiones> findByEstadoAndComisionAndPersonSupervisor(boolean estado, Comision comision, Person personSupervisor, Pageable pageable);
+	Page<Comisiones> findByEstadoAndConfiguracionComision(boolean estado, ConfiguracionComision comision, Pageable pageable);
+	Page<Comisiones> findByEstadoAndConfiguracionComisionAndPersonSupervisor(boolean estado, ConfiguracionComision comision, Person personSupervisor, Pageable pageable);
 
 	
 	List<Comisiones> findByEstadoAndLoteStatusAndTipoEmpleadoAndLoteFechaVendidoBetween(boolean estado, String Status,String tipoEmnpleado, Date fechaIni, Date fechaFin);
-	List<Comisiones> findByEstadoAndComision(boolean estado, Comision comision);
-	List<Comisiones> findByEstadoAndComisionAndPersonAsesor(boolean estado, Comision comision, Person personAsesor);
+	List<Comisiones> findByEstadoAndConfiguracionComision(boolean estado, ConfiguracionComision comision);
+	List<Comisiones> findByEstadoAndConfiguracionComisionAndPersonAsesor(boolean estado, ConfiguracionComision comision, Person personAsesor);
 	
 }

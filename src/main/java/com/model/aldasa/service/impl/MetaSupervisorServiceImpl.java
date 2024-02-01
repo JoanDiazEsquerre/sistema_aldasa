@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.model.aldasa.entity.Comision;
+import com.model.aldasa.entity.ConfiguracionComision;
 import com.model.aldasa.entity.MetaSupervisor;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.repository.MetaSupervisorRepository;
@@ -37,16 +37,16 @@ public class MetaSupervisorServiceImpl  implements MetaSupervisorService {
 	}
 
 	@Override
-	public List<MetaSupervisor> findByComisionAndEstado(Comision comision, boolean estado) {
+	public List<MetaSupervisor> findByConfiguracionComisionAndEstado(ConfiguracionComision comision, boolean estado) {
 		// TODO Auto-generated method stub
-		return metaSupervisorRepository.findByComisionAndEstado(comision, estado);
+		return metaSupervisorRepository.findByConfiguracionComisionAndEstado(comision, estado);
 	}
 
 	@Override
-	public MetaSupervisor findByComisionAndEstadoAndPersonSupervisor(Comision comision, boolean estado,
+	public MetaSupervisor findByConfiguracionComisionAndEstadoAndPersonSupervisor(ConfiguracionComision comision, boolean estado,
 			Person supervisor) {
 		// TODO Auto-generated method stub
-		return metaSupervisorRepository.findByComisionAndEstadoAndPersonSupervisor(comision, estado, supervisor);
+		return metaSupervisorRepository.findByConfiguracionComisionAndEstadoAndPersonSupervisor(comision, estado, supervisor);
 	}
 
 }

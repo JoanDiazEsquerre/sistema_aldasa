@@ -21,8 +21,8 @@ public class MetaSupervisor {
 	Person personSupervisor;
 	
 	@ManyToOne
-    @JoinColumn(name="idcomision")
-    private Comision comision;
+    @JoinColumn(name="idconfiguracioncomision")
+    private ConfiguracionComision configuracionComision;
 	
 	private int meta;
 	
@@ -43,11 +43,11 @@ public class MetaSupervisor {
 	public void setPersonSupervisor(Person personSupervisor) {
 		this.personSupervisor = personSupervisor;
 	}
-	public Comision getComision() {
-		return comision;
+	public ConfiguracionComision getConfiguracionComision() {
+		return configuracionComision;
 	}
-	public void setComision(Comision comision) {
-		this.comision = comision;
+	public void setConfiguracionComision(ConfiguracionComision configuracionComision) {
+		this.configuracionComision = configuracionComision;
 	}
 	public int getMeta() {
 		return meta;

@@ -24,12 +24,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import com.model.aldasa.entity.Comision;
 import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
-import com.model.aldasa.service.ComisionService;
 import com.model.aldasa.service.EmpleadoService;
 import com.model.aldasa.service.LoteService;
 import com.model.aldasa.service.TeamService;
@@ -45,8 +43,8 @@ public class RankingVentasBean implements Serializable {
 	@ManagedProperty(value = "#{empleadoService}")
 	private EmpleadoService empleadoService;
 		
-	@ManagedProperty(value = "#{comisionService}")
-	private ComisionService comisionService;
+//	@ManagedProperty(value = "#{comisionService}")
+//	private ComisionService comisionService;
 	
 	@ManagedProperty(value = "#{loteService}")
 	private LoteService loteService;
@@ -103,14 +101,14 @@ public class RankingVentasBean implements Serializable {
 	}
 	
 	public int lotesVendidoMes (String mes,String anioselected, Usuario usuario) {
-		String codigo = mes+anioselected;
-		Comision comision = comisionService.findByEstadoAndCodigo(true, codigo);
-		if (comision != null) {
-			List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(),usuario.getPerson().getDni() , comision.getFechaIni(), comision.getFechaCierre());
-			if(!lstLotesVendidos.isEmpty()) {
-				return lstLotesVendidos.size();
-			}
-		}
+//		String codigo = mes+anioselected;
+//		Comision comision = comisionService.findByEstadoAndCodigo(true, codigo);
+//		if (comision != null) {
+//			List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonAssessorDniAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(),usuario.getPerson().getDni() , comision.getFechaIni(), comision.getFechaCierre());
+//			if(!lstLotesVendidos.isEmpty()) {
+//				return lstLotesVendidos.size();
+//			}
+//		}
 		return 0;
 	}
 	
@@ -320,12 +318,6 @@ public class RankingVentasBean implements Serializable {
 	}
 	public void setSdfY(SimpleDateFormat sdfY) {
 		this.sdfY = sdfY;
-	}
-	public ComisionService getComisionService() {
-		return comisionService;
-	}
-	public void setComisionService(ComisionService comisionService) {
-		this.comisionService = comisionService;
 	}
 	public String getAnio() {
 		return anio;

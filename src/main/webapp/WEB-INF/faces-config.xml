@@ -14,7 +14,7 @@
 		<phase-listener>com.model.aldasa.util.LoginErrorPhaseListener</phase-listener>
 	</lifecycle>
 
-	<managed-bean>
+	<managed-bean> 
 		<managed-bean-name>loginBean</managed-bean-name>
 		<managed-bean-class>com.model.aldasa.general.bean.LoginBean</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
@@ -451,10 +451,6 @@
 			<value>#{teamService}</value>
 		</managed-property>
 		<managed-property>
-			<property-name>comisionService</property-name>
-			<value>#{comisionService}</value>
-		</managed-property>
-		<managed-property>
 			<property-name>comisionesService</property-name>
 			<value>#{comisionesService}</value>
 		</managed-property>
@@ -485,8 +481,8 @@
 			<value>#{loteService}</value>
 		</managed-property>
 		<managed-property>
-			<property-name>comisionService</property-name>
-			<value>#{comisionService}</value>
+			<property-name>configuracionComisionService</property-name>
+			<value>#{configuracionComisionService}</value>
 		</managed-property>
 		<managed-property>
 			<property-name>comisionesService</property-name>
@@ -519,8 +515,8 @@
 		<managed-bean-class>com.model.aldasa.general.bean.ComisionBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope> 
 		<managed-property>
-			<property-name>comisionService</property-name>
-			<value>#{comisionService}</value>
+			<property-name>configuracionComisionService</property-name>
+			<value>#{configuracionComisionService}</value>
 		</managed-property>
 		<managed-property>
 			<property-name>teamService</property-name>
@@ -771,10 +767,6 @@
 		<managed-property>
 			<property-name>empleadoService</property-name>
 			<value>#{empleadoService}</value>
-		</managed-property>
-		<managed-property>
-			<property-name>comisionService</property-name>
-			<value>#{comisionService}</value>
 		</managed-property>
 		<managed-property>
 			<property-name>loteService</property-name>
@@ -1096,7 +1088,10 @@
 			<property-name>documentoVentaService</property-name>
 			<value>#{documentoVentaService}</value>
 		</managed-property>
-
+		<managed-property>
+			<property-name>contratoService</property-name>
+			<value>#{contratoService}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>

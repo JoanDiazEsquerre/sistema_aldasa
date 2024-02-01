@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.model.aldasa.entity.Comision;
 import com.model.aldasa.entity.ComisionProyecto;
 import com.model.aldasa.entity.Comisiones;
 import com.model.aldasa.entity.Contrato;
@@ -21,7 +20,6 @@ import com.model.aldasa.entity.PlantillaVenta;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.repository.ComisionProyectoRepository;
-import com.model.aldasa.repository.ComisionRepository;
 import com.model.aldasa.repository.ComisionesRepository;
 import com.model.aldasa.repository.ContratoRepository;
 import com.model.aldasa.repository.PlantillaVentaRepository;
@@ -34,8 +32,8 @@ public class ContratoServiceImpl implements ContratoService{
 	@Autowired
 	private ContratoRepository contratoRepository;
 	
-	@Autowired
-	private ComisionRepository comisionRepository;
+//	@Autowired
+//	private ComisionRepository comisionRepository;
 	
 	@Autowired
 	private ComisionesRepository comisionesRepository;
@@ -53,55 +51,56 @@ public class ContratoServiceImpl implements ContratoService{
 
 	@Override
 	public Contrato saveGeneraComision(Contrato entity) {
-		if(entity.isFirma()) {
-			Comision comision = comisionRepository.findByFechaIniLessThanEqualAndFechaCierreGreaterThanEqual(entity.getFechaVenta(), entity.getFechaVenta());
-			if(comision != null){
-				ComisionProyecto cp = comisionProyectoRepository.findByComisionAndProyectoAndEstado(comision, entity.getLote().getProject(), true);
-				BigDecimal interesContado=new BigDecimal(comision.getComisionContado()); BigDecimal interesCredito=new BigDecimal(comision.getComisionCredito());
-				if(cp!=null) {
-					interesContado = cp.getInteresContado();
-					interesCredito = cp.getInteresCredito();
-				}
-			
-				
-				List<PlantillaVenta> lstPlantilla = plantillaVentaRepository.findByEstadoAndLote("Aprobado", entity.getLote());
-				if(!lstPlantilla.isEmpty()) {
-					PlantillaVenta plantilla = lstPlantilla.get(0);
-					Comisiones comisiones = new Comisiones();
-					comisiones.setLote(entity.getLote());
-					comisiones.setPersonAsesor(plantilla.getPersonAsesor());
-					comisiones.setPersonSupervisor(plantilla.getPersonSupervisor());
-					
-					if (entity.getTipoPago().equals("Contado")) {
-						BigDecimal multiplica = entity.getMontoVenta().multiply(interesContado);
-						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));	
-					}else {
-						BigDecimal multiplica = entity.getMontoVenta().multiply(interesCredito);
-						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
-					}
-					
-					BigDecimal multiplicaSup = entity.getMontoVenta().multiply(new BigDecimal(comision.getComisionSupervisor()));
-					comisiones.setComisionSupervisor(multiplicaSup.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
-					
-					BigDecimal multiplicaSub = entity.getMontoVenta().multiply(new BigDecimal(comision.getSubgerente()));
-					comisiones.setComisionSubgerente(multiplicaSub.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
-					comisiones.setEstado(true);
-					comisiones.setComision(comision); 
-					comisiones.setContrato(entity);
-					comisionesRepository.save(comisiones);
-					entity.setComisiones(comisiones);
-				}
-			}
-		}else {
-			if(entity.getComisiones() != null) {
-				entity.getComisiones().setEstado(false);
-				comisionesRepository.save(entity.getComisiones());
-			}
-			
-			entity.setComisiones(null);
-		}
+//		if(entity.isFirma()) {
+//			Comision comision = comisionRepository.findByFechaIniLessThanEqualAndFechaCierreGreaterThanEqual(entity.getFechaVenta(), entity.getFechaVenta());
+//			if(comision != null){
+//				ComisionProyecto cp = comisionProyectoRepository.findByComisionAndProyectoAndEstado(comision, entity.getLote().getProject(), true);
+//				BigDecimal interesContado=new BigDecimal(comision.getComisionContado()); BigDecimal interesCredito=new BigDecimal(comision.getComisionCredito());
+//				if(cp!=null) {
+//					interesContado = cp.getInteresContado();
+//					interesCredito = cp.getInteresCredito();
+//				}
+//			
+//				
+//				List<PlantillaVenta> lstPlantilla = plantillaVentaRepository.findByEstadoAndLote("Aprobado", entity.getLote());
+//				if(!lstPlantilla.isEmpty()) {
+//					PlantillaVenta plantilla = lstPlantilla.get(0);
+//					Comisiones comisiones = new Comisiones();
+//					comisiones.setLote(entity.getLote());
+//					comisiones.setPersonAsesor(plantilla.getPersonAsesor());
+//					comisiones.setPersonSupervisor(plantilla.getPersonSupervisor());
+//					
+//					if (entity.getTipoPago().equals("Contado")) {
+//						BigDecimal multiplica = entity.getMontoVenta().multiply(interesContado);
+//						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));	
+//					}else {
+//						BigDecimal multiplica = entity.getMontoVenta().multiply(interesCredito);
+//						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+//					}
+//					
+//					BigDecimal multiplicaSup = entity.getMontoVenta().multiply(new BigDecimal(comision.getComisionSupervisor()));
+//					comisiones.setComisionSupervisor(multiplicaSup.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+//					
+//					BigDecimal multiplicaSub = entity.getMontoVenta().multiply(new BigDecimal(comision.getSubgerente()));
+//					comisiones.setComisionSubgerente(multiplicaSub.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+//					comisiones.setEstado(true);
+//					comisiones.setComision(comision); 
+//					comisiones.setContrato(entity);
+//					comisionesRepository.save(comisiones);
+//					entity.setComisiones(comisiones);
+//				}
+//			}
+//		}else {
+//			if(entity.getComisiones() != null) {
+//				entity.getComisiones().setEstado(false);
+//				comisionesRepository.save(entity.getComisiones());
+//			}
+//			
+//			entity.setComisiones(null);
+//		}
 		
-		return contratoRepository.save(entity);
+//		return contratoRepository.save(entity);
+		return null;
 	}
 
 	@Override
@@ -151,6 +150,12 @@ public class ContratoServiceImpl implements ContratoService{
 			Sucursal sucursal, String manzana, String numLote, Pageable pageable) {
 		// TODO Auto-generated method stub
 		return contratoRepository.findByEstadoAndLoteProjectSucursalAndLoteManzanaNameLikeAndLoteNumberLoteLike(status, sucursal, manzana, numLote, pageable);
+	}
+
+	@Override
+	public Contrato findByLoteAndEstado(Lote lote, boolean estado) {
+		// TODO Auto-generated method stub
+		return contratoRepository.findByLoteAndEstado(lote, estado);
 	}
 
 

@@ -21,8 +21,8 @@ public class ComisionProyecto {
 	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name="idcomision")
-	private Comision comision;
+	@JoinColumn(name="idconfiguracioncomision")
+	private ConfiguracionComision configuracionComision;
 	
 	@ManyToOne
 	@JoinColumn(name="idproyecto")
@@ -42,11 +42,11 @@ public class ComisionProyecto {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public Comision getComision() {
-		return comision;
+	public ConfiguracionComision getConfiguracionComision() {
+		return configuracionComision;
 	}
-	public void setComision(Comision comision) {
-		this.comision = comision;
+	public void setConfiguracionComision(ConfiguracionComision configuracionComision) {
+		this.configuracionComision = configuracionComision;
 	}
 	public Project getProyecto() {
 		return proyecto;

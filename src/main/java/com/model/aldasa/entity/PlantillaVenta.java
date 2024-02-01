@@ -38,6 +38,9 @@ public class PlantillaVenta {
 	
 	private String estado;
 	
+	@Column(name="fechaventa")
+	private Date fechaVenta;
+	
 	@Column(name="montoventa")
 	private BigDecimal montoVenta;
 	
@@ -219,6 +222,12 @@ public class PlantillaVenta {
 	}
 	public void setObservacion(String observacion) {
 		this.observacion = observacion;
+	}
+	public Date getFechaVenta() {
+		return fechaVenta;
+	}
+	public void setFechaVenta(Date fechaVenta) {
+		this.fechaVenta = fechaVenta;
 	}
 	
 	

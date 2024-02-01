@@ -224,6 +224,8 @@ public class ContratoBean extends BaseBean implements Serializable{
 		verCronogramaPago();
 		observacion="";
 		
+		iniciarLotesSinContratoLazy();
+		
 	}
 	
 	public void actualizarUsuarioCobranza(Contrato contrato) {
@@ -8996,28 +8998,26 @@ public class ContratoBean extends BaseBean implements Serializable{
 	public void seleccionarLote() {
 		nombreLoteSelected = loteSelected.getNumberLote()+" -  MZ "+loteSelected.getManzana().getName()+" / "+ loteSelected.getProject().getName();
 		
-		if(loteSelected.getTipoPago()!=null) {
-			if(loteSelected.getTipoPago().equals("Crédito")) {
-				montoInicial = loteSelected.getMontoInicial();
-				nroCuotas = loteSelected.getNumeroCuota();
-				interes = loteSelected.getInteres();
+		List<PlantillaVenta> lstPlantillaAprobada = plantillaVentaService.findByEstadoAndLote("Aprobado", loteSelected);
+		
+		if(!lstPlantillaAprobada.isEmpty()) {
+			PlantillaVenta plantillaVenta = lstPlantillaAprobada.get(0);
+			
+			if(plantillaVenta.getTipoPago().equals("Crédito")) {
+				montoInicial = plantillaVenta.getMontoInicial();
+				nroCuotas = plantillaVenta.getNumeroCuota();
+				interes = plantillaVenta.getInteres();
 			}else {
 				montoInicial = BigDecimal.ZERO;
 				nroCuotas = 0 ;
 				interes = BigDecimal.ZERO;
 			}
-		}
-		
 			
-		fechaVenta = loteSelected.getFechaVendido();
-		montoVenta = loteSelected.getMontoVenta();
-		tipoPago = loteSelected.getTipoPago();
-		persona1 = loteSelected.getPersonVenta();
-	
-		
-		
-		
-		
+			fechaVenta = plantillaVenta.getFechaVenta();
+			montoVenta = plantillaVenta.getMontoVenta();
+			tipoPago = plantillaVenta.getTipoPago();
+			persona1 = plantillaVenta.getPerson();
+		}
 		
 	}
 	

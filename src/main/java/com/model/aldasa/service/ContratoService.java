@@ -20,6 +20,9 @@ public interface ContratoService {
 	Contrato saveGeneraComision(Contrato entity);
 	Contrato save(Contrato entity);
 	void delete(Contrato entity);
+	
+	Contrato findByLoteAndEstado(Lote lote, boolean estado);
+	
 	List<Contrato> findAll();
 	List<Contrato> findByEstadoAndLoteProjectSucursalAndTipoPagoAndCancelacionTotal(boolean status, Sucursal sucursal, String tipoPago, boolean cancelacionTotal);
 	

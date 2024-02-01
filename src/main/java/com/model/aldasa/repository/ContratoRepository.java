@@ -7,11 +7,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.model.aldasa.entity.Contrato;
+import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Sucursal;
 
 public interface ContratoRepository extends PagingAndSortingRepository<Contrato, Integer> {
+	
+	Contrato findByLoteAndEstado(Lote lote, boolean estado);
 	
 	List<Contrato> findByEstadoAndLoteProjectSucursalAndTipoPagoAndCancelacionTotal(boolean status, Sucursal sucursal, String tipoPago, boolean cancelacionTotal);
 

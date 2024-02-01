@@ -9,8 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.model.aldasa.entity.Comision;
 import com.model.aldasa.entity.Comisiones;
+import com.model.aldasa.entity.ConfiguracionComision;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.repository.ComisionesRepository;
@@ -77,29 +77,29 @@ public class ComisionesServiceImpl implements ComisionesService  {
 	}
 
 	@Override
-	public Page<Comisiones> findByEstadoAndComision(boolean estado, Comision comision, Pageable pageable) {
+	public Page<Comisiones> findByEstadoAndConfiguracionComision(boolean estado, ConfiguracionComision comision, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return comisionesRepository.findByEstadoAndComision(estado, comision, pageable); 
+		return comisionesRepository.findByEstadoAndConfiguracionComision(estado, comision, pageable); 
 	}
 
 	@Override
-	public List<Comisiones> findByEstadoAndComision(boolean estado, Comision comision) {
+	public List<Comisiones> findByEstadoAndConfiguracionComision(boolean estado, ConfiguracionComision comision) {
 		// TODO Auto-generated method stub
-		return comisionesRepository.findByEstadoAndComision(estado, comision); 
+		return comisionesRepository.findByEstadoAndConfiguracionComision(estado, comision); 
 	}
 
 	@Override
-	public Page<Comisiones> findByEstadoAndComisionAndPersonSupervisor(boolean estado, Comision comision,
+	public Page<Comisiones> findByEstadoAndConfiguracionComisionAndPersonSupervisor(boolean estado, ConfiguracionComision comision,
 			Person personSupervisor, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return comisionesRepository.findByEstadoAndComisionAndPersonSupervisor(estado, comision, personSupervisor, pageable);
+		return comisionesRepository.findByEstadoAndConfiguracionComisionAndPersonSupervisor(estado, comision, personSupervisor, pageable);
 	}
 
 	@Override
-	public List<Comisiones> findByEstadoAndComisionAndPersonAsesor(boolean estado, Comision comision,
+	public List<Comisiones> findByEstadoAndConfiguracionComisionAndPersonAsesor(boolean estado, ConfiguracionComision comision,
 			Person personAsesor) {
 		// TODO Auto-generated method stub
-		return comisionesRepository.findByEstadoAndComisionAndPersonAsesor(estado, comision, personAsesor); 
+		return comisionesRepository.findByEstadoAndConfiguracionComisionAndPersonAsesor(estado, comision, personAsesor); 
 	}
 
 	

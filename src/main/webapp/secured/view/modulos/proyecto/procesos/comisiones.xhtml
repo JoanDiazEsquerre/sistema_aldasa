@@ -11,44 +11,42 @@
 		<h2 style="color: #007d4c;">PROYECTOS > COMISIONES</h2>
 		<p:tabView id="tabView">
 			<p:tab title="Comisiones" id="tabListDoc"> 
-				<h:panelGrid id="grid" columns="10" width="95%" style="margin-bottom: 15px;">
+				<h:panelGrid id="grid" columns="7" style="margin-bottom: 15px;">
 		
-					<h:outputLabel for="optionComision" value="Comision:" style="float: rigth;" />
-					<p:selectOneMenu id="optionComision" value="#{comisionesBean.comisionSelected}" converter="#{comisionesBean.conversorComision}" style="float: Left;">
-						<f:selectItems value="#{comisionesBean.lstComision}" var="com" itemLabel="#{com.codigo} : #{comisionesBean.sdf.format(com.fechaIni)}-#{comisionesBean.sdf.format(com.fechaCierre)}" itemValue="#{prof}" />
+					<h:outputLabel for="optionComision" value="Comision:" />
+					<p:selectOneMenu id="optionComision" value="#{comisionesBean.comisionSelected}" converter="#{comisionesBean.conversorConfiguracionComision}" >
+						<f:selectItems value="#{comisionesBean.lstComision}" var="com" itemLabel="#{com.codigo} : #{comisionesBean.sdf.format(com.fechaInicio)}-#{comisionesBean.sdf.format(com.fechaFin)}" itemValue="#{prof}" />
 						<p:ajax listener="#{comisionesBean.cambiarComision}" update=":form:tabView:idTableComisiones :form:tabView:optionSupervisores" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
 					</p:selectOneMenu>
 					
-					<h:outputLabel for="optionSupervisores" value="Supervisores:" style="float: rigth;" />
-					<p:selectOneMenu id="optionSupervisores" value="#{comisionesBean.personSupervisorSelected}" converter="#{comisionesBean.conversorPersonSupervisor}" style="float: Left;">
+					<h:outputLabel for="optionSupervisores" value="Supervisores:" style="margin-left: 30px"/>
+					<p:selectOneMenu id="optionSupervisores" value="#{comisionesBean.personSupervisorSelected}" converter="#{comisionesBean.conversorPersonSupervisor}" >
 						<f:selectItem itemLabel="[-- Todos --]" itemValue="#{null}"/>
 						<f:selectItems value="#{comisionesBean.lstPersonSupervisor}" var="per" itemLabel="#{per.names} #{per.surnames}" itemValue="#{per}" />
 						<p:ajax update=":form:tabView:idTableComisiones" />
 					</p:selectOneMenu>
-				
 					
-					<h:outputLabel for="comCont" value="Comisión Contado: "  style="float: rigth;" />
-					<h:outputLabel id="comCont" value="#{comisionesBean.comisionSelected.comisionContado}%" style="font-weight: bold;float: Left;"/>  
-						 
 					
-					<h:outputLabel for="comCred" value="Comisión Crédito: " style="float: rigth;" />
-					<h:outputLabel id="comCred" value="#{comisionesBean.comisionSelected.comisionCredito}%" style="font-weight: bold;float: Left;" /> 
 					
-					<h:outputLabel for="metaOn" value="Meta Online: " style="float: rigth;" />
-					<h:outputLabel id="metaOn" value="#{comisionesBean.comisionSelected.metaOnline}" style="font-weight: bold;float: Left" />
-		
-					<p:commandButton value="Alcance Meta" styleClass="mr-2" actionListener="#{comisionesBean.mostrarMeta()}"
-							oncomplete="PF('dialogMeta').show();" update="dialogAlcanceMeta">
-		       		</p:commandButton>  
 		       		
-		       		<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{comisionesBean.procesarExcel()}"
+		       		<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{comisionesBean.procesarExcel()}" style="margin-left: 30px"
 		                         icon="pi pi-file-excel" styleClass="mr-2">
 		            	<p:fileDownload value="#{comisionesBean.fileDes}"/> 
 		      		</p:commandButton>  
-		      		
-		      		<p:commandButton value="Resumen General" styleClass="mr-2" actionListener="#{comisionesBean.verResumen()}"
-		      			onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock(); PF('dialogResumen').show();" update="dialogResumen, formResumen">
-		       		</p:commandButton>       	
+		      		       	
+				</h:panelGrid>
+				
+				<h:panelGrid columns="10">
+				
+					<h:outputLabel value="Meta:" style="font-size: 25px" />
+					<h:outputLabel value="#{comisionesBean.cantidadMeta}" style="font-size: 25px"/>
+					
+					<h:outputLabel value="Lt. Vendidos:" style="margin-left: 60px; font-size: 25px" />
+					<h:outputLabel value="#{comisionesBean.cantidadVendidos}" style="font-size: 25px"/>
+				
+					<h:outputLabel value="Porc. Meta:" style="margin-left: 30px"/>
+					<p:progressBar widgetVar="progressBar" value="60" labelTemplate="{value}%" style="width: 300px;" />
+				
 				</h:panelGrid>
 				
 				
@@ -222,108 +220,6 @@
 		
 	</h:form>
 	
-	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogAlcanceMeta" header="Alcance Meta" widgetVar="dialogMeta" resizable="false" closable="true"
-		appendTo="@(body)" width="85%" height="400px" fitViewport="true">
-		<h:form id="formMetaDialog">
-			<p:dataTable var="meta" id="idTeamTable" value="#{comisionesBean.lstMetaSupervisor}" widgetVar="idTeamTable" rowIndexVar="row" paginator="true" rows="15" style="width:100%"
-				size="small" emptyMessage="No ha vendido lotes." paginatorPosition="bottom" >
-				
-				<p:column width="25px">
-	                      #{row +1}
-	        	</p:column>
-	        	
-				<p:column headerText="Supervisor" sortBy="#{meta.personSupervisor.surnames}"  filterMatchMode="contains" >
-					<h:outputText value="#{meta.personSupervisor.surnames} #{meta.personSupervisor.names}"  />
-				</p:column>
-				
-				<p:column headerText="Meta" filterMatchMode="contains" style="text-align: center">
-					<h:outputText value="#{meta.meta}" />
-				</p:column>
-				
-				<p:column headerText="Lotes Vendidos" filterMatchMode="contains" style="text-align: center">
-					<h:outputText value="#{comisionesBean.calcularLotesVendidosSupervisor(meta)}" />
-				</p:column>
-				
-				<p:column headerText="% Meta" filterMatchMode="contains">
-					 <p:progressBar value="#{comisionesBean.calcularPorcentaje(meta)}" labelTemplate="{value}%" displayOnly="true"/>
-					 
-				</p:column>
-				
-				<p:column headerText="" filterMatchMode="contains">
-					 <p:commandButton value="Aplicar comision meta" actionListener="#{comisionesBean.aplicarComisionMeta(meta)}"
-					 	onstart="PF('blockUIWidgetDialog').block();" oncomplete="PF('blockUIWidgetDialog').unblock();" rendered="#{comisionesBean.calcularPorcentaje(meta) ge 100 ?true:false}" update=":form:tabView:idTableComisiones"/>
-				</p:column>
-				
-				
-				<p:columnGroup type="footer">
-	                <p:row>
-	                    <p:column colspan="3" style="text-align:right" footerText="Totales:"/>
-	                    <p:column style="text-align: center">
-	                        <f:facet name="footer">
-	                            <h:outputText value="#{comisionesBean.lstComisiones.size()}"/>
-	                        </f:facet>
-	                    </p:column>
-	                    <p:column /> 
-	                </p:row>
-	            </p:columnGroup>
-			</p:dataTable>
-			
-       		
-		</h:form>
-	</p:dialog>
-	
-	
-	<pe:blockUI target="dialogResumen" widgetVar="blockUIWidgetResumen">          
-		<h:form style="background: white">           
-			<h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/>           
-		</h:form>            
-	</pe:blockUI>
-	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogResumen" header="Alcance Meta" widgetVar="dialogResumen" resizable="false" closable="true"
-		appendTo="@(body)" width="85%" height="400px" fitViewport="true">
-		<h:form id="formResumen">
-			<h:panelGrid columns="4">
-				<h:outputLabel  value="Supervisores:" style="float: rigth;" />
-				<p:selectOneMenu value="#{comisionesBean.personSupervisorResumen}" converter="#{comisionesBean.conversorPersonSupervisor}" style="float: Left;">
-					<f:selectItem itemLabel="[-- Todos --]" itemValue="#{null}"/>
-					<f:selectItems value="#{comisionesBean.lstPersonSupervisor}" var="per" itemLabel="#{per.names} #{per.surnames}" itemValue="#{per}" />
-					<p:ajax update=":formResumen:idTableResumen :formResumen:idTotalSupervisor" listener="#{comisionesBean.verResumen}" onstart="PF('blockUIWidgetResumen').block();" oncomplete="PF('blockUIWidgetResumen').unblock();"/>
-				</p:selectOneMenu>
-				<p:outputLabel value="Total Comision Supervisor: " style="margin-left: 20px; font-weight:bold;"/>
-				<p:outputLabel value="#{comisionesBean.totalComisionSupervisor}" id="idTotalSupervisor" style="font-weight:bold; color: green;"/>
-			</h:panelGrid>
-			
-			
-			<p:dataTable var="resumen" id="idTableResumen" value="#{comisionesBean.lstResumenMuestra}" widgetVar="idTableResumen" rowIndexVar="row" paginator="true" rows="15" style="width:100%"
-				size="small" emptyMessage="No se encontraron resultados." paginatorPosition="bottom" >
-				
-				<p:column width="25px">
-	                      #{row +1}
-	        	</p:column>
-	        	
-				<p:column headerText="Asesor" sortBy="#{resumen.personAsesor.surnames}"  filterMatchMode="contains" >
-					<h:outputText value="#{resumen.personAsesor.surnames} #{resumen.personAsesor.names}"  />
-				</p:column>
-				
-				<p:column headerText="Lotes Vendidos" filterMatchMode="contains" style="text-align: center">
-					<h:outputText value="#{resumen.totalLotesVendidos}" />
-				</p:column>
-				
-				<p:column headerText="Total Comision" filterMatchMode="contains" style="text-align: center">
-					<h:outputText value="#{resumen.comision}" />
-				</p:column>
-				
-				<p:column headerText="Total Supervisor" filterMatchMode="contains" style="text-align: center">
-					<h:outputText value="#{resumen.comisionSupervisor}" />
-				</p:column>
-				
-				<p:column headerText="Bono" filterMatchMode="contains" style="text-align: center">
-					<h:outputText value="#{resumen.bono}" />
-				</p:column>
-			</p:dataTable>
-			
-       		
-		</h:form>
-	</p:dialog>
 	
 	<pe:blockUI widgetVar="blockUIWidget">          
 		<h:form style="background: white">           
@@ -331,9 +227,6 @@
 		</h:form>            
 	</pe:blockUI>
 	
-	<pe:blockUI target="dialogAlcanceMeta" widgetVar="blockUIWidgetDialog">
-          <h:form style="background: white"> 
-          <h:outputText value="Cargando, espere..." style="white-space: nowrap; font-weight:bold; color: #036fab; background: white"/> 
-          </h:form>
-    </pe:blockUI>
+    
+
 </ui:composition>

@@ -74,7 +74,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Banco;
-import com.model.aldasa.entity.Comision;
 import com.model.aldasa.entity.Comisiones;
 import com.model.aldasa.entity.CuentaBancaria;
 import com.model.aldasa.entity.Empleado;
@@ -88,7 +87,6 @@ import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.BancoService;
-import com.model.aldasa.service.ComisionService;
 import com.model.aldasa.service.ComisionesService;
 import com.model.aldasa.service.CuentaBancariaService;
 import com.model.aldasa.service.EmpleadoService;
@@ -130,9 +128,6 @@ public class LoteBean extends BaseBean implements Serializable{
 	
 	@ManagedProperty(value = "#{teamService}")
 	private TeamService teamService; 
-	
-	@ManagedProperty(value = "#{comisionService}")
-	private ComisionService comisionService;
 	
 	@ManagedProperty(value = "#{comisionesService}")
 	private ComisionesService comisionesService;
@@ -477,104 +472,104 @@ public class LoteBean extends BaseBean implements Serializable{
 	
 	public void generarComision(Lote lote) {
 		
-		if (lote.getStatus().equals(EstadoLote.VENDIDO.getName())) {
-			
-			Comisiones validarExistencia = comisionesService.findByLote(lote);
-			Usuario usuarioAsesor = usuarioService.findByPerson(lote.getPersonAssessor());
-			Comision comision = comisionService.findByFechaIniLessThanEqualAndFechaCierreGreaterThanEqual(lote.getFechaVendido(), lote.getFechaVendido());
-		
-			if(comision != null){
-				
-				Comisiones comisiones = new Comisiones();
-				if(validarExistencia != null) {
-					comisiones.setId(validarExistencia.getId());
-				}
-				comisiones.setLote(lote);
-				if(usuarioAsesor.getTeam().getName().equals("ONLINE")) {
-					List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonAssessorDniAndTipoPagoAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), lote.getPersonAssessor().getDni(),lote.getTipoPago(), comision.getFechaIni(), comision.getFechaCierre());
-					if(lstLotesVendidos.size()==1) {
-						if (lote.getTipoPago().equals("Contado")) {
-							comisiones.setComisionAsesor(comision.getPrimeraVentaContadoOnline());
-						}else {
-							comisiones.setComisionAsesor(comision.getPrimeraVentaCreditoOnline());
-						}
-					}else {
-						if (lote.getTipoPago().equals("Contado")) {
-							comisiones.setComisionAsesor(comision.getBonoContadoOnline());
-						}else {
-							comisiones.setComisionAsesor(comision.getBonoCreditoOnline());
-						}
-					}
-					BigDecimal multiplica = lote.getMontoVenta().multiply(comision.getComisionSupervisorOnline());
-					comisiones.setComisionSupervisor(multiplica.divide(new BigDecimal(100)));
-					comisiones.setTipoEmpleado("O");
-					
-				}else if (usuarioAsesor.getTeam().getName().equals("INTERNOS") || usuarioAsesor.getTeam().getName().equals("EXTERNOS")) {
-					if (lote.getTipoPago().equals("Contado")) {
-						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionContado()));
-						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100)));
-					}else {
-						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionCredito()));
-						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100)));
-					}
-					comisiones.setComisionSupervisor(BigDecimal.ZERO);
-					comisiones.setTipoEmpleado(usuarioAsesor.getTeam().getName().equals("INTERNOS")?"I": "E");
-					
-				}else {
-					List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), lote.getPersonSupervisor(), "%%", comision.getFechaIni(), comision.getFechaCierre());
-					
-					MetaSupervisor metaSupervisor = metaSupervisorService.findByComisionAndEstadoAndPersonSupervisor(comision, true, lote.getPersonSupervisor());
-					
-					boolean alcanzaMeta = false;
-					if (metaSupervisor != null) {
-						int meta  = metaSupervisor.getMeta();
-						if(lstLotesVendidos.size() >= meta) {
-							alcanzaMeta = true;
-							for (Lote lt:lstLotesVendidos) {
-								Comisiones comConsulta = comisionesService.findByLote(lt);
-								if(comConsulta != null) {
-									BigDecimal multiplica = lt.getMontoVenta().multiply(new BigDecimal(comision.getComisionMetaSupervisor()));
-									comConsulta.setComisionSupervisor(multiplica.divide(new BigDecimal(100)));
-									comisionesService.save(comConsulta);
-
-								}
-							} 
-						}
-					}
-					
-					if (lote.getTipoPago().equals("Contado")) {
-						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionContado()));
-						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100)));
-					}else {
-						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionCredito()));
-						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100)));
-					}
-					
-					if(!alcanzaMeta) {
-						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionSupervisor()));
-						comisiones.setComisionSupervisor(multiplica.divide(new BigDecimal(100)));
-
-					}else {
-						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionMetaSupervisor()));
-						comisiones.setComisionSupervisor(multiplica.divide(new BigDecimal(100)));
-					}
-
-				}
-				BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getSubgerente()));
-				comisiones.setComisionSubgerente(multiplica.divide(new BigDecimal(100)));
-				comisiones.setEstado(true);
-				comisionesService.save(comisiones);
-			}
-
-		}else {
-			Comisiones comisionesrelacionados = comisionesService.findByLote(lote);
-			
-			if (comisionesrelacionados != null) {
-				comisionesrelacionados.setEstado(false);
-				comisionesService.save(comisionesrelacionados);
-
-			}
-		}
+//		if (lote.getStatus().equals(EstadoLote.VENDIDO.getName())) {
+//			
+//			Comisiones validarExistencia = comisionesService.findByLote(lote);
+//			Usuario usuarioAsesor = usuarioService.findByPerson(lote.getPersonAssessor());
+//			Comision comision = comisionService.findByFechaIniLessThanEqualAndFechaCierreGreaterThanEqual(lote.getFechaVendido(), lote.getFechaVendido());
+//		
+//			if(comision != null){
+//				
+//				Comisiones comisiones = new Comisiones();
+//				if(validarExistencia != null) {
+//					comisiones.setId(validarExistencia.getId());
+//				}
+//				comisiones.setLote(lote);
+//				if(usuarioAsesor.getTeam().getName().equals("ONLINE")) {
+//					List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonAssessorDniAndTipoPagoAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), lote.getPersonAssessor().getDni(),lote.getTipoPago(), comision.getFechaIni(), comision.getFechaCierre());
+//					if(lstLotesVendidos.size()==1) {
+//						if (lote.getTipoPago().equals("Contado")) {
+//							comisiones.setComisionAsesor(comision.getPrimeraVentaContadoOnline());
+//						}else {
+//							comisiones.setComisionAsesor(comision.getPrimeraVentaCreditoOnline());
+//						}
+//					}else {
+//						if (lote.getTipoPago().equals("Contado")) {
+//							comisiones.setComisionAsesor(comision.getBonoContadoOnline());
+//						}else {
+//							comisiones.setComisionAsesor(comision.getBonoCreditoOnline());
+//						}
+//					}
+//					BigDecimal multiplica = lote.getMontoVenta().multiply(comision.getComisionSupervisorOnline());
+//					comisiones.setComisionSupervisor(multiplica.divide(new BigDecimal(100)));
+//					comisiones.setTipoEmpleado("O");
+//					
+//				}else if (usuarioAsesor.getTeam().getName().equals("INTERNOS") || usuarioAsesor.getTeam().getName().equals("EXTERNOS")) {
+//					if (lote.getTipoPago().equals("Contado")) {
+//						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionContado()));
+//						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100)));
+//					}else {
+//						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionCredito()));
+//						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100)));
+//					}
+//					comisiones.setComisionSupervisor(BigDecimal.ZERO);
+//					comisiones.setTipoEmpleado(usuarioAsesor.getTeam().getName().equals("INTERNOS")?"I": "E");
+//					
+//				}else {
+//					List<Lote> lstLotesVendidos = loteService.findByStatusAndPersonSupervisorAndPersonAssessorDniLikeAndFechaVendidoBetween(EstadoLote.VENDIDO.getName(), lote.getPersonSupervisor(), "%%", comision.getFechaIni(), comision.getFechaCierre());
+//					
+//					MetaSupervisor metaSupervisor = metaSupervisorService.findByComisionAndEstadoAndPersonSupervisor(comision, true, lote.getPersonSupervisor());
+//					
+//					boolean alcanzaMeta = false;
+//					if (metaSupervisor != null) {
+//						int meta  = metaSupervisor.getMeta();
+//						if(lstLotesVendidos.size() >= meta) {
+//							alcanzaMeta = true;
+//							for (Lote lt:lstLotesVendidos) {
+//								Comisiones comConsulta = comisionesService.findByLote(lt);
+//								if(comConsulta != null) {
+//									BigDecimal multiplica = lt.getMontoVenta().multiply(new BigDecimal(comision.getComisionMetaSupervisor()));
+//									comConsulta.setComisionSupervisor(multiplica.divide(new BigDecimal(100)));
+//									comisionesService.save(comConsulta);
+//
+//								}
+//							} 
+//						}
+//					}
+//					
+//					if (lote.getTipoPago().equals("Contado")) {
+//						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionContado()));
+//						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100)));
+//					}else {
+//						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionCredito()));
+//						comisiones.setComisionAsesor(multiplica.divide(new BigDecimal(100)));
+//					}
+//					
+//					if(!alcanzaMeta) {
+//						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionSupervisor()));
+//						comisiones.setComisionSupervisor(multiplica.divide(new BigDecimal(100)));
+//
+//					}else {
+//						BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getComisionMetaSupervisor()));
+//						comisiones.setComisionSupervisor(multiplica.divide(new BigDecimal(100)));
+//					}
+//
+//				}
+//				BigDecimal multiplica = lote.getMontoVenta().multiply(new BigDecimal(comision.getSubgerente()));
+//				comisiones.setComisionSubgerente(multiplica.divide(new BigDecimal(100)));
+//				comisiones.setEstado(true);
+//				comisionesService.save(comisiones);
+//			}
+//
+//		}else {
+//			Comisiones comisionesrelacionados = comisionesService.findByLote(lote);
+//			
+//			if (comisionesrelacionados != null) {
+//				comisionesrelacionados.setEstado(false);
+//				comisionesService.save(comisionesrelacionados);
+//
+//			}
+//		}
 	}
 	
 	public void calcularAreaPerimetro() {
@@ -932,12 +927,6 @@ public class LoteBean extends BaseBean implements Serializable{
 	}
 	public void setTeamService(TeamService teamService) {
 		this.teamService = teamService;
-	}
-	public ComisionService getComisionService() {
-		return comisionService;
-	}
-	public void setComisionService(ComisionService comisionService) {
-		this.comisionService = comisionService;
 	}
 	public ComisionesService getComisionesService() {
 		return comisionesService;
