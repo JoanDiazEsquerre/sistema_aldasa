@@ -51,6 +51,9 @@ public class Usuario {
 	@Column(name="aprobarordencompra")
 	private boolean aprobarOrdenCompra;
 	
+	@Column(name="modolecturamantvoucher")
+	private boolean modoLecturaMantVoucher;
+	
 	
 	
 	public Integer getId() {
@@ -130,6 +133,12 @@ public class Usuario {
 	}
 	public void setAprobarOrdenCompra(boolean aprobarOrdenCompra) {
 		this.aprobarOrdenCompra = aprobarOrdenCompra;
+	}
+	public boolean isModoLecturaMantVoucher() {
+		return modoLecturaMantVoucher;
+	}
+	public void setModoLecturaMantVoucher(boolean modoLecturaMantVoucher) {
+		this.modoLecturaMantVoucher = modoLecturaMantVoucher;
 	}
 	
 	

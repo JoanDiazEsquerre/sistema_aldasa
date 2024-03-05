@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="repDocumentoFacturaElectronica" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="511" leftMargin="42" rightMargin="42" topMargin="42" bottomMargin="42" uuid="f7cc8725-31db-46d6-9e69-d3629a2409fe">
 	<property name="ireport.zoom" value="1.9965000000000666"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="480"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#999999"/>
@@ -62,6 +62,8 @@
 	<parameter name="TIPOMONEDA" class="java.lang.String"/>
 	<parameter name="TIPOCOMPROBANTE" class="java.lang.String"/>
 	<parameter name="QR" class="java.lang.String"/>
+	<parameter name="DOCUMENTOREF" class="java.lang.String"/>
+	<parameter name="TIPODOCUMENTOREF" class="java.lang.String"/>
 	<field name="IDVENTA" class="java.lang.Integer"/>
 	<field name="FECHA" class="java.util.Date"/>
 	<field name="VENCIMIENTO" class="java.util.Date"/>
@@ -407,7 +409,7 @@
 	<columnFooter>
 		<band height="226">
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="10a49369-4a56-42f6-952f-b38611ba4a81" key="textField-2" x="36" y="59" width="285" height="15"/>
+				<reportElement uuid="10a49369-4a56-42f6-952f-b38611ba4a81" key="textField-2" x="36" y="42" width="285" height="15"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -420,7 +422,7 @@
 				<textFieldExpression><![CDATA[$P{TOTALSTRING}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="85ef23b4-a375-4a29-93d9-e8967a3fdd5f" x="0" y="61" width="36" height="15"/>
+				<reportElement uuid="85ef23b4-a375-4a29-93d9-e8967a3fdd5f" x="0" y="42" width="36" height="15"/>
 				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
@@ -609,6 +611,20 @@ de Validez del CPE]]></text>
     new com.google.zxing.qrcode.QRCodeWriter().encode(
             $P{QR}, com.google.zxing.BarcodeFormat.QR_CODE, 200, 200))]]></imageExpression>
 			</image>
+			<textField>
+				<reportElement uuid="128f5e97-29b3-4bbe-971f-045b6134e53b" x="138" y="60" width="149" height="15"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DOCUMENTOREF}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bd9c1b90-3c06-4591-aa31-45fc417fe8ea" x="0" y="60" width="133" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{TIPODOCUMENTOREF}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnFooter>
 </jasperReport>

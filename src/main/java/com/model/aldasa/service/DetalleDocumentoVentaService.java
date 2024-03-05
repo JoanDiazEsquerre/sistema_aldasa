@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity. DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
@@ -28,7 +29,8 @@ public interface DetalleDocumentoVentaService {
 	List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndCuota(boolean estado, Cuota cuota);
 	List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndCuotaPrepago(boolean estado, Cuota cuotaPrepago);
 	
-	List<DetalleDocumentoVenta> findBy(boolean estado, Cuota cuotaPrepago);
+	
+	List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndCuotaContratoOrderByCuotaContratoIdAsc(boolean estadoDocVenta, Contrato contrato);
 
 	
 	//PARA EL REPORTE DE DOCUMENTOS DE VENTAS

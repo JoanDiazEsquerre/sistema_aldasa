@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
@@ -21,6 +22,8 @@ public interface DetalleDocumentoVentaRepository extends JpaRepository<DetalleDo
 	
 	List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndCuota(boolean estado, Cuota cuota);
 	List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndCuotaPrepago(boolean estado, Cuota cuotaPrepago);
+	
+	List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndCuotaContratoOrderByCuotaContratoIdAsc(boolean estadoDocVenta, Contrato contrato);
 
 	//PARA EL REPORTE DE DOCUMENTOS DE VENTAS
 	List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndDocumentoVentaSucursalAndDocumentoVentaFechaEmisionBetweenOrderByDocumentoVentaNumeroAsc(Boolean estado, Sucursal sucursal, Date fechaIni, Date fechaFin);

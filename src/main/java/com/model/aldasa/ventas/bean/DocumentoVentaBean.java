@@ -252,7 +252,7 @@ public class DocumentoVentaBean extends BaseBean {
 	private BigDecimal nuevoInteres;
 	private BigDecimal sumaCuotaSI, sumaInteres, sumaCuotaTotal;
 	
-	private String imagen1, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8, imagen9, imagen10;
+	private String imagen1, imagen2, imagen3, imagen4, imagen5, imagen6, imagen7, imagen8, imagen9, imagen10, imagen11, imagen12, imagen13, imagen14, imagen15;
 	private String tipoTransaccion1, tipoTransaccion2, tipoTransaccion3, tipoTransaccion4, tipoTransaccion5, tipoTransaccion6, tipoTransaccion7, tipoTransaccion8, tipoTransaccion9, tipoTransaccion10, tipoTransaccion11, tipoTransaccion12, tipoTransaccion13, tipoTransaccion14, tipoTransaccion15;
 
 	private NumeroALetra numeroALetra = new  NumeroALetra();
@@ -833,6 +833,12 @@ public class DocumentoVentaBean extends BaseBean {
 			imagen8 = "";
 			imagen9 = "";
 			imagen10 = "";
+			imagen11 = "";
+			imagen12 = "";
+			imagen13 = "";
+			imagen14 = "";
+			imagen15 = "";
+			
 			
 //			String nombreBusqueda = "%"+documentoVentaSelected.getId() +"_%";
 			
@@ -868,6 +874,21 @@ public class DocumentoVentaBean extends BaseBean {
 				}
 				if(contador==10) {
 					imagen10 = i.getNombre();
+				}
+				if(contador==11) {
+					imagen11 = i.getNombre();
+				}
+				if(contador==12) {
+					imagen12 = i.getNombre();
+				}
+				if(contador==13) {
+					imagen13 = i.getNombre();
+				}
+				if(contador==14) {
+					imagen14 = i.getNombre();
+				}
+				if(contador==15) {
+					imagen15 = i.getNombre();
 				}
 				contador ++;
 			}
@@ -1406,6 +1427,7 @@ public class DocumentoVentaBean extends BaseBean {
     }
 	
 	public void listarDetalleDocumentoVenta( ) {
+		
 		montoLetra = numeroALetra.Convertir(documentoVentaSelected.getTotal()+"", true, "SOLES");
 		lstDetalleDocumentoVentaSelected = new ArrayList<>();
 		lstDetalleDocumentoVentaSelected = detalleDocumentoVentaService.findByDocumentoVentaAndEstado(documentoVentaSelected, true);
@@ -3356,6 +3378,26 @@ public class DocumentoVentaBean extends BaseBean {
             parametros.put("BARCODESTRING", bar);
             parametros.put("RUCEMPRESA", navegacionBean.getSucursalLogin().getRuc());
             
+            if(documentoVentaSelected.getDocumentoVentaRef()!=null) {
+            	parametros.put("TIPODOCUMENTOREF", "DOCUMENTO RELACIONADO:");
+            	parametros.put("DOCUMENTOREF", documentoVentaSelected.getDocumentoVentaRef().getSerie() + "-"+documentoVentaSelected.getDocumentoVentaRef().getNumero());
+            }else if(documentoVentaSelected.getNumeroNotaCredito() != null) {
+            	if(!documentoVentaSelected.getNumeroNotaCredito().equals("")) {
+            		parametros.put("TIPODOCUMENTOREF", "NOTA DE CRÉDITO:");
+                	parametros.put("DOCUMENTOREF", documentoVentaSelected.getNumeroNotaCredito());
+            	}
+            }else if(documentoVentaSelected.getNumeroNotaDebito() != null) {
+            	if(!documentoVentaSelected.getNumeroNotaDebito().equals("")) {
+            		parametros.put("TIPODOCUMENTOREF", "NOTA DE DÉBITO:");
+                	parametros.put("DOCUMENTOREF", documentoVentaSelected.getNumeroNotaDebito());
+            	}
+            }else {
+            	parametros.put("TIPODOCUMENTOREF", "");
+            	parametros.put("DOCUMENTOREF", "");
+            }
+            
+            
+            
             parametros.put("RUTAIMAGEN", getRutaGrafico(navegacionBean.getRutaLogo()));
             
             String path = "secured/view/modulos/ventas/reportes/jasper/repDocumentoFacturaElectronica.jasper"; 
@@ -5178,6 +5220,46 @@ public class DocumentoVentaBean extends BaseBean {
 	}
 	public void setFile15(UploadedFile file15) {
 		this.file15 = file15;
+	}
+
+	public String getImagen11() {
+		return imagen11;
+	}
+
+	public void setImagen11(String imagen11) {
+		this.imagen11 = imagen11;
+	}
+
+	public String getImagen12() {
+		return imagen12;
+	}
+
+	public void setImagen12(String imagen12) {
+		this.imagen12 = imagen12;
+	}
+
+	public String getImagen13() {
+		return imagen13;
+	}
+
+	public void setImagen13(String imagen13) {
+		this.imagen13 = imagen13;
+	}
+
+	public String getImagen14() {
+		return imagen14;
+	}
+
+	public void setImagen14(String imagen14) {
+		this.imagen14 = imagen14;
+	}
+
+	public String getImagen15() {
+		return imagen15;
+	}
+
+	public void setImagen15(String imagen15) {
+		this.imagen15 = imagen15;
 	}
 	
 	

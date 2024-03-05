@@ -43,6 +43,6 @@ public interface EmpleadoService {
 	List<Empleado> findByEstadoAndPlanilla(boolean status, boolean planilla);
 	List<Empleado> findByEstadoAndPlanillaAndSucursal(boolean status, boolean planilla, Sucursal sucursal);
 
-	
+	List<Empleado> findByEstadoAndCargoDescripcion(boolean estado, String cargo);
 
 }

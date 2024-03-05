@@ -57,7 +57,7 @@
 	
 			<p:column style="width:42px;text-align: left">
 				<f:facet name="header">
-					<p:commandLink action="#{voucherBean.newImagen()}"
+					<p:commandLink action="#{voucherBean.newImagen()}" rendered="#{!navegacionBean.usuarioLogin.modoLecturaMantVoucher}"
 						update=":dialogImagen :formTeamDialog"
 						oncomplete="PF('imagenDialog').show();"
 						title="NUEVO VOUCHER">
@@ -102,7 +102,7 @@
 			</p:column>
 		</p:dataTable>
 		<p:contextMenu for="idTable" >
-	    	<p:menuitem value="Eliminar" update="idTable" icon="pi pi-times" action="#{voucherBean.anularVoucher}" />
+	    	<p:menuitem value="Eliminar" update="idTable" icon="pi pi-times" action="#{voucherBean.anularVoucher}" rendered="#{!navegacionBean.usuarioLogin.modoLecturaMantVoucher}" />
        	</p:contextMenu>
 	</h:form>
 	

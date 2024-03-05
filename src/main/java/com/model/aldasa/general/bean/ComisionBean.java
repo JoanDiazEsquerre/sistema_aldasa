@@ -218,6 +218,13 @@ public class ComisionBean extends BaseBean implements Serializable{
 		if (comisionSelected.getId() == null) {
 			ConfiguracionComision validarExistencia = configuracionComisionService.findByEstadoAndCodigo(true, comisionSelected.getCodigo());
 			if (validarExistencia == null) {
+				comisionSelected.setBonojv(comisionSelected.getBonoJefeVentaObligatorio()); 
+				comisionSelected.setMontoComisionjv(BigDecimal.ZERO);
+				comisionSelected.setNumVendidojv(0);
+				comisionSelected.setComisionPorcentajejv(comisionSelected.getComisionJefeVenta());
+				comisionSelected.setMetajv(0);
+				comisionSelected.setMontoComisionSubgerente(BigDecimal.ZERO); 
+				
 				configuracionComisionService.save(comisionSelected);
 				addInfoMessage("Se guardo correctamente.");
 				PrimeFaces.current().executeScript("PF('comisionDialog').hide();"); 
@@ -290,7 +297,7 @@ public class ComisionBean extends BaseBean implements Serializable{
 		comisionSelected.setBonoSenior(new BigDecimal(500));
 		comisionSelected.setMinimoVentaMaster(10);
 		comisionSelected.setMaximoVentaMaster(100); 
-		comisionSelected.setBonoMaster(new BigDecimal(100));
+		comisionSelected.setBonoMaster(new BigDecimal(1000));
 		comisionSelected.setVentasMetaContado(5);
 		comisionSelected.setComisionContadoMeta(new BigDecimal(10));
 		
@@ -313,7 +320,8 @@ public class ComisionBean extends BaseBean implements Serializable{
 		
 		comisionSelected.setComisionJefeVenta(new BigDecimal(0.50));  
 		comisionSelected.setPorcentajeBono(new BigDecimal(70));
-		comisionSelected.setBonoJefeVenta(new BigDecimal(2000)); 
+		comisionSelected.setBonoJefeVenta(new BigDecimal(1000)); 
+		comisionSelected.setBonoJefeVentaObligatorio(new BigDecimal(1000));
 		comisionSelected.setComisionJefeVentaMeta(BigDecimal.ONE);
 		
 		comisionSelected.setBonoCoordinador(new BigDecimal(2000));
@@ -380,7 +388,7 @@ public class ComisionBean extends BaseBean implements Serializable{
 			@Override
 			public List<ConfiguracionComision> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                
-                Sort sort=Sort.by("fechaInicio").ascending();
+                Sort sort=Sort.by("fechaInicio").descending();
                 if(sortBy!=null) {
                 	for (Map.Entry<String, SortMeta> entry : sortBy.entrySet()) {
                 	   if(entry.getValue().getOrder().isAscending()) {

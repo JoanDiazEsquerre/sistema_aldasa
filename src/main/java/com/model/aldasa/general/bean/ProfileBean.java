@@ -90,6 +90,26 @@ public class ProfileBean extends BaseBean implements Serializable {
 		addInfoMessage("Se agregó el permiso correctamente.");
 		
 	}
+	
+	public void eliminarPermiso(ModuloSistema ms) {
+		String nuevoPermiso = "";
+		
+		if(!profileSelected.getPermiso().equals("")) {
+			String[] idPermisos = profileSelected.getPermiso().split(",");
+			for(String s : idPermisos) {
+				if(!ms.getId().toString().equals(s)) { 
+					nuevoPermiso = nuevoPermiso+s+",";
+				}
+			}
+			
+			nuevoPermiso = nuevoPermiso.substring(0, nuevoPermiso.length() - 1);
+			profileSelected.setPermiso(nuevoPermiso);
+			profileService.save(profileSelected);
+			
+			verPermisos();
+			addInfoMessage("Se eliminó el permiso correctamente.");
+		}
+	}
 
 	public void verPermisos() {
 		moduloSelected=null;

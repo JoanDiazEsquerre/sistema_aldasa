@@ -124,9 +124,10 @@
 				</p:dataTable>
 				
 				<p:contextMenu id="menuTableDoc" for="idTableListDoc" >
-		            <p:menuitem value="Anular" icon="pi pi-trash" oncomplete="PF('anulaDocumento').show()"  />
 		            <p:menuitem value="Ver Voucher" icon="pi pi-image" action="#{documentoVentaBean.verVoucher()}"  update=":dialogVoucherDocumento" />	
 		            <p:menuitem value="Generar Nota Crédito/Débito" action="#{documentoVentaBean.listarSerieNota()}" icon="pi pi-wallet" update="dialogNotaCreditoDebito" />
+		       		<p:menuitem value="Anular" icon="pi pi-trash" oncomplete="PF('anulaDocumento').show()"  />
+		  
 		        </p:contextMenu>
 		        
 		        
@@ -1184,6 +1185,15 @@
 			            <p:ajax event="blur" listener="#{documentoVentaBean.editarCorreoCliente}" update="formDocumentoVentaDialog" />
 			        </p:inputText>
 		        </p:inplace>
+		        
+		        <h:outputText value="Documento Referencia:" rendered="#{documentoVentaBean.documentoVentaSelected.documentoVentaRef ne null}"/>
+		        <p:outputLabel value="#{documentoVentaBean.documentoVentaSelected.documentoVentaRef.serie}-#{documentoVentaBean.documentoVentaSelected.documentoVentaRef.numero}" rendered="#{documentoVentaBean.documentoVentaSelected.documentoVentaRef ne null}"/>
+	
+				<h:outputText value="Número Nota Crédito:" rendered="#{documentoVentaBean.documentoVentaSelected.numeroNotaCredito ne null}"/>
+		        <p:outputLabel value="#{documentoVentaBean.documentoVentaSelected.numeroNotaCredito}" rendered="#{documentoVentaBean.documentoVentaSelected.numeroNotaCredito ne null}"/>
+	
+				<h:outputText value="Número Nota Débito:" rendered="#{documentoVentaBean.documentoVentaSelected.numeroNotaDebito ne null}"/>
+		        <p:outputLabel value="#{documentoVentaBean.documentoVentaSelected.numeroNotaDebito}" rendered="#{documentoVentaBean.documentoVentaSelected.numeroNotaDebito ne null}"/>
 	
 			</h:panelGrid>   
 				
@@ -1349,31 +1359,51 @@
 					<f:setPropertyActionListener value="#{documentoVentaBean.imagen5}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
 				</p:commandButton>
 				
-				<p:commandButton value="VOUCHER 6" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen6)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:idDatosVoucherEditable :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen5 eq ''}">
+				<p:commandButton value="VOUCHER 6" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen6)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:idDatosVoucherEditable :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen6 eq ''}">
 					<f:setPropertyActionListener value="#{documentoVentaBean.imagen6}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
 				</p:commandButton>
 				
-				<p:commandButton value="VOUCHER 7" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen7)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:idDatosVoucherEditable :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen5 eq ''}">
+				<p:commandButton value="VOUCHER 7" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen7)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:idDatosVoucherEditable :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen7 eq ''}">
 					<f:setPropertyActionListener value="#{documentoVentaBean.imagen7}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
 				</p:commandButton>
 				
-				<p:commandButton value="VOUCHER 8" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen8)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:idDatosVoucherEditable :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen5 eq ''}">
+				<p:commandButton value="VOUCHER 8" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen8)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:idDatosVoucherEditable :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen8 eq ''}">
 					<f:setPropertyActionListener value="#{documentoVentaBean.imagen8}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
 				</p:commandButton>
 				
-				<p:commandButton value="VOUCHER 9" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen9)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:idDatosVoucherEditable :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen5 eq ''}">
+				<p:commandButton value="VOUCHER 9" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen9)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:idDatosVoucherEditable :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen9 eq ''}">
 					<f:setPropertyActionListener value="#{documentoVentaBean.imagen9}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
 				</p:commandButton>
 				
-				<p:commandButton value="VOUCHER 10" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen10)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:idDatosVoucherEditable :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen5 eq ''}">
+				<p:commandButton value="VOUCHER 10" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen10)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:idDatosVoucherEditable :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen10 eq ''}">
 					<f:setPropertyActionListener value="#{documentoVentaBean.imagen10}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 11" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen11)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:idDatosVoucherEditable :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen11 eq ''}">
+					<f:setPropertyActionListener value="#{documentoVentaBean.imagen11}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 12" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen12)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:idDatosVoucherEditable :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen12 eq ''}">
+					<f:setPropertyActionListener value="#{documentoVentaBean.imagen12}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 13" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen13)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:idDatosVoucherEditable :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen13 eq ''}">
+					<f:setPropertyActionListener value="#{documentoVentaBean.imagen13}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 14" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen14)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:idDatosVoucherEditable :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen14 eq ''}">
+					<f:setPropertyActionListener value="#{documentoVentaBean.imagen14}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
+				</p:commandButton>
+				
+				<p:commandButton value="VOUCHER 15" action="#{documentoVentaBean.obtenerDatosVoucher(documentoVentaBean.imagen15)}" update=":formVoucherDocumentoDialog:idDatosVoucher :formVoucherDocumentoDialog:idDatosVoucherEditable :formVoucherDocumentoDialog:imagenLoad :form:tabView:idTableListDoc" process="@this" disabled="#{documentoVentaBean.imagen15 eq ''}">
+					<f:setPropertyActionListener value="#{documentoVentaBean.imagen15}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
 				</p:commandButton>
 	
 			</h:panelGrid>
 			
 			<h:panelGrid id="idDatosVoucher" rendered="#{navegacionBean.usuarioLogin.modificarVoucher eq false}" columns="2" >  
 				<h:outputLabel value="Fecha:"/> 
-				<h:outputLabel value="#{documentoVentaBean.convertirHora(documentoVentaBean.fechaVoucherDialog)}" /> 
+				<h:outputLabel value="#{documentoVentaBean.convertirHoraFull(documentoVentaBean.fechaVoucherDialog)}"  /> 
 				
 				<h:outputLabel value="Monto:"/>
 				<h:outputLabel value="#{documentoVentaBean.montoVoucherDialog}"> 

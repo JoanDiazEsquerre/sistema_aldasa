@@ -6,220 +6,170 @@
 	locale="#{localeBean.usedLocale}"
 	xmlns:f="http://java.sun.com/jsf/core">
 
-
 	<h:form id="form">
+        <f:event type="preRenderComponent" listener="#{comisionesBean.cargarListaConfiguracion}" />
 		<h2 style="color: #007d4c;">PROYECTOS > COMISIONES</h2>
 		<p:tabView id="tabView">
 			<p:tab title="Comisiones" id="tabListDoc"> 
-				<h:panelGrid id="grid" columns="7" style="margin-bottom: 15px;">
+				<h:panelGrid id="grid" columns="13" style="margin-bottom: 15px;">
 		
-					<h:outputLabel for="optionComision" value="Comision:" />
-					<p:selectOneMenu id="optionComision" value="#{comisionesBean.comisionSelected}" converter="#{comisionesBean.conversorConfiguracionComision}" >
-						<f:selectItems value="#{comisionesBean.lstComision}" var="com" itemLabel="#{com.codigo} : #{comisionesBean.sdf.format(com.fechaInicio)}-#{comisionesBean.sdf.format(com.fechaFin)}" itemValue="#{prof}" />
-						<p:ajax listener="#{comisionesBean.cambiarComision}" update=":form:tabView:idTableComisiones :form:tabView:optionSupervisores" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
+					<h:outputLabel for="optionComision" value="Comision: " />
+					<p:selectOneMenu id="optionComision" value="#{comisionesBean.configuracionComisionSelected}" converter="#{comisionesBean.conversorConfiguracionComision}" >
+						<f:selectItems value="#{comisionesBean.lstConfiguracionComision}" var="com" itemLabel="#{com.codigo} : #{comisionesBean.sdf.format(com.fechaInicio)}-#{comisionesBean.sdf.format(com.fechaFin)}" itemValue="#{prof}" />
+						<p:ajax listener="#{comisionesBean.cambiarComision}" update=":form:tabView:idTableComisiones :form:tabView:grid" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();"/>
 					</p:selectOneMenu>
 					
-					<h:outputLabel for="optionSupervisores" value="Supervisores:" style="margin-left: 30px"/>
-					<p:selectOneMenu id="optionSupervisores" value="#{comisionesBean.personSupervisorSelected}" converter="#{comisionesBean.conversorPersonSupervisor}" >
-						<f:selectItem itemLabel="[-- Todos --]" itemValue="#{null}"/>
-						<f:selectItems value="#{comisionesBean.lstPersonSupervisor}" var="per" itemLabel="#{per.names} #{per.surnames}" itemValue="#{per}" />
-						<p:ajax update=":form:tabView:idTableComisiones" />
-					</p:selectOneMenu>
+					<h:outputLabel value="Bono Jefe Venta: " style="margin-left: 20px; font-size:20px; font-weight: bolder;" />
+					<h:outputLabel value="#{comisionesBean.configuracionComisionSelected.bonojv}" style="font-size:20px; font-weight: bolder; color: red" />
 					
+					<h:outputLabel value="Monto Comisión Jefe V.: " style="margin-left: 20px; font-size:20px; font-weight: bolder;" />
+					<h:outputLabel value="#{comisionesBean.configuracionComisionSelected.montoComisionjv}" style="font-size:20px; font-weight: bolder; color: red"/>
 					
+					<h:outputLabel value="Total Vendidos: " style="margin-left: 20px; font-size:20px; font-weight: bolder;" />
+					<h:outputLabel value="#{comisionesBean.configuracionComisionSelected.numVendidojv}" style="font-size:20px; font-weight: bolder; color: red"/>
 					
-		       		
-		       		<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{comisionesBean.procesarExcel()}" style="margin-left: 30px"
-		                         icon="pi pi-file-excel" styleClass="mr-2">
-		            	<p:fileDownload value="#{comisionesBean.fileDes}"/> 
-		      		</p:commandButton>  
+					<h:outputLabel value="Meta General: " style="margin-left: 20px; font-size:20px; font-weight: bolder;" />
+					<h:outputLabel value="#{comisionesBean.configuracionComisionSelected.metajv}" style="font-size:20px; font-weight: bolder; color: red"/>
+					
+					<h:outputLabel value="Porcentaje de venta Jefe V.: " style="margin-left: 20px; font-size:20px; font-weight: bolder;" />
+					<h:outputLabel value="#{comisionesBean.configuracionComisionSelected.comisionPorcentajejv}%" style="font-size:20px; font-weight: bolder; color: red"/>
+					
+					<p:progressBar widgetVar="progressBar" value="#{comisionesBean.porcentajeGeneral}" labelTemplate="{value}%" style="width: 150px" />
+					
+					<h:outputLabel value="Comision Sub-Gerente: " style="font-size:20px; font-weight: bolder;" />
+					<h:outputLabel value="#{comisionesBean.configuracionComisionSelected.montoComisionSubgerente}" style="font-size:20px; font-weight: bolder; color: red"/>
+					
+					 
+<!-- 		       		<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{comisionesBean.procesarExcel()}" style="margin-left: 30px" -->
+<!-- 		                         icon="pi pi-file-excel" styleClass="mr-2"> -->
+<!-- 		            	<p:fileDownload value="#{comisionesBean.fileDes}"/>  -->
+<!-- 		      		</p:commandButton>   -->
 		      		       	
 				</h:panelGrid>
 				
-				<h:panelGrid columns="10">
-				
-					<h:outputLabel value="Meta:" style="font-size: 25px" />
-					<h:outputLabel value="#{comisionesBean.cantidadMeta}" style="font-size: 25px"/>
-					
-					<h:outputLabel value="Lt. Vendidos:" style="margin-left: 60px; font-size: 25px" />
-					<h:outputLabel value="#{comisionesBean.cantidadVendidos}" style="font-size: 25px"/>
-				
-					<h:outputLabel value="Porc. Meta:" style="margin-left: 30px"/>
-					<p:progressBar widgetVar="progressBar" value="60" labelTemplate="{value}%" style="width: 300px;" />
-				
-				</h:panelGrid>
+		
 				
 				
 			
-				<p:dataTable var="com" id="idTableComisiones" value="#{comisionesBean.lstComisionesLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="15" style="width:100%"
-					size="small" emptyMessage="No se encontraron comisiones." paginatorPosition="bottom" rowKey="#{com.id}" selection="#{comisionesBean.comisionesSelected}" selectionMode="single">
+				<p:dataTable var="com" id="idTableComisiones" value="#{comisionesBean.lstComisionSupervisorLazy}" widgetVar="loteTable" rowIndexVar="row" paginator="true" rows="15" style="width:100%"
+					size="small" emptyMessage="No se encontraron comisiones." paginatorPosition="bottom" rowKey="#{com.id}" selection="#{comisionesBean.comisionSupervisorSelected}" selectionMode="single">
+					
+					<p:ajax event="rowSelect" update="dialogSupervisorComision" oncomplete="PF('comisionSupervisorDialog').show();" />
 					
 					<p:column width="25px">
 		                      #{row +1}
 		        	</p:column>
 		        	
-		        	<p:column headerText="Supervisor" sortBy="#{com.personSupervisor.surnames}" filterMatchMode="contains" width="200px">
-						<h:outputText value="#{com.personSupervisor.surnames.concat(' ').concat(com.personSupervisor.names)}" />
-					</p:column>
-		        	
-		        	<p:column headerText="Asesor" sortBy="#{com.personAsesor.surnames}" filterMatchMode="contains" width="200px">
-						<h:outputText value="#{com.personAsesor.surnames} #{com.personAsesor.names}" />
+		        	<p:column headerText="Supervisor" sortBy="#{com.personaSupervisor.surnames}" filterMatchMode="contains" >
+						<h:outputText value="#{com.personaSupervisor.surnames.concat(' ').concat(com.personaSupervisor.names)}" />
 					</p:column>
 					
-					<p:column headerText="Cliente(DNI / Apell. y Nombres)" sortBy="#{com.lote.personVenta.surnames}" filterMatchMode="contains" width="300px">
-						<h:outputText value="#{com.contrato.personVenta.dni} / #{com.contrato.personVenta.surnames} #{com.contrato.personVenta.names}" />
-					</p:column>
-		
-					<p:column headerText="N° Lote" sortBy="#{com.contrato.lote.numberLote}"  filterMatchMode="contains" responsivePriority="14" style="text-align: center" width="50px" >
-						<h:outputText value="#{com.contrato.lote.numberLote}" />
-					</p:column>
 					
-					<p:column headerText="Mz" sortBy="#{com.contrato.lote.manzana.name}" filterMatchMode="contains" responsivePriority="13" style="text-align: center" width="50px">
-						<h:outputText value="#{com.contrato.lote.manzana.name}" />
-					</p:column>
-					
-					<p:column headerText="Proyecto" sortBy="#{com.contrato.lote.project.name}" filterMatchMode="contains" width="200px">
-		                <h:outputText value="#{com.contrato.lote.project.name}" />
-		            </p:column>
-		            
-					<p:column headerText="Fecha Venta" filterMatchMode="contains" responsivePriority="3" style="text-align: center" width="100px">
-						<h:outputText value="#{com.contrato.fechaVenta}"> 
-							<f:convertDateTime pattern="dd/MM/yyyy" />
-						</h:outputText>
-					</p:column>
-					
-					<p:column headerText="Tipo de Pago" sortBy="#{com.contrato.tipoPago}" filterMatchMode="contains" style="text-align: center" width="100px">
-		                <h:outputText value="#{com.contrato.tipoPago}" />
-		            </p:column>
-					
-					<p:column headerText="Cuotas" sortBy="#{com.contrato.numeroCuota}" filterMatchMode="contains" style="text-align: center" width="50px">
-		                <h:outputText value="#{com.contrato.numeroCuota}" />
-		            </p:column>
-		            
-		            <p:column headerText="Precio" filterMatchMode="contains" sortBy="#{com.contrato.montoVenta}" style="text-align: center" width="100px">
-						<h:outputText value="#{com.contrato.montoVenta}"  >
+				
+					<p:column headerText="Bono" filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{com.bono}"  >
 		                    <f:convertNumber currencySymbol="" type="currency"  />
 		                </h:outputText> 
 					</p:column>
 					
-					<p:column headerText="Inicial" filterMatchMode="contains" sortBy="#{com.contrato.montoInicial}" style="text-align: center" width="100px" >
-						<h:outputText value="#{com.contrato.montoInicial}"  >
+					<p:column headerText="Monto Comisión" filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{com.montoComision}"  >
 		                    <f:convertNumber currencySymbol="" type="currency"  />
 		                </h:outputText> 
 					</p:column>
 					
-					<p:column headerText="Comisión Asesor" filterMatchMode="contains" style="text-align: center" width="100px">
-						<h:outputText value="#{com.comisionAsesor}"  >
-		                    <f:convertNumber currencySymbol="" type="currency"  />
-		                </h:outputText> 
+					<p:column headerText="Lotes Vendidos" filterMatchMode="contains" style="text-align: center" >
+						<h:outputText value="#{com.numVendido}"  />
 					</p:column>
 					
-					<p:column headerText="Comisión Supervisor" filterMatchMode="contains" style="text-align: center" width="100px">
-						<h:outputText value="#{com.comisionSupervisor}"  >
-		                    <f:convertNumber currencySymbol="" type="currency"  />
-		                </h:outputText> 
+					<p:column headerText="Meta" filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{com.meta}"  />
 					</p:column>
 					
-					<p:column headerText="Comisión Subgerente" filterMatchMode="contains" style="text-align: center" width="100px">
-						<h:outputText value="#{com.comisionSubgerente}"  >
-		                    <f:convertNumber currencySymbol="" type="currency"  />
-		                </h:outputText> 
+					<p:column headerText="Porcentaje por venta" filterMatchMode="contains" style="text-align: center">
+						<h:outputText value="#{com.comisionPorcentaje}"  />
 					</p:column>
+					
+					<p:column headerText="Alcance Meta" filterMatchMode="contains" style="text-align: center">
+						<p:progressBar widgetVar="progressBar" value="#{comisionesBean.calcularPorcentaje(com)}" labelTemplate="{value}%" />					
+					</p:column>				
+					
 					
 				</p:dataTable>
 			
 			</p:tab>
-			<p:tab title="Movimiento de Ventas por Asesor" >
-				<h:outputLabel value="Equipo: " />
-				<p:selectOneMenu id="optionTeam" value="#{comisionesBean.teamFilter}" converter="#{comisionesBean.conversorTeam}" style="margin:10px" >
-             	   <f:selectItem itemLabel="[-- Ninguno --]" itemValue="#{null}"/>
-                   <f:selectItems value="#{comisionesBean.lstTeam}" var="prof" itemLabel="#{prof.name} / #{prof.personSupervisor.surnames} #{prof.personSupervisor.names}" itemValue="#{prof}"/>
-                   <p:ajax update=":form:tabView:idTableEmpleado" />
-                </p:selectOneMenu>
-				
-				
-			
-				
-				<p:dataTable var="empleado" id="idTableEmpleado" value="#{comisionesBean.lstEmpleadoLazy}" widgetVar="empleadoTable" rowIndexVar="row" paginator="true" rows="15" size="small"
-					emptyMessage="No se encontraron empleados."	paginatorPosition="bottom" rowKey="#{empleado.id}">
-				
-					<f:facet name="header">
-						<div class="p-d-flex p-ai-center p-jc-between">
-							<p:commandButton actionListener="#{comisionesBean.verMesAnterior}" update=":form:tabView:idTableEmpleado" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();" icon="pi pi-backward" styleClass="rounded-button ui-button-secondary" style="margin:5px" />
-							<p:commandButton actionListener="#{comisionesBean.verMesSiguiente}" update=":form:tabView:idTableEmpleado" onstart="PF('blockUIWidget').block();" oncomplete="PF('blockUIWidget').unblock();" icon="pi pi-forward" styleClass="rounded-button ui-button-secondary" />
-							<span>Lista de Empleados</span>
-						</div>
-					</f:facet>
-				
-			
-					<p:column width="25px">
-			                      #{row +1}
-			        </p:column>
-			        
-			        <p:column headerText="Equipo" sortBy="#{empleado.team.name}" filterMatchMode="contains" width="70px">
-						<h:outputText value="#{empleado.team.name}" />
-					</p:column>
-			        
-					<p:column headerText="Nombre del empleado" sortBy="#{empleado.person.surnames}" filterBy="#{empleado.person.surnames}" filterMatchMode="contains" width="230px">
-						<h:outputText value="#{empleado.person.surnames} #{empleado.person.names}" />
-					</p:column>
-					<p:column headerText="Cargo" style="text-align:center; width:130px">
-						<f:facet name="header">
-							Cargo
-				        	<p:selectOneMenu value="#{comisionesBean.cargoFilter}" converter="#{comisionesBean.conversorCargo}" style="width:100%" >
-								<f:selectItem itemLabel="[-Ninguno-]" value="#{null}"/>
-								<f:selectItems value="#{comisionesBean.lstCargo}" var="cargo" itemLabel="#{cargo.descripcion}" itemValue="#{cargo}"/>
-								<p:ajax update=":form:tabView:idTableEmpleado" />
-							</p:selectOneMenu>
-						</f:facet>
-						
-						<h:outputText value="#{empleado.cargo.descripcion}" />
-					</p:column>
-					
-					<p:column headerText="Área" style="text-align:center; width:130px">
-						<f:facet name="header">
-							Área
-				        	<p:selectOneMenu value="#{comisionesBean.areaFilter}" converter="#{comisionesBean.conversorArea}" style="width:100%">
-			                    <f:selectItem itemLabel="[-Ninguno-]" value="#{null}"/>
-			                    <f:selectItems value="#{comisionesBean.lstArea}" var="area" itemLabel="#{area.nombre}" itemValue="#{area}"/>
-			                    <p:ajax update=":form:tabView:idTableEmpleado" />
-			                </p:selectOneMenu>
-						</f:facet>
-						
-						<h:outputText value="#{empleado.area.nombre}" />
-					</p:column>
-					
-					<p:column headerText="Externo" sortBy="#{empleado.externo}" filterMatchMode="contains" style="width: 50px">
-						<h:outputText value="#{empleado.externo? 'SI': 'NO'}" />
-					</p:column>
-					
-					<p:column headerText="#{comisionesBean.fecha3}"  filterMatchMode="contains" style="width: 50px; color:brown">
-						<h:outputText value="#{comisionesBean.buscarLotesVendidos(empleado, comisionesBean.comision3)}" />
-					</p:column>
-					
-					<p:column headerText="#{comisionesBean.fecha2}"  filterMatchMode="contains" style="width: 50px; color:brown">
-						<h:outputText value="#{comisionesBean.buscarLotesVendidos(empleado, comisionesBean.comision2)}" />
-					</p:column>
-					
-					<p:column headerText="#{comisionesBean.fecha1}"  filterMatchMode="contains" style="width: 50px; color:brown">
-						<h:outputText value="#{comisionesBean.buscarLotesVendidos(empleado, comisionesBean.comision1)}" />
-					</p:column>
-					
-					<p:column headerText="Prom. 3 Últimos Meses" filterMatchMode="contains" style="width: 100px;text-align:center;color: #ff33dd">
-						<h:outputText value="#{comisionesBean.promedio3UltimosMenses(empleado)}" style="color: #ff33dd"/>
-					</p:column>
-					
-					<p:column headerText="RENDIMIENTO" width="120px" filterMatchMode="contains" style="width: 100px;text-align:center">
-						<h:outputText value="#{empleado.nivel}" style="#{empleado.nivel  eq 'BAJO'?'color:red': empleado.nivel eq 'MEDIO'?'color:blue':'color:green'}"  />
-					</p:column>
-				</p:dataTable>
-			</p:tab>
-			
 		</p:tabView>
-		
-		
 	</h:form>
 	
+	
+	<p:dialog modal="true" dynamic="true" closeOnEscape="true" id="dialogSupervisorComision" header="SUPERVISOR: #{comisionesBean.comisionSupervisorSelected.personaSupervisor.names}" 
+		widgetVar="comisionSupervisorDialog" resizable="false" closable="true"
+		appendTo="@(body)" width="100%" height="850px">
+		<h:form id="formSupervisorDialog">
+			
+			<p:dataTable var="com" id="com" value="#{comisionesBean.lstComisionesLazy}" widgetVar="comisionesTable" rowIndexVar="row" paginator="true" rows="15" style="width:100%"
+					size="small" emptyMessage="No se encontraron comisiones." paginatorPosition="bottom" rowKey="#{com.id}" selection="#{comisionesBean.comisionesSelected}" selectionMode="single">
+				
+				<f:facet name="header">
+					<h:outputText id="for_doc" value="LISTA DE ASESORES CON VENTAS" />
+				</f:facet>
+				<p:ajax event="rowToggle" />
+				<p:column style="width:25px">
+					<p:rowToggler />
+				</p:column>
+				<p:column style="width:25px">
+					<h:outputLabel value="#{row +1}" />
+				</p:column>
+				<p:column headerText="Asesor">
+					<h:outputText
+						value="#{com.personaAsesor.surnames} #{com.personaAsesor.names}" />
+				</p:column>
+				<p:column headerText="Bono">
+					<h:outputText value="#{com.bono}" />
+				</p:column>
+				<p:column headerText="Total Comisión">
+					<h:outputText value="#{com.montoComision}" />
+				</p:column>
+				<p:column headerText="Lotes Vendidos">
+					<h:outputText value="#{com.numVendido}" />
+				</p:column>
+				<p:rowExpansion>
+
+					<p:dataTable showGridlines="true" var="det"
+						value="#{comisionesBean.getDetalleComisiones(com)}"
+						style=" margin-left: 5px; margin-bottom: 40px; margin-top: 20px;width:100%"
+						rowKey="#{det.id}" id="detTable">
+
+						<p:column headerText="Manzana/Lote" style="text-align: center;">
+							<p:outputLabel
+								value="#{det.plantillaVenta.lote.manzana.name}/#{det.plantillaVenta.lote.numberLote}" />
+						</p:column>
+						<p:column headerText="Proyecto" style="text-align: center;">
+							<p:outputLabel value="#{det.plantillaVenta.lote.project.name}" />
+						</p:column>
+
+						<p:column headerText="Monto Comisión" style="text-align: center;">
+							<p:outputLabel value="#{det.montoComision}" />
+						</p:column>
+
+						<p:column headerText="Monto Comisión Supervisor"
+							style="text-align: center;">
+							<p:outputLabel value="#{det.montoComisionSupervisor}" />
+						</p:column>
+						<p:column headerText="Monto Comisión Jefe de Venta"
+							style="text-align: center;">
+							<p:outputLabel value="#{det.montoComisionJefeVenta}" />
+						</p:column>
+						<p:column headerText="Monto Comisión Subgerente"
+							style="text-align: center;">
+							<p:outputLabel value="#{det.montoComisionSubgerente}" />
+						</p:column>
+					</p:dataTable>
+
+				</p:rowExpansion>
+			</p:dataTable>
+		</h:form>
+	</p:dialog>
 	
 	<pe:blockUI widgetVar="blockUIWidget">          
 		<h:form style="background: white">           

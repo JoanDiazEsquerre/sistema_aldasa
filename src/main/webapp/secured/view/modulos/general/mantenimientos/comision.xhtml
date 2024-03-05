@@ -198,6 +198,11 @@
 						<p:inputNumber value="#{comisionBean.comisionSelected.comisionJefeVenta}" symbol="%"  symbolPosition="s" emptyValue="always"/>
 					</h:panelGrid>
 					
+					<h:panelGrid columns="2" >
+						<h:outputLabel value="- Bono Inicial de "/>
+						<p:inputNumber value="#{comisionBean.comisionSelected.bonoJefeVentaObligatorio}" emptyValue="always"/>
+					</h:panelGrid>
+					
 					<h:panelGrid columns="5" >
 						<h:outputLabel value="- Si llega al "/>
 						<p:inputNumber value="#{comisionBean.comisionSelected.porcentajeBono}" symbol="%"  symbolPosition="s" emptyValue="always"/>
@@ -245,7 +250,7 @@
 				</p:selectOneMenu>
 				
 				<p:outputLabel for="met" value="Meta:"/>
-                <p:inputNumber id="met" value="#{comisionBean.meta}" minValue="1" decimalPlaces="0" > 
+                <p:inputNumber id="met" value="#{comisionBean.meta}" minValue="0" decimalPlaces="0" > 
                 </p:inputNumber>
                 
                 <p:commandButton value="Guardar" action="#{comisionBean.saveMetaSupervisor()}" update="idMetaTable" />

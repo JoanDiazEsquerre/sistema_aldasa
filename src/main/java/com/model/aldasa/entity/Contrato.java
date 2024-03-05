@@ -77,10 +77,6 @@ public class Contrato {
 	private boolean pagoIndependizacion;
 	
 	@ManyToOne
-	@JoinColumn(name="idcomisiones")
-	private Comisiones comisiones;
-	
-	@ManyToOne
 	@JoinColumn(name="idusuariocobranza")
 	private Usuario usuarioCobranza;
 	
@@ -203,12 +199,7 @@ public class Contrato {
 	public void setPagoIndependizacion(boolean pagoIndependizacion) {
 		this.pagoIndependizacion = pagoIndependizacion;
 	}
-	public Comisiones getComisiones() {
-		return comisiones;
-	}
-	public void setComisiones(Comisiones comisiones) {
-		this.comisiones = comisiones;
-	}
+	
 	public Usuario getUsuarioCobranza() {
 		return usuarioCobranza;
 	}

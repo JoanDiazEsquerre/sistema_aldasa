@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.model.aldasa.entity.ComisionSupervisor;
+import com.model.aldasa.entity.ConfiguracionComision;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.Person;
 import com.model.aldasa.entity.PlantillaVenta;
@@ -15,6 +17,7 @@ public interface PlantillaVentaService {
 
 	Optional<PlantillaVenta> findById(Integer id);
 	PlantillaVenta save(PlantillaVenta entity);
+	PlantillaVenta saveAprobarPlantilla(PlantillaVenta entity, ConfiguracionComision configuracionComision, ComisionSupervisor comisionSupervisor);
 	void delete(PlantillaVenta entity);
 	
 	List<PlantillaVenta> findByEstadoAndLote(String estado, Lote lote);

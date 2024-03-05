@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.model.aldasa.entity.ComisionProyecto;
-import com.model.aldasa.entity.Comisiones;
+import com.model.aldasa.entity.DetalleComisiones;
 import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.Lote;
 import com.model.aldasa.entity.MetaSupervisor;
@@ -20,7 +20,7 @@ import com.model.aldasa.entity.PlantillaVenta;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.repository.ComisionProyectoRepository;
-import com.model.aldasa.repository.ComisionesRepository;
+//import com.model.aldasa.repository.DetalleComisionesRepository;
 import com.model.aldasa.repository.ContratoRepository;
 import com.model.aldasa.repository.PlantillaVentaRepository;
 import com.model.aldasa.service.ContratoService;
@@ -35,8 +35,8 @@ public class ContratoServiceImpl implements ContratoService{
 //	@Autowired
 //	private ComisionRepository comisionRepository;
 	
-	@Autowired
-	private ComisionesRepository comisionesRepository;
+//	@Autowired
+//	private DetalleComisionesRepository comisionesRepository;
 	
 	@Autowired
 	private PlantillaVentaRepository plantillaVentaRepository;

@@ -177,10 +177,10 @@
 				
 				<p:contextMenu id="menuTableReq" for="idTableContrato" >
 		            <p:menuitem value="Descargar Contrato" icon="pi pi-check" action="#{contratoBean.generarExcel}" oncomplete="hacerClick('#{p:resolveFirstComponentWithId('btnAct', view).clientId}');"  />
-		            <p:menuitem value="Anular" icon="pi pi-trash" oncomplete="PF('anulaContra').show()"  />		        
-		        	<p:menuitem value="Ver Cronograma de Pago" icon="pi pi-search-plus" action="#{contratoBean.verCronogramaPago()}" oncomplete="PF('cronogramaPagoDialog').show();" update="dialogCronogramaPago"  />		        
-		        	<p:menuitem value="Añadir Observación" icon="pi pi-comments" action="#{contratoBean.cargarListaObservacion()}" oncomplete="PF('añadirObservacionDialog').show();" update="dialogAñadirObservacion"  />		        
-		        
+		        	<p:menuitem value="Ver Cronograma de Pago" icon="pi pi-search-plus" action="#{contratoBean.verCronogramaPago()}" oncomplete="PF('cronogramaPagoDialog').show();" update="dialogCronogramaPago"  />
+		        	<p:menuitem value="Ver Vouchers de Pago" icon="pi pi-search-plus" action="#{contratoBean.verVouchersPago}" update="dialogVoucher"  />		        
+		        	<p:menuitem value="Añadir Observación" icon="pi pi-comments" action="#{contratoBean.cargarListaObservacion()}" oncomplete="PF('añadirObservacionDialog').show();" update="dialogAñadirObservacion"  />	
+		       		<p:menuitem value="Anular" icon="pi pi-trash" oncomplete="PF('anulaContra').show()"  />		        
 		        </p:contextMenu>
 			</p:tab>
 			<p:tab title="Nuevo Contrato"  style="font-size: 11px;">
@@ -332,6 +332,57 @@
 			</p:tab>
 		</p:tabView>
 	</h:form>
+	
+	<p:dialog modal="true" height="600px" dynamic="true" closeOnEscape="true" id="dialogVoucher" header="Vouchers de Pagos" widgetVar="voucherDialog" resizable="false" closable="true"
+		appendTo="@(body)"  width="100%">
+		<h:form id="formVoucherDialog">
+				<p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{contratoBean.procesarExcelVoucher}" icon="pi pi-file-excel" styleClass="ui-button-success" style="margin-left:20px">
+		           <p:fileDownload value="#{contratoBean.fileDesVoucher}"/> 
+		      	</p:commandButton>			<p:dataTable var="dv" value="#{contratoBean.lstImagenVoucher}" paginator="true" selectionMode="single" rowIndexVar="row" paginatorPosition="bottom" 
+				 emptyMessage="No se encontraron resultados" size="small" rowKey="#{dv.id}">
+
+				<p:column headerText="N° Cuenta" style="text-align:center">
+					<h:outputText value="#{dv.cuentaBancaria.numero}"/>
+				</p:column>
+
+				<p:column headerText="Monto" style="text-align:center">
+					<h:outputText value="#{dv.monto}" style="font-size: 14px;"/>
+				</p:column>
+				
+				<p:column headerText="Banco" style="text-align:center">
+					<h:outputText value="#{dv.cuentaBancaria.banco.nombre}"/>
+				</p:column>
+				
+				<p:column headerText="Fecha" style="text-align:center">
+					 <p:outputLabel value="#{contratoBean.convertirHoraFull(dv.fecha)}"/>
+				</p:column>
+				
+				<p:column headerText="N° Operacion" style="text-align:center">
+					<h:outputText value="#{dv.numeroOperacion}"/>
+				</p:column>
+				
+				<p:column headerText="Documento Venta" style="text-align:center">
+					<h:outputText value="#{dv.documentoVenta.serie}-#{dv.documentoVenta.numero}"/>
+				</p:column>
+				
+				<p:column headerText="Detalle" width="30%">
+					<h:outputText value="#{contratoBean.obtenerDetalleBoleta(dv.documentoVenta)}"/>
+				</p:column>
+				
+				<p:column>
+					<p:commandButton id="botton" value="VER" update="imagenLoad" process="@this">
+						<f:setPropertyActionListener value="#{dv.nombre}" target="#{loadImageDocumentoBean.nombreArchivo}"  />
+					</p:commandButton>
+					<p:overlayPanel for="botton" dismissable="false" showCloseIcon="true" style="width:550px">
+			        	<p:graphicImage width="500px"  value="#{loadImageDocumentoBean.image}" style="float: left;" id="imagenLoad" cache="false"/>
+			        </p:overlayPanel>
+				</p:column>
+									
+			</p:dataTable>
+				
+			
+		</h:form>
+	</p:dialog>
 	
 	<p:dialog modal="true" height="600px" dynamic="true" closeOnEscape="true" id="dialogSimulador" header="Cronograma de pagos" widgetVar="cronogramaDialog" resizable="false" closable="true"
 		appendTo="@(body)"  width="50%">

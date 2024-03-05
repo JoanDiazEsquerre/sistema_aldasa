@@ -19,26 +19,26 @@ public class UtilXls {
 		fontRow.setFontHeightInPoints((short) 11);
 		fontRow.setFontName("Calibri");
 		if (tipo == 'B') {// CANTIDAD NORMALES {
-			cellStyleDefault.setBorderBottom(CellStyle.BORDER_THIN);
-			cellStyleDefault.setBorderTop(CellStyle.BORDER_THIN);
-			cellStyleDefault.setBorderRight(CellStyle.BORDER_THIN);
-			cellStyleDefault.setBorderLeft(CellStyle.BORDER_THIN);
+			cellStyleDefault.setBorderBottom(BorderStyle.THIN);
+			cellStyleDefault.setBorderTop(BorderStyle.THIN);
+			cellStyleDefault.setBorderRight(BorderStyle.THIN);
+			cellStyleDefault.setBorderLeft(BorderStyle.THIN);
 			cellStyleDefault.setWrapText(true);
-			cellStyleDefault.setVerticalAlignment(CellStyle.VERTICAL_TOP); 
+			cellStyleDefault.setVerticalAlignment(VerticalAlignment.TOP); 
 		}
 
 		if (tipo == 'A') {
 			fontRow.setFontHeightInPoints((short) 11);
-			cellStyleDefault.setAlignment(CellStyle.ALIGN_CENTER);
-			cellStyleDefault.setVerticalAlignment(CellStyle.ALIGN_CENTER);
+			cellStyleDefault.setAlignment(HorizontalAlignment.CENTER);
+			cellStyleDefault.setVerticalAlignment(VerticalAlignment.CENTER);
 			cellStyleDefault.setWrapText(true);
 			
 			fontRow.setBold(true);
 
-			cellStyleDefault.setBorderBottom(CellStyle.BORDER_THIN);
-			cellStyleDefault.setBorderTop(CellStyle.BORDER_THIN);
-			cellStyleDefault.setBorderRight(CellStyle.BORDER_THIN);
-			cellStyleDefault.setBorderLeft(CellStyle.BORDER_THIN);
+			cellStyleDefault.setBorderBottom(BorderStyle.THIN);
+			cellStyleDefault.setBorderTop(BorderStyle.THIN);
+			cellStyleDefault.setBorderRight(BorderStyle.THIN);
+			cellStyleDefault.setBorderLeft(BorderStyle.THIN);
 		}
 
 	

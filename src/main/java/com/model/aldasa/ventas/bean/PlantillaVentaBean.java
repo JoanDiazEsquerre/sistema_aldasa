@@ -39,9 +39,13 @@ import org.springframework.data.domain.Sort;
 
 import com.lowagie.text.Image;
 import com.model.aldasa.entity.Cliente;
+import com.model.aldasa.entity.ComisionSupervisor;
+import com.model.aldasa.entity.Comisiones;
+import com.model.aldasa.entity.ConfiguracionComision;
 import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.CuentaBancaria;
 import com.model.aldasa.entity.Cuota;
+import com.model.aldasa.entity.DetalleComisiones;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
 import com.model.aldasa.entity.Empleado;
@@ -70,9 +74,13 @@ import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.prospeccion.bean.LoadImagePlantillaBean;
 import com.model.aldasa.reporteBo.ReportGenBo;
 import com.model.aldasa.service.ClienteService;
+import com.model.aldasa.service.ComisionSupervisorService;
+import com.model.aldasa.service.ComisionesService;
+import com.model.aldasa.service.ConfiguracionComisionService;
 import com.model.aldasa.service.ContratoService;
 import com.model.aldasa.service.CuentaBancariaService;
 import com.model.aldasa.service.CuotaService;
+import com.model.aldasa.service.DetalleComisionesService;
 import com.model.aldasa.service.DetalleDocumentoVentaService;
 import com.model.aldasa.service.DocumentoVentaService;
 import com.model.aldasa.service.EmpleadoService;
@@ -153,6 +161,18 @@ public class PlantillaVentaBean extends BaseBean {
 	@ManagedProperty(value = "#{contratoService}")
 	private ContratoService contratoService;
 	
+	@ManagedProperty(value = "#{comisionSupervisorService}")
+	private ComisionSupervisorService comisionSupervisorService;
+	
+	@ManagedProperty(value = "#{configuracionComisionService}")
+	private ConfiguracionComisionService configuracionComisionService;
+	
+	@ManagedProperty(value = "#{comisionesService}")
+	private ComisionesService comisionesService;
+	
+	@ManagedProperty(value = "#{detalleComisionesService}")
+	private DetalleComisionesService detalleComisionesService;
+	
 
 	private LazyDataModel<PlantillaVenta> lstPlantillaLazy;
 	
@@ -211,7 +231,7 @@ public class PlantillaVentaBean extends BaseBean {
 	}
 	
 	public void saveVoucherTemp() {
-		VoucherTemp busqueda = voucherTempService.findByPlantillaVentaAndMontoAndTipoTransaccionAndNumeroOperacionAndFechaOperacionAndCuentaBancaria(plantillaVentaSelected, monto, tipoTransaccion, numeroTransaccion, fechaOperacion, cuentaBancariaSelected);
+		VoucherTemp busqueda = voucherTempService.findByPlantillaVentaAndMontoAndTipoTransaccionAndNumeroOperacionAndFechaOperacionAndCuentaBancariaAndEstado(plantillaVentaSelected, monto, tipoTransaccion, numeroTransaccion, fechaOperacion, cuentaBancariaSelected, true);
 
 		if(busqueda != null) {
 			addErrorMessage("El voucher ya se registró a datos temporales.");
@@ -564,29 +584,86 @@ public class PlantillaVentaBean extends BaseBean {
     }
 	
 	public void aprobarPlantilla() {
-//		plantillaVentaSelected.setObservacion(observacion); 
-		plantillaVentaSelected.getLote().setStatus("Vendido");
-		plantillaVentaSelected.getLote().setPersonVenta(plantillaVentaSelected.getPerson()); 
-		plantillaVentaSelected.getLote().setMontoVenta(plantillaVentaSelected.getMontoVenta());
-		plantillaVentaSelected.getLote().setTipoPago(plantillaVentaSelected.getTipoPago());
-		plantillaVentaSelected.getLote().setPersonAssessor(plantillaVentaSelected.getPersonAsesor());
-		plantillaVentaSelected.getLote().setPersonSupervisor(plantillaVentaSelected.getPersonSupervisor());
+		ConfiguracionComision confComision = configuracionComisionService.findByFechaInicioLessThanEqualAndFechaFinGreaterThanEqual(plantillaVentaSelected.getFechaVenta(), plantillaVentaSelected.getFechaVenta());
+		ComisionSupervisor comisionSupervisor = null;
 		
-		if(plantillaVentaSelected.getTipoPago().equals("Crédito")) {
-			plantillaVentaSelected.getLote().setNumeroCuota(plantillaVentaSelected.getNumeroCuota());
-			plantillaVentaSelected.getLote().setMontoInicial(plantillaVentaSelected.getMontoInicial());
-			plantillaVentaSelected.getLote().setInteres(plantillaVentaSelected.getInteres());
+		if(confComision==null) {
+			addWarnMessage("Primero se tiene que realizar una configuracion de de comisiones para el mes de la venta, por favor comunicale al area de Administración o Sistemas.");
+			return;
+		}else {
+			comisionSupervisor = comisionSupervisorService.findByEstadoAndConfiguracionComisionAndPersonaSupervisor(true, confComision, plantillaVentaSelected.getPersonSupervisor());
+			if(comisionSupervisor==null) {
+				addWarnMessage("Aún no se le ha asignado una meta al supervidor seleccionado, por favor comunicale al area de Administración o Sistemas.");
+				return;
+			}
 		}
-		loteService.save(plantillaVentaSelected.getLote());
 		
 		plantillaVentaSelected.setEstado("Aprobado");
 		plantillaVentaSelected.setUsuarioAprueba(navegacionBean.getUsuarioLogin());
 		plantillaVentaSelected.setFechaAprueba(new Date());
-		plantillaVentaService.save(plantillaVentaSelected);
+		plantillaVentaService.saveAprobarPlantilla(plantillaVentaSelected, confComision, comisionSupervisor);
+		
+				
 		addInfoMessage("Se aprobó la plantilla de venta correctamente."); 
 		PrimeFaces.current().executeScript("PF('plantillaNewDialog').hide();"); 
 
 	}
+	
+	
+	
+//	public void actualizarDatosComision(ConfiguracionComision configuracionComision) {
+//		
+//		List<ComisionSupervisor> lstComisionSupervisor = comisionSupervisorService.findByEstadoAndConfiguracionComision(true, configuracionComision);
+//		
+//		
+//		for(ComisionSupervisor cs : lstComisionSupervisor) {
+//			
+//			Empleado empleado = empleadoService.findByPersonId(cs.getPersonaSupervisor().getId());
+//			if(empleado.getCargo().getDescripcion().equals("JEFE DE VENTAS")) {
+//				
+//			}else {
+//				
+//			}
+//			
+//			//PARA SUPERVISOR
+//			BigDecimal montoComisionSuper = BigDecimal.ZERO;
+//			int numVendidoSuper = 0;
+//			
+//			
+//			List<Comisiones> lstComisiones = comisionesService.findByEstadoAndComisionSupervisor(true, cs);
+//			for(Comisiones c : lstComisiones) {
+//				//PARA ASESOR
+//				BigDecimal montoComisionAsesor = BigDecimal.ZERO;
+//				int numVendidoAsesor = 0;
+//				
+//				
+//				
+//				List<DetalleComisiones> lstDetalleComisiones = detalleComisionesService.findByEstadoAndComisiones(true, c);
+//				for(DetalleComisiones cd : lstDetalleComisiones) {
+//					montoComisionSuper = montoComisionSuper.add(cd.getMontoComisionSupervisor());
+//					numVendidoSuper++;
+//					
+//					montoComisionAsesor = montoComisionAsesor.add(cd.getMontoComision());
+//					numVendidoAsesor++;
+//				}
+//				
+//				c.setNumVendido(numVendidoAsesor);
+//				c.setMontoComision(montoComisionAsesor);
+//				comisionesService.save(c);
+//				
+//			} 
+//			
+//			
+//			cs.setNumVendido(numVendidoSuper);
+//			cs.setMontoComision(montoComisionSuper);
+//			if(cs.getNumVendido()> cs.getMeta()) {
+//				cs.setBono(configuracionComision.getBonoSupervisor());
+//			}else {
+//				cs.setBono(BigDecimal.ZERO);
+//			}
+//			comisionSupervisorService.save(cs);
+//		}
+//	}
 	
 	public void rechazarPlantilla() {
 //		plantillaVentaSelected.setObservacion(observacion); 
@@ -1624,6 +1701,30 @@ public class PlantillaVentaBean extends BaseBean {
 	}
 	public void setContratoService(ContratoService contratoService) {
 		this.contratoService = contratoService;
+	}
+	public ComisionSupervisorService getComisionSupervisorService() {
+		return comisionSupervisorService;
+	}
+	public void setComisionSupervisorService(ComisionSupervisorService comisionSupervisorService) {
+		this.comisionSupervisorService = comisionSupervisorService;
+	}
+	public ConfiguracionComisionService getConfiguracionComisionService() {
+		return configuracionComisionService;
+	}
+	public void setConfiguracionComisionService(ConfiguracionComisionService configuracionComisionService) {
+		this.configuracionComisionService = configuracionComisionService;
+	}
+	public ComisionesService getComisionesService() {
+		return comisionesService;
+	}
+	public void setComisionesService(ComisionesService comisionesService) {
+		this.comisionesService = comisionesService;
+	}
+	public DetalleComisionesService getDetalleComisionesService() {
+		return detalleComisionesService;
+	}
+	public void setDetalleComisionesService(DetalleComisionesService detalleComisionesService) {
+		this.detalleComisionesService = detalleComisionesService;
 	}
 
 	

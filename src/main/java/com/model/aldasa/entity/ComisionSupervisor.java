@@ -13,20 +13,20 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "comisiones")
-public class Comisiones {
+@Table(name = "comisionsupervisor")
+public class ComisionSupervisor {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name="idcomisionsupervisor")
-	private ComisionSupervisor comisionSupervisor;
+	@JoinColumn(name="idpersonasupervisor")
+	private Person personaSupervisor;
 	
 	@ManyToOne
-	@JoinColumn(name="idpersonaasesor")
-	private Person personaAsesor;
+	@JoinColumn(name="idconfiguracioncomision")
+	private ConfiguracionComision configuracionComision;
 	
 	@Column(name="bono")
 	private BigDecimal bono;
@@ -37,8 +37,13 @@ public class Comisiones {
 	@Column(name="numvendido")
 	private Integer numVendido;
 	
+	@Column(name="comisionporcentaje")
+	private BigDecimal comisionPorcentaje;
+
 	private boolean estado;
 	
+	@Column(name="meta")
+	private Integer meta;
 	
 	public Integer getId() {
 		return id;
@@ -46,13 +51,24 @@ public class Comisiones {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	public ConfiguracionComision getConfiguracionComision() {
+		return configuracionComision;
+	}
+	public void setConfiguracionComision(ConfiguracionComision configuracionComision) {
+		this.configuracionComision = configuracionComision;
+	}
+	public Person getPersonaSupervisor() {
+		return personaSupervisor;
+	}
+	public void setPersonaSupervisor(Person personaSupervisor) {
+		this.personaSupervisor = personaSupervisor;
+	}
 	public BigDecimal getBono() {
 		return bono;
 	}
 	public void setBono(BigDecimal bono) {
 		this.bono = bono;
 	}
-	
 	public BigDecimal getMontoComision() {
 		return montoComision;
 	}
@@ -65,31 +81,31 @@ public class Comisiones {
 	public void setNumVendido(Integer numVendido) {
 		this.numVendido = numVendido;
 	}
+	public BigDecimal getComisionPorcentaje() {
+		return comisionPorcentaje;
+	}
+	public void setComisionPorcentaje(BigDecimal comisionPorcentaje) {
+		this.comisionPorcentaje = comisionPorcentaje;
+	}
 	public boolean isEstado() {
 		return estado;
 	}
 	public void setEstado(boolean estado) {
 		this.estado = estado;
 	}
-
+	public Integer getMeta() {
+		return meta;
+	}
+	public void setMeta(Integer meta) {
+		this.meta = meta;
+	}
 	
 	
-	public ComisionSupervisor getComisionSupervisor() {
-		return comisionSupervisor;
-	}
-	public void setComisionSupervisor(ComisionSupervisor comisionSupervisor) {
-		this.comisionSupervisor = comisionSupervisor;
-	}
-	public Person getPersonaAsesor() {
-		return personaAsesor;
-	}
-	public void setPersonaAsesor(Person personaAsesor) {
-		this.personaAsesor = personaAsesor;
-	}
+	
 	@Override
     public boolean equals(Object other) {
-        return (other instanceof Comisiones) && (id != null)
-            ? id.equals(((Comisiones) other).id)
+        return (other instanceof ComisionSupervisor) && (id != null)
+            ? id.equals(((ComisionSupervisor) other).id)
             : (other == this);
     }
 	

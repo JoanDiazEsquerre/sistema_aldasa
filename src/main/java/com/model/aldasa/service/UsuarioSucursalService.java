@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import com.model.aldasa.entity.Comisiones;
+import com.model.aldasa.entity.DetalleComisiones;
 import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.entity.UsuarioSucursal;

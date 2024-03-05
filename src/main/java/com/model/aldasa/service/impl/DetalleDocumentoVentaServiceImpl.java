@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.model.aldasa.entity.Contrato;
 import com.model.aldasa.entity.Cuota;
 import com.model.aldasa.entity.DetalleDocumentoVenta;
 import com.model.aldasa.entity.DocumentoVenta;
@@ -66,12 +67,6 @@ public class DetalleDocumentoVentaServiceImpl implements DetalleDocumentoVentaSe
 	}
 
 	@Override
-	public List<DetalleDocumentoVenta> findBy(boolean estado, Cuota cuotaPrepago) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndDocumentoVentaSucursalAndDocumentoVentaFechaEmisionBetweenOrderByDocumentoVentaNumeroAsc(
 			Boolean estado, Sucursal sucursal, Date fechaIni, Date fechaFin) {
 		// TODO Auto-generated method stub
@@ -98,6 +93,15 @@ public class DetalleDocumentoVentaServiceImpl implements DetalleDocumentoVentaSe
 		// TODO Auto-generated method stub
 		return detalleDocumentoVentaRepository.findByDocumentoVentaSucursalAndDocumentoVentaFechaEmisionBetweenOrderByDocumentoVentaNumeroAsc(sucursal, fechaIni, fechaFin); 
 	}
+
+	@Override
+	public List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndCuotaContratoOrderByCuotaContratoIdAsc(
+			boolean estadoDocVenta, Contrato contrato) {
+		// TODO Auto-generated method stub
+		return detalleDocumentoVentaRepository.findByDocumentoVentaEstadoAndCuotaContratoOrderByCuotaContratoIdAsc(estadoDocVenta, contrato); 
+	}
+
+
 
 	
 }

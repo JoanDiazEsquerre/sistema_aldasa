@@ -128,6 +128,32 @@ public class ConfiguracionComision {
 	@Column(name="comisionsubgerente")
 	private BigDecimal comisionSubgerente ;
 	
+	@Column(name="bonojefeventaobligatorio")
+	private BigDecimal bonoJefeVentaObligatorio ;
+	
+	@Column(name="bonojv")
+	private BigDecimal bonojv ;
+	
+	@Column(name="montocomisionjv")
+	private BigDecimal montoComisionjv ;
+	
+	
+	@Column(name="numvendidojv")
+	private Integer numVendidojv ;
+	
+	@Column(name="comisionporcentajejv")
+	private BigDecimal comisionPorcentajejv ;
+	
+	@Column(name="metajv")
+	private Integer metajv ;
+	
+	@Column(name="montocomisionsubgerente")
+	private BigDecimal montoComisionSubgerente ;
+	
+	
+	
+	
+	
 	private boolean estado;
 		
 	public Integer getId() {
@@ -358,6 +384,49 @@ public class ConfiguracionComision {
 	public void setComisionSubgerente(BigDecimal comisionSubgerente) {
 		this.comisionSubgerente = comisionSubgerente;
 	}
+	public BigDecimal getBonoJefeVentaObligatorio() {
+		return bonoJefeVentaObligatorio;
+	}
+	public void setBonoJefeVentaObligatorio(BigDecimal bonoJefeVentaObligatorio) {
+		this.bonoJefeVentaObligatorio = bonoJefeVentaObligatorio;
+	}
+	public BigDecimal getBonojv() {
+		return bonojv;
+	}
+	public void setBonojv(BigDecimal bonojv) {
+		this.bonojv = bonojv;
+	}
+	public BigDecimal getMontoComisionjv() {
+		return montoComisionjv;
+	}
+	public void setMontoComisionjv(BigDecimal montoComisionjv) {
+		this.montoComisionjv = montoComisionjv;
+	}
+	public BigDecimal getComisionPorcentajejv() {
+		return comisionPorcentajejv;
+	}
+	public void setComisionPorcentajejv(BigDecimal comisionPorcentajejv) {
+		this.comisionPorcentajejv = comisionPorcentajejv;
+	}
+	public BigDecimal getMontoComisionSubgerente() {
+		return montoComisionSubgerente;
+	}
+	public void setMontoComisionSubgerente(BigDecimal montoComisionSubgerente) {
+		this.montoComisionSubgerente = montoComisionSubgerente;
+	}	
+	public Integer getNumVendidojv() {
+		return numVendidojv;
+	}
+	public void setNumVendidojv(Integer numVendidojv) {
+		this.numVendidojv = numVendidojv;
+	}
+	public Integer getMetajv() {
+		return metajv;
+	}
+	public void setMetajv(Integer metajv) {
+		this.metajv = metajv;
+	}
+	
 	
 	
 	@Override

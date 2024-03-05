@@ -200,7 +200,7 @@ public class RequerimientoSeparacionBean extends BaseBean implements Serializabl
 	}
 	
 	public void saveVoucherTemp() {
-		VoucherTemp busqueda = voucherTempService.findByRequerimientoSeparacionAndMontoAndTipoTransaccionAndNumeroOperacionAndFechaOperacionAndCuentaBancaria(requerimientoSeparacionSelected, monto, tipoTransaccion, numeroTransaccion, fechaOperacion, cuentaBancariaSelected);
+		VoucherTemp busqueda = voucherTempService.findByRequerimientoSeparacionAndMontoAndTipoTransaccionAndNumeroOperacionAndFechaOperacionAndCuentaBancariaAndEstado(requerimientoSeparacionSelected, monto, tipoTransaccion, numeroTransaccion, fechaOperacion, cuentaBancariaSelected, true);
 		if(busqueda != null) {
 			addErrorMessage("El voucher ya se registró a datos temporales.");
 		}else {

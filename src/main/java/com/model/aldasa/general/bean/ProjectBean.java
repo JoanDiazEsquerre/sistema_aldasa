@@ -19,14 +19,18 @@ import org.primefaces.PrimeFaces;
 import com.model.aldasa.entity.Country;
 import com.model.aldasa.entity.Department;
 import com.model.aldasa.entity.District;
+import com.model.aldasa.entity.Manzana;
 import com.model.aldasa.entity.Project;
 import com.model.aldasa.entity.Province;
+import com.model.aldasa.entity.ProyectoPartida;
 import com.model.aldasa.entity.Sucursal;
 import com.model.aldasa.service.CountryService;
 import com.model.aldasa.service.DepartmentService;
 import com.model.aldasa.service.DistrictService;
+import com.model.aldasa.service.ManzanaService;
 import com.model.aldasa.service.ProjectService;
 import com.model.aldasa.service.ProvinceService;
+import com.model.aldasa.service.ProyectoPartidaService;
 import com.model.aldasa.service.SucursalService;
 import com.model.aldasa.util.BaseBean;
 
@@ -54,6 +58,12 @@ public class ProjectBean extends BaseBean implements Serializable {
 	@ManagedProperty(value = "#{navegacionBean}")
 	private NavegacionBean navegacionBean;
 	
+	@ManagedProperty(value = "#{proyectoPartidaService}")
+	private ProyectoPartidaService proyectoPartidaService;
+	
+	@ManagedProperty(value = "#{manzanaService}")
+	private ManzanaService manzanaService;
+	
 	
 	private List<Project> listProject;
 
@@ -64,11 +74,15 @@ public class ProjectBean extends BaseBean implements Serializable {
 	private Department departmentSelected;
 	private Province provinceSelected;
 	private District districtSelected;
+	private ProyectoPartida proyectoPartidaNew, proyectoPartidaSelected;
 	
 	private List<Country> lstCountry;
 	private List<Department> lstDepartment;
 	private List<Province> lstProvince;
 	private List<District> lstDistrict;
+	private List<ProyectoPartida> lstProyectoPartidaSelected;
+	private List<Manzana> lstManzana;
+
 	
 	private String tituloDialog;
 	
@@ -76,6 +90,66 @@ public class ProjectBean extends BaseBean implements Serializable {
 	public void init() {
 		listarProject();
 		listarPais();
+		lstManzana = manzanaService.findByStatusOrderByNameAsc(true);
+	}
+	
+	public void eliminarProyectoPartida() {
+		proyectoPartidaSelected.setEstado(false);
+		proyectoPartidaService.save(proyectoPartidaSelected);
+		listarProyectoPartida();
+		addInfoMessage("Se eliminó correctamente."); 
+	}
+	
+	public void iniciarDatosProyectoPartidaNew() {
+		proyectoPartidaNew = new ProyectoPartida();
+		proyectoPartidaNew.setEstado(true);
+		
+		listarProyectoPartida();
+	}
+	
+	public void saveProyectoPartida() {
+		if(proyectoPartidaNew.getManzana()==null) {
+			addErrorMessage("Seleccionar una manzana.");
+			return;
+		}else {
+			ProyectoPartida busqueda = proyectoPartidaService.findByEstadoAndProyectoAndManzana(true, projectSelected, proyectoPartidaNew.getManzana());
+			if(busqueda!=null) {
+				addErrorMessage("Ya se ha registrado la manzana seleccionada."); 
+				return;
+			}
+		}
+		
+		if(proyectoPartidaNew.getCodigoPredio().equals("")) {
+			addErrorMessage("Ingresar codigo de predio."); 
+			return;
+		}
+		
+		if(proyectoPartidaNew.getAreaHectarea().equals("")) {
+			addErrorMessage("Ingresar Area."); 
+			return;
+		}
+		
+		if(proyectoPartidaNew.getUnidadCatastral().equals("")) {
+			addErrorMessage("Ingresar Unidad Catastral."); 
+			return;
+		}
+		
+		if(proyectoPartidaNew.getNumPartidaElectronica().equals("")) {
+			addErrorMessage("Ingresar número de partida electrónica."); 
+			return;
+		}
+		
+		proyectoPartidaNew.setProyecto(projectSelected);
+		
+		
+		proyectoPartidaService.save(proyectoPartidaNew);
+		
+		iniciarDatosProyectoPartidaNew();
+		addInfoMessage("Se guardó correctamente.");
+	}
+	
+	public void listarProyectoPartida() {
+		lstProyectoPartidaSelected = proyectoPartidaService.findByEstadoAndProyecto(true, projectSelected);
 	}
 	
 	public void listarPais() {
@@ -229,6 +303,16 @@ public class ProjectBean extends BaseBean implements Serializable {
 		
 	}
 	
+	public List<Manzana> completeManzana(String query) {
+        List<Manzana> lista = new ArrayList<>();
+        for (Manzana c : lstManzana) {
+            if (c.getName().toUpperCase().contains(query.toUpperCase()) ) {
+                lista.add(c);
+            }
+        }
+        return lista;
+    }
+	
 	public Converter getConversorCountry() {
 		return new Converter() {
 			@Override
@@ -342,6 +426,34 @@ public class ProjectBean extends BaseBean implements Serializable {
 	}
 	
 	
+	public Converter getConversorManzana() {
+		return new Converter() {
+			@Override
+			public Object getAsObject(FacesContext context, UIComponent component, String value) {
+				if (value.trim().equals("") || value == null || value.trim().equals("null")) {
+					return null;
+				} else {
+					Manzana c = null;
+					for (Manzana si : lstManzana) {
+						if (si.getId().toString().equals(value)) {
+							c = si;
+						}
+					}
+					return c;
+				}
+			}
+
+			@Override
+			public String getAsString(FacesContext context, UIComponent component, Object value) {
+				if (value == null || value.equals("")) {
+					return "";
+				} else {
+					return ((Manzana) value).getId() + "";
+				}
+			}
+		};
+	}
+	
 	
 	public ProjectService getProjectService() {
 		return projectService;
@@ -451,6 +563,45 @@ public class ProjectBean extends BaseBean implements Serializable {
 	}
 	public void setNavegacionBean(NavegacionBean navegacionBean) {
 		this.navegacionBean = navegacionBean;
+	}
+	public ProyectoPartidaService getProyectoPartidaService() {
+		return proyectoPartidaService;
+	}
+	public void setProyectoPartidaService(ProyectoPartidaService proyectoPartidaService) {
+		this.proyectoPartidaService = proyectoPartidaService;
+	}
+	public List<ProyectoPartida> getLstProyectoPartidaSelected() {
+		return lstProyectoPartidaSelected;
+	}
+	public void setLstProyectoPartidaSelected(List<ProyectoPartida> lstProyectoPartidaSelected) {
+		this.lstProyectoPartidaSelected = lstProyectoPartidaSelected;
+	}
+	public ManzanaService getManzanaService() {
+		return manzanaService;
+	}
+	public void setManzanaService(ManzanaService manzanaService) {
+		this.manzanaService = manzanaService;
+	}
+	public List<Manzana> getLstManzana() {
+		return lstManzana;
+	}
+	public void setLstManzana(List<Manzana> lstManzana) {
+		this.lstManzana = lstManzana;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	public ProyectoPartida getProyectoPartidaNew() {
+		return proyectoPartidaNew;
+	}
+	public void setProyectoPartidaNew(ProyectoPartida proyectoPartidaNew) {
+		this.proyectoPartidaNew = proyectoPartidaNew;
+	}
+	public ProyectoPartida getProyectoPartidaSelected() {
+		return proyectoPartidaSelected;
+	}
+	public void setProyectoPartidaSelected(ProyectoPartida proyectoPartidaSelected) {
+		this.proyectoPartidaSelected = proyectoPartidaSelected;
 	}
 
 	

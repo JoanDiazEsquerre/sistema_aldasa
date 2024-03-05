@@ -53,13 +53,6 @@ public class VoucherTempServiceImpl implements VoucherTempService {
 	}
 
 	@Override
-	public VoucherTemp findByPlantillaVentaAndMontoAndTipoTransaccionAndNumeroOperacionAndFechaOperacionAndCuentaBancaria(
-			PlantillaVenta plantilla, BigDecimal monto, String tipoTransaccion, String numTransaccion, Date fecha, CuentaBancaria ctaBanc) {
-		// TODO Auto-generated method stub
-		return voucherTempRepository.findByPlantillaVentaAndMontoAndTipoTransaccionAndNumeroOperacionAndFechaOperacionAndCuentaBancaria(plantilla, monto, tipoTransaccion, numTransaccion, fecha, ctaBanc);
-	}
-
-	@Override
 	public List<VoucherTemp> findByPlantillaVentaEstadoAndPlantillaVentaLoteAndEstado(String estadoPlantilla, Lote lote,
 			boolean status) {
 		// TODO Auto-generated method stub
@@ -67,18 +60,26 @@ public class VoucherTempServiceImpl implements VoucherTempService {
 	}
 
 	@Override
-	public VoucherTemp findByRequerimientoSeparacionAndMontoAndTipoTransaccionAndNumeroOperacionAndFechaOperacionAndCuentaBancaria(
-			RequerimientoSeparacion req, BigDecimal monto, String tipoTransaccion, String numTransaccion, Date fecha,
-			CuentaBancaria cuentaBancaria) {
-		// TODO Auto-generated method stub
-		return voucherTempRepository.findByRequerimientoSeparacionAndMontoAndTipoTransaccionAndNumeroOperacionAndFechaOperacionAndCuentaBancaria(req, monto, tipoTransaccion, numTransaccion, fecha, cuentaBancaria);
-	}
-
-	@Override
 	public List<VoucherTemp> findByRequerimientoSeparacionEstadoAndRequerimientoSeparacionLoteAndEstado(
 			String estadoReq, Lote lote, boolean status) {
 		// TODO Auto-generated method stub
 		return voucherTempRepository.findByRequerimientoSeparacionEstadoAndRequerimientoSeparacionLoteAndEstado(estadoReq, lote, status);
+	}
+
+	@Override
+	public VoucherTemp findByPlantillaVentaAndMontoAndTipoTransaccionAndNumeroOperacionAndFechaOperacionAndCuentaBancariaAndEstado(
+			PlantillaVenta plantilla, BigDecimal monto, String tipoTransaccion, String numTransaccion, Date fecha,
+			CuentaBancaria cuentaBancaria, boolean estado) {
+		// TODO Auto-generated method stub
+		return voucherTempRepository.findByPlantillaVentaAndMontoAndTipoTransaccionAndNumeroOperacionAndFechaOperacionAndCuentaBancariaAndEstado(plantilla, monto, tipoTransaccion, numTransaccion, fecha, cuentaBancaria, estado);
+	}
+
+	@Override
+	public VoucherTemp findByRequerimientoSeparacionAndMontoAndTipoTransaccionAndNumeroOperacionAndFechaOperacionAndCuentaBancariaAndEstado(
+			RequerimientoSeparacion req, BigDecimal monto, String tipoTransaccion, String numTransaccion, Date fecha,
+			CuentaBancaria cuentaBancaria, boolean estado) {
+		// TODO Auto-generated method stub
+		return voucherTempRepository.findByRequerimientoSeparacionAndMontoAndTipoTransaccionAndNumeroOperacionAndFechaOperacionAndCuentaBancariaAndEstado(req, monto, tipoTransaccion, numTransaccion, fecha, cuentaBancaria, estado);
 	}
 	
 

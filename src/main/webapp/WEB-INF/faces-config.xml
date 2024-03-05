@@ -176,6 +176,14 @@
 			<property-name>navegacionBean</property-name>
 			<value>#{navegacionBean}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>proyectoPartidaService</property-name>
+			<value>#{proyectoPartidaService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>manzanaService</property-name>
+			<value>#{manzanaService}</value>
+		</managed-property>
 	</managed-bean>
 
 	<managed-bean>
@@ -451,10 +459,6 @@
 			<value>#{teamService}</value>
 		</managed-property>
 		<managed-property>
-			<property-name>comisionesService</property-name>
-			<value>#{comisionesService}</value>
-		</managed-property>
-		<managed-property>
 			<property-name>metaSupervisorService</property-name>
 			<value>#{metaSupervisorService}</value>
 		</managed-property>
@@ -485,10 +489,6 @@
 			<value>#{configuracionComisionService}</value>
 		</managed-property>
 		<managed-property>
-			<property-name>comisionesService</property-name>
-			<value>#{comisionesService}</value>
-		</managed-property>
-		<managed-property>
 			<property-name>empleadoService</property-name>
 			<value>#{empleadoService}</value>
 		</managed-property>
@@ -505,8 +505,16 @@
 			<value>#{cargoService}</value> 
 		</managed-property>
 		<managed-property>
-			<property-name>areaService</property-name>
-			<value>#{areaService}</value> 
+			<property-name>comisionSupervisorService</property-name>
+			<value>#{comisionSupervisorService}</value> 
+		</managed-property>
+		<managed-property>
+			<property-name>comisionesService</property-name>
+			<value>#{comisionesService}</value> 
+		</managed-property>
+		<managed-property>
+			<property-name>detalleComisionesService</property-name>
+			<value>#{detalleComisionesService}</value> 
 		</managed-property>
 	</managed-bean>
 	
@@ -559,7 +567,7 @@
 		<managed-property>
 			<property-name>navegacionBean</property-name>
 			<value>#{navegacionBean}</value>
-		</managed-property>
+		</managed-property> 
 		<managed-property>
 			<property-name>teamService</property-name>
 			<value>#{teamService}</value>
@@ -838,6 +846,22 @@
 			<property-name>projectService</property-name>
 			<value>#{projectService}</value>
 		</managed-property>
+		<managed-property> 
+			<property-name>imagenService</property-name>
+			<value>#{imagenService}</value>
+		</managed-property>
+		<managed-property> 
+			<property-name>loadImageDocumentoBean</property-name>
+			<value>#{loadImageDocumentoBean}</value>
+		</managed-property>
+		<managed-property> 
+			<property-name>proyectoPartidaService</property-name>
+			<value>#{proyectoPartidaService}</value>
+		</managed-property>
+		<managed-property> 
+			<property-name>imagenPlantillaVentaService</property-name>
+			<value>#{imagenPlantillaVentaService}</value>
+		</managed-property>
 	</managed-bean>
 	
 	<managed-bean>
@@ -1091,6 +1115,22 @@
 		<managed-property>
 			<property-name>contratoService</property-name>
 			<value>#{contratoService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>comisionSupervisorService</property-name>
+			<value>#{comisionSupervisorService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>configuracionComisionService</property-name>
+			<value>#{configuracionComisionService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>comisionesService</property-name>
+			<value>#{comisionesService}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>detalleComisionesService</property-name>
+			<value>#{detalleComisionesService}</value>
 		</managed-property>
 	</managed-bean>
 	

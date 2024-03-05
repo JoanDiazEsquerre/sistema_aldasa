@@ -74,7 +74,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.model.aldasa.entity.Banco;
-import com.model.aldasa.entity.Comisiones;
+import com.model.aldasa.entity.DetalleComisiones;
 import com.model.aldasa.entity.CuentaBancaria;
 import com.model.aldasa.entity.Empleado;
 import com.model.aldasa.entity.Lote;
@@ -87,7 +87,6 @@ import com.model.aldasa.entity.Team;
 import com.model.aldasa.entity.Usuario;
 import com.model.aldasa.general.bean.NavegacionBean;
 import com.model.aldasa.service.BancoService;
-import com.model.aldasa.service.ComisionesService;
 import com.model.aldasa.service.CuentaBancariaService;
 import com.model.aldasa.service.EmpleadoService;
 import com.model.aldasa.service.LoteService;
@@ -129,8 +128,8 @@ public class LoteBean extends BaseBean implements Serializable{
 	@ManagedProperty(value = "#{teamService}")
 	private TeamService teamService; 
 	
-	@ManagedProperty(value = "#{comisionesService}")
-	private ComisionesService comisionesService;
+//	@ManagedProperty(value = "#{comisionesService}")
+//	private DetalleComisionesService comisionesService;
 	
 	@ManagedProperty(value = "#{metaSupervisorService}")
 	private MetaSupervisorService metaSupervisorService;
@@ -382,50 +381,50 @@ public class LoteBean extends BaseBean implements Serializable{
 			}
 		}
 
-		if(loteSelected.getStatus().equals(EstadoLote.VENDIDO.getName())) {
-			if(personVenta == null) {
-				addErrorMessage("Completar todos los datos de venta.");
-				return ;
-			}else if (personVenta != null) {
-				loteSelected.setPersonVenta(personVenta);
-			}
-			
-			if(teamSelected == null) {
-				addErrorMessage("Seleccionar un equipo");
-				return ;
-			}else if (teamSelected != null) {
-				loteSelected.setPersonSupervisor(teamSelected.getPersonSupervisor());
-			}
-			
-			if (loteSelected.getPersonAssessor() == null) {
-				addErrorMessage("Seleccionar un asesor.");
-				return ;
-			}
-			
-			if(loteSelected.getFechaVendido() == null) {
-				addErrorMessage("Completar todos los datos de venta.");
-				return ;
-			}
-			
-			if(loteSelected.getTipoPago().equals("Contado")) {
-				loteSelected.setMontoInicial(null);
-				loteSelected.setNumeroCuota(null);
-				if (loteSelected.getMontoVenta() == null) {
-					addErrorMessage("Completar todos los datos de venta.");
-					return ;
-				}
-			}
-			
-			if(loteSelected.getTipoPago().equals("Crédito")) {
-				if (loteSelected.getMontoVenta() == null || loteSelected.getMontoInicial() == null || loteSelected.getNumeroCuota() == null || loteSelected.getInteres() == null) {
-					addErrorMessage("Completar todos los datos de venta.");
-					return ;
-				}
-			}
-		} else {
-			loteSelected.setMontoVenta(null);
-			loteSelected.setTipoPago(null);
-		}
+//		if(loteSelected.getStatus().equals(EstadoLote.VENDIDO.getName())) {
+//			if(personVenta == null) {
+//				addErrorMessage("Completar todos los datos de venta.");
+//				return ;
+//			}else if (personVenta != null) {
+//				loteSelected.setPersonVenta(personVenta);
+//			}
+//			
+//			if(teamSelected == null) {
+//				addErrorMessage("Seleccionar un equipo");
+//				return ;
+//			}else if (teamSelected != null) {
+//				loteSelected.setPersonSupervisor(teamSelected.getPersonSupervisor());
+//			}
+//			
+//			if (loteSelected.getPersonAssessor() == null) {
+//				addErrorMessage("Seleccionar un asesor.");
+//				return ;
+//			}
+//			
+//			if(loteSelected.getFechaVendido() == null) {
+//				addErrorMessage("Completar todos los datos de venta.");
+//				return ;
+//			}
+//			
+//			if(loteSelected.getTipoPago().equals("Contado")) {
+//				loteSelected.setMontoInicial(null);
+//				loteSelected.setNumeroCuota(null);
+//				if (loteSelected.getMontoVenta() == null) {
+//					addErrorMessage("Completar todos los datos de venta.");
+//					return ;
+//				}
+//			}
+//			
+//			if(loteSelected.getTipoPago().equals("Crédito")) {
+//				if (loteSelected.getMontoVenta() == null || loteSelected.getMontoInicial() == null || loteSelected.getNumeroCuota() == null || loteSelected.getInteres() == null) {
+//					addErrorMessage("Completar todos los datos de venta.");
+//					return ;
+//				}
+//			}
+//		} else {
+//			loteSelected.setMontoVenta(null);
+//			loteSelected.setTipoPago(null);
+//		}
 		//********************************
 		
 		if (tituloDialog.equals("NUEVO LOTE")) {
@@ -465,8 +464,6 @@ public class LoteBean extends BaseBean implements Serializable{
 
 			}
 		}
-		
-		
 	}
 	
 	
@@ -928,12 +925,12 @@ public class LoteBean extends BaseBean implements Serializable{
 	public void setTeamService(TeamService teamService) {
 		this.teamService = teamService;
 	}
-	public ComisionesService getComisionesService() {
-		return comisionesService;
-	}
-	public void setComisionesService(ComisionesService comisionesService) {
-		this.comisionesService = comisionesService;
-	}
+//	public DetalleComisionesService getComisionesService() {
+//		return comisionesService;
+//	}
+//	public void setComisionesService(DetalleComisionesService comisionesService) {
+//		this.comisionesService = comisionesService;
+//	}
 	public MetaSupervisorService getMetaSupervisorService() {
 		return metaSupervisorService;
 	}

@@ -162,5 +162,12 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 	}
 
 
+	@Override
+	public List<Empleado> findByEstadoAndCargoDescripcion(boolean estado, String cargo) {
+		// TODO Auto-generated method stub
+		return empleadoRepository.findByEstadoAndCargoDescripcion(estado, cargo); 
+	}
+
+
 
 }
