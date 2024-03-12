@@ -330,7 +330,7 @@ public class PlantillaVentaServiceImpl implements PlantillaVentaService{
 		
 		if(num !=0) {
 			BigDecimal multiplicado = new BigDecimal(num).multiply(new BigDecimal(100));    
-			calculo = multiplicado.divide(new BigDecimal(comisionSupervisor.getMeta()), 2, RoundingMode.HALF_UP);
+			calculo = multiplicado.divide(new BigDecimal(configuracionComision.getMetajv()), 2, RoundingMode.HALF_UP);
 		}
 		
 		if(calculo.compareTo(new BigDecimal(100))>=0) {

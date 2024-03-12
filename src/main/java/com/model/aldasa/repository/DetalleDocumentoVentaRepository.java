@@ -24,6 +24,8 @@ public interface DetalleDocumentoVentaRepository extends JpaRepository<DetalleDo
 	List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndCuotaPrepago(boolean estado, Cuota cuotaPrepago);
 	
 	List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndCuotaContratoOrderByCuotaContratoIdAsc(boolean estadoDocVenta, Contrato contrato);
+	List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndCuotaPrepagoContratoOrderByCuotaContratoIdAsc(boolean estadoDocVenta, Contrato contrato);
+
 
 	//PARA EL REPORTE DE DOCUMENTOS DE VENTAS
 	List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndDocumentoVentaSucursalAndDocumentoVentaFechaEmisionBetweenOrderByDocumentoVentaNumeroAsc(Boolean estado, Sucursal sucursal, Date fechaIni, Date fechaFin);

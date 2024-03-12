@@ -43,7 +43,7 @@ public class NumeroALetra {
             //se divide el numero 0000000,00 -> entero y decimal
             String Num[] = numero.split(",");
             //de da formato al numero decimal
-            parte_decimal = Num[1] + "/100 "+moneda+".";
+            parte_decimal = Num[1] + "/100 "+moneda+"";
             //se convierte el numero a literal
             if (Integer.parseInt(Num[0]) == 0) {//si el valor es cero
                 literal = "cero ";

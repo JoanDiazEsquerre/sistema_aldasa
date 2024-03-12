@@ -777,7 +777,7 @@ public class DocumentoVentaBean extends BaseBean {
 				d.setDocumentoVenta(saveDocNota);
 				d.setEstado(true);
 				detalleDocumentoVentaService.save(d);	
-			} 
+			}
 			
 //			aqui actualizamos los campos del documento de origen
 			
@@ -789,6 +789,14 @@ public class DocumentoVentaBean extends BaseBean {
 				documentoVentaSelected.setNumeroNotaDebito(saveDocNota.getSerie() + "-" + saveDocNota.getNumero());
 			}
 			documentoVentaService.save(documentoVentaSelected);
+			
+			// aqui anulamos las imagenes
+			String nombreBusqueda = "%"+documentoVentaSelected.getId() +"_%";
+			List<Imagen> lstImagen = imagenService.findByNombreLikeAndEstado(nombreBusqueda, true);
+			for(Imagen i:lstImagen) {
+				i.setEstado(false);
+				imagenService.save(i);
+			}
 			
 			addInfoMessage("Se guardó el documento correctamente.");
 			PrimeFaces.current().executeScript("PF('notaCreditoDebitoDialog').hide();");

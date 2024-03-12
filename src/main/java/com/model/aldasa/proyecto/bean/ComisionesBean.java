@@ -241,7 +241,7 @@ public class ComisionesBean extends BaseBean implements Serializable  {
 				
 				Pageable pageable = PageRequest.of(first/pageSize, pageSize,sort);
 
-				Page<Comisiones> pagePlantillaVenta= comisionesService.findByEstadoAndComisionSupervisorConfiguracionComision(true, configuracionComisionSelected, pageable);		
+				Page<Comisiones> pagePlantillaVenta= comisionesService.findByEstadoAndComisionSupervisor(true, comisionSupervisorSelected, pageable);		
 				
 				setRowCount((int) pagePlantillaVenta.getTotalElements());
 				return datasource = pagePlantillaVenta.getContent();

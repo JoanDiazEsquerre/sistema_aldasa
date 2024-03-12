@@ -101,6 +101,13 @@ public class DetalleDocumentoVentaServiceImpl implements DetalleDocumentoVentaSe
 		return detalleDocumentoVentaRepository.findByDocumentoVentaEstadoAndCuotaContratoOrderByCuotaContratoIdAsc(estadoDocVenta, contrato); 
 	}
 
+	@Override
+	public List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndCuotaPrepagoContratoOrderByCuotaContratoIdAsc(
+			boolean estadoDocVenta, Contrato contrato) {
+		// TODO Auto-generated method stub
+		return detalleDocumentoVentaRepository.findByDocumentoVentaEstadoAndCuotaPrepagoContratoOrderByCuotaContratoIdAsc(estadoDocVenta, contrato);
+	}
+
 
 
 	

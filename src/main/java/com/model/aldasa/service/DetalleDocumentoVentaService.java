@@ -31,6 +31,7 @@ public interface DetalleDocumentoVentaService {
 	
 	
 	List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndCuotaContratoOrderByCuotaContratoIdAsc(boolean estadoDocVenta, Contrato contrato);
+	List<DetalleDocumentoVenta> findByDocumentoVentaEstadoAndCuotaPrepagoContratoOrderByCuotaContratoIdAsc(boolean estadoDocVenta, Contrato contrato);
 
 	
 	//PARA EL REPORTE DE DOCUMENTOS DE VENTAS
